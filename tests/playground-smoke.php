@@ -32,5 +32,9 @@ if (($settings['maximum_urls'] ?? null) !== 2000) {
     fwrite(STDERR, "Varsayılan ayarlar beklenen değerde değil.\n");
     exit(1);
 }
+if (($settings['archive_retention'] ?? null) !== 5) {
+    fwrite(STDERR, "Varsayılan ZIP saklama sayısı 5 değil.\n");
+    exit(1);
+}
 
 echo "Ragnus Static Publisher smoke test passed.\n";

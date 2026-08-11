@@ -25,6 +25,8 @@ final class Plugin
         add_action('admin_init', [Admin::class, 'settings']);
         add_action('admin_post_ragnus_static_export', [Admin::class, 'start_export']);
         add_action('admin_post_ragnus_static_download', [Admin::class, 'download_export']);
+        add_action('admin_post_ragnus_static_cleanup_exports', [Admin::class, 'cleanup_exports']);
+        add_action('update_option_' . self::SETTINGS_KEY, [self::class, 'apply_archive_retention'], 10, 2);
         add_action(self::CRON_HOOK, [self::class, 'run_scheduled'], 10, 1);
         add_action('save_post', [self::class, 'maybe_schedule_after_save'], 20, 2);
         add_action('ragnus_static_export_completed', [self::class, 'handle_completed_export'], 10, 3);
@@ -65,6 +67,7 @@ final class Plugin
             'maximum_urls' => 2000,
             'excluded_paths' => "/wp-admin/\n/wp-login.php\n/wp-json/\n/feed/",
             'auto_export' => '0',
+            'archive_retention' => 5,
             'deployment_webhook_url' => '',
             'deployment_webhook_token' => '',
         ]);
@@ -148,6 +151,8 @@ final class Plugin
 
     public static function handle_completed_export(string $job_id, string $archive, array $manifest): void
     {
+        self::apply_archive_retention([], self::settings());
+
         if (get_option(self::DIRTY_KEY) === '1') {
             delete_option(self::DIRTY_KEY);
             self::schedule_export('content-change-during-export');
@@ -157,6 +162,15 @@ final class Plugin
         $source = (string) (self::status()['source'] ?? '');
         if ($source !== 'ci-manual') {
             self::notify_deployment_webhook($job_id, $manifest);
+        }
+    }
+
+    public static function apply_archive_retention(array $old_value, array $new_value): void
+    {
+        $keep = max(1, min(100, absint($new_value['archive_retention'] ?? 5)));
+        $result = Archive_Manager::prune($keep);
+        if ($result['failed'] > 0) {
+            error_log('[Ragnus Static Publisher] Bazı eski export arşivleri silinemedi.');
         }
     }
 

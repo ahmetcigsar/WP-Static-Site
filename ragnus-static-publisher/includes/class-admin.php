@@ -36,6 +36,7 @@ final class Admin
             'maximum_urls' => max(10, min(20000, absint($value['maximum_urls'] ?? 2000))),
             'excluded_paths' => sanitize_textarea_field((string) ($value['excluded_paths'] ?? '')),
             'auto_export' => isset($value['auto_export']) ? '1' : '0',
+            'archive_retention' => max(1, min(100, absint($value['archive_retention'] ?? 5))),
             'deployment_webhook_url' => esc_url_raw((string) ($value['deployment_webhook_url'] ?? '')),
             'deployment_webhook_token' => $submitted_token !== '' ? $submitted_token : (string) $current['deployment_webhook_token'],
         ];
@@ -76,6 +77,29 @@ final class Admin
         exit;
     }
 
+    public static function cleanup_exports(): void
+    {
+        if (! current_user_can('manage_options')) {
+            wp_die('Bu işlem için yetkiniz yok.', 403);
+        }
+        check_admin_referer('ragnus_static_cleanup_exports');
+
+        if (get_transient(Plugin::LOCK_KEY)) {
+            wp_safe_redirect(admin_url('tools.php?page=ragnus-static-publisher&cleanup=running'));
+            exit;
+        }
+
+        $result = Archive_Manager::delete_old_archives();
+        $query = [
+            'page' => 'ragnus-static-publisher',
+            'cleanup' => $result['failed'] > 0 ? 'partial' : 'success',
+            'deleted' => $result['deleted'],
+            'failed' => $result['failed'],
+        ];
+        wp_safe_redirect(add_query_arg($query, admin_url('tools.php')));
+        exit;
+    }
+
     public static function render(): void
     {
         if (! current_user_can('manage_options')) {
@@ -83,10 +107,22 @@ final class Admin
         }
         $settings = Plugin::settings();
         $status = Plugin::public_status();
+        $archives = Archive_Manager::archives();
+        $cleanup_status = isset($_GET['cleanup']) ? sanitize_key(wp_unslash((string) $_GET['cleanup'])) : '';
         ?>
         <div class="wrap">
             <h1>Ragnus Static Publisher</h1>
             <p>WordPress sitenizin statik kopyasını üretin. Cloudflare kimlik bilgileri bu eklentide tutulmaz.</p>
+
+            <?php if ($cleanup_status !== '') : ?>
+                <?php if ($cleanup_status === 'success') : ?>
+                    <div class="notice notice-success is-dismissible"><p><?php echo esc_html(sprintf('%d eski ZIP dosyası silindi.', absint($_GET['deleted'] ?? 0))); ?></p></div>
+                <?php elseif ($cleanup_status === 'partial') : ?>
+                    <div class="notice notice-warning is-dismissible"><p><?php echo esc_html(sprintf('%1$d eski ZIP dosyası silindi, %2$d dosya silinemedi.', absint($_GET['deleted'] ?? 0), absint($_GET['failed'] ?? 0))); ?></p></div>
+                <?php elseif ($cleanup_status === 'running') : ?>
+                    <div class="notice notice-warning is-dismissible"><p>Export devam ederken eski dosyalar silinemez.</p></div>
+                <?php endif; ?>
+            <?php endif; ?>
 
             <h2>Yayın durumu</h2>
             <table class="widefat striped" style="max-width:900px">
@@ -129,6 +165,10 @@ final class Admin
                         <td><label><input type="checkbox" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[auto_export]" value="1" <?php checked($settings['auto_export'], '1'); ?>> Yayımlanmış içerik değiştiğinde export kuyruğuna ekle</label></td>
                     </tr>
                     <tr>
+                        <th><label for="ragstat-archive-retention">Saklanacak ZIP sayısı</label></th>
+                        <td><input id="ragstat-archive-retention" type="number" min="1" max="100" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[archive_retention]" value="<?php echo esc_attr((string) $settings['archive_retention']); ?>"><p class="description">En son kaç başarılı export arşivinin saklanacağını belirler. Varsayılan: 5.</p></td>
+                    </tr>
+                    <tr>
                         <th><label for="ragstat-webhook">Deployment webhook</label></th>
                         <td><input class="large-text code" id="ragstat-webhook" type="url" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[deployment_webhook_url]" value="<?php echo esc_attr((string) $settings['deployment_webhook_url']); ?>"><p class="description">GitHub için: https://api.github.com/repos/SAHIP/REPO/dispatches</p></td>
                     </tr>
@@ -138,6 +178,33 @@ final class Admin
                     </tr>
                 </table>
                 <?php submit_button('Ayarları kaydet'); ?>
+            </form>
+
+            <hr>
+            <h2>ZIP dosyaları</h2>
+            <?php if ($archives === []) : ?>
+                <p>Henüz oluşturulmuş bir ZIP dosyası yok.</p>
+            <?php else : ?>
+                <table class="widefat striped" style="max-width:900px">
+                    <thead><tr><th>İş kimliği</th><th>URL sayısı</th><th>Oluşturma tarihi</th><th>Oluşturma saati</th></tr></thead>
+                    <tbody>
+                    <?php foreach ($archives as $archive) : ?>
+                        <tr>
+                            <td><code><?php echo esc_html((string) $archive['job_id']); ?></code></td>
+                            <td><?php echo $archive['url_count'] === null ? '—' : esc_html((string) $archive['url_count']); ?></td>
+                            <td><?php echo esc_html(wp_date((string) get_option('date_format'), (int) $archive['created_at'])); ?></td>
+                            <td><?php echo esc_html(wp_date((string) get_option('time_format'), (int) $archive['created_at'])); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php endif; ?>
+
+            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="margin-top:16px">
+                <input type="hidden" name="action" value="ragnus_static_cleanup_exports">
+                <?php wp_nonce_field('ragnus_static_cleanup_exports'); ?>
+                <?php submit_button('Eski Dosyaları Sil', 'delete', 'submit', false, ['onclick' => "return confirm('En son ZIP dışındaki tüm eski ZIP dosyaları silinecek. Devam edilsin mi?');"]); ?>
+                <p class="description">En son ZIP dosyası korunur; önceki ZIP dosyaları ve bunlara ait geçici build klasörleri kalıcı olarak silinir.</p>
             </form>
         </div>
         <?php

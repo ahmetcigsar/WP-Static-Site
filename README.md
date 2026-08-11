@@ -11,6 +11,9 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 - ZIP ve SHA-256 manifest üretimi
 - Araçlar > Static Publisher yönetim ekranı
 - Yönetim ekranından son başarılı ZIP'i indirme
+- Varsayılan 5 arşiv için ayarlanabilir ZIP saklama sınırı
+- İş kimliği, URL sayısı ve oluşturma zamanını gösteren ZIP arşiv tablosu
+- En son ZIP'i koruyarak eski arşivleri elle temizleme
 - `wp ragnus-static export` WP-CLI komutu
 - Application Password korumalı export/status/artifact REST uçları
 - CI için yönetici yetkisi gerektirmeyen `Static Publisher Deploy` kullanıcı rolü
@@ -49,6 +52,7 @@ find ragnus-static-publisher -name '*.php' -print0 | xargs -0 -n1 php -l
 bash -n scripts/*.sh
 ./scripts/package-plugin.sh
 npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=ragnus-static-publisher --mount=.:/workspace -- /workspace/tests/playground-smoke.php
+npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=ragnus-static-publisher --mount=.:/workspace -- /workspace/tests/playground-archives.php
 npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=ragnus-static-publisher --mount=.:/workspace -- /workspace/tests/playground-export.php
 ```
 

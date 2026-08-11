@@ -44,5 +44,18 @@ if (($status['manifest']['target'] ?? '') !== 'https://static.example.com') {
     throw new RuntimeException('Hedef domain manifest içine doğru yazılmadı.');
 }
 
-echo sprintf("Export integration test passed with %d URLs.\n", (int) ($status['url_count'] ?? 0));
+$zip = new ZipArchive();
+if ($zip->open((string) $status['archive']) !== true) {
+    throw new RuntimeException('Export ZIP dosyası açılamadı.');
+}
+$home_html = (string) $zip->getFromName('index.html');
+$zip->close();
+if (str_contains($home_html, 'https://static.example.com/wp-content/')) {
+    preg_match_all('#https://static\.example\.com/wp-content/[^"\'\s<]+#', $home_html, $remaining_assets);
+    throw new RuntimeException('Asset URL adresleri preview-safe kök yola dönüştürülmedi: ' . wp_json_encode(array_slice(array_unique($remaining_assets[0]), 0, 5)));
+}
+if (! str_contains($home_html, '/wp-content/')) {
+    throw new RuntimeException('Ana sayfada beklenen kök asset yolu bulunamadı.');
+}
 
+echo sprintf("Export integration test passed with %d URLs.\n", (int) ($status['url_count'] ?? 0));

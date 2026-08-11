@@ -52,6 +52,30 @@ final class Admin
         exit;
     }
 
+    public static function download_export(): void
+    {
+        if (! current_user_can('manage_options')) {
+            wp_die('Bu işlem için yetkiniz yok.', 403);
+        }
+        check_admin_referer('ragnus_static_download');
+
+        $status = Plugin::status();
+        $archive = $status['archive'] ?? '';
+        if (($status['state'] ?? '') !== 'completed' || ! is_string($archive) || ! is_readable($archive)) {
+            wp_die('İndirilebilir export bulunamadı.', 404);
+        }
+
+        while (ob_get_level() > 0) {
+            ob_end_clean();
+        }
+        nocache_headers();
+        header('Content-Type: application/zip');
+        header('Content-Disposition: attachment; filename="ragnus-static-export.zip"');
+        header('Content-Length: ' . (string) filesize($archive));
+        readfile($archive);
+        exit;
+    }
+
     public static function render(): void
     {
         if (! current_user_can('manage_options')) {
@@ -79,6 +103,9 @@ final class Admin
                 <input type="hidden" name="action" value="ragnus_static_export">
                 <?php wp_nonce_field('ragnus_static_export'); ?>
                 <?php submit_button('Şimdi statik export oluştur', 'primary', 'submit', false); ?>
+                <?php if (($status['state'] ?? '') === 'completed') : ?>
+                    <a class="button" href="<?php echo esc_url(wp_nonce_url(admin_url('admin-post.php?action=ragnus_static_download'), 'ragnus_static_download')); ?>">Son ZIP'i indir</a>
+                <?php endif; ?>
             </form>
 
             <h2>Ayarlar</h2>

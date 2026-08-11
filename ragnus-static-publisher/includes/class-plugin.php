@@ -8,6 +8,7 @@ use Throwable;
 
 final class Plugin
 {
+    public const EXPORT_CAPABILITY = 'ragnus_static_export';
     public const SETTINGS_KEY = 'ragnus_static_settings';
     public const STATUS_KEY = 'ragnus_static_status';
     public const LOCK_KEY = 'ragnus_static_export_lock';
@@ -16,15 +17,45 @@ final class Plugin
 
     public static function boot(): void
     {
+        add_action('init', [self::class, 'maybe_upgrade'], 1);
         add_action('init', [self::class, 'register_cli']);
         add_action('rest_api_init', [REST_Controller::class, 'register']);
         add_filter('rest_pre_serve_request', [REST_Controller::class, 'serve_file'], 10, 2);
         add_action('admin_menu', [Admin::class, 'menu']);
         add_action('admin_init', [Admin::class, 'settings']);
         add_action('admin_post_ragnus_static_export', [Admin::class, 'start_export']);
+        add_action('admin_post_ragnus_static_download', [Admin::class, 'download_export']);
         add_action(self::CRON_HOOK, [self::class, 'run_scheduled'], 10, 1);
         add_action('save_post', [self::class, 'maybe_schedule_after_save'], 20, 2);
         add_action('ragnus_static_export_completed', [self::class, 'handle_completed_export'], 10, 3);
+    }
+
+    public static function activate(): void
+    {
+        add_role('ragnus_static_deployer', 'Static Publisher Deploy', [
+            'read' => true,
+            self::EXPORT_CAPABILITY => true,
+        ]);
+
+        $administrator = get_role('administrator');
+        if ($administrator !== null) {
+            $administrator->add_cap(self::EXPORT_CAPABILITY);
+        }
+
+        update_option('ragnus_static_plugin_version', RAGSTAT_VERSION, false);
+    }
+
+    public static function maybe_upgrade(): void
+    {
+        if (get_option('ragnus_static_plugin_version') !== RAGSTAT_VERSION) {
+            self::activate();
+        }
+    }
+
+    public static function deactivate(): void
+    {
+        wp_clear_scheduled_hook(self::CRON_HOOK);
+        delete_transient(self::LOCK_KEY);
     }
 
     public static function settings(): array

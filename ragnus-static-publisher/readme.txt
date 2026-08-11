@@ -1,10 +1,10 @@
 === Ragnus Static Publisher ===
 Contributors: ragnus
-Tags: static site, cloudflare pages, export
+Tags: static site, cloudflare workers, export
 Requires at least: 6.5
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 0.1.0
+Stable tag: 0.1.3
 License: GPLv2 or later
 
 WordPress sitelerini statik dosyalara aktarır ve harici yayın akışları için güvenli REST uçları sağlar.
@@ -18,4 +18,3 @@ WordPress sitelerini statik dosyalara aktarır ve harici yayın akışları içi
 1. Klasörü wp-content/plugins altına kopyalayın.
 2. Eklentiyi etkinleştirin.
 3. Araçlar > Static Publisher sayfasından canlı site adresini kaydedin.
-

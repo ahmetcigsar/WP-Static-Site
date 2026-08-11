@@ -145,9 +145,9 @@ final class Exporter
                 [$body, $discovered] = $this->process_html($body, $url);
             } elseif (str_contains(strtolower($content_type), 'text/css')) {
                 $discovered = $this->extract_css_urls($body, $url);
-                $body = $this->rewrite_origin($body);
+                $body = $this->rewrite_asset_origin($body);
             } elseif ($this->is_text_content($content_type)) {
-                $body = $this->rewrite_origin($body);
+                $body = $this->rewrite_asset_origin($body);
             }
 
             $relative_path = Path_Mapper::url_to_relative_path($url, $content_type);
@@ -205,7 +205,7 @@ final class Exporter
     private function process_html(string $html, string $base_url): array
     {
         if (! class_exists(DOMDocument::class)) {
-            return [$this->rewrite_origin($html), []];
+            return [$this->rewrite_html_for_output($html), []];
         }
 
         $dom = new DOMDocument();
@@ -215,7 +215,7 @@ final class Exporter
         libxml_use_internal_errors($previous);
 
         if (! $loaded) {
-            return [$this->rewrite_origin($html), []];
+            return [$this->rewrite_html_for_output($html), []];
         }
 
         $attributes = ['href', 'src', 'poster', 'data-src', 'data-bg'];
@@ -256,7 +256,7 @@ final class Exporter
         // DOMDocument yalnızca keşif için kullanılır. Orijinal HTML'yi yeniden serialize
         // etmek tema işaretlemesini değiştirebildiğinden çıktı üzerinde sadece origin
         // dönüşümü uygulanır.
-        return [$this->rewrite_origin($html), array_values(array_unique($discovered))];
+        return [$this->rewrite_html_for_output($html), array_values(array_unique($discovered))];
     }
 
     private function extract_css_urls(string $css, string $base_url): array
@@ -378,6 +378,51 @@ final class Exporter
             [$this->target, str_replace('/', '\\/', $this->target)],
             $content
         );
+    }
+
+    private function rewrite_asset_origin(string $content): string
+    {
+        return str_replace(
+            [$this->origin, str_replace('/', '\\/', $this->origin)],
+            ['', ''],
+            $content
+        );
+    }
+
+    private function rewrite_html_for_output(string $html): string
+    {
+        // Önce tüm iç adresleri domain bağımsız kök yollara çeviririz. Böylece
+        // HTML, inline CSS/JS, srcset ve page-builder verileri pages.dev üzerinde
+        // de özel domain bağlandıktan sonra da aynı şekilde çalışır.
+        $html = $this->rewrite_asset_origin($html);
+
+        // Canonical bağlantılar mutlak canlı domaini göstermelidir.
+        $html = preg_replace_callback(
+            '#<link\b[^>]*\brel\s*=\s*(["\'])canonical\1[^>]*>#i',
+            function (array $match): string {
+                return preg_replace(
+                    '#(\bhref\s*=\s*["\'])(/[^"\']*|/)(["\'])#i',
+                    '$1' . $this->target . '$2$3',
+                    $match[0]
+                ) ?? $match[0];
+            },
+            $html
+        ) ?? $html;
+
+        // Sosyal paylaşım metadata adresleri de mutlak canlı domaini göstermelidir.
+        $html = preg_replace_callback(
+            '#<meta\b[^>]*\b(?:property|name)\s*=\s*(["\'])(?:og:url|og:image|twitter:image|twitter:url)\1[^>]*>#i',
+            function (array $match): string {
+                return preg_replace(
+                    '#(\bcontent\s*=\s*["\'])(/[^"\']*|/)(["\'])#i',
+                    '$1' . $this->target . '$2$3',
+                    $match[0]
+                ) ?? $match[0];
+            },
+            $html
+        ) ?? $html;
+
+        return $html;
     }
 
     private function to_public_url(string $url): string

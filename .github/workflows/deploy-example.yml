@@ -1,4 +1,4 @@
-name: WordPress static export and Cloudflare deploy
+name: WordPress static export and Cloudflare Workers deploy
 
 on:
   workflow_dispatch:
@@ -48,15 +48,17 @@ jobs:
             --user "$WP_USER:$WP_APP_PASSWORD" \
             "$WP_ORIGIN/wp-json/ragnus-static/v1/exports/latest/artifact" \
             --output export.zip
-          mkdir dist
-          unzip -q export.zip -d dist
+          mkdir site-dist
+          unzip -q export.zip -d site-dist
 
       - name: Validate output
-        run: bash scripts/validate-export.sh dist
+        env:
+          WP_ORIGIN: ${{ secrets.WP_ORIGIN }}
+        run: bash scripts/validate-export.sh site-dist
 
-      - name: Deploy to Cloudflare Pages
+      - name: Deploy to Cloudflare Workers Static Assets
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT }} --branch=main
+          command: deploy --config wrangler.jsonc

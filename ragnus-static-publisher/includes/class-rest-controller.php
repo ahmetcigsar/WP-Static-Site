@@ -41,7 +41,7 @@ final class REST_Controller
 
     public static function can_export(): bool
     {
-        return current_user_can('manage_options');
+        return current_user_can(Plugin::EXPORT_CAPABILITY);
     }
 
     public static function create(WP_REST_Request $request): WP_REST_Response

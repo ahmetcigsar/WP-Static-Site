@@ -4,7 +4,7 @@
 
 - WordPress içerik kaynağı ve export motorudur.
 - Cloudflare kimlik bilgileri yalnızca CI secrets içinde tutulur.
-- REST uçları WordPress Application Password ve `manage_options` yetkisi ister.
+- REST uçları WordPress Application Password ve eklentiye ait `ragnus_static_export` yetkisi ister.
 - Her deployment tam ve atomik bir statik snapshot'tır.
 - Form, arama, yorum, üyelik ve e-ticaret bu MVP'nin kapsamında değildir.
 
@@ -16,11 +16,11 @@
 4. HTML/CSS içindeki origin adresleri canlı statik domain ile değiştirilir.
 5. Snapshot, `_headers`, `_redirects`, manifest ve ZIP oluşturulur.
 6. Export tamamlanınca isteğe bağlı GitHub `repository_dispatch` webhook'u CI akışını tetikler.
-7. CI ZIP'i indirir, doğrular ve Wrangler ile Pages'e yükler.
+7. CI ZIP'i indirir, doğrular ve Wrangler ile `wp-statik-deneme` Workers Static Assets deployment'ına yükler.
 
 ## Güvenlik modeli
 
-- CI hesabı ayrı bir WordPress kullanıcısı olmalıdır.
+- CI hesabı ayrı bir WordPress kullanıcısı ve `Static Publisher Deploy` rolünde olmalıdır; yönetici rolü verilmemelidir.
 - Bu kullanıcı için yalnızca Application Password üretilmelidir.
 - WordPress yönetim parolası CI içine konmamalıdır.
 - `WP_APP_PASSWORD` ve Cloudflare token aynı sistem dışında paylaşılmamalıdır.

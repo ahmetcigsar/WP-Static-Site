@@ -1,18 +1,21 @@
 # Ragnus Static Publisher
 
-Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Pages odaklı statik export eklentisi.
+Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Workers Static Assets odaklı statik export eklentisi.
 
 ## MVP özellikleri
 
 - Aynı origin HTML, CSS, JS, görsel ve font kaynaklarını tarama
 - WordPress origin adresini canlı statik domain ile değiştirme
+- Asset adreslerini hem `pages.dev` hem özel domainde çalışan kök-relative yollara dönüştürme
 - Cloudflare `_headers` ve `_redirects` üretimi
 - ZIP ve SHA-256 manifest üretimi
 - Araçlar > Static Publisher yönetim ekranı
+- Yönetim ekranından son başarılı ZIP'i indirme
 - `wp ragnus-static export` WP-CLI komutu
 - Application Password korumalı export/status/artifact REST uçları
+- CI için yönetici yetkisi gerektirmeyen `Static Publisher Deploy` kullanıcı rolü
 - İçerik güncellemelerini 60 saniye birleştiren otomatik export ve isteğe bağlı deployment webhook'u
-- Cloudflare Pages için örnek GitHub Actions workflow'u
+- Cloudflare Workers Static Assets için örnek GitHub Actions workflow'u
 
 ## Kurulum
 
@@ -30,13 +33,12 @@ wp ragnus-static export --format=json
 ## CI secrets
 
 - `WP_ORIGIN`: WordPress origin adresi, örneğin `https://cms.example.com`
-- `WP_USER`: Sadece otomasyon için açılmış WordPress kullanıcı adı
+- `WP_USER`: `Static Publisher Deploy` rolündeki otomasyon kullanıcısı
 - `WP_APP_PASSWORD`: Kullanıcının Application Password değeri
-- `CLOUDFLARE_API_TOKEN`: Pages projesiyle sınırlı Cloudflare API token
+- `CLOUDFLARE_API_TOKEN`: `wp-statik-deneme` Worker deployment'ı için en düşük gerekli yetkilere sahip Cloudflare API token
 - `CLOUDFLARE_ACCOUNT_ID`: Cloudflare hesap kimliği
-- Repository variable `CLOUDFLARE_PAGES_PROJECT`: Pages proje adı
 
-Örnek workflow `.github/workflows/deploy-example.yml` içindedir. Önce dosyayı hedef repository'ye taşıyın ve proje değişkenlerini tanımlayın.
+Örnek workflow `.github/workflows/deploy-example.yml` içindedir. Worker adı ve asset ayarları `wrangler.jsonc` içinde tutulur; Custom Domain dashboard tarafından yönetilmeye devam eder. CI kullanıcısına yönetici rolü vermeyin; eklentinin oluşturduğu `Static Publisher Deploy` rolünü seçin ve bu kullanıcıya ayrı bir Application Password üretin.
 
 Tam otomatik akış için eklenti ayarlarında deployment webhook alanını `https://api.github.com/repos/SAHIP/REPO/dispatches` olarak girin. Fine-grained bearer token yalnızca ilgili repository için `Contents: write` yetkisiyle oluşturulmalıdır. Workflow dosyası repository'nin varsayılan branch'inde bulunmalıdır. Cloudflare token hiçbir zaman WordPress'e girilmez.
 

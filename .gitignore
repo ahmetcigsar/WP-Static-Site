@@ -1,6 +1,6 @@
 .DS_Store
 dist/
+site-dist/
 export.zip
 export-start.json
 *.log
-

@@ -36,7 +36,18 @@ final class Plugin
         add_action('admin_post_ragnus_static_archive_bulk', [Admin::class, 'archive_bulk_action']);
         add_action('update_option_' . self::SETTINGS_KEY, [self::class, 'apply_archive_retention'], 10, 2);
         add_action(self::CRON_HOOK, [self::class, 'run_scheduled'], 10, 1);
-        add_action('save_post', [self::class, 'maybe_schedule_after_save'], 20, 2);
+        add_action('transition_post_status', [self::class, 'maybe_schedule_after_post_transition'], 20, 3);
+        add_action('created_term', [self::class, 'maybe_schedule_after_taxonomy_change'], 20, 3);
+        add_action('edited_term', [self::class, 'maybe_schedule_after_taxonomy_change'], 20, 3);
+        add_action('delete_term', [self::class, 'maybe_schedule_after_taxonomy_change'], 20, 3);
+        add_action('add_attachment', [self::class, 'maybe_schedule_after_media_change']);
+        add_action('edit_attachment', [self::class, 'maybe_schedule_after_media_change']);
+        add_action('delete_attachment', [self::class, 'maybe_schedule_after_media_change']);
+        add_action('wp_update_nav_menu', [self::class, 'maybe_schedule_after_menu_change']);
+        add_action('customize_save_after', [self::class, 'maybe_schedule_after_theme_change']);
+        add_action('switch_theme', [self::class, 'maybe_schedule_after_theme_change']);
+        add_action('upgrader_process_complete', [self::class, 'maybe_schedule_after_upgrade'], 20, 2);
+        add_action('updated_option', [self::class, 'maybe_schedule_after_option_change'], 20, 3);
         add_action('ragnus_static_export_completed', [self::class, 'handle_completed_export'], 10, 3);
     }
 
@@ -72,7 +83,7 @@ final class Plugin
 
     public static function settings(): array
     {
-        return wp_parse_args(get_option(self::SETTINGS_KEY, []), [
+        return wp_parse_args(get_option(self::SETTINGS_KEY, []), array_merge([
             'target_url' => home_url(),
             'maximum_urls' => 2000,
             'excluded_paths' => "/wp-admin/\n/wp-login.php\n/wp-json/\n/feed/",
@@ -80,7 +91,24 @@ final class Plugin
             'archive_retention' => 5,
             'deployment_webhook_url' => '',
             'deployment_webhook_token' => '',
-        ]);
+        ], self::auto_export_trigger_defaults()));
+    }
+
+    public static function auto_export_trigger_defaults(): array
+    {
+        return [
+            'auto_export_post_created' => '1',
+            'auto_export_post_updated' => '1',
+            'auto_export_page_created' => '1',
+            'auto_export_page_updated' => '1',
+            'auto_export_custom_content' => '1',
+            'auto_export_taxonomy' => '0',
+            'auto_export_media' => '0',
+            'auto_export_menu' => '1',
+            'auto_export_widgets' => '1',
+            'auto_export_theme' => '1',
+            'auto_export_site_settings' => '1',
+        ];
     }
 
     public static function hide_defaults(): array
@@ -259,12 +287,88 @@ final class Plugin
         return $status;
     }
 
-    public static function maybe_schedule_after_save(int $post_id, \WP_Post $post): void
+    public static function maybe_schedule_after_post_transition(string $new_status, string $old_status, \WP_Post $post): void
     {
-        if ($post->post_status !== 'publish' || wp_is_post_revision($post_id) || wp_is_post_autosave($post_id)) {
+        if (($new_status !== 'publish' && $old_status !== 'publish') || $post->post_type === 'revision') {
             return;
         }
-        if ((string) self::settings()['auto_export'] !== '1') {
+
+        $created = $old_status !== 'publish';
+        if ($post->post_type === 'post') {
+            $trigger = $created ? 'auto_export_post_created' : 'auto_export_post_updated';
+            $source = $created ? 'post-created' : 'post-updated';
+        } elseif ($post->post_type === 'page') {
+            $trigger = $created ? 'auto_export_page_created' : 'auto_export_page_updated';
+            $source = $created ? 'page-created' : 'page-updated';
+        } else {
+            $trigger = 'auto_export_custom_content';
+            $source = 'custom-content-changed';
+        }
+        self::maybe_schedule_automatic_export($trigger, $source);
+    }
+
+    public static function maybe_schedule_after_taxonomy_change(): void
+    {
+        self::maybe_schedule_automatic_export('auto_export_taxonomy', 'taxonomy-changed');
+    }
+
+    public static function maybe_schedule_after_media_change(): void
+    {
+        self::maybe_schedule_automatic_export('auto_export_media', 'media-changed');
+    }
+
+    public static function maybe_schedule_after_menu_change(): void
+    {
+        self::maybe_schedule_automatic_export('auto_export_menu', 'menu-changed');
+    }
+
+    public static function maybe_schedule_after_theme_change(): void
+    {
+        self::maybe_schedule_automatic_export('auto_export_theme', 'theme-changed');
+    }
+
+    public static function maybe_schedule_after_upgrade($upgrader, array $hook_extra): void
+    {
+        if (($hook_extra['type'] ?? '') === 'theme') {
+            self::maybe_schedule_automatic_export('auto_export_theme', 'theme-updated');
+        }
+    }
+
+    public static function maybe_schedule_after_option_change(string $option, $old_value, $value): void
+    {
+        if ($old_value === $value) {
+            return;
+        }
+
+        if ($option === 'sidebars_widgets' || str_starts_with($option, 'widget_')) {
+            self::maybe_schedule_automatic_export('auto_export_widgets', 'widgets-changed');
+            return;
+        }
+        if (str_starts_with($option, 'theme_mods_')) {
+            self::maybe_schedule_automatic_export('auto_export_theme', 'theme-settings-changed');
+            return;
+        }
+        $site_options = [
+            'blogname',
+            'blogdescription',
+            'show_on_front',
+            'page_on_front',
+            'page_for_posts',
+            'posts_per_page',
+            'permalink_structure',
+            'date_format',
+            'time_format',
+            'timezone_string',
+        ];
+        if (in_array($option, $site_options, true)) {
+            self::maybe_schedule_automatic_export('auto_export_site_settings', 'site-settings-changed');
+        }
+    }
+
+    public static function maybe_schedule_automatic_export(string $trigger, string $source): void
+    {
+        $settings = self::settings();
+        if ((string) $settings['auto_export'] !== '1' || (string) ($settings[$trigger] ?? '0') !== '1') {
             return;
         }
 
@@ -282,7 +386,11 @@ final class Plugin
 
         $job_id = gmdate('Ymd-His') . '-' . wp_generate_password(8, false, false);
         Activity_Log::reset($job_id);
-        self::set_status($job_id, 'queued', 0, ['source' => 'content-change', 'queued_at' => gmdate('c')]);
+        self::set_status($job_id, 'queued', 0, [
+            'source' => $source,
+            'queued_at' => gmdate('c'),
+            'status_message' => 'Otomatik export işi sıraya alındı.',
+        ]);
         wp_schedule_single_event(time() + 60, self::CRON_HOOK, [$job_id]);
     }
 

@@ -36,6 +36,63 @@ if (($settings['archive_retention'] ?? null) !== 5) {
     fwrite(STDERR, "Varsayılan ZIP saklama sayısı 5 değil.\n");
     exit(1);
 }
+foreach (['auto_export_post_created', 'auto_export_post_updated', 'auto_export_page_created', 'auto_export_page_updated', 'auto_export_theme'] as $trigger) {
+    if (($settings[$trigger] ?? '') !== '1') {
+        fwrite(STDERR, "Varsayılan otomatik export tetikleyicisi etkin değil: {$trigger}\n");
+        exit(1);
+    }
+}
+$sanitized_settings = Ragnus\StaticPublisher\Admin::sanitize([
+    'target_url' => home_url(),
+    'maximum_urls' => 2000,
+    'archive_retention' => 5,
+    'auto_export' => '1',
+    'auto_export_post_created' => '1',
+    'auto_export_theme' => '1',
+]);
+if (($sanitized_settings['auto_export'] ?? '') !== '1'
+    || ($sanitized_settings['auto_export_post_created'] ?? '') !== '1'
+    || ($sanitized_settings['auto_export_post_updated'] ?? '') !== '0'
+    || ($sanitized_settings['auto_export_theme'] ?? '') !== '1') {
+    fwrite(STDERR, "Otomatik export tetikleyicileri doğru temizlenmedi.\n");
+    exit(1);
+}
+$automatic_settings = array_merge(
+    $settings,
+    array_fill_keys(array_keys(Ragnus\StaticPublisher\Plugin::auto_export_trigger_defaults()), '0'),
+    [
+        'auto_export' => '1',
+        'auto_export_post_created' => '1',
+    ]
+);
+update_option(Ragnus\StaticPublisher\Plugin::SETTINGS_KEY, $automatic_settings);
+$automatic_post_id = wp_insert_post([
+    'post_title' => 'Otomatik export tetikleyici testi',
+    'post_status' => 'draft',
+    'post_type' => 'post',
+], true);
+if (is_wp_error($automatic_post_id)) {
+    fwrite(STDERR, "Otomatik export test yazısı oluşturulamadı.\n");
+    exit(1);
+}
+$automatic_post = get_post($automatic_post_id);
+Ragnus\StaticPublisher\Plugin::maybe_schedule_after_post_transition('publish', 'draft', $automatic_post);
+$automatic_status = Ragnus\StaticPublisher\Plugin::status();
+$automatic_job_id = (string) ($automatic_status['job_id'] ?? '');
+if ($automatic_job_id === ''
+    || ($automatic_status['source'] ?? '') !== 'post-created'
+    || wp_next_scheduled(Ragnus\StaticPublisher\Plugin::CRON_HOOK, [$automatic_job_id]) === false) {
+    fwrite(STDERR, "Seçili yeni yazı tetikleyicisi otomatik export kuyruğu oluşturmadı.\n");
+    exit(1);
+}
+Ragnus\StaticPublisher\Plugin::maybe_schedule_after_post_transition('publish', 'publish', $automatic_post);
+if ((string) (Ragnus\StaticPublisher\Plugin::status()['job_id'] ?? '') !== $automatic_job_id) {
+    fwrite(STDERR, "Kapalı yazı güncelleme tetikleyicisi yeni export kuyruğu oluşturdu.\n");
+    exit(1);
+}
+wp_clear_scheduled_hook(Ragnus\StaticPublisher\Plugin::CRON_HOOK, [$automatic_job_id]);
+update_option(Ragnus\StaticPublisher\Plugin::SETTINGS_KEY, $settings);
+wp_delete_post($automatic_post_id, true);
 $hide_settings = Ragnus\StaticPublisher\Plugin::hide_settings();
 if (($hide_settings['wp_content_directory'] ?? '') !== 'wp-content'
     || ($hide_settings['theme_style_name'] ?? '') !== 'style'
@@ -153,6 +210,18 @@ foreach (['Tekrar Kontrol Et', 'ragnus_static_refresh_diagnostics', 'Diagnostics
 foreach (["'hide' => 'Hide'", 'render_hide_tab', 'Hide Ayarlarını Kaydet'] as $expected) {
     if (! str_contains($admin_source, $expected)) {
         fwrite(STDERR, "Hide sekmesi arayüzü eksik: {$expected}\n");
+        exit(1);
+    }
+}
+foreach (['Otomatik Statik Site Oluşturma ve Deploy', 'Yeni yazı yayınlandığında', 'Mevcut sayfa güncellendiğinde', 'Tema değiştiğinde', 'Site ayarları değiştiğinde'] as $expected) {
+    if (! str_contains($admin_source, $expected)) {
+        fwrite(STDERR, "Settings otomatik deploy kartında beklenen içerik bulunamadı: {$expected}\n");
+        exit(1);
+    }
+}
+foreach (['transition_post_status', 'created_term', 'wp_update_nav_menu', 'upgrader_process_complete', 'updated_option'] as $hook) {
+    if (! has_action($hook)) {
+        fwrite(STDERR, "Otomatik export hook kaydı bulunamadı: {$hook}\n");
         exit(1);
     }
 }

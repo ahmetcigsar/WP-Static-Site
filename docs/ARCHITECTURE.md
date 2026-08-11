@@ -10,7 +10,7 @@
 
 ## Akış
 
-1. Manuel akışta CI `POST /wp-json/ragnus-static/v1/exports` çağrısı yapar. Otomatik akışta WordPress içerik değişikliğini 60 saniye biriktirir.
+1. Manuel akışta CI `POST /wp-json/ragnus-static/v1/exports` çağrısı yapar. Otomatik akışta WordPress, Settings ekranında seçilen içerik, medya, menü, tema veya site ayarı değişikliklerini 60 saniye biriktirir.
 2. WordPress işi WP-Cron kuyruğuna ekler.
 3. Exporter yayınlanmış içerik URL'lerini seed olarak alır ve aynı origin kaynaklarını tarar.
 4. HTML/CSS içindeki origin adresleri canlı statik domain ile değiştirilir.

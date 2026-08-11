@@ -33,7 +33,8 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 - `wp ragnus-static export` WP-CLI komutu
 - Application Password korumalı export/status/artifact REST uçları
 - CI için yönetici yetkisi gerektirmeyen `Static Publisher Deploy` kullanıcı rolü
-- İçerik güncellemelerini 60 saniye birleştiren otomatik export ve isteğe bağlı deployment webhook'u
+- Yazı, sayfa, özel içerik, kategori/etiket, medya, menü, bileşen, tema ve site ayarı değişiklikleri için ayrı ayrı seçilebilen otomatik export tetikleyicileri
+- Seçilen değişiklikleri 60 saniye birleştiren otomatik export ve isteğe bağlı deployment webhook'u
 - Cloudflare Workers Static Assets için örnek GitHub Actions workflow'u
 
 ## Kurulum

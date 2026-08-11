@@ -56,6 +56,7 @@ if (($first_page['entries'][0]['source_url'] ?? '') !== 'https://cms.example.com
 
 $searched_page = Ragnus\StaticPublisher\Activity_Log::page(1, 'SOURCE/57/');
 if ($searched_page['total'] !== 1
+    || $searched_page['job_total'] !== 120
     || $searched_page['total_pages'] !== 1
     || ($searched_page['entries'][0]['source_url'] ?? '') !== 'https://cms.example.com/source/57/'
     || ($searched_page['entries'][0]['status_code'] ?? null) !== 404) {
@@ -74,6 +75,9 @@ if ($code_search['total'] !== 1 || ($code_search['entries'][0]['status_code'] ??
 $missing_search = Ragnus\StaticPublisher\Activity_Log::page(1, 'bulunmayan-kayit');
 if ($missing_search['total'] !== 0 || $missing_search['entries'] !== []) {
     throw new RuntimeException('Activity Log sonuçsuz arama durumunu doğru döndürmedi.');
+}
+if ($missing_search['job_total'] !== 120) {
+    throw new RuntimeException('Activity Log toplam işlem kayıt sayısını aramadan bağımsız korumadı.');
 }
 
 Ragnus\StaticPublisher\Activity_Log::reset('activity-job-2');

@@ -46,6 +46,7 @@ final class Activity_Log
     public static function page(int $page, string $search = ''): array
     {
         $entries = [];
+        $job_total = 0;
         $search = trim($search);
         $path = self::log_path();
         if (is_readable($path)) {
@@ -54,6 +55,7 @@ final class Activity_Log
                 foreach (array_reverse($lines) as $line) {
                     $entry = json_decode($line, true);
                     if (is_array($entry)) {
+                        $job_total++;
                         $entry = self::normalise_entry($entry);
                         if ($search === '' || self::matches_search($entry, $search)) {
                             $entries[] = $entry;
@@ -73,6 +75,7 @@ final class Activity_Log
             'page' => $current_page,
             'page_size' => self::PAGE_SIZE,
             'total' => $total,
+            'job_total' => $job_total,
             'total_pages' => $total_pages,
             'search' => $search,
         ];

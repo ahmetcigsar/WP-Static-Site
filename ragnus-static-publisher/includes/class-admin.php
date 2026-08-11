@@ -421,9 +421,9 @@ final class Admin
                     <br class="clear">
                 </div>
                 <table class="widefat striped ragstat-files-table">
-                    <thead><tr><td class="manage-column check-column"><input id="cb-select-all-1" type="checkbox"><label for="cb-select-all-1"><span class="screen-reader-text">Tümünü Seç</span></label></td><th>İş Kimliği</th><th>URL Sayısı</th><th>Oluşturma Tarihi</th><th>Oluşturma Saati</th><th>İşlem</th></tr></thead>
+                    <thead><tr><td class="manage-column check-column"><input id="cb-select-all-1" type="checkbox"><label for="cb-select-all-1"><span class="screen-reader-text">Tümünü Seç</span></label></td><th class="ragstat-number-column">Numara</th><th>İş Kimliği</th><th>URL Sayısı</th><th>Oluşturma Tarihi</th><th>Oluşturma Saati</th><th>İşlem</th></tr></thead>
                     <tbody>
-                    <?php foreach ($archives as $archive) : ?>
+                    <?php foreach ($archives as $archive_index => $archive) : ?>
                         <?php
                         $archive_id = (string) $archive['id'];
                         $download_url = wp_nonce_url(
@@ -433,6 +433,7 @@ final class Admin
                         ?>
                         <tr>
                             <th scope="row" class="check-column"><input type="checkbox" name="archive_ids[]" value="<?php echo esc_attr($archive_id); ?>"><span class="screen-reader-text"><?php echo esc_html((string) $archive['job_id']); ?> seç</span></th>
+                            <td class="ragstat-number-column"><?php echo esc_html((string) ($archive_index + 1)); ?></td>
                             <td><code><?php echo esc_html((string) $archive['job_id']); ?></code></td>
                             <td><?php echo $archive['url_count'] === null ? '—' : esc_html((string) $archive['url_count']); ?></td>
                             <td><?php echo esc_html(wp_date((string) get_option('date_format'), (int) $archive['created_at'])); ?></td>
@@ -463,14 +464,17 @@ final class Admin
         ?>
         <h2>Activity Log</h2>
         <?php if ($activity['job_id'] !== '') : ?>
-            <p>En son static işlemine ait kayıtlar: <code><?php echo esc_html((string) $activity['job_id']); ?></code></p>
+            <p class="ragstat-activity-meta">
+                <span>En son static işlemine ait kayıtlar: <code><?php echo esc_html((string) $activity['job_id']); ?></code></span>
+                <span>Kayıt Sayısı: <strong><?php echo esc_html((string) $activity['job_total']); ?></strong></span>
+            </p>
         <?php endif; ?>
         <form class="ragstat-activity-search" method="get" action="<?php echo esc_url(admin_url('admin.php')); ?>">
             <input type="hidden" name="page" value="ragnus-static-publisher">
             <input type="hidden" name="tab" value="activity">
             <label class="screen-reader-text" for="ragstat-log-search">Log Kayıtlarında Ara</label>
             <span class="dashicons dashicons-search" aria-hidden="true"></span>
-            <input id="ragstat-log-search" type="search" name="log_search" value="<?php echo esc_attr($search); ?>" placeholder="Kod, kaynak veya statik adreste ara...">
+            <input id="ragstat-log-search" type="search" name="log_search" value="<?php echo esc_attr($search); ?>" placeholder="Kaynak veya statik adreste ara...">
             <button class="button button-primary" type="submit">Ara</button>
             <?php if ($search !== '') : ?>
                 <a class="button" href="<?php echo esc_url(self::admin_page_url('activity')); ?>">Aramayı Temizle</a>
@@ -483,18 +487,13 @@ final class Admin
             </div>
         <?php else : ?>
             <table class="widefat striped ragstat-activity-table">
-                <thead><tr><th>Kod</th><th>Tarih</th><th>Saat</th><th>Kaynak Adres</th><th>Statik Adres</th></tr></thead>
+                <thead><tr><th>Tarih</th><th>Saat</th><th>Kaynak Adres</th><th>Statik Adres</th></tr></thead>
                 <tbody>
                 <?php foreach ($entries as $entry) : ?>
                     <?php
                     $timestamp = strtotime((string) ($entry['time'] ?? ''));
-                    $status_code = is_numeric($entry['status_code'] ?? null) ? (int) $entry['status_code'] : 0;
-                    $status_class = $status_code >= 200 && $status_code < 300
-                        ? 'is-success'
-                        : ($status_code >= 300 && $status_code < 400 ? 'is-redirect' : ($status_code >= 400 ? 'is-error' : 'is-unknown'));
                     ?>
                     <tr>
-                        <td><span class="ragstat-http-code <?php echo esc_attr($status_class); ?>"><?php echo $status_code === 0 ? '—' : esc_html((string) $status_code); ?></span></td>
                         <td><?php echo $timestamp === false ? '—' : esc_html(wp_date((string) get_option('date_format'), $timestamp)); ?></td>
                         <td><?php echo $timestamp === false ? '—' : esc_html(wp_date((string) get_option('time_format'), $timestamp)); ?></td>
                         <td><?php if (($entry['source_url'] ?? '') === '') : ?>—<?php else : ?><code><?php echo esc_html((string) $entry['source_url']); ?></code><?php endif; ?></td>

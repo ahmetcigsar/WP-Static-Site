@@ -155,42 +155,13 @@
     max-width: 1160px;
 }
 
+.ragstat-files-table .ragstat-number-column {
+    width: 72px;
+    text-align: center;
+}
+
 .ragstat-activity-table {
     max-width: 1300px;
-}
-
-.ragstat-http-code {
-    display: inline-flex;
-    min-width: 42px;
-    min-height: 26px;
-    box-sizing: border-box;
-    align-items: center;
-    justify-content: center;
-    padding: 4px 8px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 700;
-    line-height: 18px;
-}
-
-.ragstat-http-code.is-success {
-    color: #166534;
-    background: #dcfce7;
-}
-
-.ragstat-http-code.is-redirect {
-    color: #1d4ed8;
-    background: #dbeafe;
-}
-
-.ragstat-http-code.is-error {
-    color: #b91c1c;
-    background: #fee2e2;
-}
-
-.ragstat-http-code.is-unknown {
-    color: #475569;
-    background: #e2e8f0;
 }
 
 .ragstat-activity-search {
@@ -204,6 +175,24 @@
     border-radius: 12px;
     background: var(--ragstat-surface);
     box-shadow: 0 4px 14px rgba(15, 23, 42, .04);
+}
+
+.ragstat-activity-meta {
+    display: flex;
+    gap: 10px 24px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: -4px 0 18px;
+    color: var(--ragstat-muted);
+}
+
+.ragstat-activity-meta span + span {
+    padding-left: 24px;
+    border-left: 1px solid var(--ragstat-border);
+}
+
+.ragstat-activity-meta strong {
+    color: var(--ragstat-text);
 }
 
 .ragstat-activity-search > .dashicons {
@@ -720,6 +709,16 @@
     .ragstat-activity-search {
         align-items: stretch;
         flex-wrap: wrap;
+    }
+
+    .ragstat-activity-meta {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .ragstat-activity-meta span + span {
+        padding-left: 0;
+        border-left: 0;
     }
 
     .ragstat-activity-search > .dashicons {

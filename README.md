@@ -17,12 +17,13 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 - About sekmesinde sürüm, destek e-postası ve eklenti web sitesi bilgileri
 - Modern yönetim arayüzü, kart tabanlı içerik alanları, yenilenmiş sekmeler ve butonlar
 - Activity Log kayıtlarında arama ve ortalanmış modern sayfalama
-- Activity Log kaynak HTTP durum kodları ve WordPress ayarlarına bağlı tarih/saat biçimi
+- Activity Log kayıtlarında WordPress ayarlarına bağlı tarih/saat biçimi
 - Yalnızca son exporta ait, veritabanı dışında tutulan ve sayfa başına 50 kayıt gösteren Activity Log
 - Activity Log içinde kaynak WordPress URL'sini ve üretilen statik yolu ayrı sütunlarda gösterme
 - Yönetim ekranından son başarılı ZIP'i indirme
 - Varsayılan 5 arşiv için ayarlanabilir ZIP saklama sınırı
 - İş kimliği, URL sayısı ve oluşturma zamanını gösteren ZIP arşiv tablosu
+- ZIP arşiv tablosunda gösterim sırasını belirten bilgi amaçlı numara sütunu
 - En son ZIP'i koruyarak eski arşivleri elle temizleme
 - ZIP arşivlerini tek tek veya toplu olarak indirme ve silme
 - `wp ragnus-static export` WP-CLI komutu

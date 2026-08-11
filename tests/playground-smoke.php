@@ -80,6 +80,18 @@ foreach (['Statik Site Oluştur', '>İndir</a>'] as $expected) {
         exit(1);
     }
 }
+if (str_contains($admin_source, '<th>Kod</th>') || str_contains($admin_source, 'ragstat-http-code')) {
+    fwrite(STDERR, "Activity Log Kod sütunu arayüzden kaldırılmadı.\n");
+    exit(1);
+}
+if (! str_contains($admin_source, 'Kayıt Sayısı:') || ! str_contains($admin_source, "activity['job_total']")) {
+    fwrite(STDERR, "Activity Log kayıt sayısı bilgisi arayüzde bulunamadı.\n");
+    exit(1);
+}
+if (! str_contains($admin_source, '>Numara</th>') || ! str_contains($admin_source, '$archive_index + 1')) {
+    fwrite(STDERR, "Files tablosunun numara sütunu bulunamadı.\n");
+    exit(1);
+}
 
 Ragnus\StaticPublisher\Plugin::set_status('stalled-test', 'queued', 0, [
     'queued_at' => gmdate('c', time() - 120),

@@ -37,4 +37,10 @@ if (($settings['archive_retention'] ?? null) !== 5) {
     exit(1);
 }
 
+Ragnus\StaticPublisher\Admin::enqueue_assets('toplevel_page_ragnus-static-publisher');
+if (! wp_style_is('ragnus-static-publisher-admin', 'enqueued')) {
+    fwrite(STDERR, "Modern yönetim arayüzü stil dosyası yüklenmedi.\n");
+    exit(1);
+}
+
 echo "Ragnus Static Publisher smoke test passed.\n";

@@ -13,6 +13,7 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 - Main, Files, Activity Log ve Settings sekmelerine ayrılmış yönetim görünümü
 - Main sekmesinde son başarılı static oluşturma zamanı ve yeşil ilerleme/tamamlanma göstergesi
 - Diagnostics sekmesinde PHP, Basic Auth, php-xml, cURL, site URL erişimi, kalıcı bağlantılar, indexlenebilirlik, önbellek ve WP-Cron kontrolleri
+- Modern yönetim arayüzü, kart tabanlı içerik alanları, yenilenmiş sekmeler ve butonlar
 - Yalnızca son exporta ait, veritabanı dışında tutulan ve sayfa başına 50 kayıt gösteren Activity Log
 - Activity Log içinde kaynak WordPress URL'sini ve üretilen statik yolu ayrı sütunlarda gösterme
 - Yönetim ekranından son başarılı ZIP'i indirme

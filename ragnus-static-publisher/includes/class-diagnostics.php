@@ -59,7 +59,7 @@ final class Diagnostics
                 ],
                 [
                     'id' => 'php-xml',
-                    'label' => 'php-xml',
+                    'label' => 'PHP-XML',
                     'passed' => $xml_available,
                     'message' => $xml_available ? 'php-xml kullanılabilir.' : 'php-xml kullanılamıyor; DOMDocument eklentisini etkinleştirin.',
                 ],

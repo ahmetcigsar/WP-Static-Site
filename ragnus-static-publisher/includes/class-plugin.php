@@ -22,6 +22,7 @@ final class Plugin
         add_action('rest_api_init', [REST_Controller::class, 'register']);
         add_filter('rest_pre_serve_request', [REST_Controller::class, 'serve_file'], 10, 2);
         add_action('admin_menu', [Admin::class, 'menu']);
+        add_action('admin_enqueue_scripts', [Admin::class, 'enqueue_assets']);
         add_action('admin_init', [Admin::class, 'settings']);
         add_action('admin_post_ragnus_static_export', [Admin::class, 'start_export']);
         add_action('admin_post_ragnus_static_download', [Admin::class, 'download_export']);

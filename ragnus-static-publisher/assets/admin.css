@@ -1,0 +1,473 @@
+.ragstat-admin {
+    --ragstat-primary: #2563eb;
+    --ragstat-primary-dark: #1d4ed8;
+    --ragstat-success: #16a34a;
+    --ragstat-danger: #dc2626;
+    --ragstat-text: #172033;
+    --ragstat-muted: #64748b;
+    --ragstat-border: #dce3ec;
+    --ragstat-surface: #ffffff;
+    --ragstat-surface-soft: #f6f8fb;
+    max-width: 1380px;
+    color: var(--ragstat-text);
+}
+
+.ragstat-admin-header {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    margin: 22px 0 18px;
+    padding: 24px 28px;
+    color: #fff;
+    background: linear-gradient(135deg, #172554 0%, #1d4ed8 58%, #3b82f6 100%);
+    border-radius: 16px;
+    box-shadow: 0 14px 34px rgba(30, 64, 175, .18);
+}
+
+.ragstat-admin-header h1 {
+    margin: 0 0 5px;
+    padding: 0;
+    color: inherit;
+    font-size: 25px;
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+.ragstat-admin-header p {
+    margin: 0;
+    color: rgba(255, 255, 255, .82);
+    font-size: 14px;
+}
+
+.ragstat-admin-header__icon {
+    display: grid;
+    flex: 0 0 48px;
+    width: 48px;
+    height: 48px;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, .28);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, .14);
+    font-size: 27px;
+    line-height: 48px;
+}
+
+.ragstat-admin .nav-tab-wrapper {
+    display: flex;
+    gap: 6px;
+    margin: 0;
+    padding: 6px;
+    overflow-x: auto;
+    border: 1px solid var(--ragstat-border);
+    border-radius: 12px;
+    background: #eaf0f7;
+}
+
+.ragstat-admin .nav-tab {
+    float: none;
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 10px 17px;
+    color: #475569;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    font-size: 14px;
+    font-weight: 600;
+    transition: color .16s ease, background-color .16s ease, box-shadow .16s ease, transform .16s ease;
+}
+
+.ragstat-admin .nav-tab:hover,
+.ragstat-admin .nav-tab:focus {
+    color: var(--ragstat-primary-dark);
+    background: rgba(255, 255, 255, .72);
+}
+
+.ragstat-admin .nav-tab:focus {
+    outline: 2px solid rgba(37, 99, 235, .32);
+    outline-offset: -2px;
+    box-shadow: none;
+}
+
+.ragstat-admin .nav-tab-active,
+.ragstat-admin .nav-tab-active:hover,
+.ragstat-admin .nav-tab-active:focus {
+    color: #fff;
+    background: var(--ragstat-primary);
+    box-shadow: 0 5px 12px rgba(37, 99, 235, .24);
+}
+
+.ragstat-tab-content {
+    margin-top: 18px;
+    padding: 24px;
+    border: 1px solid var(--ragstat-border);
+    border-radius: 16px;
+    background: var(--ragstat-surface-soft);
+    box-shadow: 0 8px 26px rgba(15, 23, 42, .06);
+}
+
+.ragstat-tab-content > h2 {
+    margin: 0 0 18px;
+    color: var(--ragstat-text);
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.ragstat-admin .widefat {
+    overflow: hidden;
+    border: 1px solid var(--ragstat-border);
+    border-radius: 12px;
+    background: var(--ragstat-surface);
+    box-shadow: 0 4px 14px rgba(15, 23, 42, .04);
+}
+
+.ragstat-admin .widefat thead th,
+.ragstat-admin .widefat thead td {
+    padding-top: 13px;
+    padding-bottom: 13px;
+    color: #334155;
+    border-bottom: 1px solid var(--ragstat-border);
+    background: #eef3f8;
+    font-weight: 700;
+}
+
+.ragstat-admin .widefat tbody th,
+.ragstat-admin .widefat tbody td {
+    padding-top: 14px;
+    padding-bottom: 14px;
+    vertical-align: middle;
+}
+
+.ragstat-admin .widefat.striped > tbody > :nth-child(odd) {
+    background-color: #f9fbfd;
+}
+
+.ragstat-status-table {
+    max-width: 960px;
+}
+
+.ragstat-status-table tbody th {
+    width: 220px;
+    color: #334155;
+}
+
+.ragstat-files-table {
+    max-width: 1160px;
+}
+
+.ragstat-activity-table {
+    max-width: 1300px;
+}
+
+.ragstat-admin code {
+    padding: 3px 7px;
+    color: #334155;
+    border-radius: 6px;
+    background: #eef2f7;
+}
+
+.ragstat-admin .button,
+.ragstat-admin .button-secondary,
+.ragstat-admin .button-primary {
+    display: inline-flex;
+    min-height: 38px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    line-height: 36px;
+    transition: background-color .16s ease, border-color .16s ease, color .16s ease, box-shadow .16s ease, transform .16s ease;
+}
+
+.ragstat-admin .button:hover,
+.ragstat-admin .button-primary:hover {
+    transform: translateY(-1px);
+}
+
+.ragstat-admin .button-primary {
+    color: #fff;
+    border-color: var(--ragstat-primary);
+    background: var(--ragstat-primary);
+    box-shadow: 0 5px 12px rgba(37, 99, 235, .18);
+}
+
+.ragstat-admin .button-primary:hover,
+.ragstat-admin .button-primary:focus {
+    color: #fff;
+    border-color: var(--ragstat-primary-dark);
+    background: var(--ragstat-primary-dark);
+}
+
+.ragstat-admin .button-link-delete {
+    color: var(--ragstat-danger);
+    border-color: #fecaca;
+    background: #fff;
+}
+
+.ragstat-admin .button-link-delete:hover,
+.ragstat-admin .button-link-delete:focus {
+    color: #fff;
+    border-color: var(--ragstat-danger);
+    background: var(--ragstat-danger);
+}
+
+.ragstat-admin .button-small {
+    min-height: 32px;
+    padding: 0 12px;
+    line-height: 30px;
+}
+
+.ragstat-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin: 18px 0 8px;
+}
+
+.ragstat-cleanup-form {
+    margin-top: 18px;
+    padding: 18px;
+    border: 1px solid #fecaca;
+    border-radius: 12px;
+    background: #fff7f7;
+}
+
+.ragstat-cleanup-form .description {
+    margin: 10px 0 0;
+}
+
+.ragstat-cleanup-form .button {
+    color: #fff;
+    border-color: var(--ragstat-danger);
+    background: var(--ragstat-danger);
+    box-shadow: 0 5px 12px rgba(220, 38, 38, .14);
+}
+
+.ragstat-cleanup-form .button:hover,
+.ragstat-cleanup-form .button:focus {
+    color: #fff;
+    border-color: #b91c1c;
+    background: #b91c1c;
+}
+
+.ragstat-admin .tablenav {
+    height: auto;
+    min-height: 42px;
+    margin: 0 0 12px;
+}
+
+.ragstat-admin select,
+.ragstat-admin input[type="url"],
+.ragstat-admin input[type="number"],
+.ragstat-admin input[type="password"],
+.ragstat-admin textarea {
+    min-height: 40px;
+    border-color: #cbd5e1;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, .04);
+}
+
+.ragstat-admin select:focus,
+.ragstat-admin input:focus,
+.ragstat-admin textarea:focus {
+    border-color: var(--ragstat-primary);
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, .15);
+}
+
+.ragstat-settings-form {
+    max-width: 1040px;
+    padding: 8px 24px 22px;
+    border: 1px solid var(--ragstat-border);
+    border-radius: 12px;
+    background: var(--ragstat-surface);
+}
+
+.ragstat-settings-form .form-table th {
+    color: #334155;
+}
+
+.ragstat-settings-form .description,
+.ragstat-admin .description {
+    color: var(--ragstat-muted);
+}
+
+.ragstat-progress {
+    width: min(440px, 100%);
+    height: 14px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #dbe4ee;
+    box-shadow: inset 0 1px 2px rgba(15, 23, 42, .1);
+}
+
+.ragstat-progress__bar {
+    height: 100%;
+    min-width: 0;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #16a34a, #22c55e);
+    transition: width .3s ease;
+}
+
+.ragstat-progress.is-active .ragstat-progress__bar {
+    min-width: 12px;
+    background-color: var(--ragstat-success);
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, .22) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .22) 50%, rgba(255, 255, 255, .22) 75%, transparent 75%, transparent);
+    background-size: 28px 28px;
+    animation: ragstat-progress-stripes 1s linear infinite;
+}
+
+.ragstat-progress-status {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.ragstat-progress-status .dashicons-yes-alt { color: var(--ragstat-success); }
+.ragstat-progress-status .dashicons-dismiss { color: var(--ragstat-danger); }
+
+.ragstat-admin .notice {
+    margin: 0 0 16px;
+    border-radius: 8px;
+    box-shadow: none;
+}
+
+.ragstat-diagnostics-summary {
+    margin: -4px 0 20px;
+    color: var(--ragstat-muted);
+    font-size: 14px;
+}
+
+.ragstat-diagnostics-card {
+    max-width: 1200px;
+    margin: 18px 0;
+    overflow: hidden;
+    border: 1px solid var(--ragstat-border);
+    border-radius: 12px;
+    background: var(--ragstat-surface);
+    box-shadow: 0 4px 14px rgba(15, 23, 42, .04);
+}
+
+.ragstat-diagnostics-card h2 {
+    margin: 0;
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--ragstat-border);
+    background: #eef3f8;
+    font-size: 17px;
+}
+
+.ragstat-diagnostics-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ragstat-diagnostics-table th,
+.ragstat-diagnostics-table td {
+    padding: 17px 22px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.ragstat-diagnostics-table th {
+    width: 26%;
+    color: #334155;
+    font-size: 15px;
+}
+
+.ragstat-diagnostics-table tr + tr th,
+.ragstat-diagnostics-table tr + tr td {
+    border-top: 1px solid #eef2f7;
+}
+
+.ragstat-diagnostic-icon-cell {
+    width: 46px;
+    padding-right: 0 !important;
+}
+
+.ragstat-diagnostic-icon {
+    display: inline-flex;
+    width: 32px;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.ragstat-diagnostic-icon.is-passed { color: var(--ragstat-success); }
+.ragstat-diagnostic-icon.is-failed { color: var(--ragstat-danger); }
+
+.ragstat-diagnostic-icon .dashicons {
+    width: 21px;
+    height: 21px;
+    color: #fff;
+    font-size: 21px;
+    line-height: 21px;
+}
+
+@keyframes ragstat-progress-stripes {
+    from { background-position: 28px 0; }
+    to { background-position: 0 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ragstat-admin *,
+    .ragstat-admin *::before,
+    .ragstat-admin *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}
+
+@media (max-width: 782px) {
+    .ragstat-admin {
+        margin-right: 12px;
+    }
+
+    .ragstat-admin-header {
+        padding: 20px;
+        border-radius: 12px;
+    }
+
+    .ragstat-admin-header__icon {
+        display: none;
+    }
+
+    .ragstat-tab-content {
+        padding: 16px;
+        border-radius: 12px;
+    }
+
+    .ragstat-status-table tbody th {
+        width: auto;
+    }
+
+    .ragstat-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .ragstat-actions .button {
+        width: 100%;
+    }
+
+    .ragstat-settings-form {
+        padding: 4px 16px 18px;
+    }
+
+    .ragstat-diagnostics-table th,
+    .ragstat-diagnostics-table td {
+        padding: 14px 10px;
+    }
+
+    .ragstat-diagnostics-table th {
+        width: auto;
+    }
+
+    .ragstat-diagnostic-icon-cell {
+        width: 38px;
+    }
+}

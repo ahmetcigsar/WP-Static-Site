@@ -7,6 +7,7 @@ namespace Ragnus\StaticPublisher;
 use FilesystemIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use RuntimeException;
 use ZipArchive;
 
 final class Archive_Manager
@@ -34,6 +35,7 @@ final class Archive_Manager
             $created_at = self::created_timestamp($path, $manifest);
 
             $archives[] = [
+                'id' => $job_id,
                 'job_id' => is_string($manifest['job_id'] ?? null) && $manifest['job_id'] !== ''
                     ? $manifest['job_id']
                     : $job_id,
@@ -52,14 +54,45 @@ final class Archive_Manager
         return $archives;
     }
 
+    public static function latest(): ?array
+    {
+        $archives = self::archives();
+        return $archives[0] ?? null;
+    }
+
+    public static function find(string $id): ?array
+    {
+        foreach (self::archives() as $archive) {
+            if (hash_equals((string) $archive['id'], $id)) {
+                return $archive;
+            }
+        }
+
+        return null;
+    }
+
+    public static function selected(array $ids): array
+    {
+        $requested = array_fill_keys(array_map('strval', $ids), true);
+        return array_values(array_filter(
+            self::archives(),
+            static fn (array $archive): bool => isset($requested[(string) $archive['id']])
+        ));
+    }
+
     public static function prune(int $keep): array
     {
         $keep = max(1, $keep);
         $archives = self::archives();
+        return self::delete(array_column(array_slice($archives, $keep), 'id'));
+    }
+
+    public static function delete(array $ids): array
+    {
         $deleted = 0;
         $failed = 0;
 
-        foreach (array_slice($archives, $keep) as $archive) {
+        foreach (self::selected($ids) as $archive) {
             if (! unlink((string) $archive['path'])) {
                 ++$failed;
                 continue;
@@ -75,6 +108,35 @@ final class Archive_Manager
     public static function delete_old_archives(): array
     {
         return self::prune(1);
+    }
+
+    public static function create_bundle(array $ids): string
+    {
+        $archives = self::selected($ids);
+        if ($archives === []) {
+            throw new RuntimeException('İndirilecek ZIP dosyası bulunamadı.');
+        }
+        if (! class_exists(ZipArchive::class)) {
+            throw new RuntimeException('PHP ZipArchive eklentisi kurulu değil.');
+        }
+
+        $bundle_path = tempnam(get_temp_dir(), 'ragstat-');
+        if (! is_string($bundle_path) || $bundle_path === '') {
+            throw new RuntimeException('Geçici indirme paketi oluşturulamadı.');
+        }
+
+        $zip = new ZipArchive();
+        if ($zip->open($bundle_path, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+            unlink($bundle_path);
+            throw new RuntimeException('Toplu indirme paketi oluşturulamadı.');
+        }
+
+        foreach ($archives as $archive) {
+            $zip->addFile((string) $archive['path'], basename((string) $archive['path']));
+        }
+        $zip->close();
+
+        return $bundle_path;
     }
 
     private static function manifest_from_archive(string $path): array

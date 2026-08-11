@@ -9,11 +9,17 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 - Asset adreslerini hem `pages.dev` hem özel domainde çalışan kök-relative yollara dönüştürme
 - Cloudflare `_headers` ve `_redirects` üretimi
 - ZIP ve SHA-256 manifest üretimi
-- Araçlar > Static Publisher yönetim ekranı
+- Sol ana menüde doküman ikonlu Static Publisher yönetim ekranı
+- Main, Files, Activity Log ve Settings sekmelerine ayrılmış yönetim görünümü
+- Main sekmesinde son başarılı static oluşturma zamanı ve yeşil ilerleme/tamamlanma göstergesi
+- Diagnostics sekmesinde PHP, Basic Auth, php-xml, cURL, site URL erişimi, kalıcı bağlantılar, indexlenebilirlik, önbellek ve WP-Cron kontrolleri
+- Yalnızca son exporta ait, veritabanı dışında tutulan ve sayfa başına 50 kayıt gösteren Activity Log
+- Activity Log içinde kaynak WordPress URL'sini ve üretilen statik yolu ayrı sütunlarda gösterme
 - Yönetim ekranından son başarılı ZIP'i indirme
 - Varsayılan 5 arşiv için ayarlanabilir ZIP saklama sınırı
 - İş kimliği, URL sayısı ve oluşturma zamanını gösteren ZIP arşiv tablosu
 - En son ZIP'i koruyarak eski arşivleri elle temizleme
+- ZIP arşivlerini tek tek veya toplu olarak indirme ve silme
 - `wp ragnus-static export` WP-CLI komutu
 - Application Password korumalı export/status/artifact REST uçları
 - CI için yönetici yetkisi gerektirmeyen `Static Publisher Deploy` kullanıcı rolü
@@ -22,7 +28,7 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 
 ## Kurulum
 
-`ragnus-static-publisher` klasörünü WordPress'in `wp-content/plugins/` dizinine kopyalayın ve eklentiyi etkinleştirin. Ardından **Araçlar > Static Publisher** altında canlı domaini ve URL sınırını yapılandırın.
+`ragnus-static-publisher` klasörünü WordPress'in `wp-content/plugins/` dizinine kopyalayın ve eklentiyi etkinleştirin. Ardından sol ana menüdeki **Static Publisher** sayfasından canlı domaini ve URL sınırını yapılandırın.
 
 Sunucuda PHP DOM ve Zip eklentileri bulunmalıdır. Uzun export işleri için gerçek sistem cron'u ile `wp-cron.php` çalıştırılması önerilir.
 
@@ -52,6 +58,7 @@ find ragnus-static-publisher -name '*.php' -print0 | xargs -0 -n1 php -l
 bash -n scripts/*.sh
 ./scripts/package-plugin.sh
 npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=ragnus-static-publisher --mount=.:/workspace -- /workspace/tests/playground-smoke.php
+npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=ragnus-static-publisher --mount=.:/workspace -- /workspace/tests/playground-activity-log.php
 npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=ragnus-static-publisher --mount=.:/workspace -- /workspace/tests/playground-archives.php
 npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=ragnus-static-publisher --mount=.:/workspace -- /workspace/tests/playground-export.php
 ```

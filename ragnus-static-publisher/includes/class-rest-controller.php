@@ -61,13 +61,12 @@ final class REST_Controller
 
     public static function artifact(): WP_REST_Response
     {
-        $status = Plugin::status();
-        $archive = $status['archive'] ?? '';
-        if (($status['state'] ?? '') !== 'completed' || ! is_string($archive) || ! is_readable($archive)) {
+        $archive = Archive_Manager::latest();
+        if ($archive === null || ! is_readable((string) $archive['path'])) {
             return new WP_REST_Response(['message' => 'İndirilebilir export bulunamadı.'], 404);
         }
 
-        return new File_Response($archive);
+        return new File_Response((string) $archive['path']);
     }
 
     public static function serve_file(bool $served, $result): bool

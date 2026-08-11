@@ -26,6 +26,8 @@ final class Plugin
         add_action('admin_post_ragnus_static_export', [Admin::class, 'start_export']);
         add_action('admin_post_ragnus_static_download', [Admin::class, 'download_export']);
         add_action('admin_post_ragnus_static_cleanup_exports', [Admin::class, 'cleanup_exports']);
+        add_action('admin_post_ragnus_static_download_archive', [Admin::class, 'download_archive']);
+        add_action('admin_post_ragnus_static_archive_bulk', [Admin::class, 'archive_bulk_action']);
         add_action('update_option_' . self::SETTINGS_KEY, [self::class, 'apply_archive_retention'], 10, 2);
         add_action(self::CRON_HOOK, [self::class, 'run_scheduled'], 10, 1);
         add_action('save_post', [self::class, 'maybe_schedule_after_save'], 20, 2);
@@ -52,6 +54,7 @@ final class Plugin
         if (get_option('ragnus_static_plugin_version') !== RAGSTAT_VERSION) {
             self::activate();
         }
+        self::remove_legacy_activity_log();
     }
 
     public static function deactivate(): void
@@ -82,6 +85,7 @@ final class Plugin
     public static function schedule_export(string $source = 'manual'): string
     {
         $job_id = gmdate('Ymd-His') . '-' . wp_generate_password(8, false, false);
+        Activity_Log::reset($job_id);
         self::set_status($job_id, 'queued', 0, ['source' => $source, 'queued_at' => gmdate('c')]);
         wp_schedule_single_event(time(), self::CRON_HOOK, [$job_id]);
         spawn_cron(time());
@@ -100,11 +104,28 @@ final class Plugin
     public static function set_status(string $job_id, string $state, int $progress, array $extra = []): void
     {
         $current = self::status();
+        unset($current['log'], $extra['log']);
+        if (! isset($current['last_completed_at'])
+            && ($current['state'] ?? '') === 'completed'
+            && is_string($current['finished_at'] ?? null)) {
+            $current['last_completed_at'] = $current['finished_at'];
+        }
         update_option(self::STATUS_KEY, array_merge($current, [
             'job_id' => $job_id,
             'state' => $state,
             'progress' => max(0, min(100, $progress)),
         ], $extra), false);
+    }
+
+    public static function remove_legacy_activity_log(): void
+    {
+        $status = get_option(self::STATUS_KEY, []);
+        if (! is_array($status) || ! array_key_exists('log', $status)) {
+            return;
+        }
+
+        unset($status['log']);
+        update_option(self::STATUS_KEY, $status, false);
     }
 
     public static function status(): array
@@ -117,7 +138,7 @@ final class Plugin
     {
         $status = self::status();
         unset($status['archive']);
-        if (($status['state'] ?? '') === 'completed') {
+        if (($status['state'] ?? '') === 'completed' && Archive_Manager::latest() !== null) {
             $status['artifact_url'] = rest_url('ragnus-static/v1/exports/latest/artifact');
         }
         return $status;
@@ -145,6 +166,7 @@ final class Plugin
         }
 
         $job_id = gmdate('Ymd-His') . '-' . wp_generate_password(8, false, false);
+        Activity_Log::reset($job_id);
         self::set_status($job_id, 'queued', 0, ['source' => 'content-change', 'queued_at' => gmdate('c')]);
         wp_schedule_single_event(time() + 60, self::CRON_HOOK, [$job_id]);
     }
@@ -218,6 +240,7 @@ final class Plugin
 
         \WP_CLI::add_command('ragnus-static export', static function ($args, $assoc_args): void {
             $job_id = gmdate('Ymd-His') . '-' . wp_generate_password(8, false, false);
+            Activity_Log::reset($job_id);
             self::set_status($job_id, 'running', 0, ['source' => 'wp-cli']);
             $status = (new Exporter())->run($job_id);
             if (($assoc_args['format'] ?? '') === 'json') {

@@ -8,12 +8,14 @@ final class Admin
 {
     public static function menu(): void
     {
-        add_management_page(
+        add_menu_page(
             'Ragnus Static Publisher',
             'Static Publisher',
             'manage_options',
             'ragnus-static-publisher',
-            [self::class, 'render']
+            [self::class, 'render'],
+            'dashicons-media-document',
+            58
         );
     }
 
@@ -49,7 +51,7 @@ final class Admin
         }
         check_admin_referer('ragnus_static_export');
         Plugin::schedule_export('admin');
-        wp_safe_redirect(admin_url('tools.php?page=ragnus-static-publisher&started=1'));
+        wp_safe_redirect(add_query_arg('started', '1', self::admin_page_url('main')));
         exit;
     }
 
@@ -60,20 +62,108 @@ final class Admin
         }
         check_admin_referer('ragnus_static_download');
 
-        $status = Plugin::status();
-        $archive = $status['archive'] ?? '';
-        if (($status['state'] ?? '') !== 'completed' || ! is_string($archive) || ! is_readable($archive)) {
+        $archive = Archive_Manager::latest();
+        if ($archive === null || ! is_readable((string) $archive['path'])) {
             wp_die('İndirilebilir export bulunamadı.', 404);
         }
 
+        self::send_file((string) $archive['path'], (string) $archive['id'] . '.zip');
+    }
+
+    public static function download_archive(): void
+    {
+        if (! current_user_can('manage_options')) {
+            wp_die('Bu işlem için yetkiniz yok.', 403);
+        }
+
+        $archive_id = isset($_GET['archive_id']) ? sanitize_file_name(wp_unslash((string) $_GET['archive_id'])) : '';
+        check_admin_referer('ragnus_static_download_archive_' . $archive_id);
+        $archive = Archive_Manager::find($archive_id);
+        if ($archive === null || ! is_readable((string) $archive['path'])) {
+            wp_die('İndirilebilir ZIP dosyası bulunamadı.', 404);
+        }
+
+        self::send_file((string) $archive['path'], $archive_id . '.zip');
+    }
+
+    public static function archive_bulk_action(): void
+    {
+        if (! current_user_can('manage_options')) {
+            wp_die('Bu işlem için yetkiniz yok.', 403);
+        }
+        check_admin_referer('ragnus_static_archive_bulk');
+
+        $requested_ids = [];
+        if (isset($_POST['archive_ids']) && is_array($_POST['archive_ids'])) {
+            foreach (wp_unslash($_POST['archive_ids']) as $archive_id) {
+                if (is_string($archive_id)) {
+                    $requested_ids[] = sanitize_file_name($archive_id);
+                }
+            }
+        }
+        $single_delete = isset($_POST['delete_archive'])
+            ? sanitize_file_name(wp_unslash((string) $_POST['delete_archive']))
+            : '';
+        $bulk_action = isset($_POST['archive_bulk_action'])
+            ? sanitize_key(wp_unslash((string) $_POST['archive_bulk_action']))
+            : '';
+
+        if ($single_delete !== '') {
+            $requested_ids = [$single_delete];
+            $bulk_action = 'delete';
+        }
+        if ($requested_ids === []) {
+            self::redirect_archive_notice('no-selection');
+        }
+
+        if ($bulk_action === 'download') {
+            $archives = Archive_Manager::selected($requested_ids);
+            if (count($archives) === 1) {
+                self::send_file((string) $archives[0]['path'], (string) $archives[0]['id'] . '.zip');
+            }
+
+            try {
+                $bundle = Archive_Manager::create_bundle($requested_ids);
+                self::send_file($bundle, 'ragnus-static-selected-exports.zip', true);
+            } catch (\RuntimeException $error) {
+                wp_die(esc_html($error->getMessage()), 500);
+            }
+        }
+
+        if ($bulk_action === 'delete') {
+            if (get_transient(Plugin::LOCK_KEY)) {
+                self::redirect_archive_notice('running');
+            }
+            $result = Archive_Manager::delete($requested_ids);
+            self::redirect_archive_notice($result['failed'] > 0 ? 'partial' : 'deleted', $result);
+        }
+
+        self::redirect_archive_notice('invalid-action');
+    }
+
+    private static function send_file(string $path, string $filename, bool $delete_after = false): void
+    {
         while (ob_get_level() > 0) {
             ob_end_clean();
         }
         nocache_headers();
         header('Content-Type: application/zip');
-        header('Content-Disposition: attachment; filename="ragnus-static-export.zip"');
-        header('Content-Length: ' . (string) filesize($archive));
-        readfile($archive);
+        header('Content-Disposition: attachment; filename="' . sanitize_file_name($filename) . '"');
+        header('Content-Length: ' . (string) filesize($path));
+        readfile($path);
+        if ($delete_after) {
+            unlink($path);
+        }
+        exit;
+    }
+
+    private static function redirect_archive_notice(string $notice, array $result = []): void
+    {
+        wp_safe_redirect(add_query_arg([
+            'archive_notice' => $notice,
+            'deleted' => absint($result['deleted'] ?? 0),
+            'failed' => absint($result['failed'] ?? 0),
+        ], self::admin_page_url('files')));
         exit;
     }
 
@@ -85,18 +175,17 @@ final class Admin
         check_admin_referer('ragnus_static_cleanup_exports');
 
         if (get_transient(Plugin::LOCK_KEY)) {
-            wp_safe_redirect(admin_url('tools.php?page=ragnus-static-publisher&cleanup=running'));
+            wp_safe_redirect(add_query_arg('cleanup', 'running', self::admin_page_url('files')));
             exit;
         }
 
         $result = Archive_Manager::delete_old_archives();
         $query = [
-            'page' => 'ragnus-static-publisher',
             'cleanup' => $result['failed'] > 0 ? 'partial' : 'success',
             'deleted' => $result['deleted'],
             'failed' => $result['failed'],
         ];
-        wp_safe_redirect(add_query_arg($query, admin_url('tools.php')));
+        wp_safe_redirect(add_query_arg($query, self::admin_page_url('files')));
         exit;
     }
 
@@ -105,108 +194,312 @@ final class Admin
         if (! current_user_can('manage_options')) {
             return;
         }
-        $settings = Plugin::settings();
+        $requested_tab = isset($_GET['tab']) ? sanitize_key(wp_unslash((string) $_GET['tab'])) : 'main';
+        $tabs = [
+            'main' => 'Main',
+            'files' => 'Files',
+            'activity' => 'Activity Log',
+            'settings' => 'Settings',
+            'diagnostics' => 'Diagnostics',
+        ];
+        $current_tab = isset($tabs[$requested_tab]) ? $requested_tab : 'main';
         $status = Plugin::public_status();
         $archives = Archive_Manager::archives();
-        $cleanup_status = isset($_GET['cleanup']) ? sanitize_key(wp_unslash((string) $_GET['cleanup'])) : '';
         ?>
         <div class="wrap">
             <h1>Ragnus Static Publisher</h1>
             <p>WordPress sitenizin statik kopyasını üretin. Cloudflare kimlik bilgileri bu eklentide tutulmaz.</p>
+            <nav class="nav-tab-wrapper wp-clearfix" aria-label="Static Publisher bölümleri">
+                <?php foreach ($tabs as $tab_id => $tab_label) : ?>
+                    <a class="nav-tab <?php echo $current_tab === $tab_id ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url(self::admin_page_url($tab_id)); ?>" <?php echo $current_tab === $tab_id ? 'aria-current="page"' : ''; ?>><?php echo esc_html($tab_label); ?></a>
+                <?php endforeach; ?>
+            </nav>
 
-            <?php if ($cleanup_status !== '') : ?>
-                <?php if ($cleanup_status === 'success') : ?>
-                    <div class="notice notice-success is-dismissible"><p><?php echo esc_html(sprintf('%d eski ZIP dosyası silindi.', absint($_GET['deleted'] ?? 0))); ?></p></div>
-                <?php elseif ($cleanup_status === 'partial') : ?>
-                    <div class="notice notice-warning is-dismissible"><p><?php echo esc_html(sprintf('%1$d eski ZIP dosyası silindi, %2$d dosya silinemedi.', absint($_GET['deleted'] ?? 0), absint($_GET['failed'] ?? 0))); ?></p></div>
-                <?php elseif ($cleanup_status === 'running') : ?>
-                    <div class="notice notice-warning is-dismissible"><p>Export devam ederken eski dosyalar silinemez.</p></div>
-                <?php endif; ?>
-            <?php endif; ?>
-
-            <h2>Yayın durumu</h2>
-            <table class="widefat striped" style="max-width:900px">
-                <tbody>
-                <tr><th>Durum</th><td><?php echo esc_html((string) ($status['state'] ?? 'Henüz çalışmadı')); ?></td></tr>
-                <tr><th>İlerleme</th><td><?php echo esc_html((string) ($status['progress'] ?? 0)); ?>%</td></tr>
-                <tr><th>İş kimliği</th><td><code><?php echo esc_html((string) ($status['job_id'] ?? '—')); ?></code></td></tr>
-                <tr><th>URL sayısı</th><td><?php echo esc_html((string) ($status['url_count'] ?? 0)); ?></td></tr>
-                <?php if (! empty($status['error'])) : ?><tr><th>Hata</th><td><?php echo esc_html((string) $status['error']); ?></td></tr><?php endif; ?>
-                </tbody>
-            </table>
-
-            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="margin:16px 0 32px">
-                <input type="hidden" name="action" value="ragnus_static_export">
-                <?php wp_nonce_field('ragnus_static_export'); ?>
-                <?php submit_button('Şimdi statik export oluştur', 'primary', 'submit', false); ?>
-                <?php if (($status['state'] ?? '') === 'completed') : ?>
-                    <a class="button" href="<?php echo esc_url(wp_nonce_url(admin_url('admin-post.php?action=ragnus_static_download'), 'ragnus_static_download')); ?>">Son ZIP'i indir</a>
-                <?php endif; ?>
-            </form>
-
-            <h2>Ayarlar</h2>
-            <form method="post" action="options.php">
-                <?php settings_fields('ragnus_static'); ?>
-                <table class="form-table" role="presentation">
-                    <tr>
-                        <th><label for="ragstat-target">Canlı site adresi</label></th>
-                        <td><input class="regular-text" id="ragstat-target" type="url" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[target_url]" value="<?php echo esc_attr((string) $settings['target_url']); ?>"><p class="description">Örnek: https://example.com</p></td>
-                    </tr>
-                    <tr>
-                        <th><label for="ragstat-limit">En fazla URL</label></th>
-                        <td><input id="ragstat-limit" type="number" min="10" max="20000" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[maximum_urls]" value="<?php echo esc_attr((string) $settings['maximum_urls']); ?>"></td>
-                    </tr>
-                    <tr>
-                        <th><label for="ragstat-excluded">Hariç tutulan yollar</label></th>
-                        <td><textarea class="large-text code" rows="7" id="ragstat-excluded" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[excluded_paths]"><?php echo esc_textarea((string) $settings['excluded_paths']); ?></textarea><p class="description">Satır başına bir yol öneki.</p></td>
-                    </tr>
-                    <tr>
-                        <th>Otomatik export</th>
-                        <td><label><input type="checkbox" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[auto_export]" value="1" <?php checked($settings['auto_export'], '1'); ?>> Yayımlanmış içerik değiştiğinde export kuyruğuna ekle</label></td>
-                    </tr>
-                    <tr>
-                        <th><label for="ragstat-archive-retention">Saklanacak ZIP sayısı</label></th>
-                        <td><input id="ragstat-archive-retention" type="number" min="1" max="100" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[archive_retention]" value="<?php echo esc_attr((string) $settings['archive_retention']); ?>"><p class="description">En son kaç başarılı export arşivinin saklanacağını belirler. Varsayılan: 5.</p></td>
-                    </tr>
-                    <tr>
-                        <th><label for="ragstat-webhook">Deployment webhook</label></th>
-                        <td><input class="large-text code" id="ragstat-webhook" type="url" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[deployment_webhook_url]" value="<?php echo esc_attr((string) $settings['deployment_webhook_url']); ?>"><p class="description">GitHub için: https://api.github.com/repos/SAHIP/REPO/dispatches</p></td>
-                    </tr>
-                    <tr>
-                        <th><label for="ragstat-webhook-token">Webhook bearer token</label></th>
-                        <td><input class="regular-text" id="ragstat-webhook-token" type="password" autocomplete="new-password" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[deployment_webhook_token]" value="" placeholder="<?php echo $settings['deployment_webhook_token'] !== '' ? esc_attr('Kayıtlı tokenı korumak için boş bırakın') : ''; ?>"><p class="description">GitHub kullanılıyorsa yalnızca bu repository için Contents: write yetkili fine-grained token kullanın.</p></td>
-                    </tr>
-                </table>
-                <?php submit_button('Ayarları kaydet'); ?>
-            </form>
-
-            <hr>
-            <h2>ZIP dosyaları</h2>
-            <?php if ($archives === []) : ?>
-                <p>Henüz oluşturulmuş bir ZIP dosyası yok.</p>
+            <?php if ($current_tab === 'main') : ?>
+                <?php self::render_main_tab($status, $archives); ?>
+            <?php elseif ($current_tab === 'files') : ?>
+                <?php self::render_files_tab($archives); ?>
+            <?php elseif ($current_tab === 'activity') : ?>
+                <?php self::render_activity_tab(); ?>
+            <?php elseif ($current_tab === 'settings') : ?>
+                <?php self::render_settings_tab(Plugin::settings()); ?>
             <?php else : ?>
-                <table class="widefat striped" style="max-width:900px">
-                    <thead><tr><th>İş kimliği</th><th>URL sayısı</th><th>Oluşturma tarihi</th><th>Oluşturma saati</th></tr></thead>
+                <?php self::render_diagnostics_tab(); ?>
+            <?php endif; ?>
+        </div>
+        <?php
+    }
+
+    private static function admin_page_url(string $tab): string
+    {
+        $url = admin_url('admin.php?page=ragnus-static-publisher');
+        return $tab === 'main' ? $url : add_query_arg('tab', $tab, $url);
+    }
+
+    private static function render_main_tab(array $status, array $archives): void
+    {
+        $state = (string) ($status['state'] ?? '');
+        $progress = max(0, min(100, absint($status['progress'] ?? 0)));
+        $last_completed_at = is_string($status['last_completed_at'] ?? null)
+            ? $status['last_completed_at']
+            : ($state === 'completed' && is_string($status['finished_at'] ?? null) ? $status['finished_at'] : '');
+        $last_completed_timestamp = $last_completed_at !== '' ? strtotime($last_completed_at) : false;
+        ?>
+        <style>
+            .ragstat-progress { width: min(420px, 100%); height: 18px; overflow: hidden; background: #dcdcde; border-radius: 9px; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .08); }
+            .ragstat-progress__bar { height: 100%; min-width: 0; background-color: #00a32a; transition: width .3s ease; }
+            .ragstat-progress.is-active .ragstat-progress__bar { min-width: 12px; background-image: linear-gradient(45deg, rgba(255, 255, 255, .22) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .22) 50%, rgba(255, 255, 255, .22) 75%, transparent 75%, transparent); background-size: 28px 28px; animation: ragstat-progress-stripes 1s linear infinite; }
+            .ragstat-progress-status { display: flex; align-items: center; gap: 8px; }
+            .ragstat-progress-status .dashicons-yes-alt { color: #00a32a; }
+            .ragstat-progress-status .dashicons-dismiss { color: #d63638; }
+            @keyframes ragstat-progress-stripes { from { background-position: 28px 0; } to { background-position: 0 0; } }
+        </style>
+        <h2>Yayın durumu</h2>
+        <table class="widefat striped" style="max-width:900px">
+            <tbody>
+            <tr><th>Durum</th><td><?php echo esc_html((string) ($status['state'] ?? 'Henüz çalışmadı')); ?></td></tr>
+            <tr>
+                <th>İlerleme</th>
+                <td>
+                    <?php if ($state === 'completed') : ?>
+                        <span class="ragstat-progress-status"><span class="dashicons dashicons-yes-alt" aria-hidden="true"></span><strong>Tamamlandı</strong></span>
+                    <?php elseif ($state === 'failed') : ?>
+                        <span class="ragstat-progress-status"><span class="dashicons dashicons-dismiss" aria-hidden="true"></span><strong>Başarısız</strong></span>
+                    <?php else : ?>
+                        <div class="ragstat-progress <?php echo in_array($state, ['queued', 'running'], true) ? 'is-active' : ''; ?>" role="progressbar" aria-label="Static oluşturma ilerlemesi" aria-valuemin="0" aria-valuemax="100" aria-valuenow="<?php echo esc_attr((string) $progress); ?>">
+                            <div class="ragstat-progress__bar" style="width:<?php echo esc_attr((string) $progress); ?>%"></div>
+                        </div>
+                        <span><?php echo esc_html((string) $progress); ?>%</span>
+                    <?php endif; ?>
+                </td>
+            </tr>
+            <tr><th>İş kimliği</th><td><code><?php echo esc_html((string) ($status['job_id'] ?? '—')); ?></code></td></tr>
+            <tr><th>URL sayısı</th><td><?php echo esc_html((string) ($status['url_count'] ?? 0)); ?></td></tr>
+            <tr><th>Son Statik Oluşturma</th><td><?php echo $last_completed_timestamp === false ? '—' : esc_html(wp_date((string) get_option('date_format') . ' ' . (string) get_option('time_format'), $last_completed_timestamp)); ?></td></tr>
+            <?php if (! empty($status['error'])) : ?><tr><th>Hata</th><td><?php echo esc_html((string) $status['error']); ?></td></tr><?php endif; ?>
+            </tbody>
+        </table>
+
+        <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="margin:16px 0 32px">
+            <input type="hidden" name="action" value="ragnus_static_export">
+            <?php wp_nonce_field('ragnus_static_export'); ?>
+            <?php submit_button('Şimdi statik export oluştur', 'primary', 'submit', false); ?>
+            <?php if ($archives !== []) : ?>
+                <a class="button" href="<?php echo esc_url(wp_nonce_url(admin_url('admin-post.php?action=ragnus_static_download'), 'ragnus_static_download')); ?>">Son ZIP'i indir</a>
+            <?php endif; ?>
+        </form>
+        <?php
+    }
+
+    private static function render_files_tab(array $archives): void
+    {
+        $cleanup_status = isset($_GET['cleanup']) ? sanitize_key(wp_unslash((string) $_GET['cleanup'])) : '';
+        $archive_notice = isset($_GET['archive_notice']) ? sanitize_key(wp_unslash((string) $_GET['archive_notice'])) : '';
+        ?>
+        <h2>ZIP dosyaları</h2>
+        <?php if ($cleanup_status === 'success') : ?>
+            <div class="notice notice-success is-dismissible"><p><?php echo esc_html(sprintf('%d eski ZIP dosyası silindi.', absint($_GET['deleted'] ?? 0))); ?></p></div>
+        <?php elseif ($cleanup_status === 'partial') : ?>
+            <div class="notice notice-warning is-dismissible"><p><?php echo esc_html(sprintf('%1$d eski ZIP dosyası silindi, %2$d dosya silinemedi.', absint($_GET['deleted'] ?? 0), absint($_GET['failed'] ?? 0))); ?></p></div>
+        <?php elseif ($cleanup_status === 'running') : ?>
+            <div class="notice notice-warning is-dismissible"><p>Export devam ederken eski dosyalar silinemez.</p></div>
+        <?php endif; ?>
+
+        <?php if ($archive_notice === 'deleted') : ?>
+            <div class="notice notice-success is-dismissible"><p><?php echo esc_html(sprintf('%d ZIP dosyası silindi.', absint($_GET['deleted'] ?? 0))); ?></p></div>
+        <?php elseif ($archive_notice === 'partial') : ?>
+            <div class="notice notice-warning is-dismissible"><p><?php echo esc_html(sprintf('%1$d ZIP dosyası silindi, %2$d dosya silinemedi.', absint($_GET['deleted'] ?? 0), absint($_GET['failed'] ?? 0))); ?></p></div>
+        <?php elseif ($archive_notice === 'no-selection') : ?>
+            <div class="notice notice-warning is-dismissible"><p>İşlem yapmak için en az bir ZIP dosyası seçin.</p></div>
+        <?php elseif ($archive_notice === 'invalid-action') : ?>
+            <div class="notice notice-warning is-dismissible"><p>Geçerli bir toplu işlem seçin.</p></div>
+        <?php elseif ($archive_notice === 'running') : ?>
+            <div class="notice notice-warning is-dismissible"><p>Export devam ederken ZIP dosyaları silinemez.</p></div>
+        <?php endif; ?>
+
+        <?php if ($archives === []) : ?>
+            <p>Henüz oluşturulmuş bir ZIP dosyası yok.</p>
+        <?php else : ?>
+            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                <input type="hidden" name="action" value="ragnus_static_archive_bulk">
+                <?php wp_nonce_field('ragnus_static_archive_bulk'); ?>
+                <div class="tablenav top">
+                    <div class="alignleft actions bulkactions">
+                        <label class="screen-reader-text" for="ragstat-bulk-action">Toplu işlem seçin</label>
+                        <select id="ragstat-bulk-action" name="archive_bulk_action">
+                            <option value="">Toplu işlem</option>
+                            <option value="download">Seçilenleri indir</option>
+                            <option value="delete">Seçilenleri sil</option>
+                        </select>
+                        <?php submit_button('Uygula', 'action', 'bulk_submit', false, ['onclick' => "if (this.form.archive_bulk_action.value === 'delete') return confirm('Seçilen ZIP dosyaları kalıcı olarak silinecek. Devam edilsin mi?');"]); ?>
+                    </div>
+                    <br class="clear">
+                </div>
+                <table class="widefat striped" style="max-width:1100px">
+                    <thead><tr><td class="manage-column check-column"><input id="cb-select-all-1" type="checkbox"><label for="cb-select-all-1"><span class="screen-reader-text">Tümünü seç</span></label></td><th>İş kimliği</th><th>URL sayısı</th><th>Oluşturma tarihi</th><th>Oluşturma saati</th><th>İşlem</th></tr></thead>
                     <tbody>
                     <?php foreach ($archives as $archive) : ?>
+                        <?php
+                        $archive_id = (string) $archive['id'];
+                        $download_url = wp_nonce_url(
+                            add_query_arg(['action' => 'ragnus_static_download_archive', 'archive_id' => $archive_id], admin_url('admin-post.php')),
+                            'ragnus_static_download_archive_' . $archive_id
+                        );
+                        ?>
                         <tr>
+                            <th scope="row" class="check-column"><input type="checkbox" name="archive_ids[]" value="<?php echo esc_attr($archive_id); ?>"><span class="screen-reader-text"><?php echo esc_html((string) $archive['job_id']); ?> seç</span></th>
                             <td><code><?php echo esc_html((string) $archive['job_id']); ?></code></td>
                             <td><?php echo $archive['url_count'] === null ? '—' : esc_html((string) $archive['url_count']); ?></td>
                             <td><?php echo esc_html(wp_date((string) get_option('date_format'), (int) $archive['created_at'])); ?></td>
                             <td><?php echo esc_html(wp_date((string) get_option('time_format'), (int) $archive['created_at'])); ?></td>
+                            <td><a class="button button-small" href="<?php echo esc_url($download_url); ?>">İndir</a> <button class="button button-small button-link-delete" type="submit" name="delete_archive" value="<?php echo esc_attr($archive_id); ?>" onclick="if (!confirm('Bu ZIP dosyası kalıcı olarak silinecek. Devam edilsin mi?')) return false; this.form.archive_bulk_action.value = '';">Sil</button></td>
                         </tr>
                     <?php endforeach; ?>
                     </tbody>
                 </table>
-            <?php endif; ?>
-
-            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="margin-top:16px">
-                <input type="hidden" name="action" value="ragnus_static_cleanup_exports">
-                <?php wp_nonce_field('ragnus_static_cleanup_exports'); ?>
-                <?php submit_button('Eski Dosyaları Sil', 'delete', 'submit', false, ['onclick' => "return confirm('En son ZIP dışındaki tüm eski ZIP dosyaları silinecek. Devam edilsin mi?');"]); ?>
-                <p class="description">En son ZIP dosyası korunur; önceki ZIP dosyaları ve bunlara ait geçici build klasörleri kalıcı olarak silinir.</p>
             </form>
-        </div>
+        <?php endif; ?>
+
+        <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="margin-top:16px">
+            <input type="hidden" name="action" value="ragnus_static_cleanup_exports">
+            <?php wp_nonce_field('ragnus_static_cleanup_exports'); ?>
+            <?php submit_button('Eski Dosyaları Sil', 'delete', 'submit', false, ['onclick' => "return confirm('En son ZIP dışındaki tüm eski ZIP dosyaları silinecek. Devam edilsin mi?');"]); ?>
+            <p class="description">En son ZIP dosyası korunur; önceki ZIP dosyaları ve bunlara ait geçici build klasörleri kalıcı olarak silinir.</p>
+        </form>
+        <?php
+    }
+
+    private static function render_activity_tab(): void
+    {
+        $requested_page = isset($_GET['log_page']) ? absint($_GET['log_page']) : 1;
+        $activity = Activity_Log::page($requested_page);
+        $entries = $activity['entries'];
+        $level_labels = ['info' => 'Bilgi', 'warning' => 'Uyarı', 'error' => 'Hata'];
+        ?>
+        <h2>Activity Log</h2>
+        <?php if ($activity['job_id'] !== '') : ?>
+            <p>En son static işlemine ait kayıtlar: <code><?php echo esc_html((string) $activity['job_id']); ?></code></p>
+        <?php endif; ?>
+        <?php if ($entries === []) : ?>
+            <p>Henüz kaydedilmiş bir export etkinliği yok.</p>
+        <?php else : ?>
+            <table class="widefat striped" style="max-width:1300px">
+                <thead><tr><th>Tarih</th><th>Saat</th><th>Seviye</th><th>Kaynak Adres</th><th>Statik Adres</th></tr></thead>
+                <tbody>
+                <?php foreach ($entries as $entry) : ?>
+                    <?php
+                    $timestamp = strtotime((string) ($entry['time'] ?? ''));
+                    $level = sanitize_key((string) ($entry['level'] ?? 'info'));
+                    ?>
+                    <tr>
+                        <td><?php echo $timestamp === false ? '—' : esc_html(wp_date((string) get_option('date_format'), $timestamp)); ?></td>
+                        <td><?php echo $timestamp === false ? '—' : esc_html(wp_date((string) get_option('time_format'), $timestamp)); ?></td>
+                        <td><?php echo esc_html($level_labels[$level] ?? ucfirst($level)); ?></td>
+                        <td><?php if (($entry['source_url'] ?? '') === '') : ?>—<?php else : ?><code><?php echo esc_html((string) $entry['source_url']); ?></code><?php endif; ?></td>
+                        <td><?php if (($entry['static_path'] ?? '') === '') : ?>—<?php else : ?><code><?php echo esc_html((string) $entry['static_path']); ?></code><?php endif; ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+            <?php if ($activity['total_pages'] > 1) : ?>
+                <div class="tablenav bottom">
+                    <div class="tablenav-pages">
+                        <span class="displaying-num"><?php echo esc_html(sprintf('%d kayıt', (int) $activity['total'])); ?></span>
+                        <span class="pagination-links">
+                            <?php
+                            echo wp_kses_post((string) paginate_links([
+                                'base' => add_query_arg('log_page', '%#%', self::admin_page_url('activity')),
+                                'format' => '',
+                                'current' => (int) $activity['page'],
+                                'total' => (int) $activity['total_pages'],
+                                'prev_text' => '‹',
+                                'next_text' => '›',
+                            ]));
+                            ?>
+                        </span>
+                    </div>
+                    <br class="clear">
+                </div>
+            <?php endif; ?>
+        <?php endif; ?>
+        <?php
+    }
+
+    private static function render_settings_tab(array $settings): void
+    {
+        ?>
+        <h2>Ayarlar</h2>
+        <form method="post" action="options.php">
+            <?php settings_fields('ragnus_static'); ?>
+            <table class="form-table" role="presentation">
+                <tr><th><label for="ragstat-target">Canlı site adresi</label></th><td><input class="regular-text" id="ragstat-target" type="url" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[target_url]" value="<?php echo esc_attr((string) $settings['target_url']); ?>"><p class="description">Örnek: https://example.com</p></td></tr>
+                <tr><th><label for="ragstat-limit">En fazla URL</label></th><td><input id="ragstat-limit" type="number" min="10" max="20000" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[maximum_urls]" value="<?php echo esc_attr((string) $settings['maximum_urls']); ?>"></td></tr>
+                <tr><th><label for="ragstat-excluded">Hariç tutulan yollar</label></th><td><textarea class="large-text code" rows="7" id="ragstat-excluded" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[excluded_paths]"><?php echo esc_textarea((string) $settings['excluded_paths']); ?></textarea><p class="description">Satır başına bir yol öneki.</p></td></tr>
+                <tr><th>Otomatik export</th><td><label><input type="checkbox" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[auto_export]" value="1" <?php checked($settings['auto_export'], '1'); ?>> Yayımlanmış içerik değiştiğinde export kuyruğuna ekle</label></td></tr>
+                <tr><th><label for="ragstat-archive-retention">Saklanacak ZIP sayısı</label></th><td><input id="ragstat-archive-retention" type="number" min="1" max="100" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[archive_retention]" value="<?php echo esc_attr((string) $settings['archive_retention']); ?>"><p class="description">En son kaç başarılı export arşivinin saklanacağını belirler. Varsayılan: 5.</p></td></tr>
+                <tr><th><label for="ragstat-webhook">Deployment webhook</label></th><td><input class="large-text code" id="ragstat-webhook" type="url" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[deployment_webhook_url]" value="<?php echo esc_attr((string) $settings['deployment_webhook_url']); ?>"><p class="description">GitHub için: https://api.github.com/repos/SAHIP/REPO/dispatches</p></td></tr>
+                <tr><th><label for="ragstat-webhook-token">Webhook bearer token</label></th><td><input class="regular-text" id="ragstat-webhook-token" type="password" autocomplete="new-password" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[deployment_webhook_token]" value="" placeholder="<?php echo $settings['deployment_webhook_token'] !== '' ? esc_attr('Kayıtlı tokenı korumak için boş bırakın') : ''; ?>"><p class="description">GitHub kullanılıyorsa yalnızca bu repository için Contents: write yetkili fine-grained token kullanın.</p></td></tr>
+            </table>
+            <?php submit_button('Ayarları kaydet'); ?>
+        </form>
+        <?php
+    }
+
+    private static function render_diagnostics_tab(): void
+    {
+        $groups = Diagnostics::checks();
+        $total = 0;
+        $passed = 0;
+        foreach ($groups as $checks) {
+            $total += count($checks);
+            foreach ($checks as $check) {
+                if ($check['passed']) {
+                    $passed++;
+                }
+            }
+        }
+        ?>
+        <style>
+            .ragstat-diagnostics-summary { margin: 20px 0; font-size: 14px; }
+            .ragstat-diagnostics-card { max-width: 1200px; margin: 18px 0; border: 1px solid #c3c4c7; background: #fff; }
+            .ragstat-diagnostics-card h2 { margin: 0; padding: 20px 24px; border-bottom: 1px solid #dcdcde; font-size: 18px; }
+            .ragstat-diagnostics-table { width: 100%; border-collapse: collapse; }
+            .ragstat-diagnostics-table th, .ragstat-diagnostics-table td { padding: 18px 24px; text-align: left; vertical-align: middle; }
+            .ragstat-diagnostics-table th { width: 26%; font-size: 15px; }
+            .ragstat-diagnostics-table tr + tr th, .ragstat-diagnostics-table tr + tr td { border-top: 1px solid #f0f0f1; }
+            .ragstat-diagnostic-icon-cell { width: 52px; padding-right: 0 !important; }
+            .ragstat-diagnostic-icon { display: inline-flex; width: 32px; height: 32px; align-items: center; justify-content: center; border: 2px solid currentColor; border-radius: 50%; }
+            .ragstat-diagnostic-icon.is-passed { color: #00a32a; }
+            .ragstat-diagnostic-icon.is-failed { color: #d63638; }
+            .ragstat-diagnostic-icon .dashicons { width: 22px; height: 22px; font-size: 22px; line-height: 22px; }
+            @media (max-width: 782px) {
+                .ragstat-diagnostics-table th, .ragstat-diagnostics-table td { padding: 14px 12px; }
+                .ragstat-diagnostics-table th { width: auto; }
+                .ragstat-diagnostic-icon-cell { width: 38px; }
+            }
+        </style>
+        <h2>Diagnostics</h2>
+        <p class="ragstat-diagnostics-summary"><strong><?php echo esc_html(sprintf('%1$d / %2$d kontrol başarılı.', $passed, $total)); ?></strong> Bu sonuçlar sayfa her açıldığında mevcut sunucu ve WordPress ayarlarından yeniden hesaplanır.</p>
+        <?php foreach ($groups as $group_label => $checks) : ?>
+            <section class="ragstat-diagnostics-card" aria-labelledby="ragstat-diagnostics-<?php echo esc_attr(sanitize_title($group_label)); ?>">
+                <h2 id="ragstat-diagnostics-<?php echo esc_attr(sanitize_title($group_label)); ?>"><?php echo esc_html($group_label); ?></h2>
+                <table class="ragstat-diagnostics-table" role="presentation">
+                    <tbody>
+                    <?php foreach ($checks as $check) : ?>
+                        <tr>
+                            <td class="ragstat-diagnostic-icon-cell">
+                                <span class="ragstat-diagnostic-icon <?php echo $check['passed'] ? 'is-passed' : 'is-failed'; ?>" aria-label="<?php echo $check['passed'] ? 'Başarılı' : 'Başarısız'; ?>">
+                                    <span class="dashicons <?php echo $check['passed'] ? 'dashicons-yes' : 'dashicons-no-alt'; ?>" aria-hidden="true"></span>
+                                </span>
+                            </td>
+                            <th scope="row"><?php echo esc_html((string) $check['label']); ?></th>
+                            <td><?php echo esc_html((string) $check['message']); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </section>
+        <?php endforeach; ?>
         <?php
     }
 }

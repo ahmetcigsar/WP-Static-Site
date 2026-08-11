@@ -43,6 +43,28 @@ if (! is_readable((string) ($status['archive'] ?? ''))) {
 if (($status['manifest']['target'] ?? '') !== 'https://static.example.com') {
     throw new RuntimeException('Hedef domain manifest içine doğru yazılmadı.');
 }
+$last_completed_at = (string) ($status['last_completed_at'] ?? '');
+if ($last_completed_at === '' || strtotime($last_completed_at) === false) {
+    throw new RuntimeException('Son statik oluşturma zamanı kaydedilmedi.');
+}
+if (array_key_exists('log', get_option(Ragnus\StaticPublisher\Plugin::STATUS_KEY, []))) {
+    throw new RuntimeException('Activity Log veritabanındaki export durumuna yazıldı.');
+}
+$activity = Ragnus\StaticPublisher\Activity_Log::page(1);
+if (($activity['job_id'] ?? '') !== $job_id || ($activity['total'] ?? 0) < 2) {
+    throw new RuntimeException('Son export Activity Log dosyasına yazılmadı.');
+}
+foreach ($activity['entries'] as $entry) {
+    if (($entry['job_id'] ?? '') !== $job_id) {
+        throw new RuntimeException('Activity Log önceki bir static işlemine ait kayıt içeriyor.');
+    }
+}
+$mapped_entries = array_values(array_filter($activity['entries'], static function (array $entry): bool {
+    return ($entry['source_url'] ?? '') !== '' && ($entry['static_path'] ?? '') !== '';
+}));
+if ($mapped_entries === []) {
+    throw new RuntimeException('Export Activity Log kaynağı ve statik adresi ayrı alanlarda saklamadı.');
+}
 
 $zip = new ZipArchive();
 if ($zip->open((string) $status['archive']) !== true) {
@@ -56,6 +78,12 @@ if (str_contains($home_html, 'https://static.example.com/wp-content/')) {
 }
 if (! str_contains($home_html, '/wp-content/')) {
     throw new RuntimeException('Ana sayfada beklenen kök asset yolu bulunamadı.');
+}
+
+Ragnus\StaticPublisher\Plugin::set_status('next-job', 'queued', 0, ['source' => 'test']);
+$queued_status = Ragnus\StaticPublisher\Plugin::status();
+if (($queued_status['last_completed_at'] ?? '') !== $last_completed_at) {
+    throw new RuntimeException('Son başarılı statik oluşturma zamanı yeni iş kuyruğunda korunmadı.');
 }
 
 echo sprintf("Export integration test passed with %d URLs.\n", (int) ($status['url_count'] ?? 0));

@@ -18,7 +18,7 @@ final class Exporter
     private int $maximum_urls;
     private array $excluded_prefixes;
     private array $visited = [];
-    private array $log = [];
+    private string $job_id = '';
     private string $build_directory = '';
 
     public function __construct()
@@ -40,6 +40,8 @@ final class Exporter
         }
 
         set_transient(Plugin::LOCK_KEY, $job_id, 30 * MINUTE_IN_SECONDS);
+        $this->job_id = $job_id;
+        Activity_Log::reset($job_id);
         $started_at = gmdate('c');
 
         try {
@@ -49,13 +51,14 @@ final class Exporter
             $this->write_cloudflare_files();
             $manifest = $this->write_manifest($job_id, $started_at);
             $archive = $this->create_archive($job_id);
+            $finished_at = gmdate('c');
 
             Plugin::set_status($job_id, 'completed', 100, [
-                'finished_at' => gmdate('c'),
+                'finished_at' => $finished_at,
+                'last_completed_at' => $finished_at,
                 'archive' => $archive,
                 'manifest' => $manifest,
                 'url_count' => count($this->visited),
-                'log' => array_slice($this->log, -100),
             ]);
 
             do_action('ragnus_static_export_completed', $job_id, $archive, $manifest);
@@ -66,7 +69,6 @@ final class Exporter
             Plugin::set_status($job_id, 'failed', 100, [
                 'finished_at' => gmdate('c'),
                 'error' => $error->getMessage(),
-                'log' => array_slice($this->log, -100),
             ]);
             throw $error;
         } finally {
@@ -127,13 +129,13 @@ final class Exporter
             $response = wp_remote_get($url, $request_args);
 
             if (is_wp_error($response)) {
-                $this->add_log('warning', $url . ': ' . $response->get_error_message());
+                $this->add_log('warning', $response->get_error_message(), $url);
                 continue;
             }
 
             $status_code = (int) wp_remote_retrieve_response_code($response);
             if ($status_code < 200 || $status_code >= 400) {
-                $this->add_log('warning', sprintf('%s: HTTP %d', $url, $status_code));
+                $this->add_log('warning', sprintf('HTTP %d', $status_code), $url);
                 continue;
             }
 
@@ -152,12 +154,12 @@ final class Exporter
 
             $relative_path = Path_Mapper::url_to_relative_path($url, $content_type);
             if ($relative_path === null) {
-                $this->add_log('warning', $url . ': güvenli olmayan dosya yolu atlandı.');
+                $this->add_log('warning', 'Güvenli olmayan dosya yolu atlandı.', $url);
                 continue;
             }
 
             $this->write_file($relative_path, $body);
-            $this->add_log('info', $url . ' -> ' . $relative_path);
+            $this->add_log('info', 'Kaynak statik dosyaya dönüştürüldü.', $url, $relative_path);
 
             foreach ($discovered as $discovered_url) {
                 $queue->enqueue($discovered_url);
@@ -167,7 +169,6 @@ final class Exporter
             Plugin::set_status(Plugin::status()['job_id'] ?? '', 'running', $progress, [
                 'url_count' => count($this->visited),
                 'current_url' => $url,
-                'log' => array_slice($this->log, -100),
             ]);
         }
 
@@ -504,8 +505,8 @@ final class Exporter
         return $manifest;
     }
 
-    private function add_log(string $level, string $message): void
+    private function add_log(string $level, string $message, string $source_url = '', string $static_path = ''): void
     {
-        $this->log[] = ['time' => gmdate('c'), 'level' => $level, 'message' => $message];
+        Activity_Log::append($this->job_id, $level, $message, $source_url, $static_path);
     }
 }

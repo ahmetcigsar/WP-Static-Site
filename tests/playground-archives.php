@@ -44,27 +44,43 @@ if (array_column($archives, 'job_id') !== ['retention-test-3', 'retention-test-2
 if (($archives[0]['url_count'] ?? null) !== 30) {
     throw new RuntimeException('URL sayısı manifestten okunamadı.');
 }
+if ((Ragnus\StaticPublisher\Archive_Manager::find('retention-test-2')['url_count'] ?? null) !== 20) {
+    throw new RuntimeException('Tekil ZIP dosyası iş kimliğiyle bulunamadı.');
+}
+
+$bundle = Ragnus\StaticPublisher\Archive_Manager::create_bundle(['retention-test-1', 'retention-test-3']);
+$bundle_zip = new ZipArchive();
+if ($bundle_zip->open($bundle) !== true
+    || $bundle_zip->locateName('retention-test-1.zip') === false
+    || $bundle_zip->locateName('retention-test-3.zip') === false
+    || $bundle_zip->locateName('retention-test-2.zip') !== false) {
+    throw new RuntimeException('Toplu indirme paketi yalnızca seçilen ZIP dosyalarını içermiyor.');
+}
+$bundle_zip->close();
+unlink($bundle);
+
+$result = Ragnus\StaticPublisher\Archive_Manager::delete(['retention-test-1']);
+if ($result !== ['deleted' => 1, 'failed' => 0]) {
+    throw new RuntimeException('Tekil ZIP silme işlemi beklenen sonucu vermedi.');
+}
+if (file_exists($base . '/archives/retention-test-1.zip') || is_dir($base . '/builds/retention-test-1')) {
+    throw new RuntimeException('Tekil silme ZIP veya ilişkili build klasörünü kaldırmadı.');
+}
 
 $settings = Ragnus\StaticPublisher\Plugin::settings();
 update_option(Ragnus\StaticPublisher\Plugin::SETTINGS_KEY, $settings, false);
-$settings['archive_retention'] = 2;
+$settings['archive_retention'] = 1;
 update_option(Ragnus\StaticPublisher\Plugin::SETTINGS_KEY, $settings, false);
-if (file_exists($base . '/archives/retention-test-1.zip') || is_dir($base . '/builds/retention-test-1')) {
+if (file_exists($base . '/archives/retention-test-2.zip') || is_dir($base . '/builds/retention-test-2')) {
     throw new RuntimeException('Ayar değişikliği eski ZIP veya ilişkili build klasörünü silmedi.');
-}
-if (! file_exists($base . '/archives/retention-test-2.zip') || ! file_exists($base . '/archives/retention-test-3.zip')) {
-    throw new RuntimeException('Ayar değişikliği saklanması gereken ZIP dosyalarından birini sildi.');
-}
-
-$result = Ragnus\StaticPublisher\Archive_Manager::delete_old_archives();
-if ($result !== ['deleted' => 1, 'failed' => 0]) {
-    throw new RuntimeException('Eski Dosyaları Sil işlemi beklenen sayıda ZIP silmedi.');
 }
 if (! file_exists($base . '/archives/retention-test-3.zip')) {
     throw new RuntimeException('En son ZIP dosyası yanlışlıkla silindi.');
 }
-if (file_exists($base . '/archives/retention-test-2.zip') || is_dir($base . '/builds/retention-test-2')) {
-    throw new RuntimeException('Önceki ZIP veya ilişkili build klasörü silinmedi.');
+
+$result = Ragnus\StaticPublisher\Archive_Manager::delete(['retention-test-3']);
+if ($result !== ['deleted' => 1, 'failed' => 0] || Ragnus\StaticPublisher\Archive_Manager::latest() !== null) {
+    throw new RuntimeException('En son ZIP dosyası tekil işlemle silinemedi.');
 }
 
 echo "Archive retention integration test passed.\n";

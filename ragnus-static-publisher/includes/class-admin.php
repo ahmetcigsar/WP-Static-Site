@@ -26,6 +26,11 @@ final class Admin
             'sanitize_callback' => [self::class, 'sanitize'],
             'default' => [],
         ]);
+        register_setting('ragnus_static_hide', Plugin::HIDE_SETTINGS_KEY, [
+            'type' => 'array',
+            'sanitize_callback' => [self::class, 'sanitize_hide_settings'],
+            'default' => Plugin::hide_defaults(),
+        ]);
     }
 
     public static function enqueue_assets(string $hook_suffix): void
@@ -71,6 +76,34 @@ final class Admin
             'deployment_webhook_url' => esc_url_raw((string) ($value['deployment_webhook_url'] ?? '')),
             'deployment_webhook_token' => $submitted_token !== '' ? $submitted_token : (string) $current['deployment_webhook_token'],
         ];
+    }
+
+    public static function sanitize_hide_settings(array $value): array
+    {
+        $defaults = Plugin::hide_defaults();
+        $sanitized = [];
+        $path_keys = [
+            'wp_content_directory',
+            'wp_includes_directory',
+            'uploads_directory',
+            'plugins_directory',
+            'themes_directory',
+            'theme_style_name',
+            'author_url',
+        ];
+        foreach ($path_keys as $key) {
+            $default = $defaults[$key];
+            $candidate = strtolower(trim((string) ($value[$key] ?? '')));
+            if ($key === 'theme_style_name') {
+                $candidate = preg_replace('/\.css$/i', '', $candidate) ?? $candidate;
+            }
+            $candidate = sanitize_key(str_replace(' ', '-', $candidate));
+            $sanitized[$key] = $candidate !== '' ? $candidate : $default;
+        }
+        foreach (array_diff(array_keys($defaults), $path_keys) as $key) {
+            $sanitized[$key] = isset($value[$key]) ? '1' : '0';
+        }
+        return $sanitized;
     }
 
     public static function start_export(): void
@@ -140,6 +173,17 @@ final class Admin
         }
         Plugin::run_scheduled($job_id);
         wp_send_json_success(['status' => Plugin::public_status()]);
+    }
+
+    public static function refresh_diagnostics(): void
+    {
+        if (! current_user_can('manage_options')) {
+            wp_die('Bu işlem için yetkiniz yok.', 403);
+        }
+        check_admin_referer('ragnus_static_refresh_diagnostics');
+        Diagnostics::refresh();
+        wp_safe_redirect(add_query_arg('checked', '1', self::admin_page_url('diagnostics')));
+        exit;
     }
 
     public static function download_archive(): void
@@ -272,6 +316,7 @@ final class Admin
             'files' => 'Files',
             'activity' => 'Activity Log',
             'settings' => 'Settings',
+            'hide' => 'Hide',
             'diagnostics' => 'Diagnostics',
             'about' => 'About',
         ];
@@ -302,6 +347,8 @@ final class Admin
                 <?php self::render_activity_tab(); ?>
             <?php elseif ($current_tab === 'settings') : ?>
                 <?php self::render_settings_tab(Plugin::settings()); ?>
+            <?php elseif ($current_tab === 'hide') : ?>
+                <?php self::render_hide_tab(Plugin::hide_settings()); ?>
             <?php elseif ($current_tab === 'diagnostics') : ?>
                 <?php self::render_diagnostics_tab(); ?>
             <?php else : ?>
@@ -549,9 +596,129 @@ final class Admin
         <?php
     }
 
+    private static function render_hide_tab(array $settings): void
+    {
+        $option_name = Plugin::HIDE_SETTINGS_KEY;
+        ?>
+        <h2>Hide</h2>
+        <p class="ragstat-hide-intro">WordPress'e özgü dizin ve yol adlarının statik çıktıda hangi adlarla kullanılacağını belirleyin. Kaynak WordPress dosyaları değiştirilmez.</p>
+        <form class="ragstat-hide-form" method="post" action="options.php">
+            <?php settings_fields('ragnus_static_hide'); ?>
+
+            <div class="ragstat-hide-field">
+                <label for="ragstat-hide-wp-content">WP-Content Dizini</label>
+                <input id="ragstat-hide-wp-content" type="text" name="<?php echo esc_attr($option_name); ?>[wp_content_directory]" value="<?php echo esc_attr((string) $settings['wp_content_directory']); ?>" required>
+                <p>Statik çıktıda <code>wp-content</code> dizininin yerine kullanılacak ad.</p>
+            </div>
+
+            <div class="ragstat-hide-field">
+                <label for="ragstat-hide-wp-includes">WP-Includes Dizini</label>
+                <input id="ragstat-hide-wp-includes" type="text" name="<?php echo esc_attr($option_name); ?>[wp_includes_directory]" value="<?php echo esc_attr((string) $settings['wp_includes_directory']); ?>" required>
+                <p>Statik çıktıda <code>wp-includes</code> dizininin yerine kullanılacak ad.</p>
+            </div>
+
+            <div class="ragstat-hide-field">
+                <label for="ragstat-hide-uploads">Uploads Dizini</label>
+                <div class="ragstat-input-group"><span data-ragstat-content-prefix><?php echo esc_html((string) $settings['wp_content_directory']); ?>/</span><input id="ragstat-hide-uploads" type="text" name="<?php echo esc_attr($option_name); ?>[uploads_directory]" value="<?php echo esc_attr((string) $settings['uploads_directory']); ?>" required></div>
+                <p>Statik çıktıda <code>wp-content/uploads</code> yolunun yerine kullanılacak alt dizin.</p>
+            </div>
+
+            <div class="ragstat-hide-field">
+                <label for="ragstat-hide-plugins">Plugins Dizini</label>
+                <div class="ragstat-input-group"><span data-ragstat-content-prefix><?php echo esc_html((string) $settings['wp_content_directory']); ?>/</span><input id="ragstat-hide-plugins" type="text" name="<?php echo esc_attr($option_name); ?>[plugins_directory]" value="<?php echo esc_attr((string) $settings['plugins_directory']); ?>" required></div>
+                <p>Statik çıktıda <code>wp-content/plugins</code> yolunun yerine kullanılacak alt dizin.</p>
+            </div>
+
+            <div class="ragstat-hide-field">
+                <label for="ragstat-hide-themes">Themes Dizini</label>
+                <div class="ragstat-input-group"><span data-ragstat-content-prefix><?php echo esc_html((string) $settings['wp_content_directory']); ?>/</span><input id="ragstat-hide-themes" type="text" name="<?php echo esc_attr($option_name); ?>[themes_directory]" value="<?php echo esc_attr((string) $settings['themes_directory']); ?>" required></div>
+                <p>Statik çıktıda <code>wp-content/themes</code> yolunun yerine kullanılacak alt dizin.</p>
+            </div>
+
+            <div class="ragstat-hide-field">
+                <label for="ragstat-hide-style">Tema Stil Dosyası</label>
+                <div class="ragstat-input-group is-compact"><input id="ragstat-hide-style" type="text" name="<?php echo esc_attr($option_name); ?>[theme_style_name]" value="<?php echo esc_attr((string) $settings['theme_style_name']); ?>" required><span>.css</span></div>
+                <p>Aktif tema içindeki <code>style.css</code> dosyasının statik çıktıdaki adı.</p>
+            </div>
+
+            <div class="ragstat-hide-field">
+                <label for="ragstat-hide-author">Yazar URL'si</label>
+                <input id="ragstat-hide-author" type="text" name="<?php echo esc_attr($option_name); ?>[author_url]" value="<?php echo esc_attr((string) $settings['author_url']); ?>" required>
+                <p>Statik çıktıda <code>/author/</code> yolunun yerine kullanılacak yol.</p>
+            </div>
+
+            <section class="ragstat-hide-options" aria-labelledby="ragstat-hide-traces-title">
+                <div class="ragstat-hide-options__header">
+                    <span class="dashicons dashicons-hidden" aria-hidden="true"></span>
+                    <div>
+                        <h3 id="ragstat-hide-traces-title">WordPress İzlerini Gizle</h3>
+                        <p>Seçilen WordPress tanımlayıcılarını statik HTML çıktısından kaldırır.</p>
+                    </div>
+                </div>
+                <?php
+                $hide_toggles = [
+                    'hide_wordpress_version' => ['WordPress Sürümünü Gizle', 'WordPress çekirdek sürümünü belirten asset sürüm parametrelerini kaldırır.'],
+                    'hide_generator_meta' => ['WordPress Generator Meta Etiketini Gizle', 'WordPress sürümünü açıklayan generator meta etiketini kaldırır.'],
+                    'hide_wordpress_dns_prefetch' => ['WordPress DNS Prefetch Bağlantısını Gizle', 'WordPress servislerine ait DNS prefetch bağlantılarını kaldırır.'],
+                    'hide_rsd_header' => ['RSD Header Bağlantısını Gizle', 'Really Simple Discovery bağlantısını statik HTML’den kaldırır.'],
+                ];
+                foreach ($hide_toggles as $key => [$label, $description]) :
+                    $field_id = 'ragstat-' . str_replace('_', '-', $key);
+                    ?>
+                    <div class="ragstat-hide-toggle-row">
+                        <div>
+                            <label for="<?php echo esc_attr($field_id); ?>"><?php echo esc_html($label); ?></label>
+                            <p><?php echo esc_html($description); ?></p>
+                        </div>
+                        <label class="ragstat-switch" aria-label="<?php echo esc_attr($label); ?>">
+                            <input id="<?php echo esc_attr($field_id); ?>" type="checkbox" name="<?php echo esc_attr($option_name); ?>[<?php echo esc_attr($key); ?>]" value="1" <?php checked((string) ($settings[$key] ?? '0'), '1'); ?>>
+                            <span aria-hidden="true"></span>
+                        </label>
+                    </div>
+                <?php endforeach; ?>
+            </section>
+
+            <section class="ragstat-hide-options" aria-labelledby="ragstat-disable-features-title">
+                <div class="ragstat-hide-options__header">
+                    <span class="dashicons dashicons-shield" aria-hidden="true"></span>
+                    <div>
+                        <h3 id="ragstat-disable-features-title">Statik Çıktıda Devre Dışı Bırak</h3>
+                        <p>Statik sitede kullanılmayan WordPress bağlantı ve betiklerini temizler.</p>
+                    </div>
+                </div>
+                <?php
+                $disable_toggles = [
+                    'disable_xml_rpc' => ['XML-RPC Bağlantılarını Devre Dışı Bırak', 'XML-RPC ve pingback keşif bağlantılarını kaldırır.'],
+                    'disable_embed_scripts' => ['Embed Scriptlerini Devre Dışı Bırak', 'WordPress embed betiklerini statik HTML’den kaldırır.'],
+                    'disable_db_debug' => ['Frontend DB Debug Bilgisini Devre Dışı Bırak', 'Yalnızca export isteklerinde veritabanı hata ayrıntılarının gösterilmesini engeller.'],
+                    'disable_wlw_manifest' => ['WLW Manifest Bağlantısını Devre Dışı Bırak', 'Windows Live Writer manifest bağlantısını kaldırır.'],
+                    'disable_emojis' => ['Emoji Scriptlerini Devre Dışı Bırak', 'WordPress emoji scriptlerini ve stillerini statik HTML’den kaldırır.'],
+                ];
+                foreach ($disable_toggles as $key => [$label, $description]) :
+                    $field_id = 'ragstat-' . str_replace('_', '-', $key);
+                    ?>
+                    <div class="ragstat-hide-toggle-row">
+                        <div>
+                            <label for="<?php echo esc_attr($field_id); ?>"><?php echo esc_html($label); ?></label>
+                            <p><?php echo esc_html($description); ?></p>
+                        </div>
+                        <label class="ragstat-switch" aria-label="<?php echo esc_attr($label); ?>">
+                            <input id="<?php echo esc_attr($field_id); ?>" type="checkbox" name="<?php echo esc_attr($option_name); ?>[<?php echo esc_attr($key); ?>]" value="1" <?php checked((string) ($settings[$key] ?? '0'), '1'); ?>>
+                            <span aria-hidden="true"></span>
+                        </label>
+                    </div>
+                <?php endforeach; ?>
+            </section>
+
+            <?php submit_button('Hide Ayarlarını Kaydet'); ?>
+        </form>
+        <?php
+    }
+
     private static function render_diagnostics_tab(): void
     {
-        $groups = Diagnostics::checks();
+        $report = Diagnostics::report();
+        $groups = $report['groups'];
         $total = 0;
         $passed = 0;
         foreach ($groups as $checks) {
@@ -562,9 +729,25 @@ final class Admin
                 }
             }
         }
+        $checked_timestamp = strtotime((string) ($report['checked_at'] ?? ''));
         ?>
-        <h2>Diagnostics</h2>
-        <p class="ragstat-diagnostics-summary"><strong><?php echo esc_html(sprintf('%1$d / %2$d kontrol başarılı.', $passed, $total)); ?></strong> Bu sonuçlar sayfa her açıldığında mevcut sunucu ve WordPress ayarlarından yeniden hesaplanır.</p>
+        <div class="ragstat-diagnostics-header">
+            <div>
+                <h2>Diagnostics</h2>
+                <p class="ragstat-diagnostics-summary"><strong><?php echo esc_html(sprintf('%1$d / %2$d kontrol başarılı.', $passed, $total)); ?></strong> Son kontrol: <?php echo $checked_timestamp === false ? '—' : esc_html(wp_date((string) get_option('date_format') . ' ' . (string) get_option('time_format'), $checked_timestamp)); ?></p>
+            </div>
+            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                <input type="hidden" name="action" value="ragnus_static_refresh_diagnostics">
+                <?php wp_nonce_field('ragnus_static_refresh_diagnostics'); ?>
+                <?php submit_button('Tekrar Kontrol Et', 'secondary', 'submit', false); ?>
+            </form>
+        </div>
+        <?php if (isset($_GET['checked']) && sanitize_key(wp_unslash((string) $_GET['checked'])) === '1') : ?>
+            <div class="ragstat-inline-alert is-success" role="status">
+                <span class="dashicons dashicons-yes-alt" aria-hidden="true"></span>
+                <span>Diagnostics kontrolleri güncellendi.</span>
+            </div>
+        <?php endif; ?>
         <?php foreach ($groups as $group_label => $checks) : ?>
             <section class="ragstat-diagnostics-card" aria-labelledby="ragstat-diagnostics-<?php echo esc_attr(sanitize_title($group_label)); ?>">
                 <h2 id="ragstat-diagnostics-<?php echo esc_attr(sanitize_title($group_label)); ?>"><?php echo esc_html($group_label); ?></h2>

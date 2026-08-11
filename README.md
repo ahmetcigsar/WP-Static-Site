@@ -10,10 +10,12 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 - Cloudflare `_headers` ve `_redirects` üretimi
 - ZIP ve SHA-256 manifest üretimi
 - Sol ana menüde doküman ikonlu Static Publisher yönetim ekranı
-- Main, Files, Activity Log, Settings, Diagnostics ve About sekmelerine ayrılmış yönetim görünümü
+- Main, Files, Activity Log, Settings, Hide, Diagnostics ve About sekmelerine ayrılmış yönetim görünümü
+- Hide sekmesinden WordPress yollarını yeniden adlandırma; sürüm, generator, XML-RPC, embed ve emoji izlerini statik çıktıdan temizleme
 - Main sekmesinde son başarılı static oluşturma zamanı ve yeşil ilerleme/tamamlanma göstergesi
 - Main sekmesinde iki saniyede bir yenilenen canlı export durumu, aşamalı ilerleme ve takılan WP-Cron işi uyarısı
 - Diagnostics sekmesinde PHP, Basic Auth, php-xml, cURL, site URL erişimi, kalıcı bağlantılar, indexlenebilirlik, önbellek ve WP-Cron kontrolleri
+- İlk kurulumda ve isteğe bağlı yeniden kontrolde çalışan uyumsuz eklenti, geçici dizin ve MySQL yetki kontrolleri
 - About sekmesinde sürüm, destek e-postası ve eklenti web sitesi bilgileri
 - Modern yönetim arayüzü, kart tabanlı içerik alanları, yenilenmiş sekmeler ve butonlar
 - Activity Log kayıtlarında arama ve ortalanmış modern sayfalama

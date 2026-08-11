@@ -18,6 +18,24 @@ update_option('ragnus_static_settings', [
     'excluded_paths' => "/wp-admin/\n/wp-login.php\n/wp-json/\n/feed/",
     'auto_export' => '0',
 ]);
+update_option(Ragnus\StaticPublisher\Plugin::HIDE_SETTINGS_KEY, [
+    'wp_content_directory' => 'assets',
+    'wp_includes_directory' => 'core',
+    'uploads_directory' => 'media',
+    'plugins_directory' => 'extensions',
+    'themes_directory' => 'skins',
+    'theme_style_name' => 'design',
+    'author_url' => 'writers',
+    'hide_wordpress_version' => '1',
+    'hide_generator_meta' => '1',
+    'hide_wordpress_dns_prefetch' => '1',
+    'hide_rsd_header' => '1',
+    'disable_xml_rpc' => '1',
+    'disable_embed_scripts' => '1',
+    'disable_db_debug' => '1',
+    'disable_wlw_manifest' => '1',
+    'disable_emojis' => '1',
+]);
 
 $post_id = wp_insert_post([
     'post_title' => 'Export testi',
@@ -35,12 +53,23 @@ add_filter('ragnus_static_seed_urls', static function (array $urls): array {
     $urls[] = home_url('/redirect-test/');
     $urls[] = home_url('/not-found-test/');
     $urls[] = home_url('/forbidden-test/');
+    $urls[] = home_url('/wp-content/themes/test-theme/style.css');
     return $urls;
 });
 add_filter('pre_http_request', static function ($preempt, array $args, string $url) {
     $path = (string) wp_parse_url($url, PHP_URL_PATH);
-    if (! in_array($path, ['/redirect-test/', '/not-found-test/', '/forbidden-test/'], true)) {
+    if (! in_array($path, ['/redirect-test/', '/not-found-test/', '/forbidden-test/', '/wp-content/themes/test-theme/style.css'], true)) {
         return $preempt;
+    }
+
+    if ($path === '/wp-content/themes/test-theme/style.css') {
+        return [
+            'headers' => ['content-type' => 'text/css; charset=UTF-8'],
+            'body' => ".hero{background:url('/wp-content/uploads/test.png')}",
+            'response' => ['code' => 200, 'message' => 'OK'],
+            'cookies' => [],
+            'filename' => null,
+        ];
     }
 
     $status_code = $path === '/not-found-test/' ? 404 : ($path === '/forbidden-test/' ? 403 : 200);
@@ -134,13 +163,58 @@ if ($zip->open((string) $status['archive']) !== true) {
     throw new RuntimeException('Export ZIP dosyası açılamadı.');
 }
 $home_html = (string) $zip->getFromName('index.html');
+$hidden_theme_css = (string) $zip->getFromName('assets/skins/test-theme/design.css');
+$headers_file = (string) $zip->getFromName('_headers');
+$manifest_file = json_decode((string) $zip->getFromName('ragnus-static-manifest.json'), true);
 $zip->close();
 if (str_contains($home_html, 'https://static.example.com/wp-content/')) {
     preg_match_all('#https://static\.example\.com/wp-content/[^"\'\s<]+#', $home_html, $remaining_assets);
     throw new RuntimeException('Asset URL adresleri preview-safe kök yola dönüştürülmedi: ' . wp_json_encode(array_slice(array_unique($remaining_assets[0]), 0, 5)));
 }
-if (! str_contains($home_html, '/wp-content/')) {
-    throw new RuntimeException('Ana sayfada beklenen kök asset yolu bulunamadı.');
+if (! str_contains($home_html, '/assets/') || str_contains($home_html, '/wp-content/')) {
+    throw new RuntimeException('Ana sayfadaki wp-content yolları Hide ayarına göre dönüştürülmedi.');
+}
+if ($hidden_theme_css === '' || ! str_contains($hidden_theme_css, '/assets/media/test.png')) {
+    throw new RuntimeException('Tema stil dosyası veya içindeki uploads yolu Hide ayarına göre dönüştürülmedi.');
+}
+if (! str_contains($headers_file, '/assets/media/*')) {
+    throw new RuntimeException('_headers uploads yolu Hide ayarına göre dönüştürülmedi.');
+}
+if (($manifest_file['hide_replacements']['author_url'] ?? '') !== 'writers') {
+    throw new RuntimeException('Hide ayarları export manifestine yazılmadı.');
+}
+
+$hide_replacements = new Ragnus\StaticPublisher\Hide_Replacements(Ragnus\StaticPublisher\Plugin::hide_settings());
+if ($hide_replacements->map_relative_path('wp-includes/js/test.js') !== 'core/js/test.js'
+    || $hide_replacements->map_relative_path('author/example/index.html') !== 'writers/example/index.html') {
+    throw new RuntimeException('WP-Includes veya yazar yolu Hide ayarına göre eşlenmedi.');
+}
+$rewritten_paths = $hide_replacements->rewrite_content('https://third.example/wp-content/file.css /wp-content/plugins/demo/app.js /author/example/');
+if (! str_contains($rewritten_paths, 'https://third.example/wp-content/file.css')
+    || ! str_contains($rewritten_paths, '/assets/extensions/demo/app.js')
+    || ! str_contains($rewritten_paths, '/writers/example/')) {
+    throw new RuntimeException('Hide içerik dönüşümü harici veya dahili yolları doğru işlemedi.');
+}
+
+$wordpress_version = get_bloginfo('version');
+$privacy_fixture = '<meta name="generator" content="WordPress ' . $wordpress_version . '">'
+    . '<link rel="dns-prefetch" href="//s.w.org">'
+    . '<link rel="EditURI" type="application/rsd+xml" href="/xmlrpc.php?rsd">'
+    . '<link rel="pingback" href="/xmlrpc.php">'
+    . '<link rel="wlwmanifest" href="/wp-includes/wlwmanifest.xml">'
+    . '<link rel="stylesheet" id="theme-css" href="/theme.css?ver=' . $wordpress_version . '">'
+    . '<script id="wp-embed-js" src="/wp-includes/js/wp-embed.min.js"></script>'
+    . '<script id="wp-emoji-settings" type="application/json">{}</script>'
+    . '<style id="wp-emoji-styles-inline-css">img.emoji{display:inline}</style>'
+    . '<p>Korunacak içerik</p>';
+$privacy_output = $hide_replacements->rewrite_html($privacy_fixture);
+foreach (['generator', 's.w.org', 'xmlrpc.php', 'wlwmanifest', '?ver=' . $wordpress_version, 'wp-embed', 'wp-emoji'] as $removed_trace) {
+    if (stripos($privacy_output, $removed_trace) !== false) {
+        throw new RuntimeException('Hide gizlilik seçeneği WordPress izini kaldıramadı: ' . $removed_trace);
+    }
+}
+if (! str_contains($privacy_output, 'Korunacak içerik')) {
+    throw new RuntimeException('Hide gizlilik temizliği normal sayfa içeriğini kaldırdı.');
 }
 
 Ragnus\StaticPublisher\Plugin::set_status('next-job', 'queued', 0, ['source' => 'test']);

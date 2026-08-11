@@ -21,6 +21,7 @@ final class Exporter
     private string $job_id = '';
     private string $build_directory = '';
     private int $reported_progress = 0;
+    private Hide_Replacements $hide_replacements;
 
     public function __construct()
     {
@@ -28,6 +29,7 @@ final class Exporter
         $this->origin = untrailingslashit(home_url());
         $this->target = untrailingslashit((string) ($settings['target_url'] ?: home_url()));
         $this->maximum_urls = max(10, min(20000, (int) $settings['maximum_urls']));
+        $this->hide_replacements = new Hide_Replacements(Plugin::hide_settings());
         $this->excluded_prefixes = array_values(array_filter(array_map(
             'trim',
             preg_split('/\r\n|\r|\n/', (string) $settings['excluded_paths']) ?: []
@@ -177,12 +179,14 @@ final class Exporter
 
             if (str_contains(strtolower($content_type), 'text/html')) {
                 [$body, $discovered] = $this->process_html($body, $url);
+                $body = $this->hide_replacements->rewrite_html($body);
             } elseif (str_contains(strtolower($content_type), 'text/css')) {
                 $discovered = $this->extract_css_urls($body, $url);
                 $body = $this->rewrite_asset_origin($body);
             } elseif ($this->is_text_content($content_type)) {
                 $body = $this->rewrite_asset_origin($body);
             }
+            $body = $this->hide_replacements->rewrite_content($body);
 
             $relative_path = Path_Mapper::url_to_relative_path($url, $content_type);
             if ($relative_path === null) {
@@ -190,6 +194,7 @@ final class Exporter
                 $this->update_crawl_progress($queue, $url);
                 continue;
             }
+            $relative_path = $this->hide_replacements->map_relative_path($relative_path);
 
             $this->write_file($relative_path, $body);
             $this->add_log('info', 'Kaynak statik dosyaya dönüştürüldü.', $url, $relative_path, $source_status_code);
@@ -482,7 +487,8 @@ final class Exporter
     {
         $path = (string) wp_parse_url($url, PHP_URL_PATH);
         $query = wp_parse_url($url, PHP_URL_QUERY);
-        return $this->target . ($path ?: '/') . (is_string($query) && $query !== '' ? '?' . $query : '');
+        $mapped_path = $this->hide_replacements->map_relative_path(ltrim($path ?: '/', '/'));
+        return $this->target . '/' . $mapped_path . (is_string($query) && $query !== '' ? '?' . $query : '');
     }
 
     private function write_file(string $relative_path, string $contents): void
@@ -495,7 +501,7 @@ final class Exporter
 
     private function write_cloudflare_files(): void
     {
-        $this->write_file('_headers', "/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: SAMEORIGIN\n\n/wp-content/uploads/*\n  Cache-Control: public, max-age=31536000, immutable\n");
+        $this->write_file('_headers', "/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: SAMEORIGIN\n\n" . $this->hide_replacements->uploads_public_path() . "*\n  Cache-Control: public, max-age=31536000, immutable\n");
         $this->write_file('_redirects', "/wp-admin/* {$this->origin}/wp-admin/:splat 302\n/wp-login.php {$this->origin}/wp-login.php 302\n");
 
         if (! file_exists($this->build_directory . '/404.html')) {
@@ -551,6 +557,7 @@ final class Exporter
             'started_at' => $started_at,
             'finished_at' => gmdate('c'),
             'url_count' => count($this->visited),
+            'hide_replacements' => $this->hide_replacements->settings(),
             'build_sha256' => hash('sha256', (string) wp_json_encode($file_hashes, JSON_UNESCAPED_SLASHES)),
         ];
         $this->write_file('ragnus-static-manifest.json', (string) wp_json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));

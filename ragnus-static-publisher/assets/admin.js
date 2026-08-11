@@ -2,6 +2,18 @@
     'use strict';
 
     const config = window.RagnusStaticPublisherAdmin;
+    const hideContentInput = document.querySelector('#ragstat-hide-wp-content');
+    const hideContentPrefixes = document.querySelectorAll('[data-ragstat-content-prefix]');
+    if (hideContentInput && hideContentPrefixes.length) {
+        const updateHidePrefixes = function () {
+            const prefix = hideContentInput.value.trim() || 'wp-content';
+            hideContentPrefixes.forEach(function (element) {
+                element.textContent = prefix + '/';
+            });
+        };
+        hideContentInput.addEventListener('input', updateHidePrefixes);
+        updateHidePrefixes();
+    }
     const root = document.querySelector('[data-ragstat-status-root]');
     if (!config || !root) {
         return;

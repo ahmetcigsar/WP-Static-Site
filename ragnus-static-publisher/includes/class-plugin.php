@@ -10,6 +10,7 @@ final class Plugin
 {
     public const EXPORT_CAPABILITY = 'ragnus_static_export';
     public const SETTINGS_KEY = 'ragnus_static_settings';
+    public const HIDE_SETTINGS_KEY = 'ragnus_static_hide_settings';
     public const STATUS_KEY = 'ragnus_static_status';
     public const LOCK_KEY = 'ragnus_static_export_lock';
     public const DIRTY_KEY = 'ragnus_static_export_dirty';
@@ -17,6 +18,7 @@ final class Plugin
 
     public static function boot(): void
     {
+        add_action('init', [self::class, 'apply_export_privacy'], 0);
         add_action('init', [self::class, 'maybe_upgrade'], 1);
         add_action('init', [self::class, 'register_cli']);
         add_action('rest_api_init', [REST_Controller::class, 'register']);
@@ -25,6 +27,7 @@ final class Plugin
         add_action('admin_enqueue_scripts', [Admin::class, 'enqueue_assets']);
         add_action('admin_init', [Admin::class, 'settings']);
         add_action('admin_post_ragnus_static_export', [Admin::class, 'start_export']);
+        add_action('admin_post_ragnus_static_refresh_diagnostics', [Admin::class, 'refresh_diagnostics']);
         add_action('wp_ajax_ragnus_static_run_pending', [Admin::class, 'run_pending_export']);
         add_action('admin_post_ragnus_static_download', [Admin::class, 'download_export']);
         add_action('admin_post_ragnus_static_cleanup_exports', [Admin::class, 'cleanup_exports']);
@@ -49,6 +52,7 @@ final class Plugin
         }
 
         update_option('ragnus_static_plugin_version', RAGSTAT_VERSION, false);
+        Diagnostics::refresh();
     }
 
     public static function maybe_upgrade(): void
@@ -76,6 +80,51 @@ final class Plugin
             'deployment_webhook_url' => '',
             'deployment_webhook_token' => '',
         ]);
+    }
+
+    public static function hide_defaults(): array
+    {
+        return [
+            'wp_content_directory' => 'wp-content',
+            'wp_includes_directory' => 'wp-includes',
+            'uploads_directory' => 'uploads',
+            'plugins_directory' => 'plugins',
+            'themes_directory' => 'themes',
+            'theme_style_name' => 'style',
+            'author_url' => 'author',
+            'hide_wordpress_version' => '0',
+            'hide_generator_meta' => '0',
+            'hide_wordpress_dns_prefetch' => '0',
+            'hide_rsd_header' => '0',
+            'disable_xml_rpc' => '0',
+            'disable_embed_scripts' => '0',
+            'disable_db_debug' => '0',
+            'disable_wlw_manifest' => '0',
+            'disable_emojis' => '0',
+        ];
+    }
+
+    public static function hide_settings(): array
+    {
+        return wp_parse_args(get_option(self::HIDE_SETTINGS_KEY, []), self::hide_defaults());
+    }
+
+    public static function apply_export_privacy(): void
+    {
+        if (($_SERVER['HTTP_X_RAGNUS_STATIC_EXPORT'] ?? '') !== '1') {
+            return;
+        }
+
+        $settings = self::hide_settings();
+        if (($settings['disable_db_debug'] ?? '0') !== '1') {
+            return;
+        }
+
+        @ini_set('display_errors', '0');
+        global $wpdb;
+        if (is_object($wpdb) && method_exists($wpdb, 'hide_errors')) {
+            $wpdb->hide_errors();
+        }
     }
 
     public static function storage_directory(): string

@@ -36,6 +36,25 @@ if (($settings['archive_retention'] ?? null) !== 5) {
     fwrite(STDERR, "Varsayılan ZIP saklama sayısı 5 değil.\n");
     exit(1);
 }
+$hide_settings = Ragnus\StaticPublisher\Plugin::hide_settings();
+if (($hide_settings['wp_content_directory'] ?? '') !== 'wp-content'
+    || ($hide_settings['theme_style_name'] ?? '') !== 'style'
+    || ($hide_settings['author_url'] ?? '') !== 'author') {
+    fwrite(STDERR, "Varsayılan Hide ayarları doğru değil.\n");
+    exit(1);
+}
+$sanitized_hide = Ragnus\StaticPublisher\Admin::sanitize_hide_settings([
+    'wp_content_directory' => '../My Assets',
+    'theme_style_name' => 'custom.css',
+    'disable_emojis' => '1',
+]);
+if (($sanitized_hide['wp_content_directory'] ?? '') !== 'my-assets'
+    || ($sanitized_hide['theme_style_name'] ?? '') !== 'custom'
+    || ($sanitized_hide['disable_emojis'] ?? '') !== '1'
+    || ($sanitized_hide['disable_xml_rpc'] ?? '') !== '0') {
+    fwrite(STDERR, "Hide ayarları güvenli yol adlarına dönüştürülmedi.\n");
+    exit(1);
+}
 
 Ragnus\StaticPublisher\Admin::enqueue_assets('toplevel_page_ragnus-static-publisher');
 if (! wp_style_is('ragnus-static-publisher-admin', 'enqueued')) {
@@ -95,6 +114,18 @@ if (! str_contains($admin_source, '>Sıra</th>') || ! str_contains($admin_source
 if (substr_count($admin_source, 'class="ragstat-time-column"') < 2) {
     fwrite(STDERR, "Activity Log saat sütunu sınıfı eksik.\n");
     exit(1);
+}
+foreach (['Tekrar Kontrol Et', 'ragnus_static_refresh_diagnostics', 'Diagnostics::report()'] as $expected) {
+    if (! str_contains($admin_source, $expected)) {
+        fwrite(STDERR, "Diagnostics yeniden kontrol arayüzü eksik: {$expected}\n");
+        exit(1);
+    }
+}
+foreach (["'hide' => 'Hide'", 'render_hide_tab', 'Hide Ayarlarını Kaydet'] as $expected) {
+    if (! str_contains($admin_source, $expected)) {
+        fwrite(STDERR, "Hide sekmesi arayüzü eksik: {$expected}\n");
+        exit(1);
+    }
 }
 
 Ragnus\StaticPublisher\Plugin::set_status('stalled-test', 'queued', 0, [

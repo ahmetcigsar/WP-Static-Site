@@ -10,7 +10,8 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 - Cloudflare `_headers` ve `_redirects` üretimi
 - ZIP ve SHA-256 manifest üretimi
 - Sol ana menüde doküman ikonlu Static Publisher yönetim ekranı
-- Main, Files, Activity Log, Settings, Arama, Hide, Diagnostics ve About sekmelerine ayrılmış yönetim görünümü
+- Main, Deploy, Files, Activity Log, Settings, Arama, Hide, Diagnostics ve About sekmelerine ayrılmış yönetim görünümü
+- Deploy sekmesinde ZIP File, GitHub ve Cloudflare yayın seçenekleri
 - Yerel Fuse.js 7.3.0 paketiyle çalışan, alanları ve ağırlıkları yapılandırılabilen statik site araması
 - Hide sekmesinden WordPress yollarını yeniden adlandırma; sürüm, generator, XML-RPC, embed ve emoji izlerini statik çıktıdan temizleme
 - Main sekmesinde son başarılı static oluşturma zamanı ve yeşil ilerleme/tamamlanma göstergesi

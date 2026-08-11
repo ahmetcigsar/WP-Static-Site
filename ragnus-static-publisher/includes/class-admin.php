@@ -347,6 +347,7 @@ final class Admin
         $requested_tab = isset($_GET['tab']) ? sanitize_key(wp_unslash((string) $_GET['tab'])) : 'main';
         $tabs = [
             'main' => 'Main',
+            'deploy' => 'Deploy',
             'files' => 'Files',
             'activity' => 'Activity Log',
             'settings' => 'Settings',
@@ -376,6 +377,8 @@ final class Admin
             <main class="ragstat-tab-content">
             <?php if ($current_tab === 'main') : ?>
                 <?php self::render_main_tab($status, $archives); ?>
+            <?php elseif ($current_tab === 'deploy') : ?>
+                <?php self::render_deploy_tab($archives, Plugin::settings()); ?>
             <?php elseif ($current_tab === 'files') : ?>
                 <?php self::render_files_tab($archives); ?>
             <?php elseif ($current_tab === 'activity') : ?>
@@ -536,6 +539,61 @@ final class Admin
             <?php submit_button('Eski Dosyaları Sil', 'delete', 'submit', false, ['onclick' => "return confirm('En son ZIP dışındaki tüm eski ZIP dosyaları silinecek. Devam edilsin mi?');"]); ?>
             <p class="description">En son ZIP dosyası korunur; önceki ZIP dosyaları ve bunlara ait geçici build klasörleri kalıcı olarak silinir.</p>
         </form>
+        <?php
+    }
+
+    private static function render_deploy_tab(array $archives, array $settings): void
+    {
+        $has_archive = $archives !== [];
+        $github_configured = (string) ($settings['deployment_webhook_url'] ?? '') !== '';
+        ?>
+        <div class="ragstat-deploy-header">
+            <div>
+                <h2>Deploy</h2>
+                <p>Statik sitenizi yayınlamak için kullanacağınız yöntemi seçin.</p>
+            </div>
+        </div>
+        <div class="ragstat-deploy-grid">
+            <section class="ragstat-deploy-card" aria-labelledby="ragstat-deploy-zip-title">
+                <span class="ragstat-deploy-card__icon dashicons dashicons-media-archive" aria-hidden="true"></span>
+                <div class="ragstat-deploy-card__content">
+                    <h3 id="ragstat-deploy-zip-title">ZIP File</h3>
+                    <p>Oluşturulan statik site paketini indirip istediğiniz sunucuya manuel olarak yükleyin.</p>
+                </div>
+                <div class="ragstat-deploy-card__footer">
+                    <span class="ragstat-deploy-status <?php echo $has_archive ? 'is-ready' : 'is-pending'; ?>">
+                        <?php echo $has_archive ? 'ZIP hazır' : 'Önce statik site oluşturun'; ?>
+                    </span>
+                    <a class="button button-primary" href="<?php echo esc_url(self::admin_page_url('files')); ?>">ZIP Dosyalarını Aç</a>
+                </div>
+            </section>
+
+            <section class="ragstat-deploy-card" aria-labelledby="ragstat-deploy-github-title">
+                <span class="ragstat-deploy-card__icon dashicons dashicons-randomize" aria-hidden="true"></span>
+                <div class="ragstat-deploy-card__content">
+                    <h3 id="ragstat-deploy-github-title">GitHub</h3>
+                    <p>Export tamamlandığında GitHub Actions akışını webhook ile otomatik olarak tetikleyin.</p>
+                </div>
+                <div class="ragstat-deploy-card__footer">
+                    <span class="ragstat-deploy-status <?php echo $github_configured ? 'is-ready' : 'is-pending'; ?>">
+                        <?php echo $github_configured ? 'Webhook ayarlı' : 'Yapılandırma gerekli'; ?>
+                    </span>
+                    <a class="button button-primary" href="<?php echo esc_url(self::admin_page_url('settings') . '#ragstat-webhook'); ?>">GitHub Ayarları</a>
+                </div>
+            </section>
+
+            <section class="ragstat-deploy-card" aria-labelledby="ragstat-deploy-cloudflare-title">
+                <span class="ragstat-deploy-card__icon dashicons dashicons-cloud" aria-hidden="true"></span>
+                <div class="ragstat-deploy-card__content">
+                    <h3 id="ragstat-deploy-cloudflare-title">Cloudflare</h3>
+                    <p>GitHub Actions akışıyla statik dosyaları Cloudflare Workers Static Assets üzerinde yayınlayın.</p>
+                </div>
+                <div class="ragstat-deploy-card__footer">
+                    <span class="ragstat-deploy-status is-info">Cloudflare hesabı gerekir</span>
+                    <a class="button button-primary" href="<?php echo esc_url('https://dash.cloudflare.com/'); ?>" target="_blank" rel="noopener noreferrer">Cloudflare'ı Aç<span class="dashicons dashicons-external" aria-hidden="true"></span></a>
+                </div>
+            </section>
+        </div>
         <?php
     }
 

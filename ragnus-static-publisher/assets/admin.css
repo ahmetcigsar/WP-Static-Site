@@ -394,6 +394,114 @@
     background: #b91c1c;
 }
 
+.ragstat-deploy-header {
+    margin-bottom: 20px;
+}
+
+.ragstat-deploy-header h2 {
+    margin: 0 0 6px;
+}
+
+.ragstat-deploy-header p {
+    margin: 0;
+    color: var(--ragstat-muted);
+}
+
+.ragstat-deploy-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.ragstat-deploy-card {
+    display: flex;
+    min-width: 0;
+    min-height: 270px;
+    flex-direction: column;
+    padding: 24px;
+    border: 1px solid var(--ragstat-border);
+    border-radius: 14px;
+    background: var(--ragstat-surface);
+    box-shadow: 0 6px 18px rgba(15, 23, 42, .05);
+    transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease;
+}
+
+.ragstat-deploy-card:hover {
+    border-color: #a9c2f4;
+    box-shadow: 0 12px 28px rgba(37, 99, 235, .1);
+    transform: translateY(-2px);
+}
+
+.ragstat-deploy-card__icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 20px;
+    color: var(--ragstat-primary);
+    border-radius: 13px;
+    background: #e8efff;
+    font-size: 25px;
+    line-height: 48px;
+    text-align: center;
+}
+
+.ragstat-deploy-card__content {
+    flex: 1 1 auto;
+}
+
+.ragstat-deploy-card__content h3 {
+    margin: 0 0 9px;
+    color: var(--ragstat-text);
+    font-size: 18px;
+}
+
+.ragstat-deploy-card__content p {
+    margin: 0;
+    color: var(--ragstat-muted);
+    line-height: 1.55;
+}
+
+.ragstat-deploy-card__footer {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    flex-direction: column;
+    margin-top: 24px;
+}
+
+.ragstat-deploy-card__footer .button {
+    width: 100%;
+}
+
+.ragstat-deploy-card__footer .dashicons {
+    width: 16px;
+    height: 16px;
+    margin-left: 5px;
+    font-size: 16px;
+    line-height: 16px;
+}
+
+.ragstat-deploy-status {
+    display: inline-flex;
+    align-items: center;
+    min-height: 25px;
+    padding: 0 9px;
+    border-radius: 999px;
+    color: #92400e;
+    background: #fef3c7;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.ragstat-deploy-status.is-ready {
+    color: #166534;
+    background: #dcfce7;
+}
+
+.ragstat-deploy-status.is-info {
+    color: #1e40af;
+    background: #dbeafe;
+}
+
 .ragstat-admin .tablenav {
     height: auto;
     min-height: 42px;
@@ -1083,6 +1191,14 @@
 
     .ragstat-actions .button {
         width: 100%;
+    }
+
+    .ragstat-deploy-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ragstat-deploy-card {
+        min-height: 0;
     }
 
     .ragstat-settings-form {

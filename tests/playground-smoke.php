@@ -157,6 +157,19 @@ foreach (["'hide' => 'Hide'", 'render_hide_tab', 'Hide Ayarlarını Kaydet'] as 
     }
 }
 
+$_GET['tab'] = 'deploy';
+ob_start();
+Ragnus\StaticPublisher\Admin::render();
+$deploy_html = (string) ob_get_clean();
+unset($_GET['tab']);
+
+foreach (['Deploy', 'ZIP File', 'GitHub', 'Cloudflare', 'ZIP Dosyalarını Aç', 'GitHub Ayarları'] as $expected) {
+    if (! str_contains($deploy_html, $expected)) {
+        fwrite(STDERR, "Deploy sekmesinde beklenen içerik bulunamadı: {$expected}\n");
+        exit(1);
+    }
+}
+
 Ragnus\StaticPublisher\Plugin::set_status('stalled-test', 'queued', 0, [
     'queued_at' => gmdate('c', time() - 120),
     'status_message' => 'Export işi sıraya alındı.',

@@ -43,4 +43,18 @@ if (! wp_style_is('ragnus-static-publisher-admin', 'enqueued')) {
     exit(1);
 }
 
+wp_set_current_user(1);
+$_GET['tab'] = 'about';
+ob_start();
+Ragnus\StaticPublisher\Admin::render();
+$about_html = (string) ob_get_clean();
+unset($_GET['tab']);
+
+foreach (['About', 'Versiyon Numarası', RAGSTAT_VERSION, 'mailto:info@ragnus.co', 'https://ragnus.co/'] as $expected) {
+    if (! str_contains($about_html, $expected)) {
+        fwrite(STDERR, "About sekmesinde beklenen içerik bulunamadı: {$expected}\n");
+        exit(1);
+    }
+}
+
 echo "Ragnus Static Publisher smoke test passed.\n";

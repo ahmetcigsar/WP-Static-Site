@@ -31,6 +31,43 @@ if (is_wp_error($post_id)) {
 }
 
 $job_id = 'integration-test';
+add_filter('ragnus_static_seed_urls', static function (array $urls): array {
+    $urls[] = home_url('/redirect-test/');
+    $urls[] = home_url('/not-found-test/');
+    $urls[] = home_url('/forbidden-test/');
+    return $urls;
+});
+add_filter('pre_http_request', static function ($preempt, array $args, string $url) {
+    $path = (string) wp_parse_url($url, PHP_URL_PATH);
+    if (! in_array($path, ['/redirect-test/', '/not-found-test/', '/forbidden-test/'], true)) {
+        return $preempt;
+    }
+
+    $status_code = $path === '/not-found-test/' ? 404 : ($path === '/forbidden-test/' ? 403 : 200);
+    $response_object = (object) ['history' => []];
+    if ($path === '/redirect-test/') {
+        $response_object->history[] = (object) ['status_code' => 301];
+    }
+    $http_response = new class($response_object) {
+        public function __construct(private object $response)
+        {
+        }
+
+        public function get_response_object(): object
+        {
+            return $this->response;
+        }
+    };
+
+    return [
+        'headers' => ['content-type' => 'text/html; charset=UTF-8'],
+        'body' => '<!doctype html><html><body>HTTP durum kodu testi</body></html>',
+        'response' => ['code' => $status_code, 'message' => 'Test'],
+        'cookies' => [],
+        'filename' => null,
+        'http_response' => $http_response,
+    ];
+}, 10, 3);
 Ragnus\StaticPublisher\Plugin::set_status($job_id, 'running', 0, ['source' => 'test']);
 $status = (new Ragnus\StaticPublisher\Exporter())->run($job_id);
 
@@ -60,10 +97,21 @@ foreach ($activity['entries'] as $entry) {
     }
 }
 $mapped_entries = array_values(array_filter($activity['entries'], static function (array $entry): bool {
-    return ($entry['source_url'] ?? '') !== '' && ($entry['static_path'] ?? '') !== '';
+    return ($entry['source_url'] ?? '') !== ''
+        && ($entry['static_path'] ?? '') !== ''
+        && is_int($entry['status_code'] ?? null);
 }));
 if ($mapped_entries === []) {
     throw new RuntimeException('Export Activity Log kaynağı ve statik adresi ayrı alanlarda saklamadı.');
+}
+$status_codes_by_source = [];
+foreach ($activity['entries'] as $entry) {
+    $status_codes_by_source[(string) ($entry['source_url'] ?? '')] = $entry['status_code'] ?? null;
+}
+if (($status_codes_by_source[home_url('/redirect-test/')] ?? null) !== 301
+    || ($status_codes_by_source[home_url('/not-found-test/')] ?? null) !== 404
+    || ($status_codes_by_source[home_url('/forbidden-test/')] ?? null) !== 403) {
+    throw new RuntimeException('HTTP 301, 404 ve 403 kaynak kodları Activity Log içine doğru kaydedilmedi.');
 }
 
 $zip = new ZipArchive();

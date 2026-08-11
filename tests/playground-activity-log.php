@@ -31,7 +31,8 @@ for ($index = 1; $index <= 120; ++$index) {
         'info',
         'Kayıt ' . $index,
         'https://cms.example.com/source/' . $index . '/',
-        'static/' . $index
+        'static/' . $index,
+        $index === 57 ? 404 : ($index === 58 ? 301 : 200)
     );
 }
 
@@ -48,8 +49,31 @@ if (($first_page['entries'][0]['message'] ?? '') !== 'Kayıt 120' || ($third_pag
     throw new RuntimeException('Activity Log kayıtları en yeniden eskiye sıralanmadı.');
 }
 if (($first_page['entries'][0]['source_url'] ?? '') !== 'https://cms.example.com/source/120/'
-    || ($first_page['entries'][0]['static_path'] ?? '') !== 'static/120') {
+    || ($first_page['entries'][0]['static_path'] ?? '') !== 'static/120'
+    || ($first_page['entries'][0]['status_code'] ?? null) !== 200) {
     throw new RuntimeException('Kaynak ve statik adres alanları Activity Log dosyasından okunamadı.');
+}
+
+$searched_page = Ragnus\StaticPublisher\Activity_Log::page(1, 'SOURCE/57/');
+if ($searched_page['total'] !== 1
+    || $searched_page['total_pages'] !== 1
+    || ($searched_page['entries'][0]['source_url'] ?? '') !== 'https://cms.example.com/source/57/'
+    || ($searched_page['entries'][0]['status_code'] ?? null) !== 404) {
+    throw new RuntimeException('Activity Log kaynak adres araması doğru sonucu döndürmedi.');
+}
+$searched_all_pages = Ragnus\StaticPublisher\Activity_Log::page(2, 'cms.example.com/source/');
+if ($searched_all_pages['total'] !== 120
+    || $searched_all_pages['total_pages'] !== 3
+    || count($searched_all_pages['entries']) !== 50) {
+    throw new RuntimeException('Activity Log arama sonuçları 50 kayıtlık sayfalara bölünmedi.');
+}
+$code_search = Ragnus\StaticPublisher\Activity_Log::page(1, '404');
+if ($code_search['total'] !== 1 || ($code_search['entries'][0]['status_code'] ?? null) !== 404) {
+    throw new RuntimeException('Activity Log HTTP kodu araması doğru sonucu döndürmedi.');
+}
+$missing_search = Ragnus\StaticPublisher\Activity_Log::page(1, 'bulunmayan-kayit');
+if ($missing_search['total'] !== 0 || $missing_search['entries'] !== []) {
+    throw new RuntimeException('Activity Log sonuçsuz arama durumunu doğru döndürmedi.');
 }
 
 Ragnus\StaticPublisher\Activity_Log::reset('activity-job-2');
@@ -57,14 +81,17 @@ Ragnus\StaticPublisher\Activity_Log::append(
     'activity-job-2',
     'warning',
     'Yeni işlem kaydı',
-    'https://cms.example.com/new-source/'
+    'https://cms.example.com/new-source/',
+    '',
+    403
 );
 $new_job_page = Ragnus\StaticPublisher\Activity_Log::page(1);
 if ($new_job_page['total'] !== 1
     || $new_job_page['job_id'] !== 'activity-job-2'
     || ($new_job_page['entries'][0]['message'] ?? '') !== 'Yeni işlem kaydı'
     || ($new_job_page['entries'][0]['source_url'] ?? '') !== 'https://cms.example.com/new-source/'
-    || ($new_job_page['entries'][0]['static_path'] ?? '') !== '') {
+    || ($new_job_page['entries'][0]['static_path'] ?? '') !== ''
+    || ($new_job_page['entries'][0]['status_code'] ?? null) !== 403) {
     throw new RuntimeException('Yeni static işlemi eski Activity Log kayıtlarını temizlemedi.');
 }
 

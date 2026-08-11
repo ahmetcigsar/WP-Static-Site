@@ -134,8 +134,9 @@ final class Exporter
             }
 
             $status_code = (int) wp_remote_retrieve_response_code($response);
+            $source_status_code = $this->source_status_code($response);
             if ($status_code < 200 || $status_code >= 400) {
-                $this->add_log('warning', sprintf('HTTP %d', $status_code), $url);
+                $this->add_log('warning', sprintf('HTTP %d', $status_code), $url, '', $source_status_code);
                 continue;
             }
 
@@ -154,12 +155,12 @@ final class Exporter
 
             $relative_path = Path_Mapper::url_to_relative_path($url, $content_type);
             if ($relative_path === null) {
-                $this->add_log('warning', 'Güvenli olmayan dosya yolu atlandı.', $url);
+                $this->add_log('warning', 'Güvenli olmayan dosya yolu atlandı.', $url, '', $source_status_code);
                 continue;
             }
 
             $this->write_file($relative_path, $body);
-            $this->add_log('info', 'Kaynak statik dosyaya dönüştürüldü.', $url, $relative_path);
+            $this->add_log('info', 'Kaynak statik dosyaya dönüştürüldü.', $url, $relative_path, $source_status_code);
 
             foreach ($discovered as $discovered_url) {
                 $queue->enqueue($discovered_url);
@@ -505,8 +506,28 @@ final class Exporter
         return $manifest;
     }
 
-    private function add_log(string $level, string $message, string $source_url = '', string $static_path = ''): void
+    private function source_status_code(array $response): int
     {
-        Activity_Log::append($this->job_id, $level, $message, $source_url, $static_path);
+        $status_code = (int) wp_remote_retrieve_response_code($response);
+        $http_response = $response['http_response'] ?? null;
+        if (! is_object($http_response) || ! method_exists($http_response, 'get_response_object')) {
+            return $status_code;
+        }
+
+        $response_object = $http_response->get_response_object();
+        if (! is_object($response_object) || ! isset($response_object->history) || ! is_array($response_object->history) || $response_object->history === []) {
+            return $status_code;
+        }
+
+        $history = $response_object->history;
+        $source_response = end($history);
+        return is_object($source_response) && isset($source_response->status_code)
+            ? absint($source_response->status_code)
+            : $status_code;
+    }
+
+    private function add_log(string $level, string $message, string $source_url = '', string $static_path = '', int $status_code = 0): void
+    {
+        Activity_Log::append($this->job_id, $level, $message, $source_url, $static_path, $status_code);
     }
 }

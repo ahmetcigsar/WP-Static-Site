@@ -23,7 +23,8 @@ final class Activity_Log
         string $level,
         string $message,
         string $source_url = '',
-        string $static_path = ''
+        string $static_path = '',
+        int $status_code = 0
     ): void
     {
         self::prepare_directory();
@@ -34,6 +35,7 @@ final class Activity_Log
             'message' => $message,
             'source_url' => esc_url_raw($source_url),
             'static_path' => ltrim($static_path, '/'),
+            'status_code' => $status_code >= 100 && $status_code <= 599 ? $status_code : null,
         ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
         if (is_string($entry)) {
@@ -41,9 +43,10 @@ final class Activity_Log
         }
     }
 
-    public static function page(int $page): array
+    public static function page(int $page, string $search = ''): array
     {
         $entries = [];
+        $search = trim($search);
         $path = self::log_path();
         if (is_readable($path)) {
             $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -51,7 +54,10 @@ final class Activity_Log
                 foreach (array_reverse($lines) as $line) {
                     $entry = json_decode($line, true);
                     if (is_array($entry)) {
-                        $entries[] = self::normalise_entry($entry);
+                        $entry = self::normalise_entry($entry);
+                        if ($search === '' || self::matches_search($entry, $search)) {
+                            $entries[] = $entry;
+                        }
                     }
                 }
             }
@@ -68,13 +74,36 @@ final class Activity_Log
             'page_size' => self::PAGE_SIZE,
             'total' => $total,
             'total_pages' => $total_pages,
+            'search' => $search,
         ];
+    }
+
+    private static function matches_search(array $entry, string $search): bool
+    {
+        $haystack = implode("\n", [
+            (string) ($entry['source_url'] ?? ''),
+            (string) ($entry['static_path'] ?? ''),
+            (string) ($entry['message'] ?? ''),
+            (string) ($entry['level'] ?? ''),
+            (string) ($entry['time'] ?? ''),
+            (string) ($entry['job_id'] ?? ''),
+            (string) ($entry['status_code'] ?? ''),
+        ]);
+
+        return function_exists('mb_stripos')
+            ? mb_stripos($haystack, $search, 0, 'UTF-8') !== false
+            : stripos($haystack, $search) !== false;
     }
 
     private static function normalise_entry(array $entry): array
     {
         $entry['source_url'] = is_string($entry['source_url'] ?? null) ? $entry['source_url'] : '';
         $entry['static_path'] = is_string($entry['static_path'] ?? null) ? ltrim($entry['static_path'], '/') : '';
+        $entry['status_code'] = is_numeric($entry['status_code'] ?? null)
+            && (int) $entry['status_code'] >= 100
+            && (int) $entry['status_code'] <= 599
+                ? (int) $entry['status_code']
+                : null;
 
         if ($entry['source_url'] === '' && $entry['static_path'] === '' && is_string($entry['message'] ?? null)) {
             $parts = explode(' -> ', $entry['message'], 2);

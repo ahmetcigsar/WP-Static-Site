@@ -215,6 +215,7 @@ final class Admin
             'activity' => 'Activity Log',
             'settings' => 'Settings',
             'diagnostics' => 'Diagnostics',
+            'about' => 'About',
         ];
         $current_tab = isset($tabs[$requested_tab]) ? $requested_tab : 'main';
         $status = Plugin::public_status();
@@ -243,8 +244,10 @@ final class Admin
                 <?php self::render_activity_tab(); ?>
             <?php elseif ($current_tab === 'settings') : ?>
                 <?php self::render_settings_tab(Plugin::settings()); ?>
-            <?php else : ?>
+            <?php elseif ($current_tab === 'diagnostics') : ?>
                 <?php self::render_diagnostics_tab(); ?>
+            <?php else : ?>
+                <?php self::render_about_tab(); ?>
             <?php endif; ?>
             </main>
         </div>
@@ -390,29 +393,46 @@ final class Admin
     private static function render_activity_tab(): void
     {
         $requested_page = isset($_GET['log_page']) ? absint($_GET['log_page']) : 1;
-        $activity = Activity_Log::page($requested_page);
+        $search = isset($_GET['log_search']) ? sanitize_text_field(wp_unslash((string) $_GET['log_search'])) : '';
+        $activity = Activity_Log::page($requested_page, $search);
         $entries = $activity['entries'];
-        $level_labels = ['info' => 'Bilgi', 'warning' => 'Uyarı', 'error' => 'Hata'];
         ?>
         <h2>Activity Log</h2>
         <?php if ($activity['job_id'] !== '') : ?>
             <p>En son static işlemine ait kayıtlar: <code><?php echo esc_html((string) $activity['job_id']); ?></code></p>
         <?php endif; ?>
+        <form class="ragstat-activity-search" method="get" action="<?php echo esc_url(admin_url('admin.php')); ?>">
+            <input type="hidden" name="page" value="ragnus-static-publisher">
+            <input type="hidden" name="tab" value="activity">
+            <label class="screen-reader-text" for="ragstat-log-search">Log Kayıtlarında Ara</label>
+            <span class="dashicons dashicons-search" aria-hidden="true"></span>
+            <input id="ragstat-log-search" type="search" name="log_search" value="<?php echo esc_attr($search); ?>" placeholder="Kod, kaynak veya statik adreste ara...">
+            <button class="button button-primary" type="submit">Ara</button>
+            <?php if ($search !== '') : ?>
+                <a class="button" href="<?php echo esc_url(self::admin_page_url('activity')); ?>">Aramayı Temizle</a>
+            <?php endif; ?>
+        </form>
         <?php if ($entries === []) : ?>
-            <p>Henüz kaydedilmiş bir export etkinliği yok.</p>
+            <div class="ragstat-empty-state">
+                <span class="dashicons dashicons-search" aria-hidden="true"></span>
+                <p><?php echo $search === '' ? 'Henüz kaydedilmiş bir export etkinliği yok.' : 'Aramanızla eşleşen bir log kaydı bulunamadı.'; ?></p>
+            </div>
         <?php else : ?>
             <table class="widefat striped ragstat-activity-table">
-                <thead><tr><th>Tarih</th><th>Saat</th><th>Seviye</th><th>Kaynak Adres</th><th>Statik Adres</th></tr></thead>
+                <thead><tr><th>Kod</th><th>Tarih</th><th>Saat</th><th>Kaynak Adres</th><th>Statik Adres</th></tr></thead>
                 <tbody>
                 <?php foreach ($entries as $entry) : ?>
                     <?php
                     $timestamp = strtotime((string) ($entry['time'] ?? ''));
-                    $level = sanitize_key((string) ($entry['level'] ?? 'info'));
+                    $status_code = is_numeric($entry['status_code'] ?? null) ? (int) $entry['status_code'] : 0;
+                    $status_class = $status_code >= 200 && $status_code < 300
+                        ? 'is-success'
+                        : ($status_code >= 300 && $status_code < 400 ? 'is-redirect' : ($status_code >= 400 ? 'is-error' : 'is-unknown'));
                     ?>
                     <tr>
+                        <td><span class="ragstat-http-code <?php echo esc_attr($status_class); ?>"><?php echo $status_code === 0 ? '—' : esc_html((string) $status_code); ?></span></td>
                         <td><?php echo $timestamp === false ? '—' : esc_html(wp_date((string) get_option('date_format'), $timestamp)); ?></td>
                         <td><?php echo $timestamp === false ? '—' : esc_html(wp_date((string) get_option('time_format'), $timestamp)); ?></td>
-                        <td><?php echo esc_html($level_labels[$level] ?? ucfirst($level)); ?></td>
                         <td><?php if (($entry['source_url'] ?? '') === '') : ?>—<?php else : ?><code><?php echo esc_html((string) $entry['source_url']); ?></code><?php endif; ?></td>
                         <td><?php if (($entry['static_path'] ?? '') === '') : ?>—<?php else : ?><code><?php echo esc_html((string) $entry['static_path']); ?></code><?php endif; ?></td>
                     </tr>
@@ -420,24 +440,27 @@ final class Admin
                 </tbody>
             </table>
             <?php if ($activity['total_pages'] > 1) : ?>
-                <div class="tablenav bottom">
-                    <div class="tablenav-pages">
-                        <span class="displaying-num"><?php echo esc_html(sprintf('%d kayıt', (int) $activity['total'])); ?></span>
-                        <span class="pagination-links">
-                            <?php
-                            echo wp_kses_post((string) paginate_links([
-                                'base' => add_query_arg('log_page', '%#%', self::admin_page_url('activity')),
-                                'format' => '',
-                                'current' => (int) $activity['page'],
-                                'total' => (int) $activity['total_pages'],
-                                'prev_text' => '‹',
-                                'next_text' => '›',
-                            ]));
-                            ?>
-                        </span>
-                    </div>
-                    <br class="clear">
-                </div>
+                <?php
+                $pagination_url = $search === ''
+                    ? self::admin_page_url('activity')
+                    : add_query_arg('log_search', $search, self::admin_page_url('activity'));
+                ?>
+                <nav class="ragstat-pagination" aria-label="Activity Log sayfaları">
+                    <span class="ragstat-pagination__summary"><?php echo esc_html(sprintf('%d Kayıt', (int) $activity['total'])); ?></span>
+                    <?php
+                    echo wp_kses_post((string) paginate_links([
+                        'base' => add_query_arg('log_page', '%#%', $pagination_url),
+                        'format' => '',
+                        'current' => (int) $activity['page'],
+                        'total' => (int) $activity['total_pages'],
+                        'mid_size' => 2,
+                        'end_size' => 1,
+                        'prev_text' => '‹ Önceki',
+                        'next_text' => 'Sonraki ›',
+                        'type' => 'list',
+                    ]));
+                    ?>
+                </nav>
             <?php endif; ?>
         <?php endif; ?>
         <?php
@@ -499,6 +522,41 @@ final class Admin
                 </table>
             </section>
         <?php endforeach; ?>
+        <?php
+    }
+
+    private static function render_about_tab(): void
+    {
+        ?>
+        <h2>About</h2>
+        <section class="ragstat-about-card" aria-labelledby="ragstat-about-title">
+            <div class="ragstat-about-card__intro">
+                <span class="ragstat-about-card__icon dashicons dashicons-media-document" aria-hidden="true"></span>
+                <div>
+                    <h3 id="ragstat-about-title">Ragnus Static Publisher</h3>
+                    <p>WordPress sitenizi statik dosyalara dönüştürmek ve yayın süreçlerine hazırlamak için geliştirilmiştir.</p>
+                </div>
+            </div>
+            <dl class="ragstat-about-details">
+                <div>
+                    <dt>Versiyon Numarası</dt>
+                    <dd><code><?php echo esc_html(RAGSTAT_VERSION); ?></code></dd>
+                </div>
+                <div>
+                    <dt>Destek Maili</dt>
+                    <dd><a href="<?php echo esc_url('mailto:info@ragnus.co'); ?>">info@ragnus.co</a></dd>
+                </div>
+                <div>
+                    <dt>Eklenti Web Sitesi</dt>
+                    <dd>
+                        <a href="<?php echo esc_url('https://ragnus.co/'); ?>" target="_blank" rel="noopener noreferrer">
+                            ragnus.co
+                            <span class="dashicons dashicons-external" aria-hidden="true"></span>
+                        </a>
+                    </dd>
+                </div>
+            </dl>
+        </section>
         <?php
     }
 }

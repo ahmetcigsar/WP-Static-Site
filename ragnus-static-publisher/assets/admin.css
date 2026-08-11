@@ -159,6 +159,154 @@
     max-width: 1300px;
 }
 
+.ragstat-http-code {
+    display: inline-flex;
+    min-width: 42px;
+    min-height: 26px;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 18px;
+}
+
+.ragstat-http-code.is-success {
+    color: #166534;
+    background: #dcfce7;
+}
+
+.ragstat-http-code.is-redirect {
+    color: #1d4ed8;
+    background: #dbeafe;
+}
+
+.ragstat-http-code.is-error {
+    color: #b91c1c;
+    background: #fee2e2;
+}
+
+.ragstat-http-code.is-unknown {
+    color: #475569;
+    background: #e2e8f0;
+}
+
+.ragstat-activity-search {
+    display: flex;
+    max-width: 760px;
+    gap: 10px;
+    align-items: center;
+    margin: 18px 0;
+    padding: 12px;
+    border: 1px solid var(--ragstat-border);
+    border-radius: 12px;
+    background: var(--ragstat-surface);
+    box-shadow: 0 4px 14px rgba(15, 23, 42, .04);
+}
+
+.ragstat-activity-search > .dashicons {
+    flex: 0 0 22px;
+    color: var(--ragstat-muted);
+}
+
+.ragstat-activity-search input[type="search"] {
+    flex: 1 1 auto;
+    min-width: 160px;
+    margin: 0;
+}
+
+.ragstat-empty-state {
+    display: grid;
+    min-height: 180px;
+    place-content: center;
+    justify-items: center;
+    color: var(--ragstat-muted);
+    border: 1px dashed #cbd5e1;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, .7);
+}
+
+.ragstat-empty-state .dashicons {
+    width: 36px;
+    height: 36px;
+    font-size: 36px;
+}
+
+.ragstat-pagination {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 26px auto 2px;
+    text-align: center;
+}
+
+.ragstat-pagination__summary {
+    color: var(--ragstat-muted);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.ragstat-pagination .page-numbers {
+    display: inline-flex;
+    gap: 7px;
+    align-items: center;
+    margin: 0;
+}
+
+.ragstat-pagination ul.page-numbers {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0;
+    list-style: none;
+}
+
+.ragstat-pagination li {
+    margin: 0;
+}
+
+.ragstat-pagination a.page-numbers,
+.ragstat-pagination span.page-numbers {
+    min-width: 38px;
+    min-height: 38px;
+    box-sizing: border-box;
+    justify-content: center;
+    padding: 9px 12px;
+    color: #475569;
+    border: 1px solid var(--ragstat-border);
+    border-radius: 9px;
+    background: var(--ragstat-surface);
+    font-weight: 600;
+    line-height: 18px;
+    text-decoration: none;
+    box-shadow: 0 3px 9px rgba(15, 23, 42, .04);
+    transition: color .16s ease, border-color .16s ease, background-color .16s ease, transform .16s ease;
+}
+
+.ragstat-pagination a.page-numbers:hover,
+.ragstat-pagination a.page-numbers:focus {
+    color: var(--ragstat-primary-dark);
+    border-color: #93b4f4;
+    background: #eff6ff;
+    outline: none;
+    transform: translateY(-1px);
+}
+
+.ragstat-pagination span.page-numbers.current {
+    color: #fff;
+    border-color: var(--ragstat-primary);
+    background: var(--ragstat-primary);
+    box-shadow: 0 5px 12px rgba(37, 99, 235, .2);
+}
+
+.ragstat-pagination .prev,
+.ragstat-pagination .next {
+    min-width: auto !important;
+}
+
 .ragstat-admin code {
     padding: 3px 7px;
     color: #334155;
@@ -406,6 +554,108 @@
     line-height: 21px;
 }
 
+.ragstat-about-card {
+    max-width: 900px;
+    margin: 18px 0;
+    overflow: hidden;
+    border: 1px solid var(--ragstat-border);
+    border-radius: 16px;
+    background: var(--ragstat-surface);
+    box-shadow: 0 10px 28px rgba(15, 23, 42, .08);
+}
+
+.ragstat-about-card__intro {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    padding: 28px;
+    background: linear-gradient(135deg, #f8fbff 0%, #eef5ff 100%);
+}
+
+.ragstat-about-card__icon {
+    display: inline-flex;
+    width: 58px;
+    height: 58px;
+    flex: 0 0 58px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    background: var(--ragstat-primary);
+    color: #fff;
+    font-size: 30px;
+    line-height: 58px;
+    box-shadow: 0 8px 18px rgba(37, 99, 235, .22);
+}
+
+.ragstat-about-card__intro h3 {
+    margin: 0 0 7px;
+    color: #0f172a;
+    font-size: 22px;
+    line-height: 1.3;
+}
+
+.ragstat-about-card__intro p {
+    max-width: 650px;
+    margin: 0;
+    color: var(--ragstat-muted);
+    font-size: 14px;
+    line-height: 1.65;
+}
+
+.ragstat-about-details {
+    margin: 0;
+}
+
+.ragstat-about-details > div {
+    display: grid;
+    grid-template-columns: minmax(180px, 34%) 1fr;
+    gap: 20px;
+    align-items: center;
+    padding: 18px 28px;
+    border-top: 1px solid #eef2f7;
+}
+
+.ragstat-about-details dt {
+    color: #334155;
+    font-weight: 600;
+}
+
+.ragstat-about-details dd {
+    margin: 0;
+    color: #0f172a;
+}
+
+.ragstat-about-details code {
+    display: inline-block;
+    padding: 4px 9px;
+    border-radius: 7px;
+    background: #eef3f8;
+    color: #334155;
+    font-weight: 600;
+}
+
+.ragstat-about-details a {
+    display: inline-flex;
+    gap: 5px;
+    align-items: center;
+    color: var(--ragstat-primary);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.ragstat-about-details a:hover,
+.ragstat-about-details a:focus {
+    color: var(--ragstat-primary-hover);
+    text-decoration: underline;
+}
+
+.ragstat-about-details a .dashicons {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+    line-height: 16px;
+}
+
 @keyframes ragstat-progress-stripes {
     from { background-position: 28px 0; }
     to { background-position: 0 0; }
@@ -450,6 +700,20 @@
         flex-direction: column;
     }
 
+    .ragstat-activity-search {
+        align-items: stretch;
+        flex-wrap: wrap;
+    }
+
+    .ragstat-activity-search > .dashicons {
+        display: none;
+    }
+
+    .ragstat-activity-search input[type="search"] {
+        flex-basis: 100%;
+        width: 100%;
+    }
+
     .ragstat-actions .button {
         width: 100%;
     }
@@ -469,5 +733,16 @@
 
     .ragstat-diagnostic-icon-cell {
         width: 38px;
+    }
+
+    .ragstat-about-card__intro {
+        align-items: flex-start;
+        padding: 22px;
+    }
+
+    .ragstat-about-details > div {
+        grid-template-columns: 1fr;
+        gap: 6px;
+        padding: 16px 22px;
     }
 }

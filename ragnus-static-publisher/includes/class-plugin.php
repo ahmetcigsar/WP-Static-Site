@@ -25,6 +25,7 @@ final class Plugin
         add_action('admin_enqueue_scripts', [Admin::class, 'enqueue_assets']);
         add_action('admin_init', [Admin::class, 'settings']);
         add_action('admin_post_ragnus_static_export', [Admin::class, 'start_export']);
+        add_action('wp_ajax_ragnus_static_run_pending', [Admin::class, 'run_pending_export']);
         add_action('admin_post_ragnus_static_download', [Admin::class, 'download_export']);
         add_action('admin_post_ragnus_static_cleanup_exports', [Admin::class, 'cleanup_exports']);
         add_action('admin_post_ragnus_static_download_archive', [Admin::class, 'download_archive']);
@@ -87,7 +88,15 @@ final class Plugin
     {
         $job_id = gmdate('Ymd-His') . '-' . wp_generate_password(8, false, false);
         Activity_Log::reset($job_id);
-        self::set_status($job_id, 'queued', 0, ['source' => $source, 'queued_at' => gmdate('c')]);
+        self::set_status($job_id, 'queued', 0, [
+            'source' => $source,
+            'queued_at' => gmdate('c'),
+            'phase' => 'queued',
+            'status_message' => 'Export işi sıraya alındı.',
+            'current_url' => '',
+            'url_count' => 0,
+            'error' => '',
+        ]);
         wp_schedule_single_event(time(), self::CRON_HOOK, [$job_id]);
         spawn_cron(time());
         return $job_id;
@@ -142,6 +151,31 @@ final class Plugin
         if (($status['state'] ?? '') === 'completed' && Archive_Manager::latest() !== null) {
             $status['artifact_url'] = rest_url('ragnus-static/v1/exports/latest/artifact');
         }
+        $last_completed_at = strtotime((string) ($status['last_completed_at'] ?? ''));
+        $status['last_completed_display'] = $last_completed_at === false
+            ? '—'
+            : wp_date((string) get_option('date_format') . ' ' . (string) get_option('time_format'), $last_completed_at);
+
+        $state = (string) ($status['state'] ?? '');
+        $job_id = (string) ($status['job_id'] ?? '');
+        $status['stalled'] = false;
+        $status['runtime_notice'] = '';
+
+        if ($state === 'queued' && $job_id !== '') {
+            $queued_at = strtotime((string) ($status['queued_at'] ?? ''));
+            $status['cron_scheduled'] = wp_next_scheduled(self::CRON_HOOK, [$job_id]) !== false;
+            if ($queued_at !== false && time() - $queued_at >= 90) {
+                $status['stalled'] = true;
+                $status['runtime_notice'] = 'Export işi 90 saniyeden uzun süredir kuyrukta. WP-Cron veya sunucu loopback isteklerini kontrol edin.';
+            }
+        } elseif ($state === 'running') {
+            $started_at = strtotime((string) ($status['started_at'] ?? ''));
+            if ($started_at !== false && time() - $started_at >= 35 * MINUTE_IN_SECONDS) {
+                $status['stalled'] = true;
+                $status['runtime_notice'] = 'Export işi beklenenden uzun süredir çalışıyor. Sunucu hata kayıtlarını ve PHP çalışma süresi sınırını kontrol edin.';
+            }
+        }
+
         return $status;
     }
 

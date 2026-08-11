@@ -12,6 +12,7 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 - Sol ana menüde doküman ikonlu Static Publisher yönetim ekranı
 - Main, Files, Activity Log, Settings, Diagnostics ve About sekmelerine ayrılmış yönetim görünümü
 - Main sekmesinde son başarılı static oluşturma zamanı ve yeşil ilerleme/tamamlanma göstergesi
+- Main sekmesinde iki saniyede bir yenilenen canlı export durumu, aşamalı ilerleme ve takılan WP-Cron işi uyarısı
 - Diagnostics sekmesinde PHP, Basic Auth, php-xml, cURL, site URL erişimi, kalıcı bağlantılar, indexlenebilirlik, önbellek ve WP-Cron kontrolleri
 - About sekmesinde sürüm, destek e-postası ve eklenti web sitesi bilgileri
 - Modern yönetim arayüzü, kart tabanlı içerik alanları, yenilenmiş sekmeler ve butonlar

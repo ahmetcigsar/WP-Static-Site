@@ -40,6 +40,21 @@ final class Admin
             [],
             RAGSTAT_VERSION
         );
+
+        wp_enqueue_script(
+            'ragnus-static-publisher-admin',
+            plugins_url('assets/admin.js', RAGSTAT_FILE),
+            [],
+            RAGSTAT_VERSION,
+            true
+        );
+        wp_localize_script('ragnus-static-publisher-admin', 'RagnusStaticPublisherAdmin', [
+            'statusUrl' => rest_url('ragnus-static/v1/exports/latest'),
+            'nonce' => wp_create_nonce('wp_rest'),
+            'runnerUrl' => admin_url('admin-ajax.php'),
+            'runnerNonce' => wp_create_nonce('ragnus_static_run_pending'),
+            'pollInterval' => 2000,
+        ]);
     }
 
     public static function sanitize(array $value): array
@@ -64,6 +79,20 @@ final class Admin
             wp_die('Bu işlem için yetkiniz yok.', 403);
         }
         check_admin_referer('ragnus_static_export');
+        $current_status = Plugin::public_status();
+        $current_state = (string) ($current_status['state'] ?? '');
+        $retry_stalled_queue = $current_state === 'queued' && ! empty($current_status['stalled']) && ! get_transient(Plugin::LOCK_KEY);
+        if (get_transient(Plugin::LOCK_KEY) || (in_array($current_state, ['queued', 'running'], true) && ! $retry_stalled_queue)) {
+            wp_safe_redirect(add_query_arg('started', 'running', self::admin_page_url('main')));
+            exit;
+        }
+        if ($retry_stalled_queue) {
+            $old_job_id = (string) ($current_status['job_id'] ?? '');
+            $scheduled = $old_job_id === '' ? false : wp_next_scheduled(Plugin::CRON_HOOK, [$old_job_id]);
+            if ($scheduled !== false) {
+                wp_unschedule_event($scheduled, Plugin::CRON_HOOK, [$old_job_id]);
+            }
+        }
         Plugin::schedule_export('admin');
         wp_safe_redirect(add_query_arg('started', '1', self::admin_page_url('main')));
         exit;
@@ -82,6 +111,35 @@ final class Admin
         }
 
         self::send_file((string) $archive['path'], (string) $archive['id'] . '.zip');
+    }
+
+    public static function run_pending_export(): void
+    {
+        if (! current_user_can('manage_options')) {
+            wp_send_json_error(['message' => 'Bu işlem için yetkiniz yok.'], 403);
+        }
+        check_ajax_referer('ragnus_static_run_pending', 'nonce');
+
+        $status = Plugin::status();
+        $job_id = sanitize_file_name((string) ($status['job_id'] ?? ''));
+        if (($status['state'] ?? '') !== 'queued' || $job_id === '') {
+            wp_send_json_success(['status' => Plugin::public_status()]);
+        }
+        if (get_transient(Plugin::LOCK_KEY)) {
+            wp_send_json_error(['message' => 'Export işlemi zaten çalışıyor.'], 409);
+        }
+
+        $scheduled = wp_next_scheduled(Plugin::CRON_HOOK, [$job_id]);
+        if ($scheduled !== false) {
+            wp_unschedule_event($scheduled, Plugin::CRON_HOOK, [$job_id]);
+        }
+
+        ignore_user_abort(true);
+        if (function_exists('set_time_limit')) {
+            @set_time_limit(0);
+        }
+        Plugin::run_scheduled($job_id);
+        wp_send_json_success(['status' => Plugin::public_status()]);
     }
 
     public static function download_archive(): void
@@ -274,14 +332,19 @@ final class Admin
             ? $status['last_completed_at']
             : ($state === 'completed' && is_string($status['finished_at'] ?? null) ? $status['finished_at'] : '');
         $last_completed_timestamp = $last_completed_at !== '' ? strtotime($last_completed_at) : false;
+        $is_active = in_array($state, ['queued', 'running'], true)
+            && ! ($state === 'queued' && ! empty($status['stalled']));
+        $runtime_notice = (string) ($status['runtime_notice'] ?? '');
         ?>
+        <div data-ragstat-status-root>
         <h2>Yayın Durumu</h2>
+        <div id="ragstat-runtime-notice" class="notice notice-warning inline ragstat-runtime-notice" role="status" <?php echo $runtime_notice === '' ? 'hidden' : ''; ?>><p><?php echo esc_html($runtime_notice); ?></p></div>
         <table class="widefat striped ragstat-status-table">
             <tbody>
-            <tr><th>Durum</th><td><?php echo esc_html($state_labels[$state] ?? 'Henüz Çalışmadı'); ?></td></tr>
+            <tr><th>Durum</th><td id="ragstat-status-state"><?php echo esc_html($state_labels[$state] ?? 'Henüz Çalışmadı'); ?></td></tr>
             <tr>
                 <th>İlerleme</th>
-                <td>
+                <td id="ragstat-progress-cell">
                     <?php if ($state === 'completed') : ?>
                         <span class="ragstat-progress-status"><span class="dashicons dashicons-yes-alt" aria-hidden="true"></span><strong>Tamamlandı</strong></span>
                     <?php elseif ($state === 'failed') : ?>
@@ -290,25 +353,26 @@ final class Admin
                         <div class="ragstat-progress <?php echo in_array($state, ['queued', 'running'], true) ? 'is-active' : ''; ?>" role="progressbar" aria-label="Static oluşturma ilerlemesi" aria-valuemin="0" aria-valuemax="100" aria-valuenow="<?php echo esc_attr((string) $progress); ?>">
                             <div class="ragstat-progress__bar" style="width:<?php echo esc_attr((string) $progress); ?>%"></div>
                         </div>
-                        <span><?php echo esc_html((string) $progress); ?>%</span>
+                        <span class="ragstat-progress-percent"><?php echo esc_html((string) $progress); ?>%</span>
                     <?php endif; ?>
                 </td>
             </tr>
-            <tr><th>İş Kimliği</th><td><code><?php echo esc_html((string) ($status['job_id'] ?? '—')); ?></code></td></tr>
-            <tr><th>URL Sayısı</th><td><?php echo esc_html((string) ($status['url_count'] ?? 0)); ?></td></tr>
-            <tr><th>Son Statik Oluşturma</th><td><?php echo $last_completed_timestamp === false ? '—' : esc_html(wp_date((string) get_option('date_format') . ' ' . (string) get_option('time_format'), $last_completed_timestamp)); ?></td></tr>
-            <?php if (! empty($status['error'])) : ?><tr><th>Hata</th><td><?php echo esc_html((string) $status['error']); ?></td></tr><?php endif; ?>
+            <tr><th>Aşama</th><td id="ragstat-status-message"><?php echo esc_html((string) ($status['status_message'] ?? '—')); ?></td></tr>
+            <tr><th>İş Kimliği</th><td><code id="ragstat-job-id"><?php echo esc_html((string) ($status['job_id'] ?? '—')); ?></code></td></tr>
+            <tr><th>URL Sayısı</th><td id="ragstat-url-count"><?php echo esc_html((string) ($status['url_count'] ?? 0)); ?></td></tr>
+            <tr id="ragstat-current-url-row" <?php echo empty($status['current_url']) ? 'hidden' : ''; ?>><th>İşlenen Adres</th><td><code id="ragstat-current-url"><?php echo esc_html((string) ($status['current_url'] ?? '')); ?></code></td></tr>
+            <tr><th>Son Statik Oluşturma</th><td id="ragstat-last-completed"><?php echo $last_completed_timestamp === false ? '—' : esc_html(wp_date((string) get_option('date_format') . ' ' . (string) get_option('time_format'), $last_completed_timestamp)); ?></td></tr>
+            <tr id="ragstat-error-row" <?php echo empty($status['error']) ? 'hidden' : ''; ?>><th>Hata</th><td id="ragstat-error"><?php echo esc_html((string) ($status['error'] ?? '')); ?></td></tr>
             </tbody>
         </table>
 
         <form class="ragstat-actions" method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
             <input type="hidden" name="action" value="ragnus_static_export">
             <?php wp_nonce_field('ragnus_static_export'); ?>
-            <?php submit_button('Şimdi Statik Export Oluştur', 'primary', 'submit', false); ?>
-            <?php if ($archives !== []) : ?>
-                <a class="button" href="<?php echo esc_url(wp_nonce_url(admin_url('admin-post.php?action=ragnus_static_download'), 'ragnus_static_download')); ?>">Son ZIP'i İndir</a>
-            <?php endif; ?>
+            <?php submit_button('Statik Site Oluştur', 'primary', 'submit', false, $is_active ? ['disabled' => 'disabled'] : []); ?>
+            <a id="ragstat-download" class="button" href="<?php echo esc_url(wp_nonce_url(admin_url('admin-post.php?action=ragnus_static_download'), 'ragnus_static_download')); ?>" <?php echo $archives === [] ? 'hidden' : ''; ?>>İndir</a>
         </form>
+        </div>
         <?php
     }
 

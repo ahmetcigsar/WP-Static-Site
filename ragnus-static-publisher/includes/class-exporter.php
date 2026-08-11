@@ -20,6 +20,7 @@ final class Exporter
     private array $visited = [];
     private string $job_id = '';
     private string $build_directory = '';
+    private int $reported_progress = 0;
 
     public function __construct()
     {
@@ -46,10 +47,31 @@ final class Exporter
 
         try {
             $this->prepare_build_directory($job_id);
-            Plugin::set_status($job_id, 'running', 0, ['started_at' => $started_at]);
+            Plugin::set_status($job_id, 'running', 2, [
+                'started_at' => $started_at,
+                'phase' => 'preparing',
+                'status_message' => 'Export klasörü hazırlanıyor.',
+                'current_url' => '',
+                'url_count' => 0,
+                'error' => '',
+            ]);
+            $this->reported_progress = 2;
             $this->crawl();
+            Plugin::set_status($job_id, 'running', 88, [
+                'phase' => 'cloudflare-files',
+                'status_message' => 'Cloudflare yapılandırma dosyaları hazırlanıyor.',
+                'current_url' => '',
+            ]);
             $this->write_cloudflare_files();
+            Plugin::set_status($job_id, 'running', 92, [
+                'phase' => 'manifest',
+                'status_message' => 'Export manifesti hazırlanıyor.',
+            ]);
             $manifest = $this->write_manifest($job_id, $started_at);
+            Plugin::set_status($job_id, 'running', 96, [
+                'phase' => 'archive',
+                'status_message' => 'ZIP arşivi oluşturuluyor.',
+            ]);
             $archive = $this->create_archive($job_id);
             $finished_at = gmdate('c');
 
@@ -59,6 +81,10 @@ final class Exporter
                 'archive' => $archive,
                 'manifest' => $manifest,
                 'url_count' => count($this->visited),
+                'phase' => 'completed',
+                'status_message' => 'Statik site başarıyla oluşturuldu.',
+                'current_url' => '',
+                'error' => '',
             ]);
 
             do_action('ragnus_static_export_completed', $job_id, $archive, $manifest);
@@ -69,6 +95,9 @@ final class Exporter
             Plugin::set_status($job_id, 'failed', 100, [
                 'finished_at' => gmdate('c'),
                 'error' => $error->getMessage(),
+                'phase' => 'failed',
+                'status_message' => 'Statik site oluşturulamadı.',
+                'current_url' => '',
             ]);
             throw $error;
         } finally {
@@ -130,6 +159,7 @@ final class Exporter
 
             if (is_wp_error($response)) {
                 $this->add_log('warning', $response->get_error_message(), $url);
+                $this->update_crawl_progress($queue, $url);
                 continue;
             }
 
@@ -137,6 +167,7 @@ final class Exporter
             $source_status_code = $this->source_status_code($response);
             if ($status_code < 200 || $status_code >= 400) {
                 $this->add_log('warning', sprintf('HTTP %d', $status_code), $url, '', $source_status_code);
+                $this->update_crawl_progress($queue, $url);
                 continue;
             }
 
@@ -156,6 +187,7 @@ final class Exporter
             $relative_path = Path_Mapper::url_to_relative_path($url, $content_type);
             if ($relative_path === null) {
                 $this->add_log('warning', 'Güvenli olmayan dosya yolu atlandı.', $url, '', $source_status_code);
+                $this->update_crawl_progress($queue, $url);
                 continue;
             }
 
@@ -166,16 +198,35 @@ final class Exporter
                 $queue->enqueue($discovered_url);
             }
 
-            $progress = min(95, max(1, (int) ((count($this->visited) / $this->maximum_urls) * 100)));
-            Plugin::set_status(Plugin::status()['job_id'] ?? '', 'running', $progress, [
-                'url_count' => count($this->visited),
-                'current_url' => $url,
-            ]);
+            $this->update_crawl_progress($queue, $url);
         }
+
+        $this->reported_progress = 85;
+        Plugin::set_status($this->job_id, 'running', 85, [
+            'phase' => 'crawl-completed',
+            'status_message' => 'Site taraması tamamlandı.',
+            'url_count' => count($this->visited),
+            'current_url' => '',
+        ]);
 
         if (! $queue->isEmpty()) {
             $this->add_log('warning', 'URL sınırına ulaşıldı; bazı kaynaklar export dışında kaldı.');
         }
+    }
+
+    private function update_crawl_progress(SplQueue $queue, string $url): void
+    {
+        $processed = count($this->visited);
+        $estimated_total = max(1, $processed + $queue->count());
+        $estimated_progress = 5 + (int) floor(($processed / $estimated_total) * 80);
+        $this->reported_progress = min(85, max($this->reported_progress, $estimated_progress));
+
+        Plugin::set_status($this->job_id, 'running', $this->reported_progress, [
+            'phase' => 'crawling',
+            'status_message' => 'Site adresleri statik dosyalara dönüştürülüyor.',
+            'url_count' => $processed,
+            'current_url' => $url,
+        ]);
     }
 
     private function seed_content_urls(): array

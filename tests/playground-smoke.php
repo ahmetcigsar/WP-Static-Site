@@ -42,6 +42,21 @@ if (! wp_style_is('ragnus-static-publisher-admin', 'enqueued')) {
     fwrite(STDERR, "Modern yönetim arayüzü stil dosyası yüklenmedi.\n");
     exit(1);
 }
+if (! wp_script_is('ragnus-static-publisher-admin', 'enqueued')) {
+    fwrite(STDERR, "Canlı durum takip betiği yüklenmedi.\n");
+    exit(1);
+}
+$script_data = (string) wp_scripts()->get_data('ragnus-static-publisher-admin', 'data');
+if (! str_contains($script_data, 'ragnus-static/v1/exports/latest')
+    || ! str_contains($script_data, 'pollInterval')
+    || ! str_contains($script_data, 'runnerUrl')) {
+    fwrite(STDERR, "Canlı durum takip betiğinin REST yapılandırması eksik.\n");
+    exit(1);
+}
+if (! has_action('wp_ajax_ragnus_static_run_pending', [Ragnus\StaticPublisher\Admin::class, 'run_pending_export'])) {
+    fwrite(STDERR, "Bekleyen export için yönetim ekranı çalıştırıcısı kayıtlı değil.\n");
+    exit(1);
+}
 
 wp_set_current_user(1);
 $_GET['tab'] = 'about';
@@ -55,6 +70,25 @@ foreach (['About', 'Versiyon Numarası', RAGSTAT_VERSION, 'mailto:info@ragnus.co
         fwrite(STDERR, "About sekmesinde beklenen içerik bulunamadı: {$expected}\n");
         exit(1);
     }
+}
+
+$admin_source = (string) file_get_contents(RAGSTAT_DIR . 'includes/class-admin.php');
+
+foreach (['Statik Site Oluştur', '>İndir</a>'] as $expected) {
+    if (! str_contains($admin_source, $expected)) {
+        fwrite(STDERR, "Main sekmesinde beklenen buton metni bulunamadı: {$expected}\n");
+        exit(1);
+    }
+}
+
+Ragnus\StaticPublisher\Plugin::set_status('stalled-test', 'queued', 0, [
+    'queued_at' => gmdate('c', time() - 120),
+    'status_message' => 'Export işi sıraya alındı.',
+]);
+$stalled_status = Ragnus\StaticPublisher\Plugin::public_status();
+if (empty($stalled_status['stalled']) || ! str_contains((string) ($stalled_status['runtime_notice'] ?? ''), 'WP-Cron')) {
+    fwrite(STDERR, "Kuyrukta takılan export işi algılanmadı.\n");
+    exit(1);
 }
 
 echo "Ragnus Static Publisher smoke test passed.\n";

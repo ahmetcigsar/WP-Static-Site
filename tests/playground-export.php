@@ -68,11 +68,26 @@ add_filter('pre_http_request', static function ($preempt, array $args, string $u
         'http_response' => $http_response,
     ];
 }, 10, 3);
+$reported_progress = [];
+add_action('update_option_' . Ragnus\StaticPublisher\Plugin::STATUS_KEY, static function ($old_value, $new_value) use (&$reported_progress): void {
+    if (($new_value['job_id'] ?? '') === 'integration-test' && ($new_value['state'] ?? '') !== '') {
+        $reported_progress[] = (int) ($new_value['progress'] ?? 0);
+    }
+}, 10, 2);
 Ragnus\StaticPublisher\Plugin::set_status($job_id, 'running', 0, ['source' => 'test']);
 $status = (new Ragnus\StaticPublisher\Exporter())->run($job_id);
 
 if (($status['state'] ?? '') !== 'completed') {
     throw new RuntimeException('Export tamamlanmadı.');
+}
+$required_progress = [2, 85, 88, 92, 96, 100];
+if (array_diff($required_progress, $reported_progress) !== []) {
+    throw new RuntimeException('Export aşamalarının ilerleme yüzdeleri eksik: ' . wp_json_encode($reported_progress));
+}
+for ($index = 1, $count = count($reported_progress); $index < $count; $index++) {
+    if ($reported_progress[$index] < $reported_progress[$index - 1]) {
+        throw new RuntimeException('Export ilerleme yüzdesi geriye gitti: ' . wp_json_encode($reported_progress));
+    }
 }
 if (! is_readable((string) ($status['archive'] ?? ''))) {
     throw new RuntimeException('Export arşivi üretilemedi.');

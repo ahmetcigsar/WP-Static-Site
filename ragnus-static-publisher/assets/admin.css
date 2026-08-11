@@ -474,6 +474,23 @@
 .ragstat-progress-status .dashicons-yes-alt { color: var(--ragstat-success); }
 .ragstat-progress-status .dashicons-dismiss { color: var(--ragstat-danger); }
 
+.ragstat-progress-percent {
+    display: inline-block;
+    margin-top: 6px;
+    color: #334155;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.ragstat-runtime-notice {
+    max-width: 928px;
+    margin: 0 0 16px !important;
+}
+
+#ragstat-current-url {
+    overflow-wrap: anywhere;
+}
+
 .ragstat-admin .notice {
     margin: 0 0 16px;
     border-radius: 8px;

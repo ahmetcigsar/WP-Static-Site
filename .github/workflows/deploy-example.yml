@@ -1,0 +1,62 @@
+name: WordPress static export and Cloudflare deploy
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [wordpress_static_export_completed]
+
+concurrency:
+  group: wordpress-static-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Start WordPress export
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          WP_ORIGIN: ${{ secrets.WP_ORIGIN }}
+          WP_USER: ${{ secrets.WP_USER }}
+          WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
+        run: |
+          curl --fail --silent --show-error \
+            --user "$WP_USER:$WP_APP_PASSWORD" \
+            --request POST \
+            "$WP_ORIGIN/wp-json/ragnus-static/v1/exports" > export-start.json
+
+      - name: Wait for export
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          WP_ORIGIN: ${{ secrets.WP_ORIGIN }}
+          WP_USER: ${{ secrets.WP_USER }}
+          WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
+        run: bash scripts/wait-for-export.sh
+
+      - name: Download and unpack artifact
+        env:
+          WP_ORIGIN: ${{ secrets.WP_ORIGIN }}
+          WP_USER: ${{ secrets.WP_USER }}
+          WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
+        run: |
+          curl --fail --silent --show-error \
+            --user "$WP_USER:$WP_APP_PASSWORD" \
+            "$WP_ORIGIN/wp-json/ragnus-static/v1/exports/latest/artifact" \
+            --output export.zip
+          mkdir dist
+          unzip -q export.zip -d dist
+
+      - name: Validate output
+        run: bash scripts/validate-export.sh dist
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT }} --branch=main

@@ -1,0 +1,6 @@
+.DS_Store
+dist/
+export.zip
+export-start.json
+*.log
+

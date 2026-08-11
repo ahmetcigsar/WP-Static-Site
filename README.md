@@ -23,7 +23,7 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 - Yönetim ekranından son başarılı ZIP'i indirme
 - Varsayılan 5 arşiv için ayarlanabilir ZIP saklama sınırı
 - İş kimliği, URL sayısı ve oluşturma zamanını gösteren ZIP arşiv tablosu
-- ZIP arşiv tablosunda gösterim sırasını belirten bilgi amaçlı numara sütunu
+- ZIP arşiv tablosunda gösterim sırasını belirten bilgi amaçlı Sıra sütunu
 - En son ZIP'i koruyarak eski arşivleri elle temizleme
 - ZIP arşivlerini tek tek veya toplu olarak indirme ve silme
 - `wp ragnus-static export` WP-CLI komutu

@@ -164,6 +164,12 @@
     max-width: 1300px;
 }
 
+.ragstat-activity-table .ragstat-time-column {
+    width: 110px;
+    min-width: 110px;
+    white-space: nowrap;
+}
+
 .ragstat-activity-search {
     display: flex;
     max-width: 760px;

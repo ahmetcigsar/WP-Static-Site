@@ -421,7 +421,7 @@ final class Admin
                     <br class="clear">
                 </div>
                 <table class="widefat striped ragstat-files-table">
-                    <thead><tr><td class="manage-column check-column"><input id="cb-select-all-1" type="checkbox"><label for="cb-select-all-1"><span class="screen-reader-text">Tümünü Seç</span></label></td><th class="ragstat-number-column">Numara</th><th>İş Kimliği</th><th>URL Sayısı</th><th>Oluşturma Tarihi</th><th>Oluşturma Saati</th><th>İşlem</th></tr></thead>
+                    <thead><tr><td class="manage-column check-column"><input id="cb-select-all-1" type="checkbox"><label for="cb-select-all-1"><span class="screen-reader-text">Tümünü Seç</span></label></td><th class="ragstat-number-column">Sıra</th><th>İş Kimliği</th><th>URL Sayısı</th><th>Oluşturma Tarihi</th><th>Oluşturma Saati</th><th>İşlem</th></tr></thead>
                     <tbody>
                     <?php foreach ($archives as $archive_index => $archive) : ?>
                         <?php
@@ -487,7 +487,7 @@ final class Admin
             </div>
         <?php else : ?>
             <table class="widefat striped ragstat-activity-table">
-                <thead><tr><th>Tarih</th><th>Saat</th><th>Kaynak Adres</th><th>Statik Adres</th></tr></thead>
+                <thead><tr><th>Tarih</th><th class="ragstat-time-column">Saat</th><th>Kaynak Adres</th><th>Statik Adres</th></tr></thead>
                 <tbody>
                 <?php foreach ($entries as $entry) : ?>
                     <?php
@@ -495,7 +495,7 @@ final class Admin
                     ?>
                     <tr>
                         <td><?php echo $timestamp === false ? '—' : esc_html(wp_date((string) get_option('date_format'), $timestamp)); ?></td>
-                        <td><?php echo $timestamp === false ? '—' : esc_html(wp_date((string) get_option('time_format'), $timestamp)); ?></td>
+                        <td class="ragstat-time-column"><?php echo $timestamp === false ? '—' : esc_html(wp_date((string) get_option('time_format'), $timestamp)); ?></td>
                         <td><?php if (($entry['source_url'] ?? '') === '') : ?>—<?php else : ?><code><?php echo esc_html((string) $entry['source_url']); ?></code><?php endif; ?></td>
                         <td><?php if (($entry['static_path'] ?? '') === '') : ?>—<?php else : ?><code><?php echo esc_html((string) $entry['static_path']); ?></code><?php endif; ?></td>
                     </tr>

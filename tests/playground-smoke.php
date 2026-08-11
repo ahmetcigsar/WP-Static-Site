@@ -88,8 +88,12 @@ if (! str_contains($admin_source, 'Kayıt Sayısı:') || ! str_contains($admin_s
     fwrite(STDERR, "Activity Log kayıt sayısı bilgisi arayüzde bulunamadı.\n");
     exit(1);
 }
-if (! str_contains($admin_source, '>Numara</th>') || ! str_contains($admin_source, '$archive_index + 1')) {
-    fwrite(STDERR, "Files tablosunun numara sütunu bulunamadı.\n");
+if (! str_contains($admin_source, '>Sıra</th>') || ! str_contains($admin_source, '$archive_index + 1')) {
+    fwrite(STDERR, "Files tablosunun sıra sütunu bulunamadı.\n");
+    exit(1);
+}
+if (substr_count($admin_source, 'class="ragstat-time-column"') < 2) {
+    fwrite(STDERR, "Activity Log saat sütunu sınıfı eksik.\n");
     exit(1);
 }
 

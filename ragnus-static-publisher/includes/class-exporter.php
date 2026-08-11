@@ -22,6 +22,8 @@ final class Exporter
     private string $build_directory = '';
     private int $reported_progress = 0;
     private Hide_Replacements $hide_replacements;
+    private Static_Search $static_search;
+    private array $search_documents = [];
 
     public function __construct()
     {
@@ -30,6 +32,7 @@ final class Exporter
         $this->target = untrailingslashit((string) ($settings['target_url'] ?: home_url()));
         $this->maximum_urls = max(10, min(20000, (int) $settings['maximum_urls']));
         $this->hide_replacements = new Hide_Replacements(Plugin::hide_settings());
+        $this->static_search = new Static_Search(Plugin::search_settings());
         $this->excluded_prefixes = array_values(array_filter(array_map(
             'trim',
             preg_split('/\r\n|\r|\n/', (string) $settings['excluded_paths']) ?: []
@@ -59,6 +62,14 @@ final class Exporter
             ]);
             $this->reported_progress = 2;
             $this->crawl();
+            if ($this->static_search->enabled()) {
+                Plugin::set_status($job_id, 'running', 86, [
+                    'phase' => 'search-index',
+                    'status_message' => 'Fuse.js arama indeksi hazırlanıyor.',
+                    'current_url' => '',
+                ]);
+                $this->write_search_files();
+            }
             Plugin::set_status($job_id, 'running', 88, [
                 'phase' => 'cloudflare-files',
                 'status_message' => 'Cloudflare yapılandırma dosyaları hazırlanıyor.',
@@ -176,8 +187,9 @@ final class Exporter
             $content_type = (string) wp_remote_retrieve_header($response, 'content-type');
             $body = (string) wp_remote_retrieve_body($response);
             $discovered = [];
+            $is_html = str_contains(strtolower($content_type), 'text/html');
 
-            if (str_contains(strtolower($content_type), 'text/html')) {
+            if ($is_html) {
                 [$body, $discovered] = $this->process_html($body, $url);
                 $body = $this->hide_replacements->rewrite_html($body);
             } elseif (str_contains(strtolower($content_type), 'text/css')) {
@@ -195,6 +207,14 @@ final class Exporter
                 continue;
             }
             $relative_path = $this->hide_replacements->map_relative_path($relative_path);
+
+            if ($is_html && $this->static_search->enabled()) {
+                $document = $this->static_search->extract_document($body, $url, $relative_path);
+                if ($document !== null) {
+                    $this->search_documents[] = $document;
+                }
+                $body = $this->static_search->inject_search_bridge($body);
+            }
 
             $this->write_file($relative_path, $body);
             $this->add_log('info', 'Kaynak statik dosyaya dönüştürüldü.', $url, $relative_path, $source_status_code);
@@ -509,6 +529,13 @@ final class Exporter
         }
     }
 
+    private function write_search_files(): void
+    {
+        foreach ($this->static_search->build_files($this->search_documents) as $path => $contents) {
+            $this->write_file($path, $contents);
+        }
+    }
+
     private function create_archive(string $job_id): string
     {
         if (! class_exists(ZipArchive::class)) {
@@ -558,6 +585,11 @@ final class Exporter
             'finished_at' => gmdate('c'),
             'url_count' => count($this->visited),
             'hide_replacements' => $this->hide_replacements->settings(),
+            'static_search' => [
+                'enabled' => $this->static_search->enabled(),
+                'document_count' => count($this->search_documents),
+                'settings' => $this->static_search->settings(),
+            ],
             'build_sha256' => hash('sha256', (string) wp_json_encode($file_hashes, JSON_UNESCAPED_SLASHES)),
         ];
         $this->write_file('ragnus-static-manifest.json', (string) wp_json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));

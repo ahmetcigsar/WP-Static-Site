@@ -36,6 +36,17 @@ update_option(Ragnus\StaticPublisher\Plugin::HIDE_SETTINGS_KEY, [
     'disable_wlw_manifest' => '1',
     'disable_emojis' => '1',
 ]);
+update_option(Ragnus\StaticPublisher\Plugin::SEARCH_SETTINGS_KEY, array_merge(
+    Ragnus\StaticPublisher\Plugin::search_defaults(),
+    [
+        'enabled' => '1',
+        'page_path' => 'arama',
+        'title_selector' => 'title',
+        'content_selector' => 'body',
+        'excerpt_selector' => '.entry-content',
+        'exclude_urls' => "not-found-test\nforbidden-test",
+    ]
+));
 
 $post_id = wp_insert_post([
     'post_title' => 'Export testi',
@@ -166,6 +177,11 @@ $home_html = (string) $zip->getFromName('index.html');
 $hidden_theme_css = (string) $zip->getFromName('assets/skins/test-theme/design.css');
 $headers_file = (string) $zip->getFromName('_headers');
 $manifest_file = json_decode((string) $zip->getFromName('ragnus-static-manifest.json'), true);
+$search_page = (string) $zip->getFromName('arama/index.html');
+$search_index = json_decode((string) $zip->getFromName('ragnus-search-index.json'), true);
+$search_config = json_decode((string) $zip->getFromName('ragnus-search-config.json'), true);
+$search_script = (string) $zip->getFromName('ragnus-search-assets/ragnus-search.js');
+$fuse_script = (string) $zip->getFromName('ragnus-search-assets/fuse.min.mjs');
 $zip->close();
 if (str_contains($home_html, 'https://static.example.com/wp-content/')) {
     preg_match_all('#https://static\.example\.com/wp-content/[^"\'\s<]+#', $home_html, $remaining_assets);
@@ -182,6 +198,20 @@ if (! str_contains($headers_file, '/assets/media/*')) {
 }
 if (($manifest_file['hide_replacements']['author_url'] ?? '') !== 'writers') {
     throw new RuntimeException('Hide ayarları export manifestine yazılmadı.');
+}
+if ($search_page === '' || ! str_contains($search_page, 'Site İçinde Ara')
+    || ! is_array($search_index) || $search_index === []
+    || ($search_config['tokenMatch'] ?? '') !== 'all'
+    || ! is_array($search_config['keys'] ?? null)
+    || $search_script === '' || ! str_contains($search_script, 'new Fuse')
+    || $fuse_script === '') {
+    throw new RuntimeException('Fuse.js statik arama dosyaları export ZIP içine doğru üretilmedi.');
+}
+if (! str_contains($home_html, 'ragnus-search-bridge.js')) {
+    throw new RuntimeException('WordPress arama formlarını yönlendiren statik arama köprüsü HTML içine eklenmedi.');
+}
+if (($manifest_file['static_search']['document_count'] ?? 0) !== count($search_index)) {
+    throw new RuntimeException('Arama doküman sayısı manifest ile eşleşmiyor.');
 }
 
 $hide_replacements = new Ragnus\StaticPublisher\Hide_Replacements(Ragnus\StaticPublisher\Plugin::hide_settings());

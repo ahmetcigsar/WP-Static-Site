@@ -6,6 +6,7 @@ if (! defined('WP_UNINSTALL_PLUGIN')) {
 
 delete_option('ragnus_static_settings');
 delete_option('ragnus_static_hide_settings');
+delete_option('ragnus_static_search_settings');
 delete_option('ragnus_static_status');
 delete_option('ragnus_static_export_dirty');
 delete_option('ragnus_static_plugin_version');

@@ -31,6 +31,11 @@ final class Admin
             'sanitize_callback' => [self::class, 'sanitize_hide_settings'],
             'default' => Plugin::hide_defaults(),
         ]);
+        register_setting('ragnus_static_search', Plugin::SEARCH_SETTINGS_KEY, [
+            'type' => 'array',
+            'sanitize_callback' => [self::class, 'sanitize_search_settings'],
+            'default' => Plugin::search_defaults(),
+        ]);
     }
 
     public static function enqueue_assets(string $hook_suffix): void
@@ -102,6 +107,35 @@ final class Admin
         }
         foreach (array_diff(array_keys($defaults), $path_keys) as $key) {
             $sanitized[$key] = isset($value[$key]) ? '1' : '0';
+        }
+        return $sanitized;
+    }
+
+    public static function sanitize_search_settings(array $value): array
+    {
+        $defaults = Plugin::search_defaults();
+        $fields = ['index_title', 'index_excerpt', 'index_content', 'index_taxonomies'];
+        $sanitized = [
+            'enabled' => isset($value['enabled']) ? '1' : '0',
+            'page_path' => sanitize_title((string) ($value['page_path'] ?? $defaults['page_path'])) ?: $defaults['page_path'],
+            'result_limit' => max(5, min(100, absint($value['result_limit'] ?? $defaults['result_limit']))),
+            'min_chars' => max(1, min(10, absint($value['min_chars'] ?? $defaults['min_chars']))),
+            'content_limit' => max(500, min(20000, absint($value['content_limit'] ?? $defaults['content_limit']))),
+            'threshold' => (string) max(0.1, min(0.8, (float) ($value['threshold'] ?? $defaults['threshold']))),
+            'token_match' => in_array(($value['token_match'] ?? ''), ['all', 'any'], true) ? $value['token_match'] : 'all',
+            'title_selector' => sanitize_text_field((string) ($value['title_selector'] ?? $defaults['title_selector'])),
+            'content_selector' => sanitize_text_field((string) ($value['content_selector'] ?? $defaults['content_selector'])),
+            'excerpt_selector' => sanitize_text_field((string) ($value['excerpt_selector'] ?? $defaults['excerpt_selector'])),
+            'exclude_urls' => sanitize_textarea_field((string) ($value['exclude_urls'] ?? '')),
+        ];
+        foreach ($fields as $field) {
+            $sanitized[$field] = isset($value[$field]) ? '1' : '0';
+        }
+        if (! in_array('1', array_intersect_key($sanitized, array_flip($fields)), true)) {
+            $sanitized['index_title'] = '1';
+        }
+        foreach (['title_weight', 'excerpt_weight', 'content_weight', 'taxonomy_weight'] as $weight) {
+            $sanitized[$weight] = (string) max(0.1, min(10, (float) ($value[$weight] ?? $defaults[$weight])));
         }
         return $sanitized;
     }
@@ -316,6 +350,7 @@ final class Admin
             'files' => 'Files',
             'activity' => 'Activity Log',
             'settings' => 'Settings',
+            'search' => 'Arama',
             'hide' => 'Hide',
             'diagnostics' => 'Diagnostics',
             'about' => 'About',
@@ -347,6 +382,8 @@ final class Admin
                 <?php self::render_activity_tab(); ?>
             <?php elseif ($current_tab === 'settings') : ?>
                 <?php self::render_settings_tab(Plugin::settings()); ?>
+            <?php elseif ($current_tab === 'search') : ?>
+                <?php self::render_search_tab(Plugin::search_settings()); ?>
             <?php elseif ($current_tab === 'hide') : ?>
                 <?php self::render_hide_tab(Plugin::hide_settings()); ?>
             <?php elseif ($current_tab === 'diagnostics') : ?>
@@ -592,6 +629,81 @@ final class Admin
                 <tr><th><label for="ragstat-webhook-token">Webhook Bearer Token</label></th><td><input class="regular-text" id="ragstat-webhook-token" type="password" autocomplete="new-password" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[deployment_webhook_token]" value="" placeholder="<?php echo $settings['deployment_webhook_token'] !== '' ? esc_attr('Kayıtlı tokenı korumak için boş bırakın') : ''; ?>"><p class="description">GitHub kullanılıyorsa yalnızca bu repository için Contents: write yetkili fine-grained token kullanın.</p></td></tr>
             </table>
             <?php submit_button('Ayarları Kaydet'); ?>
+        </form>
+        <?php
+    }
+
+    private static function render_search_tab(array $settings): void
+    {
+        $option_name = Plugin::SEARCH_SETTINGS_KEY;
+        ?>
+        <div class="ragstat-search-header">
+            <div>
+                <h2>Arama</h2>
+                <p>Fuse.js ile çalışan, sunucu gerektirmeyen statik site aramasını yapılandırın.</p>
+            </div>
+            <span class="ragstat-search-badge">Fuse.js 7.3.0</span>
+        </div>
+        <form class="ragstat-search-settings" method="post" action="options.php">
+            <?php settings_fields('ragnus_static_search'); ?>
+
+            <section class="ragstat-search-card">
+                <div class="ragstat-search-card__heading">
+                    <span class="dashicons dashicons-search" aria-hidden="true"></span>
+                    <div><h3>Statik Arama</h3><p>Arama sayfası, indeks ve gerekli Fuse.js dosyaları export ZIP’ine eklenir.</p></div>
+                    <label class="ragstat-switch" aria-label="Statik Aramayı Etkinleştir">
+                        <input type="checkbox" name="<?php echo esc_attr($option_name); ?>[enabled]" value="1" <?php checked((string) $settings['enabled'], '1'); ?>>
+                        <span aria-hidden="true"></span>
+                    </label>
+                </div>
+                <div class="ragstat-search-grid">
+                    <div><label for="ragstat-search-path">Arama Sayfası Yolu</label><div class="ragstat-input-group is-compact"><span>/</span><input id="ragstat-search-path" type="text" name="<?php echo esc_attr($option_name); ?>[page_path]" value="<?php echo esc_attr((string) $settings['page_path']); ?>" required><span>/</span></div><p>Örnek: <code>/arama/</code></p></div>
+                    <div><label for="ragstat-search-limit">Gösterilecek Sonuç Sayısı</label><input id="ragstat-search-limit" type="number" min="5" max="100" name="<?php echo esc_attr($option_name); ?>[result_limit]" value="<?php echo esc_attr((string) $settings['result_limit']); ?>"></div>
+                    <div><label for="ragstat-search-min-chars">Minimum Arama Karakteri</label><input id="ragstat-search-min-chars" type="number" min="1" max="10" name="<?php echo esc_attr($option_name); ?>[min_chars]" value="<?php echo esc_attr((string) $settings['min_chars']); ?>"></div>
+                    <div><label for="ragstat-search-content-limit">İçerik Karakter Sınırı</label><input id="ragstat-search-content-limit" type="number" min="500" max="20000" step="500" name="<?php echo esc_attr($option_name); ?>[content_limit]" value="<?php echo esc_attr((string) $settings['content_limit']); ?>"><p>Her sayfadan indekse alınacak en fazla metin uzunluğu.</p></div>
+                    <div><label for="ragstat-search-threshold">Bulanıklık Eşiği</label><input id="ragstat-search-threshold" type="number" min="0.1" max="0.8" step="0.05" name="<?php echo esc_attr($option_name); ?>[threshold]" value="<?php echo esc_attr((string) $settings['threshold']); ?>"><p>Düşük değer daha kesin, yüksek değer daha toleranslı sonuç verir.</p></div>
+                    <div><label for="ragstat-search-token-match">Kelime Eşleştirme</label><select id="ragstat-search-token-match" name="<?php echo esc_attr($option_name); ?>[token_match]"><option value="all" <?php selected($settings['token_match'], 'all'); ?>>Tüm kelimeler eşleşsin</option><option value="any" <?php selected($settings['token_match'], 'any'); ?>>Herhangi bir kelime eşleşsin</option></select></div>
+                </div>
+            </section>
+
+            <section class="ragstat-search-card">
+                <div class="ragstat-search-card__heading">
+                    <span class="dashicons dashicons-filter" aria-hidden="true"></span>
+                    <div><h3>İndeksleme Seçicileri</h3><p>Sayfa ve yazı HTML’inden hangi alanların alınacağını CSS selector ile belirleyin.</p></div>
+                </div>
+                <div class="ragstat-search-selectors">
+                    <div><label for="ragstat-title-selector">Başlık İçin CSS Selector</label><input id="ragstat-title-selector" type="text" name="<?php echo esc_attr($option_name); ?>[title_selector]" value="<?php echo esc_attr((string) $settings['title_selector']); ?>" required><p>Örnek: <code>title</code>, <code>h1.entry-title</code> veya <code>meta[property="og:title"]</code></p></div>
+                    <div><label for="ragstat-content-selector">İçerik İçin CSS Selector</label><input id="ragstat-content-selector" type="text" name="<?php echo esc_attr($option_name); ?>[content_selector]" value="<?php echo esc_attr((string) $settings['content_selector']); ?>" required><p>Örnek: <code>body</code>, <code>.entry-content</code> veya <code>#main</code></p></div>
+                    <div><label for="ragstat-excerpt-selector">Özet İçin CSS Selector</label><input id="ragstat-excerpt-selector" type="text" name="<?php echo esc_attr($option_name); ?>[excerpt_selector]" value="<?php echo esc_attr((string) $settings['excerpt_selector']); ?>" required><p>Alan bulunamazsa içerikten otomatik kısa özet üretilir.</p></div>
+                    <div><label for="ragstat-search-excludes">İndeks Dışında Tutulacak URL’ler</label><textarea id="ragstat-search-excludes" rows="6" name="<?php echo esc_attr($option_name); ?>[exclude_urls]"><?php echo esc_textarea((string) $settings['exclude_urls']); ?></textarea><p>Satır başına tam URL, URL parçası veya kelime yazabilirsiniz.</p></div>
+                </div>
+            </section>
+
+            <section class="ragstat-search-card">
+                <div class="ragstat-search-card__heading">
+                    <span class="dashicons dashicons-chart-bar" aria-hidden="true"></span>
+                    <div><h3>Fuse.js Alanları ve Ağırlıkları</h3><p>Aranacak alanları seçin ve sonuç sıralamasındaki etkilerini belirleyin.</p></div>
+                </div>
+                <div class="ragstat-search-fields">
+                    <?php
+                    $index_fields = [
+                        'title' => ['Başlık', 'Başlık eşleşmelerini en üstte gösterir.'],
+                        'excerpt' => ['Özet', 'Kısa açıklama ve özet metninde arar.'],
+                        'content' => ['İçerik', 'Sayfa ve yazının ana metninde arar.'],
+                        'taxonomies' => ['Kategori ve Etiketler', 'WordPress kategori ve etiket adlarını indekse ekler.'],
+                    ];
+                    foreach ($index_fields as $field => [$label, $description]) :
+                        $weight_key = $field === 'taxonomies' ? 'taxonomy_weight' : $field . '_weight';
+                        ?>
+                        <div class="ragstat-search-field-row">
+                            <label class="ragstat-search-field-check"><input type="checkbox" name="<?php echo esc_attr($option_name); ?>[index_<?php echo esc_attr($field); ?>]" value="1" <?php checked((string) $settings['index_' . $field], '1'); ?>><span><strong><?php echo esc_html($label); ?></strong><small><?php echo esc_html($description); ?></small></span></label>
+                            <label class="ragstat-search-weight">Ağırlık <input type="number" min="0.1" max="10" step="0.1" name="<?php echo esc_attr($option_name); ?>[<?php echo esc_attr($weight_key); ?>]" value="<?php echo esc_attr((string) $settings[$weight_key]); ?>"></label>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </section>
+
+            <?php submit_button('Arama Ayarlarını Kaydet'); ?>
         </form>
         <?php
     }

@@ -56,6 +56,28 @@ if (($sanitized_hide['wp_content_directory'] ?? '') !== 'my-assets'
     exit(1);
 }
 
+$sanitized_search = Ragnus\StaticPublisher\Admin::sanitize_search_settings([
+    'enabled' => '1',
+    'page_path' => 'Site Search',
+    'result_limit' => 250,
+    'min_chars' => 0,
+    'threshold' => 2,
+    'title_selector' => 'h1.entry-title',
+    'content_selector' => '#main',
+    'excerpt_selector' => '.summary',
+    'index_excerpt' => '1',
+    'excerpt_weight' => 4,
+]);
+if (($sanitized_search['page_path'] ?? '') !== 'site-search'
+    || ($sanitized_search['result_limit'] ?? 0) !== 100
+    || ($sanitized_search['min_chars'] ?? 0) !== 1
+    || ($sanitized_search['threshold'] ?? '') !== '0.8'
+    || ($sanitized_search['index_excerpt'] ?? '') !== '1'
+    || ($sanitized_search['index_title'] ?? '') !== '0') {
+    fwrite(STDERR, "Arama ayarları beklenen sınırlarda temizlenmedi.\n");
+    exit(1);
+}
+
 Ragnus\StaticPublisher\Admin::enqueue_assets('toplevel_page_ragnus-static-publisher');
 if (! wp_style_is('ragnus-static-publisher-admin', 'enqueued')) {
     fwrite(STDERR, "Modern yönetim arayüzü stil dosyası yüklenmedi.\n");
@@ -92,6 +114,13 @@ foreach (['About', 'Versiyon Numarası', RAGSTAT_VERSION, 'mailto:info@ragnus.co
 }
 
 $admin_source = (string) file_get_contents(RAGSTAT_DIR . 'includes/class-admin.php');
+
+foreach (['Arama', 'Fuse.js 7.3.0', 'İndeksleme Seçicileri', 'Fuse.js Alanları ve Ağırlıkları'] as $expected) {
+    if (! str_contains($admin_source, $expected)) {
+        fwrite(STDERR, "Arama sekmesinde beklenen içerik bulunamadı: {$expected}\n");
+        exit(1);
+    }
+}
 
 foreach (['Statik Site Oluştur', '>İndir</a>'] as $expected) {
     if (! str_contains($admin_source, $expected)) {

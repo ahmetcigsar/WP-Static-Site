@@ -11,6 +11,7 @@ final class Plugin
     public const EXPORT_CAPABILITY = 'ragnus_static_export';
     public const SETTINGS_KEY = 'ragnus_static_settings';
     public const HIDE_SETTINGS_KEY = 'ragnus_static_hide_settings';
+    public const SEARCH_SETTINGS_KEY = 'ragnus_static_search_settings';
     public const STATUS_KEY = 'ragnus_static_status';
     public const LOCK_KEY = 'ragnus_static_export_lock';
     public const DIRTY_KEY = 'ragnus_static_export_dirty';
@@ -107,6 +108,36 @@ final class Plugin
     public static function hide_settings(): array
     {
         return wp_parse_args(get_option(self::HIDE_SETTINGS_KEY, []), self::hide_defaults());
+    }
+
+    public static function search_defaults(): array
+    {
+        return [
+            'enabled' => '1',
+            'page_path' => 'arama',
+            'result_limit' => 20,
+            'min_chars' => 2,
+            'content_limit' => 5000,
+            'threshold' => '0.35',
+            'token_match' => 'all',
+            'title_selector' => 'title',
+            'content_selector' => 'body',
+            'excerpt_selector' => '.entry-content',
+            'exclude_urls' => "author\narchive\ncategory",
+            'index_title' => '1',
+            'index_excerpt' => '1',
+            'index_content' => '1',
+            'index_taxonomies' => '1',
+            'title_weight' => '5',
+            'excerpt_weight' => '2',
+            'content_weight' => '1',
+            'taxonomy_weight' => '3',
+        ];
+    }
+
+    public static function search_settings(): array
+    {
+        return wp_parse_args(get_option(self::SEARCH_SETTINGS_KEY, []), self::search_defaults());
     }
 
     public static function apply_export_privacy(): void

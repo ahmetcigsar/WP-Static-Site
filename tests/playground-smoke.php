@@ -12,6 +12,7 @@ if (! defined('ABSPATH')) {
 }
 
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
+require_once ABSPATH . 'wp-admin/includes/template.php';
 
 $plugin = 'ragnus-static-publisher/ragnus-static-publisher.php';
 $result = activate_plugin($plugin);
@@ -34,6 +35,43 @@ if (($settings['maximum_urls'] ?? null) !== 2000) {
 }
 if (($settings['archive_retention'] ?? null) !== 5) {
     fwrite(STDERR, "Varsayılan ZIP saklama sayısı 5 değil.\n");
+    exit(1);
+}
+$language_defaults = Ragnus\StaticPublisher\Plugin::language_settings();
+if (($language_defaults['enabled'] ?? '') !== '0'
+    || ($language_defaults['default_language'] ?? '') !== 'tr') {
+    fwrite(STDERR, "Varsayılan dil yönlendirme ayarları doğru değil.\n");
+    exit(1);
+}
+$sanitized_languages = Ragnus\StaticPublisher\Language_Routing::sanitize([
+    'enabled' => '1',
+    'supported_languages' => "TR\nen-US\ninvalid/path\ntr",
+    'default_language' => 'en_US',
+    'cookie_days' => 9000,
+]);
+if (($sanitized_languages['enabled'] ?? '') !== '1'
+    || ($sanitized_languages['supported_languages'] ?? '') !== "tr\nen-us"
+    || ($sanitized_languages['default_language'] ?? '') !== 'en-us'
+    || ($sanitized_languages['cookie_days'] ?? 0) !== 3650) {
+    fwrite(STDERR, "Dil yönlendirme ayarları doğru temizlenmedi.\n");
+    exit(1);
+}
+$language_routing = new Ragnus\StaticPublisher\Language_Routing($sanitized_languages);
+if ($language_routing->seed_urls('https://cms.example.com') !== [
+    'https://cms.example.com/tr/',
+    'https://cms.example.com/en-us/',
+]) {
+    fwrite(STDERR, "Dil kökleri export kuyruğu için doğru oluşturulmadı.\n");
+    exit(1);
+}
+$language_html = $language_routing->inject_x_default(
+    $language_routing->inject_preference_script('<html><head></head><body></body></html>'),
+    'https://static.example.com'
+);
+if (! str_contains($language_html, 'ragnus-language-preference.js')
+    || ! str_contains($language_html, 'hreflang="x-default"')
+    || ! str_contains($language_html, 'https://static.example.com/')) {
+    fwrite(STDERR, "Dil tercihi veya x-default işaretlemesi HTML içine eklenmedi.\n");
     exit(1);
 }
 foreach (['auto_export_post_created', 'auto_export_post_updated', 'auto_export_page_created', 'auto_export_page_updated', 'auto_export_theme'] as $trigger) {

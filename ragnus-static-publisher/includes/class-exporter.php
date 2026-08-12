@@ -23,6 +23,7 @@ final class Exporter
     private int $reported_progress = 0;
     private Hide_Replacements $hide_replacements;
     private Static_Search $static_search;
+    private Language_Routing $language_routing;
     private array $search_documents = [];
 
     public function __construct()
@@ -33,6 +34,7 @@ final class Exporter
         $this->maximum_urls = max(10, min(20000, (int) $settings['maximum_urls']));
         $this->hide_replacements = new Hide_Replacements(Plugin::hide_settings());
         $this->static_search = new Static_Search(Plugin::search_settings());
+        $this->language_routing = new Language_Routing();
         $this->excluded_prefixes = array_values(array_filter(array_map(
             'trim',
             preg_split('/\r\n|\r|\n/', (string) $settings['excluded_paths']) ?: []
@@ -62,6 +64,7 @@ final class Exporter
             ]);
             $this->reported_progress = 2;
             $this->crawl();
+            $this->validate_language_outputs();
             if ($this->static_search->enabled()) {
                 Plugin::set_status($job_id, 'running', 86, [
                     'phase' => 'search-index',
@@ -154,6 +157,9 @@ final class Exporter
         foreach ($this->seed_content_urls() as $url) {
             $queue->enqueue($url);
         }
+        foreach ($this->language_routing->seed_urls($this->origin) as $url) {
+            $queue->enqueue($url);
+        }
 
         while (! $queue->isEmpty() && count($this->visited) < $this->maximum_urls) {
             $url = $this->normalise_url((string) $queue->dequeue());
@@ -214,6 +220,10 @@ final class Exporter
                     $this->search_documents[] = $document;
                 }
                 $body = $this->static_search->inject_search_bridge($body);
+            }
+            if ($is_html) {
+                $body = $this->language_routing->inject_x_default($body, $this->target);
+                $body = $this->language_routing->inject_preference_script($body);
             }
 
             $this->write_file($relative_path, $body);
@@ -487,6 +497,19 @@ final class Exporter
             $html
         ) ?? $html;
 
+        // hreflang alternatifleri de arama motorları için tam canlı adres olmalıdır.
+        $html = preg_replace_callback(
+            '#<link\b(?=[^>]*\bhreflang\s*=)[^>]*>#i',
+            function (array $match): string {
+                return preg_replace(
+                    '#(\bhref\s*=\s*["\'])(/[^"\']*|/)(["\'])#i',
+                    '$1' . $this->target . '$2$3',
+                    $match[0]
+                ) ?? $match[0];
+            },
+            $html
+        ) ?? $html;
+
         // Sosyal paylaşım metadata adresleri de mutlak canlı domaini göstermelidir.
         $html = preg_replace_callback(
             '#<meta\b[^>]*\b(?:property|name)\s*=\s*(["\'])(?:og:url|og:image|twitter:image|twitter:url)\1[^>]*>#i',
@@ -519,10 +542,28 @@ final class Exporter
         }
     }
 
+    private function validate_language_outputs(): void
+    {
+        if (! $this->language_routing->enabled()) {
+            return;
+        }
+
+        foreach ($this->language_routing->languages() as $language) {
+            $path = $this->build_directory . '/' . $language . '/index.html';
+            if (! is_readable($path)) {
+                throw new RuntimeException(sprintf('Dil kökü export edilemedi: /%s/', $language));
+            }
+        }
+    }
+
     private function write_cloudflare_files(): void
     {
-        $this->write_file('_headers', "/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: SAMEORIGIN\n\n" . $this->hide_replacements->uploads_public_path() . "*\n  Cache-Control: public, max-age=31536000, immutable\n");
+        $this->write_file('_headers', "/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: SAMEORIGIN\n\n/ragnus-language-config.json\n  Cache-Control: no-store\n\n" . $this->hide_replacements->uploads_public_path() . "*\n  Cache-Control: public, max-age=31536000, immutable\n");
         $this->write_file('_redirects', "/wp-admin/* {$this->origin}/wp-admin/:splat 302\n/wp-login.php {$this->origin}/wp-login.php 302\n");
+        $this->write_file('ragnus-language-config.json', $this->language_routing->config_json());
+        if ($this->language_routing->enabled()) {
+            $this->write_file('ragnus-language-preference.js', $this->language_routing->preference_script());
+        }
 
         if (! file_exists($this->build_directory . '/404.html')) {
             $this->write_file('404.html', '<!doctype html><html lang="tr"><meta charset="utf-8"><title>Sayfa bulunamadı</title><h1>404</h1><p>Aradığınız sayfa bulunamadı.</p></html>');
@@ -590,6 +631,7 @@ final class Exporter
                 'document_count' => count($this->search_documents),
                 'settings' => $this->static_search->settings(),
             ],
+            'language_routing' => json_decode($this->language_routing->config_json(), true),
             'build_sha256' => hash('sha256', (string) wp_json_encode($file_hashes, JSON_UNESCAPED_SLASHES)),
         ];
         $this->write_file('ragnus-static-manifest.json', (string) wp_json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));

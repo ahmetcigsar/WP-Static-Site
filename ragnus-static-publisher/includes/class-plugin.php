@@ -12,6 +12,7 @@ final class Plugin
     public const SETTINGS_KEY = 'ragnus_static_settings';
     public const HIDE_SETTINGS_KEY = 'ragnus_static_hide_settings';
     public const SEARCH_SETTINGS_KEY = 'ragnus_static_search_settings';
+    public const LANGUAGE_SETTINGS_KEY = 'ragnus_static_language_settings';
     public const STATUS_KEY = 'ragnus_static_status';
     public const LOCK_KEY = 'ragnus_static_export_lock';
     public const DIRTY_KEY = 'ragnus_static_export_dirty';
@@ -161,6 +162,11 @@ final class Plugin
             'content_weight' => '1',
             'taxonomy_weight' => '3',
         ];
+    }
+
+    public static function language_settings(): array
+    {
+        return wp_parse_args(get_option(self::LANGUAGE_SETTINGS_KEY, []), Language_Routing::defaults());
     }
 
     public static function search_settings(): array

@@ -18,6 +18,12 @@ update_option('ragnus_static_settings', [
     'excluded_paths' => "/wp-admin/\n/wp-login.php\n/wp-json/\n/feed/",
     'auto_export' => '0',
 ]);
+update_option(Ragnus\StaticPublisher\Plugin::LANGUAGE_SETTINGS_KEY, [
+    'enabled' => '1',
+    'supported_languages' => "tr\nen",
+    'default_language' => 'tr',
+    'cookie_days' => 365,
+]);
 update_option(Ragnus\StaticPublisher\Plugin::HIDE_SETTINGS_KEY, [
     'wp_content_directory' => 'assets',
     'wp_includes_directory' => 'core',
@@ -69,8 +75,22 @@ add_filter('ragnus_static_seed_urls', static function (array $urls): array {
 });
 add_filter('pre_http_request', static function ($preempt, array $args, string $url) {
     $path = (string) wp_parse_url($url, PHP_URL_PATH);
-    if (! in_array($path, ['/redirect-test/', '/not-found-test/', '/forbidden-test/', '/wp-content/themes/test-theme/style.css'], true)) {
+    if (! in_array($path, ['/tr/', '/en/', '/redirect-test/', '/not-found-test/', '/forbidden-test/', '/wp-content/themes/test-theme/style.css'], true)) {
         return $preempt;
+    }
+
+    if (in_array($path, ['/tr/', '/en/'], true)) {
+        $language = trim($path, '/');
+        return [
+            'headers' => ['content-type' => 'text/html; charset=UTF-8'],
+            'body' => '<!doctype html><html lang="' . $language . '"><head>'
+                . '<link rel="alternate" hreflang="tr" href="' . home_url('/tr/') . '">'
+                . '<link rel="alternate" hreflang="en" href="' . home_url('/en/') . '">'
+                . '</head><body>Dil: ' . $language . '</body></html>',
+            'response' => ['code' => 200, 'message' => 'OK'],
+            'cookies' => [],
+            'filename' => null,
+        ];
     }
 
     if ($path === '/wp-content/themes/test-theme/style.css') {
@@ -178,6 +198,10 @@ $hidden_theme_css = (string) $zip->getFromName('assets/skins/test-theme/design.c
 $headers_file = (string) $zip->getFromName('_headers');
 $manifest_file = json_decode((string) $zip->getFromName('ragnus-static-manifest.json'), true);
 $search_page = (string) $zip->getFromName('arama/index.html');
+$language_config = json_decode((string) $zip->getFromName('ragnus-language-config.json'), true);
+$language_script = (string) $zip->getFromName('ragnus-language-preference.js');
+$turkish_home = (string) $zip->getFromName('tr/index.html');
+$english_home = (string) $zip->getFromName('en/index.html');
 $search_index = json_decode((string) $zip->getFromName('ragnus-search-index.json'), true);
 $search_config = json_decode((string) $zip->getFromName('ragnus-search-config.json'), true);
 $search_script = (string) $zip->getFromName('ragnus-search-assets/ragnus-search.js');
@@ -198,6 +222,21 @@ if (! str_contains($headers_file, '/assets/media/*')) {
 }
 if (($manifest_file['hide_replacements']['author_url'] ?? '') !== 'writers') {
     throw new RuntimeException('Hide ayarları export manifestine yazılmadı.');
+}
+if (! is_array($language_config)
+    || ($language_config['enabled'] ?? null) !== true
+    || ($language_config['default_language'] ?? '') !== 'tr'
+    || ($language_config['supported_languages'] ?? []) !== ['tr', 'en']
+    || ($manifest_file['language_routing']['schema_version'] ?? 0) !== 1) {
+    throw new RuntimeException('Dil yönlendirme yapılandırması export ZIP veya manifest içine doğru yazılmadı.');
+}
+if ($language_script === ''
+    || ! str_contains($turkish_home, 'lang="tr"')
+    || ! str_contains($english_home, 'lang="en"')
+    || ! str_contains($turkish_home, 'ragnus-language-preference.js')
+    || ! str_contains($english_home, 'hreflang="x-default"')
+    || ! str_contains($english_home, 'https://static.example.com/tr/')) {
+    throw new RuntimeException('Çoklu dil kökleri, tercih betiği veya hreflang işaretleri doğru export edilmedi.');
 }
 if ($search_page === '' || ! str_contains($search_page, 'Site İçinde Ara')
     || ! is_array($search_index) || $search_index === []

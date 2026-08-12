@@ -36,6 +36,11 @@ final class Admin
             'sanitize_callback' => [self::class, 'sanitize_search_settings'],
             'default' => Plugin::search_defaults(),
         ]);
+        register_setting('ragnus_static_languages', Plugin::LANGUAGE_SETTINGS_KEY, [
+            'type' => 'array',
+            'sanitize_callback' => [Language_Routing::class, 'sanitize'],
+            'default' => Language_Routing::defaults(),
+        ]);
     }
 
     public static function enqueue_assets(string $hook_suffix): void
@@ -366,11 +371,11 @@ final class Admin
         $tabs = [
             'main' => 'Main',
             'files' => 'Files',
-            'activity' => 'Activity Log',
             'settings' => 'Settings',
             'search' => 'Arama',
             'hide' => 'Hide',
             'diagnostics' => 'Diagnostics',
+            'activity' => 'Activity Logs',
             'about' => 'About',
         ];
         $current_tab = isset($tabs[$requested_tab]) ? $requested_tab : 'main';
@@ -650,7 +655,7 @@ final class Admin
         $activity = Activity_Log::page($requested_page, $search);
         $entries = $activity['entries'];
         ?>
-        <h2>Activity Log</h2>
+        <h2>Activity Logs</h2>
         <?php if ($activity['job_id'] !== '') : ?>
             <p class="ragstat-activity-meta">
                 <span>En son static işlemine ait kayıtlar: <code><?php echo esc_html((string) $activity['job_id']); ?></code></span>
@@ -696,7 +701,7 @@ final class Admin
                     ? self::admin_page_url('activity')
                     : add_query_arg('log_search', $search, self::admin_page_url('activity'));
                 ?>
-                <nav class="ragstat-pagination" aria-label="Activity Log sayfaları">
+                <nav class="ragstat-pagination" aria-label="Activity Logs sayfaları">
                     <span class="ragstat-pagination__summary"><?php echo esc_html(sprintf('%d Kayıt', (int) $activity['total'])); ?></span>
                     <?php
                     echo wp_kses_post((string) paginate_links([
@@ -722,6 +727,7 @@ final class Admin
         $settings_tabs = [
             'general' => 'Genel',
             'automation' => 'Otomasyon',
+            'languages' => 'Diller',
             'deploy' => 'Deploy',
         ];
         $current_settings_tab = isset($settings_tabs[$requested_settings_tab]) ? $requested_settings_tab : 'general';
@@ -740,6 +746,8 @@ final class Admin
                 <?php self::render_general_settings($settings); ?>
             <?php elseif ($current_settings_tab === 'automation') : ?>
                 <?php self::render_automation_settings($settings); ?>
+            <?php elseif ($current_settings_tab === 'languages') : ?>
+                <?php self::render_language_settings(Plugin::language_settings()); ?>
             <?php else : ?>
                 <?php self::render_deploy_tab($archives, $settings); ?>
                 <?php self::render_deploy_settings($settings); ?>
@@ -832,6 +840,49 @@ final class Admin
                 <tr><th><label for="ragstat-webhook-token">Webhook Bearer Token</label></th><td><input class="regular-text" id="ragstat-webhook-token" type="password" autocomplete="new-password" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[deployment_webhook_token]" value="" placeholder="<?php echo $settings['deployment_webhook_token'] !== '' ? esc_attr('Kayıtlı tokenı korumak için boş bırakın') : ''; ?>"><p class="description">GitHub kullanılıyorsa yalnızca bu repository için Contents: write yetkili fine-grained token kullanın.</p></td></tr>
             </table>
             <?php submit_button('Deploy Ayarlarını Kaydet'); ?>
+        </form>
+        <?php
+    }
+
+    private static function render_language_settings(array $settings): void
+    {
+        ?>
+        <form class="ragstat-settings-form ragstat-language-settings-form" method="post" action="options.php">
+            <?php settings_fields('ragnus_static_languages'); ?>
+            <section class="ragstat-language-card" aria-labelledby="ragstat-language-title">
+                <div class="ragstat-language-card__heading">
+                    <span class="dashicons dashicons-translation" aria-hidden="true"></span>
+                    <div>
+                        <h3 id="ragstat-language-title">Tarayıcı Diline Göre Yönlendirme</h3>
+                        <p>Ziyaretçi ana adrese geldiğinde önce kayıtlı tercihi, ardından tarayıcısının dil sırası kullanılır.</p>
+                    </div>
+                    <label class="ragstat-switch" aria-label="Tarayıcı diline göre yönlendirmeyi etkinleştir">
+                        <input type="checkbox" name="<?php echo esc_attr(Plugin::LANGUAGE_SETTINGS_KEY); ?>[enabled]" value="1" <?php checked((string) ($settings['enabled'] ?? '0'), '1'); ?>>
+                        <span aria-hidden="true"></span>
+                    </label>
+                </div>
+                <div class="ragstat-language-grid">
+                    <div>
+                        <label for="ragstat-supported-languages">Desteklenen Dil Kodları</label>
+                        <textarea id="ragstat-supported-languages" name="<?php echo esc_attr(Plugin::LANGUAGE_SETTINGS_KEY); ?>[supported_languages]" rows="6" spellcheck="false"><?php echo esc_textarea((string) ($settings['supported_languages'] ?? '')); ?></textarea>
+                        <p>Her satıra bir dil yazın. Bu kodların WordPress’te <code>/tr/</code>, <code>/en/</code> gibi karşılıkları bulunmalıdır.</p>
+                    </div>
+                    <div>
+                        <label for="ragstat-default-language">Varsayılan Dil</label>
+                        <input id="ragstat-default-language" type="text" maxlength="20" spellcheck="false" name="<?php echo esc_attr(Plugin::LANGUAGE_SETTINGS_KEY); ?>[default_language]" value="<?php echo esc_attr((string) ($settings['default_language'] ?? 'tr')); ?>">
+                        <p>Tarayıcı dili desteklenmiyorsa bu dil açılır.</p>
+
+                        <label for="ragstat-language-cookie-days">Dil Tercihi Süresi</label>
+                        <div class="ragstat-input-with-suffix">
+                            <input id="ragstat-language-cookie-days" type="number" min="1" max="3650" name="<?php echo esc_attr(Plugin::LANGUAGE_SETTINGS_KEY); ?>[cookie_days]" value="<?php echo esc_attr((string) ($settings['cookie_days'] ?? 365)); ?>">
+                            <span>gün</span>
+                        </div>
+                        <p>Kullanıcının açıkça ziyaret ettiği dil daha sonraki girişlerde korunur.</p>
+                    </div>
+                </div>
+                <p class="ragstat-language-card__note"><span class="dashicons dashicons-info-outline" aria-hidden="true"></span>Yönlendirme yalnızca sitenin <code>/</code> adresinde çalışır. Dil içeren doğrudan bağlantılar değiştirilmez.</p>
+            </section>
+            <?php submit_button('Dil Ayarlarını Kaydet'); ?>
         </form>
         <?php
     }

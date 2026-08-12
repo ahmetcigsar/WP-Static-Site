@@ -14,9 +14,19 @@
 2. WordPress işi WP-Cron kuyruğuna ekler.
 3. Exporter yayınlanmış içerik URL'lerini seed olarak alır ve aynı origin kaynaklarını tarar.
 4. HTML/CSS içindeki origin adresleri canlı statik domain ile değiştirilir.
-5. Snapshot, `_headers`, `_redirects`, manifest ve ZIP oluşturulur.
+5. Snapshot, `_headers`, `_redirects`, dil yönlendirme yapılandırması, manifest ve ZIP oluşturulur.
 6. Export tamamlanınca isteğe bağlı GitHub `repository_dispatch` webhook'u CI akışını tetikler.
 7. CI ZIP'i indirir, doğrular ve Wrangler ile `wp-statik-deneme` Workers Static Assets deployment'ına yükler.
+
+## Çoklu dil akışı
+
+- Çoklu dil özelliği yalnızca `/tr/`, `/en/` gibi dizin tabanlı WordPress çeviri URL'leriyle çalışır.
+- Etkin dillerin kök adresleri normal içerik seed'lerine ek olarak crawl kuyruğuna alınır; her dil için `/<dil>/index.html` üretilmesi zorunludur.
+- Export `ragnus-language-config.json` ve tercih kaydı için `ragnus-language-preference.js` üretir.
+- Cloudflare Worker yalnızca `/` yolunda çalışır. Açık dil tercihi çerezi `Accept-Language` değerinden, `Accept-Language` ise varsayılan dilden önceliklidir.
+- Yönlendirme kullanıcıya bağlı olduğu için `302`, `Cache-Control: private, no-store` ve `Vary: Accept-Language, Cookie` kullanılır.
+- Dil içeren yollar doğrudan Static Assets tarafından sunulur; Worker bunları başka dile yönlendirmez.
+- Exporter `hreflang` adreslerini hedef domaine dönüştürür ve yönlendirici kökü `x-default` olarak ekler.
 
 ## Güvenlik modeli
 
@@ -33,6 +43,7 @@
 - Çok büyük sitelerde tam crawl yerine artımlı export gerekir.
 - JavaScript'in çalışma anında istediği WordPress AJAX/REST uçları statik değildir.
 - Karmaşık CSS URL sözdizimleri ve JavaScript içine gömülü asset adresleri ayrıca test edilmelidir.
+- Çoklu dilde çeviri içeriklerini ve karşılıklı `hreflang` etiketlerini üretmek WordPress çoklu dil eklentisinin sorumluluğundadır.
 - Eklenti Apache/IIS için storage klasörüne erişim engeli yazar. Nginx'te ayrıca `wp-content/uploads/ragnus-static` yolu engellenmelidir; artifact yalnızca kimlik doğrulamalı REST üzerinden indirilir.
 - Origin Cloudflare Access veya HTTP Basic arkasındaysa siteye özel bir MU-plugin ile `ragnus_static_request_args` filtresinden gerekli servis başlıkları eklenmelidir.
 

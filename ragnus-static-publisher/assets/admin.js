@@ -109,10 +109,10 @@
     }
 
     const stateLabels = {
-        queued: i18n.queued || 'Kuyrukta',
-        running: i18n.running || 'Çalışıyor',
-        completed: i18n.completed || 'Tamamlandı',
-        failed: i18n.failed || 'Başarısız'
+        queued: i18n.queued || 'Queued',
+        running: i18n.running || 'Running',
+        completed: i18n.completed || 'Completed',
+        failed: i18n.failed || 'Failed'
     };
     const stateElement = root.querySelector('#ragstat-status-state');
     const progressCell = root.querySelector('#ragstat-progress-cell');
@@ -159,7 +159,7 @@
         const progressBar = document.createElement('div');
         progressBar.className = 'ragstat-progress ' + (state === 'queued' || state === 'running' ? 'is-active' : '');
         progressBar.setAttribute('role', 'progressbar');
-        progressBar.setAttribute('aria-label', i18n.progressLabel || 'Statik oluşturma ilerlemesi');
+        progressBar.setAttribute('aria-label', i18n.progressLabel || 'Static rendering progress');
         progressBar.setAttribute('aria-valuemin', '0');
         progressBar.setAttribute('aria-valuemax', '100');
         progressBar.setAttribute('aria-valuenow', String(progress));
@@ -188,7 +188,7 @@
         const active = state === 'queued' || state === 'running';
         const canRetry = state === 'queued' && Boolean(status.stalled);
 
-        replaceText(stateElement, stateLabels[state], i18n.notRun || 'Henüz Çalışmadı');
+        replaceText(stateElement, stateLabels[state], i18n.notRun || 'Not run yet');
         renderProgress(state, progress);
         replaceText(messageElement, status.status_message, '—');
         replaceText(jobElement, status.job_id, '—');
@@ -210,7 +210,7 @@
         showNotice(String(status.runtime_notice || ''));
         if (submitButton) {
             submitButton.disabled = active && !canRetry;
-            submitButton.value = canRetry ? (i18n.retry || 'Yeniden Dene') : (i18n.create || 'Statik Site Oluştur');
+            submitButton.value = canRetry ? (i18n.retry || 'Retry') : (i18n.create || 'Create Static Site');
         }
         if (downloadButton && state === 'completed') {
             downloadButton.hidden = false;
@@ -271,7 +271,7 @@
         } catch (error) {
             failedPolls += 1;
             if (failedPolls >= 3) {
-                showNotice('İlerleme bilgisi alınamıyor. İnternet bağlantısını veya WordPress REST API erişimini kontrol edin.');
+                showNotice(i18n.pollError || 'Progress information is unavailable. Check your internet connection or WordPress REST API access.');
             }
             schedulePoll();
         }

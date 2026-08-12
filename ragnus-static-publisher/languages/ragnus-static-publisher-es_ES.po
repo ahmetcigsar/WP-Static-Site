@@ -1,10 +1,10 @@
-# Spanish (Spain) translations for Ragnus Static Publisher.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Ragnus Static Publisher 1.16.3\n"
 "Report-Msgid-Bugs-To: info@ragnus.co\n"
-"POT-Creation-Date: 2026-08-12 22:07+0300\n"
-"PO-Revision-Date: 2026-08-12 22:07+0300\n"
+"POT-Creation-Date: 2026-08-12 22:57+0300\n"
+"PO-Revision-Date: 2026-08-12 22:57+0300\n"
 "Last-Translator: Ragnus <info@ragnus.co>\n"
 "Language-Team: Spanish (Spain)\n"
 "Language: es_ES\n"
@@ -14,1056 +14,105 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Ragnus translation build\n"
 
-#: ragnus-static-publisher/includes/class-admin.php:73
-#: ragnus-static-publisher/includes/class-admin.php:631
-msgid "Kuyrukta"
-msgstr "en la cola"
+#: ragnus-static-publisher/includes/class-admin.php:1116
+#, php-format
+msgid "%1$d of %2$d checks passed."
+msgstr "%1$d de %2$d comprobaciones aprobadas."
 
-#: ragnus-static-publisher/includes/class-admin.php:74
-#: ragnus-static-publisher/includes/class-admin.php:632
-msgid "Çalışıyor"
-msgstr "laboral"
+#: ragnus-static-publisher/includes/class-admin.php:532
+#, php-format
+msgid "%1$d old ZIP file was deleted, %2$d file could not be deleted."
+msgstr ""
+"Se eliminó el archivo ZIP antiguo %1$d, el archivo %2$d no se pudo eliminar."
 
-#: ragnus-static-publisher/includes/class-admin.php:75
-#: ragnus-static-publisher/includes/class-admin.php:455
-#: ragnus-static-publisher/includes/class-admin.php:633
-msgid "Tamamlandı"
-msgstr "terminado"
+#: ragnus-static-publisher/includes/class-admin.php:538
+#, php-format
+msgid "%d ZIP file has been deleted."
+msgstr "El archivo ZIP %d ha sido eliminado."
 
-#: ragnus-static-publisher/includes/class-admin.php:76
-#: ragnus-static-publisher/includes/class-admin.php:456
-#: ragnus-static-publisher/includes/class-admin.php:634
-msgid "Başarısız"
-msgstr "Fracasado"
+#: ragnus-static-publisher/includes/class-admin.php:716
+#, php-format
+msgid "%d records"
+msgstr "%d registros"
 
-#: ragnus-static-publisher/includes/class-admin.php:77
-#: ragnus-static-publisher/includes/class-admin.php:649
-msgid "Henüz Çalışmadı"
-msgstr "Aún no funciona"
+#: ragnus-static-publisher/includes/class-static-search.php:116
+#, php-format
+msgid "%d results shown."
+msgstr "Se muestran los resultados de %d."
 
-#: ragnus-static-publisher/includes/class-admin.php:78
-#: ragnus-static-publisher/includes/class-admin.php:454
-msgid "Static oluşturma ilerlemesi"
-msgstr "Progreso de renderizado estático"
+#: ragnus-static-publisher/includes/class-admin.php:931
+msgid ""
+"A lower value gives a more precise result, a higher value gives a more "
+"tolerant result."
+msgstr ""
+"Un valor más bajo da un resultado más preciso, un valor más alto da un "
+"resultado más tolerante."
 
-#: ragnus-static-publisher/includes/class-admin.php:79
-msgid "Yeniden Dene"
-msgstr "Intentar otra vez"
-
-#: ragnus-static-publisher/includes/class-admin.php:80
-#: ragnus-static-publisher/includes/class-admin.php:677
-msgid "Statik Site Oluştur"
-msgstr "Crear sitio estático"
-
-#: ragnus-static-publisher/includes/class-admin.php:174
-#: ragnus-static-publisher/includes/class-admin.php:199
-#: ragnus-static-publisher/includes/class-admin.php:214
-#: ragnus-static-publisher/includes/class-admin.php:243
-#: ragnus-static-publisher/includes/class-admin.php:254
-#: ragnus-static-publisher/includes/class-admin.php:270
-#: ragnus-static-publisher/includes/class-admin.php:351
-msgid "Bu işlem için yetkiniz yok."
-msgstr "No está autorizado para esta operación."
-
-#: ragnus-static-publisher/includes/class-admin.php:205
-#: ragnus-static-publisher/includes/class-rest-controller.php:66
-msgid "İndirilebilir export bulunamadı."
-msgstr "No se encontraron exportaciones descargables."
-
-#: ragnus-static-publisher/includes/class-admin.php:224
-#: ragnus-static-publisher/includes/class-rest-controller.php:50
-msgid "Export işlemi zaten çalışıyor."
-msgstr "El proceso de exportación ya está en marcha."
-
-#: ragnus-static-publisher/includes/class-admin.php:261
-msgid "İndirilebilir ZIP dosyası bulunamadı."
-msgstr "No se encontró ningún archivo ZIP descargable."
-
-#: ragnus-static-publisher/includes/class-admin.php:438
-msgid "Main"
-msgstr "Principal"
-
-#: ragnus-static-publisher/includes/class-admin.php:439
-msgid "Files"
-msgstr "Archivos"
-
-#: ragnus-static-publisher/includes/class-admin.php:440
-msgid "Settings"
-msgstr "Ajustes"
-
-#: ragnus-static-publisher/includes/class-admin.php:441
-msgid "Arama"
-msgstr "Búsqueda"
-
-#: ragnus-static-publisher/includes/class-admin.php:442
-msgid "Hide"
-msgstr "Ocultar"
-
-#: ragnus-static-publisher/includes/class-admin.php:443
-msgid "Diagnostics"
-msgstr "Diagnóstico"
-
-#: ragnus-static-publisher/includes/class-admin.php:444
-#: ragnus-static-publisher/includes/class-admin.php:481
-msgid "Activity Logs"
-msgstr "Registros de actividad"
-
-#: ragnus-static-publisher/includes/class-admin.php:445
+#: ragnus-static-publisher/includes/class-admin.php:390
+#: ragnus-static-publisher/includes/class-admin.php:1156
 msgid "About"
 msgstr "Acerca de"
 
-#: ragnus-static-publisher/includes/class-admin.php:446
+#: ragnus-static-publisher/includes/class-admin.php:571
+msgid "Actions"
+msgstr "Comportamiento"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:157
+msgid "Active plugins that may block static scanning:"
+msgstr "Complementos activos que pueden bloquear el escaneo estático:"
+
+#: ragnus-static-publisher/includes/class-admin.php:389
+#: ragnus-static-publisher/includes/class-admin.php:669
+msgid "Activity Logs"
+msgstr "Registros de actividad"
+
+#: ragnus-static-publisher/includes/class-admin.php:715
+msgid "Activity log pages"
+msgstr "Páginas de registro de actividad"
+
+#: ragnus-static-publisher/includes/class-admin.php:817
 msgid ""
-"WordPress sitenizin statik kopyasını üretin. Cloudflare kimlik bilgileri bu "
-"eklentide tutulmaz."
-msgstr ""
-"Genere una copia estática de su sitio de WordPress. Las credenciales de "
-"Cloudflare no se guardan en este complemento."
-
-#: ragnus-static-publisher/includes/class-admin.php:447
-msgid "Static Publisher bölümleri"
-msgstr "Secciones de editor estático"
-
-#: ragnus-static-publisher/includes/class-admin.php:448
-msgid "İşlemi Onaylayın"
-msgstr "Confirmar transacción"
-
-#: ragnus-static-publisher/includes/class-admin.php:449
-msgid "Vazgeç"
-msgstr "Cancelar"
-
-#: ragnus-static-publisher/includes/class-admin.php:450
-msgid "Sil"
-msgstr "Sil"
-
-#: ragnus-static-publisher/includes/class-admin.php:451
-msgid "Yayın Durumu"
-msgstr "Estado de publicación"
-
-#: ragnus-static-publisher/includes/class-admin.php:452
-msgid "Durum"
-msgstr "trigo duro"
-
-#: ragnus-static-publisher/includes/class-admin.php:453
-msgid "İlerleme"
-msgstr "Progreso"
-
-#: ragnus-static-publisher/includes/class-admin.php:457
-msgid "Aşama"
-msgstr "Escenario"
-
-#: ragnus-static-publisher/includes/class-admin.php:458
-msgid "İş Kimliği"
-msgstr "Identificación comercial"
-
-#: ragnus-static-publisher/includes/class-admin.php:459
-msgid "URL Sayısı"
-msgstr "Número de URL"
-
-#: ragnus-static-publisher/includes/class-admin.php:460
-msgid "İşlenen Adres"
-msgstr "Dirección procesada"
-
-#: ragnus-static-publisher/includes/class-admin.php:461
-msgid "Son Statik Oluşturma"
-msgstr "Representación estática final"
-
-#: ragnus-static-publisher/includes/class-admin.php:462
-msgid "Hata"
-msgstr "Incluso"
-
-#: ragnus-static-publisher/includes/class-admin.php:463
-msgid "İndir"
-msgstr "Descargar"
-
-#: ragnus-static-publisher/includes/class-admin.php:464
-msgid "ZIP Dosyaları"
-msgstr "Archivos ZIP"
-
-#: ragnus-static-publisher/includes/class-admin.php:465
-msgid "Export devam ederken eski dosyalar silinemez."
-msgstr ""
-"Los archivos antiguos no se pueden eliminar mientras la exportación está en "
-"curso."
-
-#: ragnus-static-publisher/includes/class-admin.php:466
-msgid "Export devam ederken ZIP dosyaları silinemez."
-msgstr ""
-"Los archivos ZIP no se pueden eliminar mientras la exportación está en "
-"curso."
-
-#: ragnus-static-publisher/includes/class-admin.php:467
-msgid "İşlem yapmak için en az bir ZIP dosyası seçin."
-msgstr "Seleccione al menos un archivo ZIP para procesar."
-
-#: ragnus-static-publisher/includes/class-admin.php:468
-msgid "Geçerli bir toplu işlem seçin."
-msgstr "Seleccione una acción por lotes válida."
-
-#: ragnus-static-publisher/includes/class-admin.php:469
-msgid "Henüz oluşturulmuş bir ZIP dosyası yok."
-msgstr "Aún no se ha creado ningún archivo ZIP."
-
-#: ragnus-static-publisher/includes/class-admin.php:470
-msgid "Toplu İşlem Seçin"
-msgstr "Seleccionar acción por lotes"
-
-#: ragnus-static-publisher/includes/class-admin.php:471
-msgid "Toplu İşlem"
-msgstr "Proceso por lotes"
-
-#: ragnus-static-publisher/includes/class-admin.php:472
-msgid "Seçilenleri İndir"
-msgstr "Descargar Seleccionado"
-
-#: ragnus-static-publisher/includes/class-admin.php:473
-msgid "Seçilenleri Sil"
-msgstr "Eliminar seleccionado"
-
-#: ragnus-static-publisher/includes/class-admin.php:474
-msgid "Uygula"
-msgstr "Aplicar"
-
-#: ragnus-static-publisher/includes/class-admin.php:475
-msgid "Tümünü Seç"
-msgstr "Seleccionar todo"
-
-#: ragnus-static-publisher/includes/class-admin.php:476
-msgid "Sıra"
-msgstr "Fila"
-
-#: ragnus-static-publisher/includes/class-admin.php:477
-msgid "Oluşturma Tarihi"
-msgstr "Fecha de creación"
-
-#: ragnus-static-publisher/includes/class-admin.php:478
-msgid "Oluşturma Saati"
-msgstr "Tiempo de creación"
-
-#: ragnus-static-publisher/includes/class-admin.php:479
-msgid "İşlem"
-msgstr "Proceso"
-
-#: ragnus-static-publisher/includes/class-admin.php:480
-#: ragnus-static-publisher/includes/class-admin.php:760
-msgid "Eski Dosyaları Sil"
-msgstr "Eliminar archivos antiguos"
-
-#: ragnus-static-publisher/includes/class-admin.php:482
-msgid "En son static işlemine ait kayıtlar:"
-msgstr "Registros de la última transacción estática:"
-
-#: ragnus-static-publisher/includes/class-admin.php:483
-msgid "Kayıt Sayısı:"
-msgstr "Número de registros:"
-
-#: ragnus-static-publisher/includes/class-admin.php:484
-msgid "Log Kayıtlarında Ara"
-msgstr "Buscar registros de registro"
-
-#: ragnus-static-publisher/includes/class-admin.php:485
-msgid "Ara"
-msgstr "Buscar"
-
-#: ragnus-static-publisher/includes/class-admin.php:486
-msgid "Aramayı Temizle"
-msgstr "Borrar búsqueda"
-
-#: ragnus-static-publisher/includes/class-admin.php:487
-msgid "Kaynak Adres"
-msgstr "Dirección de origen"
-
-#: ragnus-static-publisher/includes/class-admin.php:488
-msgid "Statik Adres"
-msgstr "Dirección estática"
-
-#: ragnus-static-publisher/includes/class-admin.php:489
-msgid "Tarih"
-msgstr "Historia"
-
-#: ragnus-static-publisher/includes/class-admin.php:490
-msgid "Saat"
-msgstr "Momento"
-
-#: ragnus-static-publisher/includes/class-admin.php:491
-msgid "Henüz kaydedilmiş bir export etkinliği yok."
-msgstr "Aún no se ha registrado ningún evento de exportación."
-
-#: ragnus-static-publisher/includes/class-admin.php:492
-msgid "Statik oluşturma, otomasyon ve yayınlama ayarlarını yönetin."
-msgstr ""
-"Administre la configuración de generación, automatización y publicación "
-"estática."
-
-#: ragnus-static-publisher/includes/class-admin.php:493
-msgid "Settings alt bölümleri"
-msgstr "Subsecciones de configuración"
-
-#: ragnus-static-publisher/includes/class-admin.php:494
-msgid "Genel"
-msgstr "General"
-
-#: ragnus-static-publisher/includes/class-admin.php:495
-msgid "Otomasyon"
-msgstr "Automatización"
-
-#: ragnus-static-publisher/includes/class-admin.php:496
-msgid "Diller"
-msgstr "Idiomas"
-
-#: ragnus-static-publisher/includes/class-admin.php:497
-msgid "Deploy"
-msgstr "Desplegar"
-
-#: ragnus-static-publisher/includes/class-admin.php:498
-msgid "Canlı Site Adresi"
-msgstr "Dirección del sitio en vivo"
-
-#: ragnus-static-publisher/includes/class-admin.php:499
-msgid "Örnek: https://example.com"
-msgstr "Ejemplo: https://example.com"
-
-#: ragnus-static-publisher/includes/class-admin.php:500
-msgid "En Fazla URL"
-msgstr "La mayoría de las URL"
-
-#: ragnus-static-publisher/includes/class-admin.php:501
-msgid "Hariç Tutulan Yollar"
-msgstr "Rutas excluidas"
-
-#: ragnus-static-publisher/includes/class-admin.php:502
-msgid "Satır başına bir yol öneki."
-msgstr "Un prefijo de ruta por línea."
-
-#: ragnus-static-publisher/includes/class-admin.php:503
-msgid "Saklanacak ZIP Sayısı"
-msgstr "Número de ZIP para almacenar"
-
-#: ragnus-static-publisher/includes/class-admin.php:504
-msgid ""
-"En son kaç başarılı export arşivinin saklanacağını belirler. Varsayılan: 5."
-msgstr ""
-"Determina cuántos últimos archivos exportados exitosamente se almacenarán. "
-"Predeterminado: 5."
-
-#: ragnus-static-publisher/includes/class-admin.php:505
-msgid ""
-"En son ZIP dosyası korunur; önceki ZIP dosyaları ve bunlara ait geçici build"
-" klasörleri kalıcı olarak silinir."
-msgstr ""
-"Se conserva el archivo ZIP más reciente; Los archivos ZIP anteriores y sus "
-"carpetas de compilación temporales se eliminan permanentemente."
-
-#: ragnus-static-publisher/includes/class-admin.php:506
-msgid "Otomatik Statik Site Oluşturma ve Deploy"
-msgstr "Creación e implementación automática de sitios estáticos"
-
-#: ragnus-static-publisher/includes/class-admin.php:507
-msgid ""
-"Seçilen değişikliklerden sonra statik site oluşturulur; deployment webhook "
-"ayarlıysa deploy akışı otomatik tetiklenir."
+"After the selected changes, the static site is created; If the deployment "
+"webhook is set, the deploy flow is triggered automatically."
 msgstr ""
 "Después de los cambios seleccionados, se crea el sitio estático; Si el "
 "webhook de implementación está configurado, el flujo de implementación se "
 "activa automáticamente."
 
-#: ragnus-static-publisher/includes/class-admin.php:508
-msgid "Otomatik statik site oluşturmayı etkinleştir"
-msgstr "Habilitar la generación automática de sitios estáticos"
-
-#: ragnus-static-publisher/includes/class-admin.php:509
+#: ragnus-static-publisher/includes/class-admin.php:600
 msgid ""
-"Arka arkaya yapılan değişiklikler 60 saniye boyunca birleştirilerek tek "
-"export ve deploy olarak çalıştırılır."
-msgstr ""
-"Los cambios realizados consecutivamente se combinan durante 60 segundos y se"
-" ejecutan como una única exportación e implementación."
-
-#: ragnus-static-publisher/includes/class-admin.php:510
-msgid "GitHub Deployment Webhook"
-msgstr "Webhook de implementación de GitHub"
-
-#: ragnus-static-publisher/includes/class-admin.php:511
-msgid "Deployment Webhook"
-msgstr "Webhook de implementación"
-
-#: ragnus-static-publisher/includes/class-admin.php:512
-msgid "GitHub için: https://api.github.com/repos/SAHIP/REPO/dispatches"
-msgstr "Para GitHub: https://api.github.com/repos/SAHIP/REPO/dispatches"
-
-#: ragnus-static-publisher/includes/class-admin.php:513
-msgid "Webhook Bearer Token"
-msgstr "Token de portador de webhook"
-
-#: ragnus-static-publisher/includes/class-admin.php:514
-msgid ""
-"GitHub kullanılıyorsa yalnızca bu repository için Contents: write yetkili "
-"fine-grained token kullanın."
-msgstr ""
-"Si usa GitHub, use Contenido: escriba el token detallado autorizado solo "
-"para este repositorio."
-
-#: ragnus-static-publisher/includes/class-admin.php:515
-msgid "Tarayıcı Diline Göre Yönlendirme"
-msgstr "Redirección por idioma del navegador"
-
-#: ragnus-static-publisher/includes/class-admin.php:516
-msgid ""
-"Ziyaretçi ana adrese geldiğinde önce kayıtlı tercihi, ardından tarayıcısının"
-" dil sırası kullanılır."
-msgstr ""
-"Cuando el visitante llega a la dirección principal, primero se utiliza la "
-"preferencia guardada y luego la secuencia de idiomas del navegador."
-
-#: ragnus-static-publisher/includes/class-admin.php:517
-msgid "Desteklenen Dil Kodları"
-msgstr "Códigos de idioma admitidos"
-
-#: ragnus-static-publisher/includes/class-admin.php:518
-msgid "Her satıra bir dil yazın. Bu kodların WordPress’te"
-msgstr "Escribe un idioma por línea. Estos códigos en WordPress"
-
-#: ragnus-static-publisher/includes/class-admin.php:519
-msgid "gibi karşılıkları bulunmalıdır."
-msgstr "Debería haber equivalentes como este."
-
-#: ragnus-static-publisher/includes/class-admin.php:520
-msgid "Varsayılan Dil"
-msgstr "Idioma predeterminado"
-
-#: ragnus-static-publisher/includes/class-admin.php:521
-msgid "Tarayıcı dili desteklenmiyorsa bu dil açılır."
-msgstr "Si el idioma del navegador no es compatible, se abre este idioma."
-
-#: ragnus-static-publisher/includes/class-admin.php:522
-msgid "Dil Tercihi Süresi"
-msgstr "Período de preferencia de idioma"
-
-#: ragnus-static-publisher/includes/class-admin.php:523
-msgid ""
-"Kullanıcının açıkça ziyaret ettiği dil daha sonraki girişlerde korunur."
-msgstr ""
-"El idioma que el usuario visitó explícitamente se conserva para inicios de "
-"sesión posteriores."
-
-#: ragnus-static-publisher/includes/class-admin.php:524
-msgid "gün"
-msgstr "día"
-
-#: ragnus-static-publisher/includes/class-admin.php:525
-msgid "Yönlendirme yalnızca sitenin"
-msgstr "La redirección es sólo para el sitio."
-
-#: ragnus-static-publisher/includes/class-admin.php:526
-msgid "adresinde çalışır. Dil içeren doğrudan bağlantılar değiştirilmez."
-msgstr ""
-"Funciona en. Los enlaces directos que contienen idiomas no se modifican."
-
-#: ragnus-static-publisher/includes/class-admin.php:527
-msgid "Statik Arama"
-msgstr "Búsqueda estática"
-
-#: ragnus-static-publisher/includes/class-admin.php:528
-msgid ""
-"Fuse.js ile çalışan, sunucu gerektirmeyen statik site aramasını "
-"yapılandırın."
-msgstr ""
-"Configure la búsqueda de sitios estáticos que no requiera un servidor, con "
-"tecnología de Fuse.js."
-
-#: ragnus-static-publisher/includes/class-admin.php:529
-msgid ""
-"Arama sayfası, indeks ve gerekli Fuse.js dosyaları export ZIP’ine eklenir."
-msgstr ""
-"La página de búsqueda, el índice y los archivos Fuse.js necesarios se "
-"agregan al ZIP de exportación."
-
-#: ragnus-static-publisher/includes/class-admin.php:530
-msgid "Arama Sayfası Yolu"
-msgstr "Ruta de la página de búsqueda"
-
-#: ragnus-static-publisher/includes/class-admin.php:531
-msgid "Gösterilecek Sonuç Sayısı"
-msgstr "Número de resultados para mostrar"
-
-#: ragnus-static-publisher/includes/class-admin.php:532
-msgid "Minimum Arama Karakteri"
-msgstr "Caracteres mínimos de búsqueda"
-
-#: ragnus-static-publisher/includes/class-admin.php:533
-msgid "İçerik Karakter Sınırı"
-msgstr "Límite de caracteres de contenido"
-
-#: ragnus-static-publisher/includes/class-admin.php:534
-msgid "Her sayfadan indekse alınacak en fazla metin uzunluğu."
-msgstr "Longitud máxima del texto a indexar de cada página."
-
-#: ragnus-static-publisher/includes/class-admin.php:535
-msgid "Bulanıklık Eşiği"
-msgstr "Umbral de desenfoque"
-
-#: ragnus-static-publisher/includes/class-admin.php:536
-msgid "Düşük değer daha kesin, yüksek değer daha toleranslı sonuç verir."
-msgstr ""
-"Un valor más bajo da un resultado más preciso, un valor más alto da un "
-"resultado más tolerante."
-
-#: ragnus-static-publisher/includes/class-admin.php:537
-msgid "Kelime Eşleştirme"
-msgstr "Coincidencia de palabras"
-
-#: ragnus-static-publisher/includes/class-admin.php:538
-msgid "Tüm kelimeler eşleşsin"
-msgstr "Coincidir con todas las palabras"
-
-#: ragnus-static-publisher/includes/class-admin.php:539
-msgid "Herhangi bir kelime eşleşsin"
-msgstr "Empareja cualquier palabra"
-
-#: ragnus-static-publisher/includes/class-admin.php:540
-msgid "İndeksleme Seçicileri"
-msgstr "Selectores de indexación"
-
-#: ragnus-static-publisher/includes/class-admin.php:541
-msgid ""
-"Sayfa ve yazı HTML’inden hangi alanların alınacağını CSS selector ile "
-"belirleyin."
-msgstr ""
-"Determine qué campos tomar de la página y publique HTML con el selector de "
-"CSS."
-
-#: ragnus-static-publisher/includes/class-admin.php:542
-msgid "Başlık İçin CSS Selector"
-msgstr "Selector CSS para título"
-
-#: ragnus-static-publisher/includes/class-admin.php:543
-msgid "İçerik İçin CSS Selector"
-msgstr "Selector de CSS para contenido"
-
-#: ragnus-static-publisher/includes/class-admin.php:544
-msgid "Özet İçin CSS Selector"
-msgstr "Selector de CSS para resumen"
-
-#: ragnus-static-publisher/includes/class-admin.php:545
-msgid "Alan bulunamazsa içerikten otomatik kısa özet üretilir."
-msgstr ""
-"Si no se encuentra el campo, se genera automáticamente un breve resumen a "
-"partir del contenido."
-
-#: ragnus-static-publisher/includes/class-admin.php:546
-msgid "İndeks Dışında Tutulacak URL’ler"
-msgstr "URL para excluir de la indexación"
-
-#: ragnus-static-publisher/includes/class-admin.php:547
-msgid "Satır başına tam URL, URL parçası veya kelime yazabilirsiniz."
-msgstr ""
-"Puede escribir la URL completa, un fragmento de URL o una palabra por línea."
-
-#: ragnus-static-publisher/includes/class-admin.php:548
-msgid "Fuse.js Alanları ve Ağırlıkları"
-msgstr "Campos y pesos de Fuse.js"
-
-#: ragnus-static-publisher/includes/class-admin.php:549
-msgid ""
-"Aranacak alanları seçin ve sonuç sıralamasındaki etkilerini belirleyin."
-msgstr ""
-"Seleccione los campos para buscar y determine su impacto en la clasificación"
-" de resultados."
-
-#: ragnus-static-publisher/includes/class-admin.php:550
-msgid "Ağırlık"
-msgstr "Peso"
-
-#: ragnus-static-publisher/includes/class-admin.php:551
-msgid "WordPress İzlerini Gizle"
-msgstr "Ocultar rastros de WordPress"
-
-#: ragnus-static-publisher/includes/class-admin.php:552
-msgid "Seçilen WordPress tanımlayıcılarını statik HTML çıktısından kaldırır."
-msgstr ""
-"Elimina los identificadores de WordPress seleccionados de la salida HTML "
-"estática."
-
-#: ragnus-static-publisher/includes/class-admin.php:553
-msgid ""
-"WordPress'e özgü dizin ve yol adlarının statik çıktıda hangi adlarla "
-"kullanılacağını belirleyin. Kaynak WordPress dosyaları değiştirilmez."
-msgstr ""
-"Especifique qué directorio específico de WordPress y qué nombres de ruta se "
-"utilizarán en la salida estática. Los archivos fuente de WordPress no se "
-"modifican."
-
-#: ragnus-static-publisher/includes/class-admin.php:554
-msgid "Statik çıktıda"
-msgstr "En la salida estática"
-
-#: ragnus-static-publisher/includes/class-admin.php:555
-msgid "yolunun yerine kullanılacak yol."
-msgstr "La ruta que se utilizará en lugar de la ruta."
-
-#: ragnus-static-publisher/includes/class-admin.php:556
-msgid "yolunun yerine kullanılacak alt dizin."
-msgstr "El subdirectorio que se utilizará en lugar de la ruta."
-
-#: ragnus-static-publisher/includes/class-admin.php:557
-msgid "Aktif tema içindeki"
-msgstr "en tema activo"
-
-#: ragnus-static-publisher/includes/class-admin.php:558
-msgid "dosyasının statik çıktıdaki adı."
-msgstr "El nombre del archivo en la salida estática."
-
-#: ragnus-static-publisher/includes/class-admin.php:559
-msgid "dizininin yerine kullanılacak ad."
-msgstr "El nombre para reemplazar el directorio."
-
-#: ragnus-static-publisher/includes/class-admin.php:560
-msgid "WP-Content Dizini"
-msgstr "Contenido de WP Dizini"
-
-#: ragnus-static-publisher/includes/class-admin.php:561
-msgid "WP-Includes Dizini"
-msgstr "WP-Incluye directorio"
-
-#: ragnus-static-publisher/includes/class-admin.php:562
-msgid "Uploads Dizini"
-msgstr "Directorio de cargas"
-
-#: ragnus-static-publisher/includes/class-admin.php:563
-msgid "Plugins Dizini"
-msgstr "Directorio de complementos"
-
-#: ragnus-static-publisher/includes/class-admin.php:564
-msgid "Themes Dizini"
-msgstr "Directorio de temas"
-
-#: ragnus-static-publisher/includes/class-admin.php:565
-msgid "Tema Stil Dosyası"
-msgstr "Archivo de estilo de tema"
-
-#: ragnus-static-publisher/includes/class-admin.php:566
-msgid "Yazar URL'si"
-msgstr "URL del autor"
-
-#: ragnus-static-publisher/includes/class-admin.php:567
-msgid "Statik Çıktıda Devre Dışı Bırak"
-msgstr "Desactivar en salida estática"
-
-#: ragnus-static-publisher/includes/class-admin.php:568
-msgid ""
-"Statik sitede kullanılmayan WordPress bağlantı ve betiklerini temizler."
-msgstr ""
-"Limpia enlaces y scripts de WordPress no utilizados en el sitio estático."
-
-#: ragnus-static-publisher/includes/class-admin.php:569
-msgid "Diagnostics kontrolleri güncellendi."
-msgstr "Se han actualizado las comprobaciones de diagnóstico."
-
-#: ragnus-static-publisher/includes/class-admin.php:570
-msgid "Son kontrol:"
-msgstr "Su control:"
-
-#: ragnus-static-publisher/includes/class-admin.php:571
-msgid "Tekrar Kontrol Et"
-msgstr "Comprobar de nuevo"
-
-#: ragnus-static-publisher/includes/class-admin.php:572
-msgid "Başarılı"
-msgstr "Exitoso"
-
-#: ragnus-static-publisher/includes/class-admin.php:573
-msgid "Ragnus Static Publisher"
-msgstr "Editor estático Ragnus"
-
-#: ragnus-static-publisher/includes/class-admin.php:574
-msgid ""
-"WordPress sitenizi statik dosyalara dönüştürmek ve yayın süreçlerine "
-"hazırlamak için geliştirilmiştir."
-msgstr ""
-"Fue desarrollado para convertir su sitio de WordPress en archivos estáticos "
-"y prepararlos para los procesos de publicación."
-
-#: ragnus-static-publisher/includes/class-admin.php:575
-msgid "Versiyon Numarası"
-msgstr "Número de versión"
-
-#: ragnus-static-publisher/includes/class-admin.php:576
-msgid "Destek Maili"
-msgstr "Correo electrónico de soporte"
-
-#: ragnus-static-publisher/includes/class-admin.php:577
-msgid "Eklenti Web Sitesi"
-msgstr "Sitio web del complemento"
-
-#: ragnus-static-publisher/includes/class-admin.php:578
-msgid "Statik sitenizi yayınlamak için kullanacağınız yöntemi seçin."
-msgstr "Elija el método que utilizará para publicar su sitio estático."
-
-#: ragnus-static-publisher/includes/class-admin.php:579
-msgid ""
-"Oluşturulan statik site paketini indirip istediğiniz sunucuya manuel olarak "
-"yükleyin."
-msgstr ""
-"Descargue el paquete del sitio estático creado e instálelo manualmente en el"
-" servidor deseado."
-
-#: ragnus-static-publisher/includes/class-admin.php:580
-#: ragnus-static-publisher/includes/class-admin.php:788
-msgid "Önce statik site oluşturun"
-msgstr "Primero crea un sitio estático"
-
-#: ragnus-static-publisher/includes/class-admin.php:581
-#: ragnus-static-publisher/includes/class-admin.php:788
-msgid "ZIP hazır"
-msgstr "Listo para ZIP"
-
-#: ragnus-static-publisher/includes/class-admin.php:582
-msgid "ZIP Dosyalarını Aç"
-msgstr "Abrir archivos ZIP"
-
-#: ragnus-static-publisher/includes/class-admin.php:583
-msgid ""
-"Export tamamlandığında GitHub Actions akışını webhook ile otomatik olarak "
-"tetikleyin."
-msgstr ""
-"Activa automáticamente el flujo de acciones de GitHub a través del webhook "
-"cuando se completa la exportación."
-
-#: ragnus-static-publisher/includes/class-admin.php:584
-#: ragnus-static-publisher/includes/class-admin.php:802
-msgid "Yapılandırma gerekli"
-msgstr "Configuración requerida"
-
-#: ragnus-static-publisher/includes/class-admin.php:585
-#: ragnus-static-publisher/includes/class-admin.php:802
-msgid "Webhook ayarlı"
-msgstr "conjunto de webhooks"
-
-#: ragnus-static-publisher/includes/class-admin.php:586
-msgid "GitHub Ayarları"
-msgstr "Configuración de GitHub"
-
-#: ragnus-static-publisher/includes/class-admin.php:587
-msgid ""
-"GitHub Actions akışıyla statik dosyaları Cloudflare Workers Static Assets "
-"üzerinde yayınlayın."
-msgstr ""
-"Publique archivos estáticos en los activos estáticos de Cloudflare Workers "
-"con el feed de acciones de GitHub."
-
-#: ragnus-static-publisher/includes/class-admin.php:588
-msgid "Cloudflare hesabı gerekir"
-msgstr "Se requiere una cuenta de Cloudflare"
-
-#: ragnus-static-publisher/includes/class-admin.php:589
-msgid "Cloudflare'ı Aç"
-msgstr "Abrir nube"
-
-#: ragnus-static-publisher/includes/class-admin.php:691
-#, php-format
-msgid "%d eski ZIP dosyası silindi."
-msgstr "Se ha eliminado el antiguo archivo ZIP %d."
-
-#: ragnus-static-publisher/includes/class-admin.php:693
-#, php-format
-msgid "%1$d eski ZIP dosyası silindi, %2$d dosya silinemedi."
-msgstr ""
-"Se eliminó el archivo ZIP antiguo %1$d, el archivo %2$d no se pudo eliminar."
-
-#: ragnus-static-publisher/includes/class-admin.php:699
-#, php-format
-msgid "%d ZIP dosyası silindi."
-msgstr "El archivo ZIP %d ha sido eliminado."
-
-#: ragnus-static-publisher/includes/class-admin.php:701
-#, php-format
-msgid "%1$d ZIP dosyası silindi, %2$d dosya silinemedi."
-msgstr "El archivo ZIP %1$d se eliminó, el archivo %2$d no se pudo eliminar."
-
-#: ragnus-static-publisher/includes/class-admin.php:725
-msgid "Seçilen ZIP dosyaları kalıcı olarak silinecek. Devam edilsin mi?"
-msgstr ""
-"Los archivos ZIP seleccionados se eliminarán permanentemente. ¿Deberíamos "
-"continuar?"
-
-#: ragnus-static-publisher/includes/class-admin.php:761
-msgid ""
-"En son ZIP dışındaki tüm eski ZIP dosyaları silinecek. Devam edilsin mi?"
+"All old ZIP files except the latest ZIP will be deleted. Should we continue?"
 msgstr ""
 "Se eliminarán todos los archivos ZIP antiguos, excepto el ZIP más reciente. "
 "¿Deberíamos continuar?"
 
-#: ragnus-static-publisher/includes/class-admin.php:953
-#: ragnus-static-publisher/includes/class-admin.php:1120
-msgid "İçerik"
-msgstr "Contenido"
+#: ragnus-static-publisher/includes/class-exporter.php:47
+msgid "Another export process is still running."
+msgstr "Otro proceso de exportación aún está en marcha."
 
-#: ragnus-static-publisher/includes/class-admin.php:954
-msgid "Yeni yazı yayınlandığında"
-msgstr "Cuando se publica un nuevo artículo"
+#: ragnus-static-publisher/includes/class-admin.php:563
+msgid "Apply"
+msgstr "Aplicar"
 
-#: ragnus-static-publisher/includes/class-admin.php:954
-msgid "Yeni bir blog yazısı ilk kez yayınlandığında."
-msgstr "Cuando se publica una nueva entrada de blog por primera vez."
+#: ragnus-static-publisher/includes/class-admin.php:1024
+msgid "Author URL"
+msgstr "URL del autor"
 
-#: ragnus-static-publisher/includes/class-admin.php:955
-msgid "Mevcut yazı güncellendiğinde"
-msgstr "Cuando se actualiza la publicación actual"
+#: ragnus-static-publisher/includes/class-admin.php:816
+msgid "Automatic Static Site Creation and Deploy"
+msgstr "Creación e implementación automática de sitios estáticos"
 
-#: ragnus-static-publisher/includes/class-admin.php:955
+#: ragnus-static-publisher/includes/class-admin.php:637
 msgid ""
-"Yayındaki bir blog yazısı değiştirildiğinde veya yayından kaldırıldığında."
-msgstr "Cuando se cambia o elimina una publicación de blog en vivo."
-
-#: ragnus-static-publisher/includes/class-admin.php:956
-msgid "Yeni sayfa yayınlandığında"
-msgstr "Cuando se publica la nueva página"
-
-#: ragnus-static-publisher/includes/class-admin.php:956
-msgid "Yeni bir sayfa ilk kez yayınlandığında."
-msgstr "Cuando se publica una nueva página por primera vez."
-
-#: ragnus-static-publisher/includes/class-admin.php:957
-msgid "Mevcut sayfa güncellendiğinde"
-msgstr "Cuando se actualiza la página actual"
-
-#: ragnus-static-publisher/includes/class-admin.php:957
-msgid "Yayındaki bir sayfa değiştirildiğinde veya yayından kaldırıldığında."
-msgstr "Cuando una página publicada se cambia o elimina."
-
-#: ragnus-static-publisher/includes/class-admin.php:958
-msgid "Özel içerik türleri değiştiğinde"
-msgstr "Cuando los tipos de contenido personalizado cambian"
-
-#: ragnus-static-publisher/includes/class-admin.php:958
-msgid "Ürün, portföy ve benzeri yayındaki özel içerikler değiştiğinde."
+"Automatically trigger the GitHub Actions flow via webhook when the export is"
+" complete."
 msgstr ""
-"Cuando cambia el contenido especial del producto, portafolio, etc. en la "
-"publicación."
+"Activa automáticamente el flujo de acciones de GitHub a través del webhook "
+"cuando se completa la exportación."
 
-#: ragnus-static-publisher/includes/class-admin.php:960
-msgid "Yapı ve Tasarım"
-msgstr "Estructura y Diseño"
-
-#: ragnus-static-publisher/includes/class-admin.php:961
-msgid "Kategori veya etiket değiştiğinde"
-msgstr "Cuando la categoría o etiqueta cambia"
-
-#: ragnus-static-publisher/includes/class-admin.php:961
-msgid "Kategori, etiket ya da özel sınıflandırmalar değiştirildiğinde."
-msgstr ""
-"Cuando se cambian categorías, etiquetas o clasificaciones personalizadas."
-
-#: ragnus-static-publisher/includes/class-admin.php:962
-msgid "Medya değiştiğinde"
-msgstr "Cuando los medios cambian"
-
-#: ragnus-static-publisher/includes/class-admin.php:962
-msgid ""
-"Görsel veya başka bir medya dosyası eklendiğinde, güncellendiğinde ya da "
-"silindiğinde."
-msgstr ""
-"Cuando se agrega, actualiza o elimina una imagen u otro archivo multimedia."
-
-#: ragnus-static-publisher/includes/class-admin.php:963
-msgid "Menü değiştiğinde"
-msgstr "Cuando el menú cambia"
-
-#: ragnus-static-publisher/includes/class-admin.php:963
-msgid "Gezinme menülerinin yapısı veya bağlantıları değiştirildiğinde."
-msgstr "Cuando se cambie la estructura o enlaces de los menús de navegación."
-
-#: ragnus-static-publisher/includes/class-admin.php:964
-msgid "Bileşenler değiştiğinde"
-msgstr "Cuando los componentes cambian"
-
-#: ragnus-static-publisher/includes/class-admin.php:964
-msgid "Widget ve bileşen yerleşimleri güncellendiğinde."
-msgstr "Cuando se actualizan los widgets y los diseños de widgets."
-
-#: ragnus-static-publisher/includes/class-admin.php:965
-msgid "Tema değiştiğinde"
-msgstr "Cuando el tema cambia"
-
-#: ragnus-static-publisher/includes/class-admin.php:965
-msgid ""
-"Tema değiştirildiğinde, güncellendiğinde veya özelleştirici ayarları "
-"kaydedildiğinde."
-msgstr ""
-"Cuando se cambia el tema, se actualiza o se guarda la configuración del "
-"personalizador."
-
-#: ragnus-static-publisher/includes/class-admin.php:966
-msgid "Site ayarları değiştiğinde"
-msgstr "Cuando la configuración del sitio cambia"
-
-#: ragnus-static-publisher/includes/class-admin.php:966
-msgid ""
-"Site adı, açıklama, ana sayfa, okuma veya kalıcı bağlantı ayarları "
-"değiştirildiğinde."
-msgstr ""
-"Cuando se cambian el nombre del sitio, la descripción, la página de inicio, "
-"la lectura o la configuración del enlace permanente."
-
-#: ragnus-static-publisher/includes/class-admin.php:1118
-msgid "Başlık"
-msgstr "Título"
-
-#: ragnus-static-publisher/includes/class-admin.php:1118
-msgid "Başlık eşleşmelerini en üstte gösterir."
-msgstr "Muestra coincidencias de títulos en la parte superior."
-
-#: ragnus-static-publisher/includes/class-admin.php:1119
-msgid "Özet"
-msgstr "Resumen"
-
-#: ragnus-static-publisher/includes/class-admin.php:1119
-msgid "Kısa açıklama ve özet metninde arar."
-msgstr "Busca en el texto del eslogan y resumen."
-
-#: ragnus-static-publisher/includes/class-admin.php:1120
-msgid "Sayfa ve yazının ana metninde arar."
-msgstr "Busca en el texto principal de la página y del artículo."
-
-#: ragnus-static-publisher/includes/class-admin.php:1121
-msgid "Kategori ve Etiketler"
-msgstr "Categoría y etiquetas"
-
-#: ragnus-static-publisher/includes/class-admin.php:1121
-msgid "WordPress kategori ve etiket adlarını indekse ekler."
-msgstr "WordPress agrega nombres de categorías y etiquetas al índice."
-
-#: ragnus-static-publisher/includes/class-admin.php:1200
-msgid "WordPress Sürümünü Gizle"
-msgstr "Ocultar versión de WordPress"
-
-#: ragnus-static-publisher/includes/class-admin.php:1200
-msgid ""
-"WordPress çekirdek sürümünü belirten asset sürüm parametrelerini kaldırır."
-msgstr ""
-"Elimina los parámetros de versión de activos que especifican la versión "
-"principal de WordPress."
-
-#: ragnus-static-publisher/includes/class-admin.php:1201
-msgid "WordPress Generator Meta Etiketini Gizle"
-msgstr "Ocultar metaetiqueta del generador de WordPress"
-
-#: ragnus-static-publisher/includes/class-admin.php:1201
-msgid "WordPress sürümünü açıklayan generator meta etiketini kaldırır."
-msgstr ""
-"Elimina la metaetiqueta del generador que describe la versión de WordPress."
-
-#: ragnus-static-publisher/includes/class-admin.php:1202
-msgid "WordPress DNS Prefetch Bağlantısını Gizle"
-msgstr "Ocultar conexión de captación previa de DNS de WordPress"
-
-#: ragnus-static-publisher/includes/class-admin.php:1202
-msgid "WordPress servislerine ait DNS prefetch bağlantılarını kaldırır."
-msgstr ""
-"Elimina las conexiones de captación previa de DNS para los servicios de "
-"WordPress."
-
-#: ragnus-static-publisher/includes/class-admin.php:1203
-msgid "RSD Header Bağlantısını Gizle"
-msgstr "Ocultar enlace de encabezado RSD"
-
-#: ragnus-static-publisher/includes/class-admin.php:1203
-msgid "Really Simple Discovery bağlantısını statik HTML’den kaldırır."
-msgstr "Really Simple Elimina el enlace Discovery del HTML estático."
-
-#: ragnus-static-publisher/includes/class-admin.php:1231
-msgid "XML-RPC Bağlantılarını Devre Dışı Bırak"
-msgstr "Deshabilitar enlaces XML-RPC"
-
-#: ragnus-static-publisher/includes/class-admin.php:1231
-msgid "XML-RPC ve pingback keşif bağlantılarını kaldırır."
-msgstr "Elimina conexiones de descubrimiento XML-RPC y pingback."
-
-#: ragnus-static-publisher/includes/class-admin.php:1232
-msgid "Embed Scriptlerini Devre Dışı Bırak"
-msgstr "Deshabilitar secuencias de comandos incrustadas"
-
-#: ragnus-static-publisher/includes/class-admin.php:1232
-msgid "WordPress embed betiklerini statik HTML’den kaldırır."
-msgstr "Elimina los scripts de inserción de WordPress del HTML estático."
-
-#: ragnus-static-publisher/includes/class-admin.php:1233
-msgid "Frontend DB Debug Bilgisini Devre Dışı Bırak"
-msgstr ""
-"Deshabilitar la información de depuración de la base de datos frontend"
-
-#: ragnus-static-publisher/includes/class-admin.php:1233
-msgid ""
-"Yalnızca export isteklerinde veritabanı hata ayrıntılarının gösterilmesini "
-"engeller."
-msgstr ""
-"Solo evita que los detalles de los errores de la base de datos se muestren "
-"en las solicitudes de exportación."
-
-#: ragnus-static-publisher/includes/class-admin.php:1234
-msgid "WLW Manifest Bağlantısını Devre Dışı Bırak"
-msgstr "Deshabilitar el enlace de manifiesto WLW"
-
-#: ragnus-static-publisher/includes/class-admin.php:1234
-msgid "Windows Live Writer manifest bağlantısını kaldırır."
-msgstr "Windows Live Writer elimina el enlace del manifiesto."
-
-#: ragnus-static-publisher/includes/class-admin.php:1235
-msgid "Emoji Scriptlerini Devre Dışı Bırak"
-msgstr "Deshabilitar secuencias de comandos Emoji"
-
-#: ragnus-static-publisher/includes/class-admin.php:1235
-msgid "WordPress emoji scriptlerini ve stillerini statik HTML’den kaldırır."
-msgstr "Elimina los scripts y estilos emoji de WordPress del HTML estático."
-
-#: ragnus-static-publisher/includes/class-archive-manager.php:117
-msgid "İndirilecek ZIP dosyası bulunamadı."
-msgstr "No se encontró ningún archivo ZIP para descargar."
-
-#: ragnus-static-publisher/includes/class-archive-manager.php:120
-#: ragnus-static-publisher/includes/class-exporter.php:583
-msgid "PHP ZipArchive eklentisi kurulu değil."
-msgstr "La extensión PHP ZipArchive no está instalada."
-
-#: ragnus-static-publisher/includes/class-archive-manager.php:125
-msgid "Geçici indirme paketi oluşturulamadı."
-msgstr "No se pudo crear el paquete de descarga temporal."
-
-#: ragnus-static-publisher/includes/class-archive-manager.php:131
-msgid "Toplu indirme paketi oluşturulamadı."
-msgstr "No se pudo crear el paquete de descarga masiva."
-
-#: ragnus-static-publisher/includes/class-diagnostics.php:74
-#, php-format
-msgid "Site URL erişilebilir (HTTP %d): %s"
-msgstr "URL del sitio accesible (HTTP %d): %s"
-
-#: ragnus-static-publisher/includes/class-diagnostics.php:76
-msgid "Site URL erişilemiyor: "
-msgstr "URL del sitio inalcanzable:"
-
-#: ragnus-static-publisher/includes/class-diagnostics.php:77
-#, php-format
-msgid "Site URL beklenmeyen bir HTTP %d yanıtı verdi: %s"
-msgstr "La URL del sitio devolvió una respuesta HTTP %d inesperada: %s"
-
-#: ragnus-static-publisher/includes/class-diagnostics.php:80
-msgid "Server"
-msgstr "Servidor"
-
-#: ragnus-static-publisher/includes/class-diagnostics.php:83
-msgid "PHP Sürümü"
-msgstr "Versión PHP"
-
-#: ragnus-static-publisher/includes/class-diagnostics.php:86
-#, php-format
-msgid "PHP 8.1 veya üzeri kullanılabilir. Mevcut sürüm: %s."
-msgstr "Se puede utilizar PHP 8.1 o superior. Versión actual: %s."
-
-#: ragnus-static-publisher/includes/class-diagnostics.php:87
-#, php-format
-msgid "PHP 8.1 veya üzeri gerekli. Mevcut sürüm: %s."
-msgstr "Se requiere PHP 8.1 o superior. Versión actual: %s."
+#: ragnus-static-publisher/includes/class-admin.php:740
+msgid "Automation"
+msgstr "Automatización"
 
 #: ragnus-static-publisher/includes/class-diagnostics.php:91
 msgid "Basic Auth"
@@ -1071,282 +120,1385 @@ msgstr "Autenticación básica"
 
 #: ragnus-static-publisher/includes/class-diagnostics.php:94
 msgid ""
-"Basic Auth etkin görünüyor; statik tarama kimlik doğrulamasında durabilir."
+"Basic Auth appears to be enabled; static scan may stop at authentication."
 msgstr ""
 "La autenticación básica parece estar habilitada; El escaneo estático puede "
 "detenerse en la autenticación."
 
 #: ragnus-static-publisher/includes/class-diagnostics.php:95
-msgid "Basic Auth etkin değil."
+msgid "Basic Auth is not enabled."
 msgstr "La autenticación básica no está habilitada."
+
+#: ragnus-static-publisher/includes/class-admin.php:559
+msgid "Batch Process"
+msgstr "Proceso por lotes"
+
+#: ragnus-static-publisher/includes/class-admin.php:931
+msgid "Blur Threshold"
+msgstr "Umbral de desenfoque"
+
+#: ragnus-static-publisher/includes/class-admin.php:942
+msgid "CSS Selector For Title"
+msgstr "Selector CSS para título"
+
+#: ragnus-static-publisher/includes/class-admin.php:943
+msgid "CSS Selector for Content"
+msgstr "Selector de CSS para contenido"
+
+#: ragnus-static-publisher/includes/class-admin.php:944
+msgid "CSS Selector for Summary"
+msgstr "Selector de CSS para resumen"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:135
+msgid "Cache"
+msgstr "Cache"
+
+#: ragnus-static-publisher/includes/class-admin.php:446
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: ragnus-static-publisher/includes/class-admin.php:960
+msgid "Category and Tags"
+msgstr "Categoría y etiquetas"
+
+#: ragnus-static-publisher/includes/class-admin.php:837
+msgid ""
+"Changes made consecutively are combined for 60 seconds and run as a single "
+"export and deploy."
+msgstr ""
+"Los cambios realizados consecutivamente se combinan durante 60 segundos y se"
+" ejecutan como una única exportación e implementación."
+
+#: ragnus-static-publisher/includes/class-admin.php:1121
+msgid "Check Again"
+msgstr "Comprobar de nuevo"
+
+#: ragnus-static-publisher/includes/class-admin.php:615
+msgid "Choose the method you'll use to publish your static site."
+msgstr "Elija el método que utilizará para publicar su sitio estático."
+
+#: ragnus-static-publisher/includes/class-admin.php:1065
+msgid "Cleans up unused WordPress links and scripts on the static site."
+msgstr ""
+"Limpia enlaces y scripts de WordPress no utilizados en el sitio estático."
+
+#: ragnus-static-publisher/includes/class-admin.php:684
+msgid "Clear Search"
+msgstr "Borrar búsqueda"
+
+#: ragnus-static-publisher/includes/class-admin.php:650
+msgid "Cloudflare"
+msgstr "Cloudflare"
+
+#: ragnus-static-publisher/includes/class-admin.php:654
+msgid "Cloudflare account required"
+msgstr "Se requiere una cuenta de Cloudflare"
+
+#: ragnus-static-publisher/includes/class-exporter.php:78
+msgid "Cloudflare configuration files are being prepared."
+msgstr "Se están preparando los archivos de configuración de Cloudflare."
+
+#: ragnus-static-publisher/includes/class-admin.php:75
+#: ragnus-static-publisher/includes/class-admin.php:472
+#: ragnus-static-publisher/includes/class-admin.php:493
+msgid "Completed"
+msgstr "terminado"
+
+#: ragnus-static-publisher/includes/class-admin.php:641
+msgid "Configuration required"
+msgstr "Configuración requerida"
+
+#: ragnus-static-publisher/includes/class-admin.php:910
+msgid ""
+"Configure static site search that doesn't require a server, powered by "
+"Fuse.js."
+msgstr ""
+"Configure la búsqueda de sitios estáticos que no requiera un servidor, con "
+"tecnología de Fuse.js."
+
+#: ragnus-static-publisher/includes/class-admin.php:442
+msgid "Confirm Transaction"
+msgstr "Confirmar transacción"
+
+#: ragnus-static-publisher/includes/class-admin.php:930
+msgid "Content Character Limit"
+msgstr "Límite de caracteres de contenido"
+
+#: ragnus-static-publisher/includes/class-admin.php:792
+#: ragnus-static-publisher/includes/class-admin.php:959
+msgid "Contents"
+msgstr "Contenido"
+
+#: ragnus-static-publisher/includes/class-exporter.php:595
+msgid "Could not create ZIP archive."
+msgstr "No se pudo crear el archivo ZIP."
+
+#: ragnus-static-publisher/includes/class-exporter.php:554
+#, php-format
+msgid "Could not export language root: /%s/"
+msgstr "No se pudo exportar la raíz del idioma: /%s/"
+
+#: ragnus-static-publisher/includes/class-admin.php:80
+#: ragnus-static-publisher/includes/class-admin.php:516
+msgid "Create Static Site"
+msgstr "Crear sitio estático"
+
+#: ragnus-static-publisher/includes/class-admin.php:627
+msgid "Create static site first"
+msgstr "Primero crea un sitio estático"
+
+#: ragnus-static-publisher/includes/class-admin.php:571
+msgid "Creation Date"
+msgstr "Fecha de creación"
+
+#: ragnus-static-publisher/includes/class-admin.php:571
+msgid "Creation Time"
+msgstr "Tiempo de creación"
+
+#: ragnus-static-publisher/includes/class-admin.php:507
+msgid "Current URL"
+msgstr "URL actual"
+
+#: ragnus-static-publisher/includes/class-admin.php:694
+msgid "Date"
+msgstr "Fecha"
+
+#: ragnus-static-publisher/includes/class-admin.php:884
+msgid "Default Language"
+msgstr "Idioma predeterminado"
+
+#: ragnus-static-publisher/includes/class-admin.php:447
+#: ragnus-static-publisher/includes/class-admin.php:588
+msgid "Delete"
+msgstr "Sil"
+
+#: ragnus-static-publisher/includes/class-admin.php:599
+msgid "Delete Old Files"
+msgstr "Eliminar archivos antiguos"
+
+#: ragnus-static-publisher/includes/class-admin.php:561
+msgid "Delete Selected"
+msgstr "Eliminar seleccionado"
+
+#: ragnus-static-publisher/includes/class-admin.php:614
+#: ragnus-static-publisher/includes/class-admin.php:742
+msgid "Deploy"
+msgstr "Desplegar"
+
+#: ragnus-static-publisher/includes/class-admin.php:852
+msgid "Deployment Webhook"
+msgstr "Webhook de implementación"
+
+#: ragnus-static-publisher/includes/class-admin.php:939
+msgid ""
+"Determine which fields to take from the page and post HTML with the CSS "
+"selector."
+msgstr ""
+"Determine qué campos tomar de la página y publique HTML con el selector de "
+"CSS."
+
+#: ragnus-static-publisher/includes/class-admin.php:782
+msgid ""
+"Determines how many last successful export archives will be stored. Default:"
+" 5."
+msgstr ""
+"Determina cuántos últimos archivos exportados exitosamente se almacenarán. "
+"Predeterminado: 5."
+
+#: ragnus-static-publisher/includes/class-admin.php:388
+#: ragnus-static-publisher/includes/class-admin.php:1115
+msgid "Diagnostics"
+msgstr "Diagnóstico"
+
+#: ragnus-static-publisher/includes/class-admin.php:1127
+msgid "Diagnostics checks have been updated."
+msgstr "Se han actualizado las comprobaciones de diagnóstico."
+
+#: ragnus-static-publisher/includes/class-admin.php:1071
+msgid "Disable Embed Scripts"
+msgstr "Deshabilitar secuencias de comandos incrustadas"
+
+#: ragnus-static-publisher/includes/class-admin.php:1074
+msgid "Disable Emoji Scripts"
+msgstr "Deshabilitar secuencias de comandos Emoji"
+
+#: ragnus-static-publisher/includes/class-admin.php:1072
+msgid "Disable Frontend DB Debug Information"
+msgstr ""
+"Deshabilitar la información de depuración de la base de datos frontend"
+
+#: ragnus-static-publisher/includes/class-admin.php:1073
+msgid "Disable WLW Manifest Link"
+msgstr "Deshabilitar el enlace de manifiesto WLW"
+
+#: ragnus-static-publisher/includes/class-admin.php:1070
+msgid "Disable XML-RPC Links"
+msgstr "Deshabilitar enlaces XML-RPC"
+
+#: ragnus-static-publisher/includes/class-admin.php:1064
+msgid "Disable on Static Output"
+msgstr "Desactivar en salida estática"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:111
+msgid "Docker / Site URL"
+msgstr "Docker/URL del sitio"
+
+#: ragnus-static-publisher/includes/class-admin.php:517
+#: ragnus-static-publisher/includes/class-admin.php:588
+msgid "Download"
+msgstr "Descargar"
+
+#: ragnus-static-publisher/includes/class-admin.php:560
+msgid "Download Selected"
+msgstr "Descargar Seleccionado"
+
+#: ragnus-static-publisher/includes/class-admin.php:623
+msgid ""
+"Download the created static site package and manually install it on the "
+"desired server."
+msgstr ""
+"Descargue el paquete del sitio estático creado e instálelo manualmente en el"
+" servidor deseado."
+
+#: ragnus-static-publisher/includes/class-admin.php:819
+msgid "Enable automatic static site generation"
+msgstr "Habilitar la generación automática de sitios estáticos"
+
+#: ragnus-static-publisher/includes/class-admin.php:872
+msgid "Enable browser language redirection"
+msgstr "Habilitar la redirección del idioma del navegador"
+
+#: ragnus-static-publisher/includes/class-admin.php:921
+msgid "Enable static search"
+msgstr "Habilitar búsqueda estática"
+
+#: ragnus-static-publisher/includes/class-static-search.php:253
+msgid "Enter a search term..."
+msgstr "Introduzca un término de búsqueda..."
+
+#: ragnus-static-publisher/includes/class-static-search.php:117
+#, php-format
+msgid "Enter at least %d characters to search."
+msgstr "Ingrese al menos %d caracteres para buscar."
+
+#: ragnus-static-publisher/includes/class-admin.php:509
+msgid "Error"
+msgstr "Error"
+
+#: ragnus-static-publisher/includes/class-admin.php:927
+#: ragnus-static-publisher/includes/class-admin.php:942
+#: ragnus-static-publisher/includes/class-admin.php:943
+msgid "Example:"
+msgstr "Ejemplo:"
+
+#: ragnus-static-publisher/includes/class-admin.php:779
+msgid "Example: https://example.com"
+msgstr "Ejemplo: https://example.com"
+
+#: ragnus-static-publisher/includes/class-admin.php:781
+msgid "Excluded Paths"
+msgstr "Rutas excluidas"
+
+#: ragnus-static-publisher/includes/class-plugin.php:515
+#, php-format
+msgid "Export completed: %d URL"
+msgstr "Exportación completada: URL %d"
+
+#: ragnus-static-publisher/includes/class-exporter.php:60
+msgid "Export folder is being prepared."
+msgstr "Se está preparando la carpeta de exportación."
+
+#: ragnus-static-publisher/includes/class-plugin.php:246
+msgid "Export job queued."
+msgstr "Exportar trabajo en cola."
+
+#: ragnus-static-publisher/includes/class-exporter.php:84
+msgid "Export manifest is being prepared."
+msgstr "Se está preparando el manifiesto de exportación."
+
+#: ragnus-static-publisher/includes/class-admin.php:76
+#: ragnus-static-publisher/includes/class-admin.php:473
+#: ragnus-static-publisher/includes/class-admin.php:495
+#: ragnus-static-publisher/includes/class-admin.php:1138
+msgid "Failed"
+msgstr "Fracasado"
+
+#: ragnus-static-publisher/includes/class-exporter.php:133
+msgid "Failed to create export folder."
+msgstr "No se pudo crear la carpeta de exportación."
+
+#: ragnus-static-publisher/includes/class-exporter.php:115
+msgid "Failed to create static site."
+msgstr "No se pudo crear el sitio estático."
+
+#: ragnus-static-publisher/includes/class-exporter.php:541
+msgid "Failed to write file:"
+msgstr "No se pudo escribir el archivo:"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:160
+msgid "File System"
+msgstr "Sistema de archivos"
+
+#: ragnus-static-publisher/includes/class-admin.php:384
+msgid "Files"
+msgstr "Archivos"
+
+#: ragnus-static-publisher/includes/class-admin.php:852
+msgid "For GitHub: https://api.github.com/repos/OWNER/REPOSITORY/dispatches"
+msgstr "Para GitHub: https://api.github.com/repos/OWNER/REPOSITORY/dispatches"
+
+#: ragnus-static-publisher/includes/class-admin.php:952
+msgid "Fuse.js Fields and Weights"
+msgstr "Campos y pesos de Fuse.js"
+
+#: ragnus-static-publisher/includes/class-exporter.php:71
+msgid "Fuse.js search index is being prepared."
+msgstr "Se está preparando el índice de búsqueda de Fuse.js."
+
+#: ragnus-static-publisher/includes/class-admin.php:739
+msgid "General"
+msgstr "General"
+
+#: ragnus-static-publisher/includes/class-admin.php:401
+msgid ""
+"Generate a static copy of your WordPress site. Cloudflare credentials are "
+"not kept in this plugin."
+msgstr ""
+"Genere una copia estática de su sitio de WordPress. Las credenciales de "
+"Cloudflare no se guardan en este complemento."
+
+#: ragnus-static-publisher/includes/class-admin.php:636
+msgid "GitHub"
+msgstr "GitHub"
+
+#: ragnus-static-publisher/includes/class-admin.php:850
+msgid "GitHub Deployment Webhook"
+msgstr "Webhook de implementación de GitHub"
+
+#: ragnus-static-publisher/includes/class-admin.php:643
+msgid "GitHub Settings"
+msgstr "Configuración de GitHub"
+
+#: ragnus-static-publisher/includes/class-admin.php:387
+#: ragnus-static-publisher/includes/class-admin.php:982
+msgid "Hide"
+msgstr "Ocultar"
+
+#: ragnus-static-publisher/includes/class-admin.php:1042
+msgid "Hide RSD Header Link"
+msgstr "Ocultar enlace de encabezado RSD"
+
+#: ragnus-static-publisher/includes/class-admin.php:1041
+msgid "Hide WordPress DNS Prefetch Connection"
+msgstr "Ocultar conexión de captación previa de DNS de WordPress"
+
+#: ragnus-static-publisher/includes/class-admin.php:1040
+msgid "Hide WordPress Generator Meta Tag"
+msgstr "Ocultar metaetiqueta del generador de WordPress"
+
+#: ragnus-static-publisher/includes/class-admin.php:1033
+msgid "Hide WordPress Traces"
+msgstr "Ocultar rastros de WordPress"
+
+#: ragnus-static-publisher/includes/class-admin.php:1039
+msgid "Hide WordPress Version"
+msgstr "Ocultar versión de WordPress"
+
+#: ragnus-static-publisher/includes/class-static-search.php:251
+msgid "Home"
+msgstr "Hogar"
+
+#: ragnus-static-publisher/includes/class-admin.php:886
+msgid "If the browser language is not supported, this language is opened."
+msgstr "Si el idioma del navegador no es compatible, se abre este idioma."
+
+#: ragnus-static-publisher/includes/class-admin.php:944
+msgid ""
+"If the field is not found, a short summary is automatically generated from "
+"the content."
+msgstr ""
+"Si no se encuentra el campo, se genera automáticamente un breve resumen a "
+"partir del contenido."
+
+#: ragnus-static-publisher/includes/class-admin.php:853
+msgid ""
+"If using GitHub, use a fine-grained token limited to this repository with "
+"Contents: write permission."
+msgstr ""
+"Si usa GitHub, use un token detallado limitado a este repositorio con "
+"Contenido: permiso de escritura."
+
+#: ragnus-static-publisher/includes/class-admin.php:990
+#: ragnus-static-publisher/includes/class-admin.php:996
+#: ragnus-static-publisher/includes/class-admin.php:1002
+#: ragnus-static-publisher/includes/class-admin.php:1008
+#: ragnus-static-publisher/includes/class-admin.php:1014
+#: ragnus-static-publisher/includes/class-admin.php:1026
+msgid "In the static output"
+msgstr "En la salida estática"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:153
+msgid "Incompatible Plugins"
+msgstr "Complementos incompatibles"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:127
+msgid "Indexability"
+msgstr "Indexabilidad"
+
+#: ragnus-static-publisher/includes/class-admin.php:939
+msgid "Indexing Selectors"
+msgstr "Selectores de indexación"
+
+#: ragnus-static-publisher/includes/class-admin.php:1072
+msgid ""
+"It only prevents database error details from being shown in export requests."
+msgstr ""
+"Solo evita que los detalles de los errores de la base de datos se muestren "
+"en las solicitudes de exportación."
+
+#: ragnus-static-publisher/includes/class-admin.php:1040
+msgid ""
+"It removes the generator meta tag that describes the WordPress version."
+msgstr ""
+"Elimina la metaetiqueta del generador que describe la versión de WordPress."
+
+#: ragnus-static-publisher/includes/class-admin.php:959
+msgid "It searches in the main text of the page and article."
+msgstr "Busca en el texto principal de la página y del artículo."
+
+#: ragnus-static-publisher/includes/class-admin.php:1162
+msgid ""
+"It was developed to convert your WordPress site into static files and "
+"prepare them for publication processes."
+msgstr ""
+"Fue desarrollado para convertir su sitio de WordPress en archivos estáticos "
+"y prepararlos para los procesos de publicación."
+
+#: ragnus-static-publisher/includes/class-admin.php:896
+msgid "It works at. Direct links containing languages ​​are not changed."
+msgstr ""
+"Funciona en. Los enlaces directos que contienen idiomas no se modifican."
+
+#: ragnus-static-publisher/includes/class-admin.php:505
+#: ragnus-static-publisher/includes/class-admin.php:571
+msgid "Job ID"
+msgstr "ID de trabajo"
+
+#: ragnus-static-publisher/includes/class-admin.php:888
+msgid "Language Preference Period"
+msgstr "Período de preferencia de idioma"
+
+#: ragnus-static-publisher/includes/class-admin.php:741
+msgid "Languages"
+msgstr "Idiomas"
+
+#: ragnus-static-publisher/includes/class-admin.php:508
+msgid "Last Static Build"
+msgstr "Última compilación estática"
+
+#: ragnus-static-publisher/includes/class-admin.php:1116
+msgid "Last checked:"
+msgstr "Última comprobación:"
+
+#: ragnus-static-publisher/includes/class-admin.php:853
+msgid "Leave blank to keep the saved token"
+msgstr "Déjelo en blanco para conservar el token guardado."
+
+#: ragnus-static-publisher/includes/class-admin.php:779
+msgid "Live Site Address"
+msgstr "Dirección del sitio en vivo"
+
+#: ragnus-static-publisher/includes/class-admin.php:383
+msgid "Main"
+msgstr "Principal"
+
+#: ragnus-static-publisher/includes/class-admin.php:748
+msgid "Manage static generation, automation and publishing settings."
+msgstr ""
+"Administre la configuración de generación, automatización y publicación "
+"estática."
+
+#: ragnus-static-publisher/includes/class-admin.php:932
+msgid "Match all words"
+msgstr "Coincidir con todas las palabras"
+
+#: ragnus-static-publisher/includes/class-admin.php:932
+msgid "Match any word"
+msgstr "Empareja cualquier palabra"
+
+#: ragnus-static-publisher/includes/class-admin.php:930
+msgid "Maximum text length to be indexed from each page."
+msgstr "Longitud máxima del texto a indexar de cada página."
+
+#: ragnus-static-publisher/includes/class-admin.php:929
+msgid "Minimum Search Characters"
+msgstr "Caracteres mínimos de búsqueda"
+
+#: ragnus-static-publisher/includes/class-admin.php:780
+msgid "Most URLs"
+msgstr "La mayoría de las URL"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:188
+#, php-format
+msgid "MySQL user has %s privilege."
+msgstr "El usuario de MySQL tiene el privilegio %s."
+
+#: ragnus-static-publisher/includes/class-admin.php:726
+msgid "Next ›"
+msgstr "Próximo >"
+
+#: ragnus-static-publisher/includes/class-archive-manager.php:117
+msgid "No ZIP file found to download."
+msgstr "No se encontró ningún archivo ZIP para descargar."
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:156
+msgid "No active incompatible plugins found."
+msgstr "No se encontraron complementos activos incompatibles."
+
+#: ragnus-static-publisher/includes/class-admin.php:262
+msgid "No downloadable ZIP file found."
+msgstr "No se encontró ningún archivo ZIP descargable."
+
+#: ragnus-static-publisher/includes/class-admin.php:206
+#: ragnus-static-publisher/includes/class-rest-controller.php:66
+msgid "No downloadable exports found."
+msgstr "No se encontraron exportaciones descargables."
+
+#: ragnus-static-publisher/includes/class-admin.php:690
+msgid "No export activity has been recorded yet."
+msgstr "Aún no se ha registrado ninguna actividad exportadora."
+
+#: ragnus-static-publisher/includes/class-admin.php:690
+msgid "No log entries matched your search."
+msgstr "Ninguna entrada de registro coincidió con su búsqueda."
+
+#: ragnus-static-publisher/includes/class-static-search.php:115
+msgid "No results matched your search."
+msgstr "Ningún resultado coincidió con su búsqueda."
+
+#: ragnus-static-publisher/includes/class-admin.php:77
+#: ragnus-static-publisher/includes/class-admin.php:488
+msgid "Not run yet"
+msgstr "Aún no funciona"
+
+#: ragnus-static-publisher/includes/class-admin.php:673
+msgid "Number of Records:"
+msgstr "Número de registros:"
+
+#: ragnus-static-publisher/includes/class-admin.php:928
+msgid "Number of Results to Show"
+msgstr "Número de resultados para mostrar"
+
+#: ragnus-static-publisher/includes/class-admin.php:782
+msgid "Number of ZIPs to Store"
+msgstr "Número de ZIP para almacenar"
+
+#: ragnus-static-publisher/includes/class-admin.php:534
+msgid "Old files cannot be deleted while export is in progress."
+msgstr ""
+"Los archivos antiguos no se pueden eliminar mientras la exportación está en "
+"curso."
+
+#: ragnus-static-publisher/includes/class-admin.php:781
+msgid "One path prefix per line."
+msgstr "Un prefijo de ruta por línea."
+
+#: ragnus-static-publisher/includes/class-admin.php:655
+msgid "Open Cloudflare"
+msgstr "Abrir nube"
+
+#: ragnus-static-publisher/includes/class-admin.php:629
+msgid "Open ZIP Files"
+msgstr "Abrir archivos ZIP"
+
+#: ragnus-static-publisher/includes/class-admin.php:571
+msgid "Order"
+msgstr "Orden"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:86
+#, php-format
+msgid "PHP 8.1 or above can be used. Current version: %s."
+msgstr "Se puede utilizar PHP 8.1 o superior. Versión actual: %s."
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:87
+#, php-format
+msgid "PHP 8.1 or above required. Current version: %s."
+msgstr "Se requiere PHP 8.1 o superior. Versión actual: %s."
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:83
+msgid "PHP Version"
+msgstr "Versión PHP"
+
+#: ragnus-static-publisher/includes/class-archive-manager.php:120
+#: ragnus-static-publisher/includes/class-exporter.php:589
+msgid "PHP ZipArchive extension is not installed."
+msgstr "La extensión PHP ZipArchive no está instalada."
 
 #: ragnus-static-publisher/includes/class-diagnostics.php:99
 msgid "PHP-XML"
 msgstr "PHP-XML"
 
-#: ragnus-static-publisher/includes/class-diagnostics.php:101
-msgid "php-xml kullanılabilir."
-msgstr "Se puede utilizar php-xml."
+#: ragnus-static-publisher/includes/class-exporter.php:573
+msgid "Page Not Found"
+msgstr "Página no encontrada"
 
-#: ragnus-static-publisher/includes/class-diagnostics.php:101
-msgid "php-xml kullanılamıyor; DOMDocument eklentisini etkinleştirin."
-msgstr "php-xml no disponible; Habilite el complemento DOMDocument."
+#: ragnus-static-publisher/includes/class-admin.php:1138
+msgid "Passed"
+msgstr "Aprobado"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:119
+msgid "Permalinks"
+msgstr "Enlaces permanentes"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:123
+msgid ""
+"Permanent links have a flat structure; Select a structure in Settings > "
+"Permalinks."
+msgstr ""
+"Los enlaces permanentes tienen una estructura plana; Seleccione una "
+"estructura en Configuración > Enlaces permanentes."
+
+#: ragnus-static-publisher/includes/class-admin.php:1175
+msgid "Plugin Website"
+msgstr "Sitio web del complemento"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:150
+msgid "Plugins"
+msgstr "Complementos"
+
+#: ragnus-static-publisher/includes/class-admin.php:1006
+msgid "Plugins Directory"
+msgstr "Directorio de complementos"
+
+#: ragnus-static-publisher/includes/class-admin.php:490
+msgid "Progress"
+msgstr "Progreso"
+
+#: ragnus-static-publisher/includes/class-admin.php:81
+msgid ""
+"Progress information is unavailable. Check your internet connection or "
+"WordPress REST API access."
+msgstr ""
+"La información de progreso no está disponible. Verifique su conexión a "
+"Internet o acceso a la API REST de WordPress."
+
+#: ragnus-static-publisher/includes/class-admin.php:651
+msgid ""
+"Publish static files to Cloudflare Workers Static Assets with a GitHub "
+"Actions workflow."
+msgstr ""
+"Publique archivos estáticos en Cloudflare Workers Static Assets con un flujo"
+" de trabajo de GitHub Actions."
+
+#: ragnus-static-publisher/includes/class-admin.php:484
+msgid "Publishing Status"
+msgstr "Estado de publicación"
+
+#: ragnus-static-publisher/includes/class-admin.php:73
+#: ragnus-static-publisher/includes/class-admin.php:470
+msgid "Queued"
+msgstr "en la cola"
+
+#: ragnus-static-publisher/includes/class-admin.php:1042
+msgid "Really Simple Removes the Discovery link from static HTML."
+msgstr "Really Simple Elimina el enlace Discovery del HTML estático."
+
+#: ragnus-static-publisher/includes/class-admin.php:672
+msgid "Records of the last static transaction:"
+msgstr "Registros de la última transacción estática:"
+
+#: ragnus-static-publisher/includes/class-admin.php:869
+msgid "Redirection by Browser Language"
+msgstr "Redirección por idioma del navegador"
+
+#: ragnus-static-publisher/includes/class-admin.php:1041
+msgid "Removes DNS prefetch connections for WordPress services."
+msgstr ""
+"Elimina las conexiones de captación previa de DNS para los servicios de "
+"WordPress."
+
+#: ragnus-static-publisher/includes/class-admin.php:1071
+msgid "Removes WordPress embed scripts from static HTML."
+msgstr "Elimina los scripts de inserción de WordPress del HTML estático."
+
+#: ragnus-static-publisher/includes/class-admin.php:1074
+msgid "Removes WordPress emoji scripts and styles from static HTML."
+msgstr "Elimina los scripts y estilos emoji de WordPress del HTML estático."
+
+#: ragnus-static-publisher/includes/class-admin.php:1070
+msgid "Removes XML-RPC and pingback discovery connections."
+msgstr "Elimina conexiones de descubrimiento XML-RPC y pingback."
+
+#: ragnus-static-publisher/includes/class-admin.php:1039
+msgid ""
+"Removes asset version parameters that specify the WordPress core version."
+msgstr ""
+"Elimina los parámetros de versión de activos que especifican la versión "
+"principal de WordPress."
+
+#: ragnus-static-publisher/includes/class-admin.php:1034
+msgid "Removes selected WordPress identifiers from static HTML output."
+msgstr ""
+"Elimina los identificadores de WordPress seleccionados de la salida HTML "
+"estática."
+
+#: ragnus-static-publisher/includes/class-admin.php:79
+msgid "Retry"
+msgstr "Intentar otra vez"
+
+#: ragnus-static-publisher/includes/class-admin.php:74
+#: ragnus-static-publisher/includes/class-admin.php:471
+msgid "Running"
+msgstr "laboral"
+
+#: ragnus-static-publisher/includes/class-admin.php:839
+msgid "Save Automation Settings"
+msgstr "Guardar configuración de automatización"
+
+#: ragnus-static-publisher/includes/class-admin.php:855
+msgid "Save Deploy Settings"
+msgstr "Guardar configuración de implementación"
+
+#: ragnus-static-publisher/includes/class-admin.php:784
+msgid "Save General Settings"
+msgstr "Guardar configuración general"
+
+#: ragnus-static-publisher/includes/class-admin.php:1092
+msgid "Save Hide Settings"
+msgstr "Guardar Ocultar configuración"
+
+#: ragnus-static-publisher/includes/class-admin.php:898
+msgid "Save Language Settings"
+msgstr "Guardar configuración de idioma"
+
+#: ragnus-static-publisher/includes/class-admin.php:973
+msgid "Save Search Settings"
+msgstr "Guardar configuración de búsqueda"
+
+#: ragnus-static-publisher/includes/class-admin.php:386
+#: ragnus-static-publisher/includes/class-admin.php:682
+#: ragnus-static-publisher/includes/class-admin.php:909
+#: ragnus-static-publisher/includes/class-static-search.php:250
+msgid "Search"
+msgstr "Buscar"
+
+#: ragnus-static-publisher/includes/class-admin.php:679
+msgid "Search Log Records"
+msgstr "Buscar registros de registro"
+
+#: ragnus-static-publisher/includes/class-admin.php:927
+msgid "Search Page Path"
+msgstr "Ruta de la página de búsqueda"
+
+#: ragnus-static-publisher/includes/class-static-search.php:252
+msgid "Search This Site"
+msgstr "Buscar en este sitio"
+
+#: ragnus-static-publisher/includes/class-admin.php:681
+msgid "Search source or static URL..."
+msgstr "Fuente de búsqueda o URL estática..."
+
+#: ragnus-static-publisher/includes/class-admin.php:958
+msgid "Searches in the text of the tagline and summary."
+msgstr "Busca en el texto del eslogan y resumen."
+
+#: ragnus-static-publisher/includes/class-admin.php:582
+#, php-format
+msgid "Select %s"
+msgstr "Seleccione %s"
+
+#: ragnus-static-publisher/includes/class-admin.php:571
+msgid "Select All"
+msgstr "Seleccionar todo"
+
+#: ragnus-static-publisher/includes/class-admin.php:557
+msgid "Select Batch Action"
+msgstr "Seleccionar acción por lotes"
+
+#: ragnus-static-publisher/includes/class-admin.php:544
+msgid "Select a valid batch action."
+msgstr "Seleccione una acción por lotes válida."
+
+#: ragnus-static-publisher/includes/class-admin.php:542
+msgid "Select at least one ZIP file to process."
+msgstr "Seleccione al menos un archivo ZIP para procesar."
+
+#: ragnus-static-publisher/includes/class-admin.php:952
+msgid ""
+"Select the fields to search and determine their impact on the result "
+"ranking."
+msgstr ""
+"Seleccione los campos para buscar y determine su impacto en la clasificación"
+" de resultados."
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:80
+msgid "Server"
+msgstr "Servidor"
+
+#: ragnus-static-publisher/includes/class-admin.php:385
+#: ragnus-static-publisher/includes/class-admin.php:747
+msgid "Settings"
+msgstr "Ajustes"
+
+#: ragnus-static-publisher/includes/class-admin.php:751
+msgid "Settings subsections"
+msgstr "Subsecciones de configuración"
+
+#: ragnus-static-publisher/includes/class-admin.php:957
+msgid "Shows title matches at the top."
+msgstr "Muestra coincidencias de títulos en la parte superior."
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:74
+#, php-format
+msgid "Site URL accessible (HTTP %d): %s"
+msgstr "URL del sitio accesible (HTTP %d): %s"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:77
+#, php-format
+msgid "Site URL returned an unexpected HTTP %d response: %s"
+msgstr "La URL del sitio devolvió una respuesta HTTP %d inesperada: %s"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:76
+msgid "Site URL unreachable:"
+msgstr "URL del sitio inalcanzable:"
+
+#: ragnus-static-publisher/includes/class-exporter.php:261
+msgid "Site addresses are converted to static files."
+msgstr "Las direcciones de los sitios se convierten en archivos estáticos."
+
+#: ragnus-static-publisher/includes/class-exporter.php:242
+msgid "Site scan completed."
+msgstr "Escaneo del sitio completado."
+
+#: ragnus-static-publisher/includes/class-admin.php:694
+msgid "Source URL"
+msgstr "URL de origen"
+
+#: ragnus-static-publisher/includes/class-admin.php:983
+msgid ""
+"Specify which WordPress-specific directory and path names will be used in "
+"static output. Source WordPress files are not modified."
+msgstr ""
+"Especifique qué directorio específico de WordPress y qué nombres de ruta se "
+"utilizarán en la salida estática. Los archivos fuente de WordPress no se "
+"modifican."
+
+#: ragnus-static-publisher/includes/class-admin.php:504
+msgid "Stage"
+msgstr "Escenario"
+
+#: ragnus-static-publisher/includes/class-admin.php:404
+msgid "Static Publisher sections"
+msgstr "Secciones de editor estático"
+
+#: ragnus-static-publisher/includes/class-admin.php:920
+msgid "Static Search"
+msgstr "Búsqueda estática"
+
+#: ragnus-static-publisher/includes/class-admin.php:694
+msgid "Static URL"
+msgstr "URL estática"
+
+#: ragnus-static-publisher/includes/class-admin.php:78
+#: ragnus-static-publisher/includes/class-admin.php:497
+msgid "Static rendering progress"
+msgstr "Progreso de renderizado estático"
+
+#: ragnus-static-publisher/includes/class-admin.php:488
+msgid "Status"
+msgstr "Estado"
+
+#: ragnus-static-publisher/includes/class-admin.php:799
+msgid "Structure and Design"
+msgstr "Estructura y Diseño"
+
+#: ragnus-static-publisher/includes/class-admin.php:958
+msgid "Summary"
+msgstr "Resumen"
+
+#: ragnus-static-publisher/includes/class-admin.php:1171
+msgid "Support Email"
+msgstr "Correo electrónico de soporte"
+
+#: ragnus-static-publisher/includes/class-admin.php:879
+msgid "Supported Language Codes"
+msgstr "Códigos de idioma admitidos"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:163
+msgid "Temporary Directory Readable"
+msgstr "Directorio temporal legible"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:171
+msgid "Temporary Directory Writable"
+msgstr "Directorio temporal grabable"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:189
+#, php-format
+msgid "The MySQL user does not have the %s privilege."
+msgstr "El usuario de MySQL no tiene el privilegio %s."
+
+#: ragnus-static-publisher/includes/class-plugin.php:435
+msgid "The automatic export job is queued."
+msgstr "El trabajo de exportación automática está en cola."
+
+#: ragnus-static-publisher/includes/class-archive-manager.php:131
+msgid "The bulk download package could not be created."
+msgstr "No se pudo crear el paquete de descarga masiva."
+
+#: ragnus-static-publisher/includes/class-plugin.php:320
+msgid ""
+"The export job has been in the queue for more than 90 seconds. Check WP-Cron"
+" or server loopback requests."
+msgstr ""
+"El trabajo de exportación ha estado en la cola durante más de 90 segundos. "
+"Verifique las solicitudes de bucle invertido del servidor o WP-Cron."
+
+#: ragnus-static-publisher/includes/class-plugin.php:326
+msgid ""
+"The export job has been running longer than expected. Check server error "
+"logs and PHP uptime limit."
+msgstr ""
+"El trabajo de exportación lleva más tiempo de lo esperado. Verifique los "
+"registros de errores del servidor y el límite de tiempo de actividad de PHP."
+
+#: ragnus-static-publisher/includes/class-admin.php:225
+#: ragnus-static-publisher/includes/class-rest-controller.php:50
+msgid "The export process is already running."
+msgstr "El proceso de exportación ya está en marcha."
+
+#: ragnus-static-publisher/includes/class-admin.php:893
+msgid ""
+"The language that the user explicitly visited is preserved for subsequent "
+"logins."
+msgstr ""
+"El idioma que el usuario visitó explícitamente se conserva para inicios de "
+"sesión posteriores."
+
+#: ragnus-static-publisher/includes/class-admin.php:602
+msgid ""
+"The latest ZIP file is preserved; Previous ZIP files and their temporary "
+"build folders are permanently deleted."
+msgstr ""
+"Se conserva el archivo ZIP más reciente; Los archivos ZIP anteriores y sus "
+"carpetas de compilación temporales se eliminan permanentemente."
+
+#: ragnus-static-publisher/includes/class-admin.php:1020
+msgid "The name of the file in the static output."
+msgstr "El nombre del archivo en la salida estática."
+
+#: ragnus-static-publisher/includes/class-admin.php:990
+#: ragnus-static-publisher/includes/class-admin.php:996
+msgid "The name to replace the directory."
+msgstr "El nombre para reemplazar el directorio."
+
+#: ragnus-static-publisher/includes/class-admin.php:530
+#, php-format
+msgid "The old ZIP file %d has been deleted."
+msgstr "Se ha eliminado el antiguo archivo ZIP %d."
+
+#: ragnus-static-publisher/includes/class-exporter.php:574
+msgid "The page you requested could not be found."
+msgstr "No se pudo encontrar la página que solicitó."
+
+#: ragnus-static-publisher/includes/class-admin.php:1026
+msgid "The path to be used instead of the path."
+msgstr "La ruta que se utilizará en lugar de la ruta."
+
+#: ragnus-static-publisher/includes/class-admin.php:896
+msgid "The redirect is only for the site"
+msgstr "La redirección es sólo para el sitio."
+
+#: ragnus-static-publisher/includes/class-static-search.php:118
+msgid "The search index could not be loaded. Please try again later."
+msgstr ""
+"No se pudo cargar el índice de búsqueda. Inténtelo de nuevo más tarde."
+
+#: ragnus-static-publisher/includes/class-admin.php:920
+msgid ""
+"The search page, index and necessary Fuse.js files are added to the export "
+"ZIP."
+msgstr ""
+"La página de búsqueda, el índice y los archivos Fuse.js necesarios se "
+"agregan al ZIP de exportación."
+
+#: ragnus-static-publisher/includes/class-admin.php:564
+msgid ""
+"The selected ZIP files will be permanently deleted. Should we continue?"
+msgstr ""
+"Los archivos ZIP seleccionados se eliminarán permanentemente. ¿Deberíamos "
+"continuar?"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:131
+msgid "The setting that prevents search engines from indexing the site is on."
+msgstr ""
+"La configuración que impide que los motores de búsqueda indexen el sitio "
+"está activada."
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:130
+msgid ""
+"The setting that prevents search engines from indexing the site is turned "
+"off."
+msgstr ""
+"La configuración que impide que los motores de búsqueda indexen el sitio "
+"está desactivada."
+
+#: ragnus-static-publisher/includes/class-exporter.php:230
+msgid "The source has been converted to static file."
+msgstr "La fuente se ha convertido a un archivo estático."
+
+#: ragnus-static-publisher/includes/class-exporter.php:101
+msgid "The static site has been created successfully."
+msgstr "El sitio estático se ha creado correctamente."
+
+#: ragnus-static-publisher/includes/class-admin.php:1002
+#: ragnus-static-publisher/includes/class-admin.php:1008
+#: ragnus-static-publisher/includes/class-admin.php:1014
+msgid "The subdirectory to use in place of the path."
+msgstr "El subdirectorio que se utilizará en lugar de la ruta."
+
+#: ragnus-static-publisher/includes/class-archive-manager.php:125
+msgid "The temporary download package could not be created."
+msgstr "No se pudo crear el paquete de descarga temporal."
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:166
+#, php-format
+msgid "The web server is able to read the temporary directory: %s"
+msgstr "El servidor web puede leer el directorio temporal: %s"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:174
+#, php-format
+msgid "The web server is able to write to the temporary directory: %s"
+msgstr "El servidor web puede escribir en el directorio temporal: %s"
+
+#: ragnus-static-publisher/includes/class-admin.php:1018
+msgid "Theme Style File"
+msgstr "Archivo de estilo de tema"
+
+#: ragnus-static-publisher/includes/class-admin.php:1012
+msgid "Themes Directory"
+msgstr "Directorio de temas"
+
+#: ragnus-static-publisher/includes/class-admin.php:550
+msgid "There is no ZIP file created yet."
+msgstr "Aún no se ha creado ningún archivo ZIP."
+
+#: ragnus-static-publisher/includes/class-admin.php:881
+msgid "There should be equivalents like this."
+msgstr "Debería haber equivalentes como este."
+
+#: ragnus-static-publisher/includes/class-admin.php:588
+msgid "This ZIP file will be permanently deleted. Do you want to continue?"
+msgstr "Este archivo ZIP se eliminará permanentemente. ¿Quieres continuar?"
+
+#: ragnus-static-publisher/includes/class-admin.php:694
+msgid "Time"
+msgstr "Tiempo"
+
+#: ragnus-static-publisher/includes/class-admin.php:957
+msgid "Title"
+msgstr "Título"
+
+#: ragnus-static-publisher/includes/class-admin.php:506
+#: ragnus-static-publisher/includes/class-admin.php:571
+msgid "URL Count"
+msgstr "Recuento de URL"
+
+#: ragnus-static-publisher/includes/class-exporter.php:248
+msgid "URL limit reached; Some resources were excluded from export."
+msgstr ""
+"Se alcanzó el límite de URL; Algunos recursos fueron excluidos de la "
+"exportación."
+
+#: ragnus-static-publisher/includes/class-admin.php:945
+msgid "URLs to Exclude from Indexing"
+msgstr "URL para excluir de la indexación"
+
+#: ragnus-static-publisher/includes/class-exporter.php:211
+msgid "Unsafe file path skipped."
+msgstr "Se omitió la ruta del archivo no seguro."
+
+#: ragnus-static-publisher/includes/class-admin.php:1000
+msgid "Uploads Directory"
+msgstr "Directorio de cargas"
+
+#: ragnus-static-publisher/includes/class-admin.php:1167
+msgid "Version Number"
+msgstr "Número de versión"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:143
+msgid "WP-CRON"
+msgstr "WP-CRON"
+
+#: ragnus-static-publisher/includes/class-admin.php:988
+msgid "WP-Content Directory"
+msgstr "Directorio de contenido de WP"
+
+#: ragnus-static-publisher/includes/class-admin.php:994
+msgid "WP-Includes Directory"
+msgstr "WP-Incluye directorio"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:139
+msgid ""
+"WP_CACHE enabled; Verify that no stale content is served during export."
+msgstr ""
+"WP_CACHE habilitado; Verifique que no se entregue ningún contenido obsoleto "
+"durante la exportación."
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:167
+#, php-format
+msgid "Web server cannot read temporary directory: %s"
+msgstr "El servidor web no puede leer el directorio temporal: %s"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:175
+#, php-format
+msgid "Web server cannot write to temporary directory: %s"
+msgstr "El servidor web no puede escribir en el directorio temporal: %s"
+
+#: ragnus-static-publisher/includes/class-admin.php:853
+msgid "Webhook Bearer Token"
+msgstr "Token de portador de webhook"
+
+#: ragnus-static-publisher/includes/class-admin.php:641
+msgid "Webhook configured"
+msgstr "Webhook configurado"
+
+#: ragnus-static-publisher/includes/class-admin.php:967
+msgid "Weight"
+msgstr "Peso"
+
+#: ragnus-static-publisher/includes/class-admin.php:794
+msgid "When a live blog post is changed or removed."
+msgstr "Cuando se cambia o elimina una publicación de blog en vivo."
+
+#: ragnus-static-publisher/includes/class-admin.php:793
+msgid "When a new article is published"
+msgstr "Cuando se publica un nuevo artículo"
+
+#: ragnus-static-publisher/includes/class-admin.php:793
+msgid "When a new blog post is published for the first time."
+msgstr "Cuando se publica una nueva entrada de blog por primera vez."
+
+#: ragnus-static-publisher/includes/class-admin.php:795
+msgid "When a new page is published for the first time."
+msgstr "Cuando se publica una nueva página por primera vez."
+
+#: ragnus-static-publisher/includes/class-admin.php:796
+msgid "When a published page is changed or removed."
+msgstr "Cuando una página publicada se cambia o elimina."
+
+#: ragnus-static-publisher/includes/class-admin.php:801
+msgid "When an image or other media file is added, updated, or deleted."
+msgstr ""
+"Cuando se agrega, actualiza o elimina una imagen u otro archivo multimedia."
+
+#: ragnus-static-publisher/includes/class-admin.php:800
+msgid "When categories, tags, or custom classifications are changed."
+msgstr ""
+"Cuando se cambian categorías, etiquetas o clasificaciones personalizadas."
+
+#: ragnus-static-publisher/includes/class-admin.php:803
+msgid "When components change"
+msgstr "Cuando los componentes cambian"
+
+#: ragnus-static-publisher/includes/class-admin.php:797
+msgid "When custom content types change"
+msgstr "Cuando los tipos de contenido personalizado cambian"
+
+#: ragnus-static-publisher/includes/class-admin.php:797
+msgid ""
+"When product, portfolio, etc. special content in the publication changes."
+msgstr ""
+"Cuando cambia el contenido especial del producto, portafolio, etc. en la "
+"publicación."
+
+#: ragnus-static-publisher/includes/class-admin.php:805
+msgid "When site settings change"
+msgstr "Cuando la configuración del sitio cambia"
+
+#: ragnus-static-publisher/includes/class-admin.php:800
+msgid "When the category or tag changes"
+msgstr "Cuando la categoría o etiqueta cambia"
+
+#: ragnus-static-publisher/includes/class-admin.php:796
+msgid "When the current page is updated"
+msgstr "Cuando se actualiza la página actual"
+
+#: ragnus-static-publisher/includes/class-admin.php:794
+msgid "When the current post is updated"
+msgstr "Cuando se actualiza la publicación actual"
+
+#: ragnus-static-publisher/includes/class-admin.php:801
+msgid "When the media changes"
+msgstr "Cuando los medios cambian"
+
+#: ragnus-static-publisher/includes/class-admin.php:802
+msgid "When the menu changes"
+msgstr "Cuando el menú cambia"
+
+#: ragnus-static-publisher/includes/class-admin.php:795
+msgid "When the new page is published"
+msgstr "Cuando se publica la nueva página"
+
+#: ragnus-static-publisher/includes/class-admin.php:805
+msgid ""
+"When the site name, description, homepage, reading or permalink settings are"
+" changed."
+msgstr ""
+"Cuando se cambian el nombre del sitio, la descripción, la página de inicio, "
+"la lectura o la configuración del enlace permanente."
+
+#: ragnus-static-publisher/includes/class-admin.php:802
+msgid "When the structure or links of navigation menus are changed."
+msgstr "Cuando se cambie la estructura o enlaces de los menús de navegación."
+
+#: ragnus-static-publisher/includes/class-admin.php:804
+msgid "When the theme changes"
+msgstr "Cuando el tema cambia"
+
+#: ragnus-static-publisher/includes/class-admin.php:804
+msgid "When the theme is changed, updated, or customizer settings are saved."
+msgstr ""
+"Cuando se cambia el tema, se actualiza o se guarda la configuración del "
+"personalizador."
+
+#: ragnus-static-publisher/includes/class-admin.php:870
+msgid ""
+"When the visitor arrives at the main address, first the saved preference is "
+"used, then the language sequence of the browser."
+msgstr ""
+"Cuando el visitante llega a la dirección principal, primero se utiliza la "
+"preferencia guardada y luego la secuencia de idiomas del navegador."
+
+#: ragnus-static-publisher/includes/class-admin.php:803
+msgid "When widget and widget layouts are updated."
+msgstr "Cuando se actualizan los widgets y los diseños de widgets."
+
+#: ragnus-static-publisher/includes/class-admin.php:1073
+msgid "Windows Live Writer removes the manifest link."
+msgstr "Windows Live Writer elimina el enlace del manifiesto."
+
+#: ragnus-static-publisher/includes/class-admin.php:932
+msgid "Word Matching"
+msgstr "Coincidencia de palabras"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:116
+msgid "WordPress"
+msgstr "WordPress"
+
+#: ragnus-static-publisher/includes/class-admin.php:960
+msgid "WordPress adds category and tag names to the index."
+msgstr "WordPress agrega nombres de categorías y etiquetas al índice."
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:147
+msgid "WordPress cron disabled; Scheduled export jobs may not run."
+msgstr ""
+"Cron de WordPress deshabilitado; Es posible que los trabajos de exportación "
+"programados no se ejecuten."
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:146
+msgid "WordPress cron is available."
+msgstr "El cron de WordPress está disponible."
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:138
+msgid "WordPress page caching is disabled."
+msgstr ""
+"El almacenamiento en caché de páginas de WordPress está deshabilitado."
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:122
+msgid "WordPress permalink structure is set."
+msgstr "La estructura de enlaces permanentes de WordPress está configurada."
+
+#: ragnus-static-publisher/includes/class-admin.php:881
+msgid "Write one language per line. These codes in WordPress"
+msgstr "Escribe un idioma por línea. Estos códigos en WordPress"
+
+#: ragnus-static-publisher/includes/class-admin.php:175
+#: ragnus-static-publisher/includes/class-admin.php:200
+#: ragnus-static-publisher/includes/class-admin.php:215
+#: ragnus-static-publisher/includes/class-admin.php:244
+#: ragnus-static-publisher/includes/class-admin.php:255
+#: ragnus-static-publisher/includes/class-admin.php:271
+#: ragnus-static-publisher/includes/class-admin.php:352
+msgid "You are not authorized for this operation."
+msgstr "No está autorizado para esta operación."
+
+#: ragnus-static-publisher/includes/class-admin.php:945
+msgid "You can type the full URL, URL fragment, or word per line."
+msgstr ""
+"Puede escribir la URL completa, un fragmento de URL o una palabra por línea."
+
+#: ragnus-static-publisher/includes/class-admin.php:622
+msgid "ZIP File"
+msgstr "Archivo ZIP"
+
+#: ragnus-static-publisher/includes/class-admin.php:528
+msgid "ZIP Files"
+msgstr "Archivos ZIP"
+
+#: ragnus-static-publisher/includes/class-exporter.php:89
+msgid "ZIP archive is being created."
+msgstr "Se está creando el archivo ZIP."
+
+#: ragnus-static-publisher/includes/class-admin.php:540
+#, php-format
+msgid "ZIP file %1$d was deleted, file %2$d could not be deleted."
+msgstr "El archivo ZIP %1$d se eliminó, el archivo %2$d no se pudo eliminar."
+
+#: ragnus-static-publisher/includes/class-admin.php:546
+msgid "ZIP files cannot be deleted while export is in progress."
+msgstr ""
+"Los archivos ZIP no se pueden eliminar mientras la exportación está en "
+"curso."
+
+#: ragnus-static-publisher/includes/class-admin.php:627
+msgid "ZIP ready"
+msgstr "Listo para ZIP"
+
+#: ragnus-static-publisher/includes/class-plugin.php:497
+msgid "[Ragnus Static Publisher] Deployment webhook could not be sent."
+msgstr ""
+"[Ragnus Static Publisher] No se pudo enviar el webhook de implementación."
+
+#: ragnus-static-publisher/includes/class-plugin.php:461
+msgid ""
+"[Ragnus Static Publisher] Some old export archives could not be deleted."
+msgstr ""
+"[Ragnus Static Publisher] Algunos archivos de exportación antiguos no se "
+"pudieron eliminar."
 
 #: ragnus-static-publisher/includes/class-diagnostics.php:105
 msgid "cURL"
 msgstr "rizo"
 
 #: ragnus-static-publisher/includes/class-diagnostics.php:107
-msgid "cURL kullanılabilir."
+msgid "cURL can be used."
 msgstr "Se puede utilizar rizo."
 
 #: ragnus-static-publisher/includes/class-diagnostics.php:107
-msgid "cURL kullanılamıyor; PHP cURL eklentisini etkinleştirin."
+msgid "cURL unavailable; Enable the PHP cURL extension."
 msgstr "rizo no disponible; Habilite la extensión PHP cURL."
 
-#: ragnus-static-publisher/includes/class-diagnostics.php:111
-msgid "Docker / Site URL"
-msgstr "Docker/URL del sitio"
+#: ragnus-static-publisher/includes/class-admin.php:891
+msgid "day"
+msgstr "día"
 
-#: ragnus-static-publisher/includes/class-diagnostics.php:116
-msgid "WordPress"
-msgstr "WordPress"
+#: ragnus-static-publisher/includes/class-admin.php:1020
+msgid "in active theme"
+msgstr "en tema activo"
 
-#: ragnus-static-publisher/includes/class-diagnostics.php:119
-msgid "Kalıcı Bağlantılar"
-msgstr "Enlaces permanentes"
+#: ragnus-static-publisher/includes/class-admin.php:942
+#: ragnus-static-publisher/includes/class-admin.php:943
+msgid "or"
+msgstr "o"
 
-#: ragnus-static-publisher/includes/class-diagnostics.php:122
-msgid "WordPress kalıcı bağlantı yapısı ayarlanmış."
-msgstr "La estructura de enlaces permanentes de WordPress está configurada."
+#: ragnus-static-publisher/includes/class-diagnostics.php:101
+msgid "php-xml can be used."
+msgstr "Se puede utilizar php-xml."
 
-#: ragnus-static-publisher/includes/class-diagnostics.php:123
-msgid ""
-"Kalıcı bağlantılar düz yapıda; Ayarlar > Kalıcı Bağlantılar bölümünden bir "
-"yapı seçin."
-msgstr ""
-"Los enlaces permanentes tienen una estructura plana; Seleccione una "
-"estructura en Configuración > Enlaces permanentes."
+#: ragnus-static-publisher/includes/class-diagnostics.php:101
+msgid "php-xml unavailable; Enable the DOMDocument plugin."
+msgstr "php-xml no disponible; Habilite el complemento DOMDocument."
 
-#: ragnus-static-publisher/includes/class-diagnostics.php:127
-msgid "Indexlenebilirlik"
-msgstr "Indexabilidad"
-
-#: ragnus-static-publisher/includes/class-diagnostics.php:130
-msgid "Arama motorlarının siteyi indekslemesini engelleyen ayar kapalı."
-msgstr ""
-"La configuración que impide que los motores de búsqueda indexen el sitio "
-"está desactivada."
-
-#: ragnus-static-publisher/includes/class-diagnostics.php:131
-msgid "Arama motorlarının siteyi indekslemesini engelleyen ayar açık."
-msgstr ""
-"La configuración que impide que los motores de búsqueda indexen el sitio "
-"está activada."
-
-#: ragnus-static-publisher/includes/class-diagnostics.php:135
-msgid "Önbellek"
-msgstr "cache"
-
-#: ragnus-static-publisher/includes/class-diagnostics.php:138
-msgid "WordPress sayfa önbelleği devre dışı."
-msgstr ""
-"El almacenamiento en caché de páginas de WordPress está deshabilitado."
-
-#: ragnus-static-publisher/includes/class-diagnostics.php:139
-msgid "WP_CACHE etkin; export sırasında eski içerik sunulmadığını doğrulayın."
-msgstr ""
-"WP_CACHE habilitado; Verifique que no se entregue ningún contenido obsoleto "
-"durante la exportación."
-
-#: ragnus-static-publisher/includes/class-diagnostics.php:143
-msgid "WP-CRON"
-msgstr "WP-CRON"
-
-#: ragnus-static-publisher/includes/class-diagnostics.php:146
-msgid "WordPress cron kullanılabilir."
-msgstr "El cron de WordPress está disponible."
-
-#: ragnus-static-publisher/includes/class-diagnostics.php:147
-msgid "WordPress cron devre dışı; zamanlanmış export işleri çalışmayabilir."
-msgstr ""
-"Cron de WordPress deshabilitado; Es posible que los trabajos de exportación "
-"programados no se ejecuten."
-
-#: ragnus-static-publisher/includes/class-diagnostics.php:150
-msgid "Eklentiler"
-msgstr "Complementos"
-
-#: ragnus-static-publisher/includes/class-diagnostics.php:153
-msgid "Uyumsuz Eklentiler"
-msgstr "Complementos incompatibles"
-
-#: ragnus-static-publisher/includes/class-diagnostics.php:156
-msgid "Etkin uyumsuz eklenti bulunamadı."
-msgstr "No se encontraron complementos activos incompatibles."
-
-#: ragnus-static-publisher/includes/class-diagnostics.php:157
-msgid "Statik taramayı engelleyebilecek etkin eklentiler: "
-msgstr "Complementos activos que pueden bloquear el escaneo estático:"
-
-#: ragnus-static-publisher/includes/class-diagnostics.php:160
-msgid "Dosya Sistemi"
-msgstr "Sistema de archivos"
-
-#: ragnus-static-publisher/includes/class-diagnostics.php:163
-msgid "Geçici Dizin Okunabilir"
-msgstr "Directorio temporal legible"
-
-#: ragnus-static-publisher/includes/class-diagnostics.php:166
-#, php-format
-msgid "Web sunucusu geçici dizini okuyabiliyor: %s"
-msgstr "El servidor web puede leer el directorio temporal: %s"
-
-#: ragnus-static-publisher/includes/class-diagnostics.php:167
-#, php-format
-msgid "Web sunucusu geçici dizini okuyamıyor: %s"
-msgstr "El servidor web no puede leer el directorio temporal: %s"
-
-#: ragnus-static-publisher/includes/class-diagnostics.php:171
-msgid "Geçici Dizin Yazılabilir"
-msgstr "Directorio temporal grabable"
-
-#: ragnus-static-publisher/includes/class-diagnostics.php:174
-#, php-format
-msgid "Web sunucusu geçici dizine yazabiliyor: %s"
-msgstr "El servidor web puede escribir en el directorio temporal: %s"
-
-#: ragnus-static-publisher/includes/class-diagnostics.php:175
-#, php-format
-msgid "Web sunucusu geçici dizine yazamıyor: %s"
-msgstr "El servidor web no puede escribir en el directorio temporal: %s"
-
-#: ragnus-static-publisher/includes/class-diagnostics.php:188
-#, php-format
-msgid "MySQL kullanıcısı %s yetkisine sahip."
-msgstr "El usuario de MySQL tiene el privilegio %s."
-
-#: ragnus-static-publisher/includes/class-diagnostics.php:189
-#, php-format
-msgid "MySQL kullanıcısında %s yetkisi bulunamadı."
-msgstr "No se encontró la autorización %s en el usuario de MySQL."
-
-#: ragnus-static-publisher/includes/class-exporter.php:47
-msgid "Başka bir export işlemi halen çalışıyor."
-msgstr "Otro proceso de exportación aún está en marcha."
-
-#: ragnus-static-publisher/includes/class-exporter.php:60
-msgid "Export klasörü hazırlanıyor."
-msgstr "Se está preparando la carpeta de exportación."
-
-#: ragnus-static-publisher/includes/class-exporter.php:71
-msgid "Fuse.js arama indeksi hazırlanıyor."
-msgstr "Se está preparando el índice de búsqueda de Fuse.js."
-
-#: ragnus-static-publisher/includes/class-exporter.php:78
-msgid "Cloudflare yapılandırma dosyaları hazırlanıyor."
-msgstr "Se están preparando los archivos de configuración de Cloudflare."
-
-#: ragnus-static-publisher/includes/class-exporter.php:84
-msgid "Export manifesti hazırlanıyor."
-msgstr "Se está preparando el manifiesto de exportación."
-
-#: ragnus-static-publisher/includes/class-exporter.php:89
-msgid "ZIP arşivi oluşturuluyor."
-msgstr "Se está creando el archivo ZIP."
-
-#: ragnus-static-publisher/includes/class-exporter.php:101
-msgid "Statik site başarıyla oluşturuldu."
-msgstr "El sitio estático se ha creado correctamente."
-
-#: ragnus-static-publisher/includes/class-exporter.php:115
-msgid "Statik site oluşturulamadı."
-msgstr "No se pudo crear el sitio estático."
-
-#: ragnus-static-publisher/includes/class-exporter.php:133
-msgid "Export klasörü oluşturulamadı."
-msgstr "No se pudo crear la carpeta de exportación."
-
-#: ragnus-static-publisher/includes/class-exporter.php:211
-msgid "Güvenli olmayan dosya yolu atlandı."
-msgstr "Se omitió la ruta del archivo no seguro."
-
-#: ragnus-static-publisher/includes/class-exporter.php:230
-msgid "Kaynak statik dosyaya dönüştürüldü."
-msgstr "La fuente se ha convertido a un archivo estático."
-
-#: ragnus-static-publisher/includes/class-exporter.php:242
-msgid "Site taraması tamamlandı."
-msgstr "Escaneo del sitio completado."
-
-#: ragnus-static-publisher/includes/class-exporter.php:248
-msgid "URL sınırına ulaşıldı; bazı kaynaklar export dışında kaldı."
-msgstr ""
-"Se alcanzó el límite de URL; Algunos recursos fueron excluidos de la "
-"exportación."
-
-#: ragnus-static-publisher/includes/class-exporter.php:261
-msgid "Site adresleri statik dosyalara dönüştürülüyor."
-msgstr "Las direcciones de los sitios se convierten en archivos estáticos."
-
-#: ragnus-static-publisher/includes/class-exporter.php:541
-msgid "Dosya yazılamadı: "
-msgstr "No se pudo escribir el archivo:"
-
-#: ragnus-static-publisher/includes/class-exporter.php:554
-#, php-format
-msgid "Dil kökü export edilemedi: /%s/"
-msgstr "No se pudo exportar la raíz del idioma: /%s/"
-
-#: ragnus-static-publisher/includes/class-exporter.php:589
-msgid "ZIP arşivi oluşturulamadı."
-msgstr "No se pudo crear el archivo ZIP."
-
-#: ragnus-static-publisher/includes/class-plugin.php:244
-msgid "Export işi sıraya alındı."
-msgstr "Exportar trabajo en cola."
-
-#: ragnus-static-publisher/includes/class-plugin.php:318
-msgid ""
-"Export işi 90 saniyeden uzun süredir kuyrukta. WP-Cron veya sunucu loopback "
-"isteklerini kontrol edin."
-msgstr ""
-"El trabajo de exportación ha estado en la cola durante más de 90 segundos. "
-"Verifique las solicitudes de bucle invertido del servidor o WP-Cron."
-
-#: ragnus-static-publisher/includes/class-plugin.php:324
-msgid ""
-"Export işi beklenenden uzun süredir çalışıyor. Sunucu hata kayıtlarını ve "
-"PHP çalışma süresi sınırını kontrol edin."
-msgstr ""
-"El trabajo de exportación lleva más tiempo de lo esperado. Verifique los "
-"registros de errores del servidor y el límite de tiempo de actividad de PHP."
-
-#: ragnus-static-publisher/includes/class-plugin.php:433
-msgid "Otomatik export işi sıraya alındı."
-msgstr "El trabajo de exportación automática está en cola."
-
-#: ragnus-static-publisher/includes/class-plugin.php:459
-msgid "[Ragnus Static Publisher] Bazı eski export arşivleri silinemedi."
-msgstr ""
-"[Ragnus Static Publisher] Algunos archivos de exportación antiguos no se "
-"pudieron eliminar."
-
-#: ragnus-static-publisher/includes/class-plugin.php:495
-msgid "[Ragnus Static Publisher] Deployment webhook gönderilemedi."
-msgstr ""
-"[Ragnus Static Publisher] No se pudo enviar el webhook de implementación."
-
-#: ragnus-static-publisher/includes/class-plugin.php:513
-#, php-format
-msgid "Export tamamlandı: %d URL"
-msgstr "Exportación completada: URL %d"
-
-#. Plugin description.
-#: ragnus-static-publisher/ragnus-static-publisher.php:4
-msgid ""
-"Exports WordPress sites to static files and prepares them for Cloudflare "
-"Pages deployment workflows."
-msgstr ""
-"Exporta sitios de WordPress a archivos estáticos y los prepara para los "
-"flujos de trabajo de implementación de Cloudflare Pages."
+#: ragnus-static-publisher/includes/class-admin.php:725
+msgid "‹ Previous"
+msgstr "< Anterior"

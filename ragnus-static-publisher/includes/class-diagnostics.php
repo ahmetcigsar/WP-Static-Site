@@ -71,40 +71,40 @@ final class Diagnostics
         $database_privileges = self::database_privileges($database_grants);
 
         $site_message = $site_reachable
-            ? sprintf(__('Site URL erişilebilir (HTTP %d): %s', 'ragnus-static-publisher'), $response_code, home_url('/'))
+            ? sprintf(__('Site URL accessible (HTTP %d): %s', 'ragnus-static-publisher'), $response_code, home_url('/'))
             : (is_wp_error($site_response)
-                ? __('Site URL erişilemiyor: ', 'ragnus-static-publisher') . $site_response->get_error_message()
-                : sprintf(__('Site URL beklenmeyen bir HTTP %d yanıtı verdi: %s', 'ragnus-static-publisher'), $response_code, home_url('/')));
+                ? __('Site URL unreachable:', 'ragnus-static-publisher') . $site_response->get_error_message()
+                : sprintf(__('Site URL returned an unexpected HTTP %d response: %s', 'ragnus-static-publisher'), $response_code, home_url('/')));
 
         $groups = [
             __('Server', 'ragnus-static-publisher') => [
                 [
                     'id' => 'php-version',
-                    'label' => __('PHP Sürümü', 'ragnus-static-publisher'),
+                    'label' => __('PHP Version', 'ragnus-static-publisher'),
                     'passed' => $php_supported,
                     'message' => $php_supported
-                        ? sprintf(__('PHP 8.1 veya üzeri kullanılabilir. Mevcut sürüm: %s.', 'ragnus-static-publisher'), PHP_VERSION)
-                        : sprintf(__('PHP 8.1 veya üzeri gerekli. Mevcut sürüm: %s.', 'ragnus-static-publisher'), PHP_VERSION),
+                        ? sprintf(__('PHP 8.1 or above can be used. Current version: %s.', 'ragnus-static-publisher'), PHP_VERSION)
+                        : sprintf(__('PHP 8.1 or above required. Current version: %s.', 'ragnus-static-publisher'), PHP_VERSION),
                 ],
                 [
                     'id' => 'basic-auth',
                     'label' => __('Basic Auth', 'ragnus-static-publisher'),
                     'passed' => ! $basic_auth_enabled,
                     'message' => $basic_auth_enabled
-                        ? __('Basic Auth etkin görünüyor; statik tarama kimlik doğrulamasında durabilir.', 'ragnus-static-publisher')
-                        : __('Basic Auth etkin değil.', 'ragnus-static-publisher'),
+                        ? __('Basic Auth appears to be enabled; static scan may stop at authentication.', 'ragnus-static-publisher')
+                        : __('Basic Auth is not enabled.', 'ragnus-static-publisher'),
                 ],
                 [
                     'id' => 'php-xml',
                     'label' => __('PHP-XML', 'ragnus-static-publisher'),
                     'passed' => $xml_available,
-                    'message' => $xml_available ? __('php-xml kullanılabilir.', 'ragnus-static-publisher') : __('php-xml kullanılamıyor; DOMDocument eklentisini etkinleştirin.', 'ragnus-static-publisher'),
+                    'message' => $xml_available ? __('php-xml can be used.', 'ragnus-static-publisher') : __('php-xml unavailable; Enable the DOMDocument plugin.', 'ragnus-static-publisher'),
                 ],
                 [
                     'id' => 'curl',
                     'label' => __('cURL', 'ragnus-static-publisher'),
                     'passed' => $curl_available,
-                    'message' => $curl_available ? __('cURL kullanılabilir.', 'ragnus-static-publisher') : __('cURL kullanılamıyor; PHP cURL eklentisini etkinleştirin.', 'ragnus-static-publisher'),
+                    'message' => $curl_available ? __('cURL can be used.', 'ragnus-static-publisher') : __('cURL unavailable; Enable the PHP cURL extension.', 'ragnus-static-publisher'),
                 ],
                 [
                     'id' => 'docker-site-url',
@@ -116,63 +116,63 @@ final class Diagnostics
             __('WordPress', 'ragnus-static-publisher') => [
                 [
                     'id' => 'permalinks',
-                    'label' => __('Kalıcı Bağlantılar', 'ragnus-static-publisher'),
+                    'label' => __('Permalinks', 'ragnus-static-publisher'),
                     'passed' => $permalinks_enabled,
                     'message' => $permalinks_enabled
-                        ? __('WordPress kalıcı bağlantı yapısı ayarlanmış.', 'ragnus-static-publisher')
-                        : __('Kalıcı bağlantılar düz yapıda; Ayarlar > Kalıcı Bağlantılar bölümünden bir yapı seçin.', 'ragnus-static-publisher'),
+                        ? __('WordPress permalink structure is set.', 'ragnus-static-publisher')
+                        : __('Permanent links have a flat structure; Select a structure in Settings > Permalinks.', 'ragnus-static-publisher'),
                 ],
                 [
                     'id' => 'indexable',
-                    'label' => __('Indexlenebilirlik', 'ragnus-static-publisher'),
+                    'label' => __('Indexability', 'ragnus-static-publisher'),
                     'passed' => $indexable,
                     'message' => $indexable
-                        ? __('Arama motorlarının siteyi indekslemesini engelleyen ayar kapalı.', 'ragnus-static-publisher')
-                        : __('Arama motorlarının siteyi indekslemesini engelleyen ayar açık.', 'ragnus-static-publisher'),
+                        ? __('The setting that prevents search engines from indexing the site is turned off.', 'ragnus-static-publisher')
+                        : __('The setting that prevents search engines from indexing the site is on.', 'ragnus-static-publisher'),
                 ],
                 [
                     'id' => 'caching',
-                    'label' => __('Önbellek', 'ragnus-static-publisher'),
+                    'label' => __('Cache', 'ragnus-static-publisher'),
                     'passed' => $cache_disabled,
                     'message' => $cache_disabled
-                        ? __('WordPress sayfa önbelleği devre dışı.', 'ragnus-static-publisher')
-                        : __('WP_CACHE etkin; export sırasında eski içerik sunulmadığını doğrulayın.', 'ragnus-static-publisher'),
+                        ? __('WordPress page caching is disabled.', 'ragnus-static-publisher')
+                        : __('WP_CACHE enabled; Verify that no stale content is served during export.', 'ragnus-static-publisher'),
                 ],
                 [
                     'id' => 'wp-cron',
                     'label' => __('WP-CRON', 'ragnus-static-publisher'),
                     'passed' => $cron_available,
                     'message' => $cron_available
-                        ? __('WordPress cron kullanılabilir.', 'ragnus-static-publisher')
-                        : __('WordPress cron devre dışı; zamanlanmış export işleri çalışmayabilir.', 'ragnus-static-publisher'),
+                        ? __('WordPress cron is available.', 'ragnus-static-publisher')
+                        : __('WordPress cron disabled; Scheduled export jobs may not run.', 'ragnus-static-publisher'),
                 ],
             ],
-            __('Eklentiler', 'ragnus-static-publisher') => [
+            __('Plugins', 'ragnus-static-publisher') => [
                 [
                     'id' => 'incompatible-plugins',
-                    'label' => __('Uyumsuz Eklentiler', 'ragnus-static-publisher'),
+                    'label' => __('Incompatible Plugins', 'ragnus-static-publisher'),
                     'passed' => $incompatible_plugins === [],
                     'message' => $incompatible_plugins === []
-                        ? __('Etkin uyumsuz eklenti bulunamadı.', 'ragnus-static-publisher')
-                        : __('Statik taramayı engelleyebilecek etkin eklentiler: ', 'ragnus-static-publisher') . implode(', ', $incompatible_plugins) . '.',
+                        ? __('No active incompatible plugins found.', 'ragnus-static-publisher')
+                        : __('Active plugins that may block static scanning:', 'ragnus-static-publisher') . implode(', ', $incompatible_plugins) . '.',
                 ],
             ],
-            __('Dosya Sistemi', 'ragnus-static-publisher') => [
+            __('File System', 'ragnus-static-publisher') => [
                 [
                     'id' => 'temp-directory-readable',
-                    'label' => __('Geçici Dizin Okunabilir', 'ragnus-static-publisher'),
+                    'label' => __('Temporary Directory Readable', 'ragnus-static-publisher'),
                     'passed' => $temporary_readable,
                     'message' => $temporary_readable
-                        ? sprintf(__('Web sunucusu geçici dizini okuyabiliyor: %s', 'ragnus-static-publisher'), $temporary_directory)
-                        : sprintf(__('Web sunucusu geçici dizini okuyamıyor: %s', 'ragnus-static-publisher'), $temporary_directory),
+                        ? sprintf(__('The web server is able to read the temporary directory: %s', 'ragnus-static-publisher'), $temporary_directory)
+                        : sprintf(__('Web server cannot read temporary directory: %s', 'ragnus-static-publisher'), $temporary_directory),
                 ],
                 [
                     'id' => 'temp-directory-writable',
-                    'label' => __('Geçici Dizin Yazılabilir', 'ragnus-static-publisher'),
+                    'label' => __('Temporary Directory Writable', 'ragnus-static-publisher'),
                     'passed' => $temporary_writable,
                     'message' => $temporary_writable
-                        ? sprintf(__('Web sunucusu geçici dizine yazabiliyor: %s', 'ragnus-static-publisher'), $temporary_directory)
-                        : sprintf(__('Web sunucusu geçici dizine yazamıyor: %s', 'ragnus-static-publisher'), $temporary_directory),
+                        ? sprintf(__('The web server is able to write to the temporary directory: %s', 'ragnus-static-publisher'), $temporary_directory)
+                        : sprintf(__('Web server cannot write to temporary directory: %s', 'ragnus-static-publisher'), $temporary_directory),
                 ],
             ],
         ];
@@ -185,8 +185,8 @@ final class Diagnostics
                 'label' => $privilege,
                 'passed' => $has_privilege,
                 'message' => $has_privilege
-                    ? sprintf(__('MySQL kullanıcısı %s yetkisine sahip.', 'ragnus-static-publisher'), $privilege)
-                    : sprintf(__('MySQL kullanıcısında %s yetkisi bulunamadı.', 'ragnus-static-publisher'), $privilege),
+                    ? sprintf(__('MySQL user has %s privilege.', 'ragnus-static-publisher'), $privilege)
+                    : sprintf(__('The MySQL user does not have the %s privilege.', 'ragnus-static-publisher'), $privilege),
             ];
         }
 

@@ -223,14 +223,14 @@ if (! str_contains($files_notice_html, 'notice-success inline is-dismissible rag
 
 $admin_source = (string) file_get_contents(RAGSTAT_DIR . 'includes/class-admin.php');
 
-foreach (['Arama', 'Fuse.js 7.3.0', 'İndeksleme Seçicileri', 'Fuse.js Alanları ve Ağırlıkları'] as $expected) {
+foreach (['Search', 'Fuse.js 7.3.0', 'Indexing Selectors', 'Fuse.js Fields and Weights'] as $expected) {
     if (! str_contains($admin_source, $expected)) {
         fwrite(STDERR, "Arama sekmesinde beklenen içerik bulunamadı: {$expected}\n");
         exit(1);
     }
 }
 
-foreach (['Statik Site Oluştur', '>İndir</a>'] as $expected) {
+foreach (['Create Static Site', "esc_html_e('Download'"] as $expected) {
     if (! str_contains($admin_source, $expected)) {
         fwrite(STDERR, "Main sekmesinde beklenen buton metni bulunamadı: {$expected}\n");
         exit(1);
@@ -240,11 +240,11 @@ if (str_contains($admin_source, '<th>Kod</th>') || str_contains($admin_source, '
     fwrite(STDERR, "Activity Log Kod sütunu arayüzden kaldırılmadı.\n");
     exit(1);
 }
-if (! str_contains($admin_source, 'Kayıt Sayısı:') || ! str_contains($admin_source, "activity['job_total']")) {
+if (! str_contains($admin_source, 'Number of Records:') || ! str_contains($admin_source, "activity['job_total']")) {
     fwrite(STDERR, "Activity Log kayıt sayısı bilgisi arayüzde bulunamadı.\n");
     exit(1);
 }
-if (! str_contains($admin_source, '>Sıra</th>') || ! str_contains($admin_source, '$archive_index + 1')) {
+if (! str_contains($admin_source, "esc_html_e('Order'") || ! str_contains($admin_source, '$archive_index + 1')) {
     fwrite(STDERR, "Files tablosunun sıra sütunu bulunamadı.\n");
     exit(1);
 }
@@ -252,19 +252,19 @@ if (substr_count($admin_source, 'class="ragstat-time-column"') < 2) {
     fwrite(STDERR, "Activity Log saat sütunu sınıfı eksik.\n");
     exit(1);
 }
-foreach (['Tekrar Kontrol Et', 'ragnus_static_refresh_diagnostics', 'Diagnostics::report()'] as $expected) {
+foreach (['Check Again', 'ragnus_static_refresh_diagnostics', 'Diagnostics::report()'] as $expected) {
     if (! str_contains($admin_source, $expected)) {
         fwrite(STDERR, "Diagnostics yeniden kontrol arayüzü eksik: {$expected}\n");
         exit(1);
     }
 }
-foreach (["'hide' => 'Hide'", 'render_hide_tab', 'Hide Ayarlarını Kaydet'] as $expected) {
+foreach (["'hide' => __('Hide'", 'render_hide_tab', 'Save Hide Settings'] as $expected) {
     if (! str_contains($admin_source, $expected)) {
         fwrite(STDERR, "Hide sekmesi arayüzü eksik: {$expected}\n");
         exit(1);
     }
 }
-foreach (['Otomatik Statik Site Oluşturma ve Deploy', 'Yeni yazı yayınlandığında', 'Mevcut sayfa güncellendiğinde', 'Tema değiştiğinde', 'Site ayarları değiştiğinde'] as $expected) {
+foreach (['Automatic Static Site Creation and Deploy', 'When a new article is published', 'When the current page is updated', 'When the theme changes', 'When site settings change'] as $expected) {
     if (! str_contains($admin_source, $expected)) {
         fwrite(STDERR, "Settings otomatik deploy kartında beklenen içerik bulunamadı: {$expected}\n");
         exit(1);

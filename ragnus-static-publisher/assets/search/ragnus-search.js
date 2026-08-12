@@ -4,6 +4,9 @@ const form = document.querySelector('#ragnus-search-form');
 const input = document.querySelector('#ragnus-search-input');
 const status = document.querySelector('#ragnus-search-status');
 const results = document.querySelector('#ragnus-search-results');
+let translations = {};
+
+const formatMessage = (message, value) => String(message).replace('%d', String(value));
 
 const normaliseTurkish = (value) => value
     .replace(/[ÇĞİIÖŞÜçğıöşü]/g, (letter) => ({
@@ -19,10 +22,10 @@ const setStatus = (message) => {
 const render = (items) => {
     results.replaceChildren();
     if (!items.length) {
-        setStatus('Aramanızla eşleşen bir sonuç bulunamadı.');
+        setStatus(translations.noResults || 'No results matched your search.');
         return;
     }
-    setStatus(`${items.length} sonuç gösteriliyor.`);
+    setStatus(formatMessage(translations.resultsShown || '%d results shown.', items.length));
     const fragment = document.createDocumentFragment();
     items.forEach(({ item }) => {
         const article = document.createElement('article');
@@ -45,6 +48,7 @@ Promise.all([
     fetch('/ragnus-search-index.json').then((response) => response.json()),
     fetch('/ragnus-search-config.json').then((response) => response.json()),
 ]).then(([documents, config]) => {
+    translations = config.i18n || {};
     const fuse = new Fuse(documents, {
         useTokenSearch: true,
         tokenMatch: config.tokenMatch,
@@ -64,7 +68,7 @@ Promise.all([
         history.replaceState({}, '', url);
         if (query.length < config.minChars) {
             results.replaceChildren();
-            setStatus(`Arama için en az ${config.minChars} karakter yazın.`);
+            setStatus(formatMessage(translations.minimumCharacters || 'Enter at least %d characters to search.', config.minChars));
             return;
         }
         const direct = fuse.search(query, { limit: config.resultLimit });
@@ -91,5 +95,5 @@ Promise.all([
     input.value = initial;
     search();
 }).catch(() => {
-    setStatus('Arama indeksi yüklenemedi. Lütfen daha sonra tekrar deneyin.');
+    setStatus(translations.loadError || 'The search index could not be loaded. Please try again later.');
 });

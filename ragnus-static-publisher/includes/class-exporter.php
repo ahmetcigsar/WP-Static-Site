@@ -44,7 +44,7 @@ final class Exporter
     public function run(string $job_id): array
     {
         if (get_transient(Plugin::LOCK_KEY)) {
-            throw new RuntimeException(__('Başka bir export işlemi halen çalışıyor.', 'ragnus-static-publisher'));
+            throw new RuntimeException(__('Another export process is still running.', 'ragnus-static-publisher'));
         }
 
         set_transient(Plugin::LOCK_KEY, $job_id, 30 * MINUTE_IN_SECONDS);
@@ -57,7 +57,7 @@ final class Exporter
             Plugin::set_status($job_id, 'running', 2, [
                 'started_at' => $started_at,
                 'phase' => 'preparing',
-                'status_message' => __('Export klasörü hazırlanıyor.', 'ragnus-static-publisher'),
+                'status_message' => __('Export folder is being prepared.', 'ragnus-static-publisher'),
                 'current_url' => '',
                 'url_count' => 0,
                 'error' => '',
@@ -68,25 +68,25 @@ final class Exporter
             if ($this->static_search->enabled()) {
                 Plugin::set_status($job_id, 'running', 86, [
                     'phase' => 'search-index',
-                    'status_message' => __('Fuse.js arama indeksi hazırlanıyor.', 'ragnus-static-publisher'),
+                    'status_message' => __('Fuse.js search index is being prepared.', 'ragnus-static-publisher'),
                     'current_url' => '',
                 ]);
                 $this->write_search_files();
             }
             Plugin::set_status($job_id, 'running', 88, [
                 'phase' => 'cloudflare-files',
-                'status_message' => __('Cloudflare yapılandırma dosyaları hazırlanıyor.', 'ragnus-static-publisher'),
+                'status_message' => __('Cloudflare configuration files are being prepared.', 'ragnus-static-publisher'),
                 'current_url' => '',
             ]);
             $this->write_cloudflare_files();
             Plugin::set_status($job_id, 'running', 92, [
                 'phase' => 'manifest',
-                'status_message' => __('Export manifesti hazırlanıyor.', 'ragnus-static-publisher'),
+                'status_message' => __('Export manifest is being prepared.', 'ragnus-static-publisher'),
             ]);
             $manifest = $this->write_manifest($job_id, $started_at);
             Plugin::set_status($job_id, 'running', 96, [
                 'phase' => 'archive',
-                'status_message' => __('ZIP arşivi oluşturuluyor.', 'ragnus-static-publisher'),
+                'status_message' => __('ZIP archive is being created.', 'ragnus-static-publisher'),
             ]);
             $archive = $this->create_archive($job_id);
             $finished_at = gmdate('c');
@@ -98,7 +98,7 @@ final class Exporter
                 'manifest' => $manifest,
                 'url_count' => count($this->visited),
                 'phase' => 'completed',
-                'status_message' => __('Statik site başarıyla oluşturuldu.', 'ragnus-static-publisher'),
+                'status_message' => __('The static site has been created successfully.', 'ragnus-static-publisher'),
                 'current_url' => '',
                 'error' => '',
             ]);
@@ -112,7 +112,7 @@ final class Exporter
                 'finished_at' => gmdate('c'),
                 'error' => $error->getMessage(),
                 'phase' => 'failed',
-                'status_message' => __('Statik site oluşturulamadı.', 'ragnus-static-publisher'),
+                'status_message' => __('Failed to create static site.', 'ragnus-static-publisher'),
                 'current_url' => '',
             ]);
             throw $error;
@@ -130,7 +130,7 @@ final class Exporter
         $this->build_directory = $base . '/builds/' . sanitize_file_name($job_id);
 
         if (! wp_mkdir_p($this->build_directory)) {
-            throw new RuntimeException(__('Export klasörü oluşturulamadı.', 'ragnus-static-publisher'));
+            throw new RuntimeException(__('Failed to create export folder.', 'ragnus-static-publisher'));
         }
     }
 
@@ -208,7 +208,7 @@ final class Exporter
 
             $relative_path = Path_Mapper::url_to_relative_path($url, $content_type);
             if ($relative_path === null) {
-                $this->add_log('warning', __('Güvenli olmayan dosya yolu atlandı.', 'ragnus-static-publisher'), $url, '', $source_status_code);
+                $this->add_log('warning', __('Unsafe file path skipped.', 'ragnus-static-publisher'), $url, '', $source_status_code);
                 $this->update_crawl_progress($queue, $url);
                 continue;
             }
@@ -227,7 +227,7 @@ final class Exporter
             }
 
             $this->write_file($relative_path, $body);
-            $this->add_log('info', __('Kaynak statik dosyaya dönüştürüldü.', 'ragnus-static-publisher'), $url, $relative_path, $source_status_code);
+            $this->add_log('info', __('The source has been converted to static file.', 'ragnus-static-publisher'), $url, $relative_path, $source_status_code);
 
             foreach ($discovered as $discovered_url) {
                 $queue->enqueue($discovered_url);
@@ -239,13 +239,13 @@ final class Exporter
         $this->reported_progress = 85;
         Plugin::set_status($this->job_id, 'running', 85, [
             'phase' => 'crawl-completed',
-            'status_message' => __('Site taraması tamamlandı.', 'ragnus-static-publisher'),
+            'status_message' => __('Site scan completed.', 'ragnus-static-publisher'),
             'url_count' => count($this->visited),
             'current_url' => '',
         ]);
 
         if (! $queue->isEmpty()) {
-            $this->add_log('warning', __('URL sınırına ulaşıldı; bazı kaynaklar export dışında kaldı.', 'ragnus-static-publisher'));
+            $this->add_log('warning', __('URL limit reached; Some resources were excluded from export.', 'ragnus-static-publisher'));
         }
     }
 
@@ -258,7 +258,7 @@ final class Exporter
 
         Plugin::set_status($this->job_id, 'running', $this->reported_progress, [
             'phase' => 'crawling',
-            'status_message' => __('Site adresleri statik dosyalara dönüştürülüyor.', 'ragnus-static-publisher'),
+            'status_message' => __('Site addresses are converted to static files.', 'ragnus-static-publisher'),
             'url_count' => $processed,
             'current_url' => $url,
         ]);
@@ -538,7 +538,7 @@ final class Exporter
     {
         $destination = $this->build_directory . '/' . ltrim($relative_path, '/');
         if (! wp_mkdir_p(dirname($destination)) || file_put_contents($destination, $contents) === false) {
-            throw new RuntimeException(__('Dosya yazılamadı: ', 'ragnus-static-publisher') . $relative_path);
+            throw new RuntimeException(__('Failed to write file:', 'ragnus-static-publisher') . $relative_path);
         }
     }
 
@@ -551,7 +551,7 @@ final class Exporter
         foreach ($this->language_routing->languages() as $language) {
             $path = $this->build_directory . '/' . $language . '/index.html';
             if (! is_readable($path)) {
-                throw new RuntimeException(sprintf(__('Dil kökü export edilemedi: /%s/', 'ragnus-static-publisher'), $language));
+                throw new RuntimeException(sprintf(__('Could not export language root: /%s/', 'ragnus-static-publisher'), $language));
             }
         }
     }
@@ -566,7 +566,13 @@ final class Exporter
         }
 
         if (! file_exists($this->build_directory . '/404.html')) {
-            $this->write_file('404.html', '<!doctype html><html lang="tr"><meta charset="utf-8"><title>Sayfa bulunamadı</title><h1>404</h1><p>Aradığınız sayfa bulunamadı.</p></html>');
+            $language = str_replace('_', '-', (string) get_bloginfo('language')) ?: 'en-US';
+            $this->write_file('404.html', sprintf(
+                '<!doctype html><html lang="%1$s"><meta charset="utf-8"><title>%2$s</title><h1>404</h1><p>%3$s</p></html>',
+                esc_attr($language),
+                esc_html__('Page Not Found', 'ragnus-static-publisher'),
+                esc_html__('The page you requested could not be found.', 'ragnus-static-publisher')
+            ));
         }
     }
 
@@ -580,13 +586,13 @@ final class Exporter
     private function create_archive(string $job_id): string
     {
         if (! class_exists(ZipArchive::class)) {
-            throw new RuntimeException(__('PHP ZipArchive eklentisi kurulu değil.', 'ragnus-static-publisher'));
+            throw new RuntimeException(__('PHP ZipArchive extension is not installed.', 'ragnus-static-publisher'));
         }
 
         $archive_path = Plugin::storage_directory() . '/archives/' . sanitize_file_name($job_id) . '.zip';
         $zip = new ZipArchive();
         if ($zip->open($archive_path, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
-            throw new RuntimeException(__('ZIP arşivi oluşturulamadı.', 'ragnus-static-publisher'));
+            throw new RuntimeException(__('Could not create ZIP archive.', 'ragnus-static-publisher'));
         }
 
         $iterator = new \RecursiveIteratorIterator(

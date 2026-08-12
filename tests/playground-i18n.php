@@ -60,4 +60,14 @@ foreach ($expected_translations as $locale => $expected) {
 
 restore_current_locale();
 
+$unsupported_locale = static fn (): string => 'de_DE';
+add_filter('locale', $unsupported_locale);
+unload_textdomain('ragnus-static-publisher');
+Ragnus\StaticPublisher\Plugin::load_textdomain();
+if (__('Settings', 'ragnus-static-publisher') !== 'Settings') {
+    fwrite(STDERR, "Desteklenmeyen WordPress dili İngilizce arayüze dönmedi.\n");
+    exit(1);
+}
+remove_filter('locale', $unsupported_locale);
+
 echo "Ragnus Static Publisher i18n test passed.\n";

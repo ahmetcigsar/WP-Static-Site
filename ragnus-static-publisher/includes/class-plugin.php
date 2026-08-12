@@ -78,8 +78,8 @@ final class Plugin
             'ar' => 'ar',
             'pt' => strcasecmp($locale, 'pt_PT') === 0 ? 'pt_PT' : 'pt_BR',
         ];
-        $fallback_locale = $fallbacks[$language] ?? '';
-        if ($fallback_locale === '' || $fallback_locale === $locale) {
+        $fallback_locale = $fallbacks[$language] ?? 'en_US';
+        if ($fallback_locale === $locale) {
             return;
         }
 
@@ -243,7 +243,7 @@ final class Plugin
             'source' => $source,
             'queued_at' => gmdate('c'),
             'phase' => 'queued',
-            'status_message' => __('Export işi sıraya alındı.', 'ragnus-static-publisher'),
+            'status_message' => __('Export job queued.', 'ragnus-static-publisher'),
             'current_url' => '',
             'url_count' => 0,
             'error' => '',
@@ -317,13 +317,13 @@ final class Plugin
             $status['cron_scheduled'] = wp_next_scheduled(self::CRON_HOOK, [$job_id]) !== false;
             if ($queued_at !== false && time() - $queued_at >= 90) {
                 $status['stalled'] = true;
-                $status['runtime_notice'] = __('Export işi 90 saniyeden uzun süredir kuyrukta. WP-Cron veya sunucu loopback isteklerini kontrol edin.', 'ragnus-static-publisher');
+                $status['runtime_notice'] = __('The export job has been in the queue for more than 90 seconds. Check WP-Cron or server loopback requests.', 'ragnus-static-publisher');
             }
         } elseif ($state === 'running') {
             $started_at = strtotime((string) ($status['started_at'] ?? ''));
             if ($started_at !== false && time() - $started_at >= 35 * MINUTE_IN_SECONDS) {
                 $status['stalled'] = true;
-                $status['runtime_notice'] = __('Export işi beklenenden uzun süredir çalışıyor. Sunucu hata kayıtlarını ve PHP çalışma süresi sınırını kontrol edin.', 'ragnus-static-publisher');
+                $status['runtime_notice'] = __('The export job has been running longer than expected. Check server error logs and PHP uptime limit.', 'ragnus-static-publisher');
             }
         }
 
@@ -432,7 +432,7 @@ final class Plugin
         self::set_status($job_id, 'queued', 0, [
             'source' => $source,
             'queued_at' => gmdate('c'),
-            'status_message' => __('Otomatik export işi sıraya alındı.', 'ragnus-static-publisher'),
+            'status_message' => __('The automatic export job is queued.', 'ragnus-static-publisher'),
         ]);
         wp_schedule_single_event(time() + 60, self::CRON_HOOK, [$job_id]);
     }
@@ -458,7 +458,7 @@ final class Plugin
         $keep = max(1, min(100, absint($new_value['archive_retention'] ?? 5)));
         $result = Archive_Manager::prune($keep);
         if ($result['failed'] > 0) {
-            error_log(__('[Ragnus Static Publisher] Bazı eski export arşivleri silinemedi.', 'ragnus-static-publisher'));
+            error_log(__('[Ragnus Static Publisher] Some old export archives could not be deleted.', 'ragnus-static-publisher'));
         }
     }
 
@@ -494,7 +494,7 @@ final class Plugin
         ]);
 
         if (is_wp_error($response) || wp_remote_retrieve_response_code($response) >= 300) {
-            error_log(__('[Ragnus Static Publisher] Deployment webhook gönderilemedi.', 'ragnus-static-publisher'));
+            error_log(__('[Ragnus Static Publisher] Deployment webhook could not be sent.', 'ragnus-static-publisher'));
         }
     }
 
@@ -512,7 +512,7 @@ final class Plugin
             if (($assoc_args['format'] ?? '') === 'json') {
                 \WP_CLI::line((string) wp_json_encode(self::public_status(), JSON_UNESCAPED_SLASHES));
             } else {
-                \WP_CLI::success(sprintf(__('Export tamamlandı: %d URL', 'ragnus-static-publisher'), (int) ($status['url_count'] ?? 0)));
+                \WP_CLI::success(sprintf(__('Export completed: %d URL', 'ragnus-static-publisher'), (int) ($status['url_count'] ?? 0)));
             }
         });
     }

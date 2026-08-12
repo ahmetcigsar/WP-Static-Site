@@ -111,6 +111,12 @@ final class Static_Search
             'threshold' => (float) $this->settings['threshold'],
             'tokenMatch' => (string) $this->settings['token_match'],
             'keys' => $this->fuse_keys(),
+            'i18n' => [
+                'noResults' => __('No results matched your search.', 'ragnus-static-publisher'),
+                'resultsShown' => __('%d results shown.', 'ragnus-static-publisher'),
+                'minimumCharacters' => __('Enter at least %d characters to search.', 'ragnus-static-publisher'),
+                'loadError' => __('The search index could not be loaded. Please try again later.', 'ragnus-static-publisher'),
+            ],
         ];
         $page_path = trim((string) $this->settings['page_path'], '/');
 
@@ -237,6 +243,14 @@ final class Static_Search
 
     private function search_page(): string
     {
-        return '<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Arama</title><link rel="stylesheet" href="/ragnus-search-assets/ragnus-search.css"></head><body><main class="ragnus-search"><a class="ragnus-search__back" href="/">← Ana sayfa</a><h1>Site İçinde Ara</h1><form id="ragnus-search-form" role="search"><label for="ragnus-search-input">Arama</label><div class="ragnus-search__input"><input id="ragnus-search-input" type="search" name="q" autocomplete="off" placeholder="Aramak istediğiniz kelimeyi yazın…"><button type="submit">Ara</button></div></form><p id="ragnus-search-status" role="status" aria-live="polite"></p><div id="ragnus-search-results"></div></main><script type="module" src="/ragnus-search-assets/ragnus-search.js"></script></body></html>';
+        $language = str_replace('_', '-', (string) get_bloginfo('language')) ?: 'en-US';
+        return sprintf(
+            '<!doctype html><html lang="%1$s"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>%2$s</title><link rel="stylesheet" href="/ragnus-search-assets/ragnus-search.css"></head><body><main class="ragnus-search"><a class="ragnus-search__back" href="/">← %3$s</a><h1>%4$s</h1><form id="ragnus-search-form" role="search"><label for="ragnus-search-input">%2$s</label><div class="ragnus-search__input"><input id="ragnus-search-input" type="search" name="q" autocomplete="off" placeholder="%5$s"><button type="submit">%2$s</button></div></form><p id="ragnus-search-status" role="status" aria-live="polite"></p><div id="ragnus-search-results"></div></main><script type="module" src="/ragnus-search-assets/ragnus-search.js"></script></body></html>',
+            esc_attr($language),
+            esc_html__('Search', 'ragnus-static-publisher'),
+            esc_html__('Home', 'ragnus-static-publisher'),
+            esc_html__('Search This Site', 'ragnus-static-publisher'),
+            esc_attr__('Enter a search term...', 'ragnus-static-publisher')
+        );
     }
 }

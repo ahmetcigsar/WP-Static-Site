@@ -238,9 +238,10 @@ if ($language_script === ''
     || ! str_contains($english_home, 'https://static.example.com/tr/')) {
     throw new RuntimeException('Çoklu dil kökleri, tercih betiği veya hreflang işaretleri doğru export edilmedi.');
 }
-if ($search_page === '' || ! str_contains($search_page, 'Site İçinde Ara')
+if ($search_page === '' || ! str_contains($search_page, 'Search This Site')
     || ! is_array($search_index) || $search_index === []
     || ($search_config['tokenMatch'] ?? '') !== 'all'
+    || ($search_config['i18n']['noResults'] ?? '') !== 'No results matched your search.'
     || ! is_array($search_config['keys'] ?? null)
     || $search_script === '' || ! str_contains($search_script, 'new Fuse')
     || $fuse_script === '') {

@@ -70,19 +70,29 @@ final class Admin
     public static function sanitize(array $value): array
     {
         $current = Plugin::settings();
-        $submitted_token = sanitize_text_field((string) ($value['deployment_webhook_token'] ?? ''));
-        $sanitized = [
-            'target_url' => esc_url_raw(untrailingslashit((string) ($value['target_url'] ?? home_url()))),
-            'maximum_urls' => max(10, min(20000, absint($value['maximum_urls'] ?? 2000))),
-            'excluded_paths' => sanitize_textarea_field((string) ($value['excluded_paths'] ?? '')),
-            'auto_export' => isset($value['auto_export']) ? '1' : '0',
-            'archive_retention' => max(1, min(100, absint($value['archive_retention'] ?? 5))),
-            'deployment_webhook_url' => esc_url_raw((string) ($value['deployment_webhook_url'] ?? '')),
-            'deployment_webhook_token' => $submitted_token !== '' ? $submitted_token : (string) $current['deployment_webhook_token'],
-        ];
-        foreach (array_keys(Plugin::auto_export_trigger_defaults()) as $trigger) {
-            $sanitized[$trigger] = isset($value[$trigger]) ? '1' : '0';
+        $section = sanitize_key((string) ($value['_section'] ?? 'all'));
+        $sanitized = $current;
+
+        if (in_array($section, ['general', 'all'], true)) {
+            $sanitized['target_url'] = esc_url_raw(untrailingslashit((string) ($value['target_url'] ?? home_url())));
+            $sanitized['maximum_urls'] = max(10, min(20000, absint($value['maximum_urls'] ?? 2000)));
+            $sanitized['excluded_paths'] = sanitize_textarea_field((string) ($value['excluded_paths'] ?? ''));
+            $sanitized['archive_retention'] = max(1, min(100, absint($value['archive_retention'] ?? 5)));
         }
+
+        if (in_array($section, ['automation', 'all'], true)) {
+            $sanitized['auto_export'] = isset($value['auto_export']) ? '1' : '0';
+            foreach (array_keys(Plugin::auto_export_trigger_defaults()) as $trigger) {
+                $sanitized[$trigger] = isset($value[$trigger]) ? '1' : '0';
+            }
+        }
+
+        if (in_array($section, ['deploy', 'all'], true)) {
+            $submitted_token = sanitize_text_field((string) ($value['deployment_webhook_token'] ?? ''));
+            $sanitized['deployment_webhook_url'] = esc_url_raw((string) ($value['deployment_webhook_url'] ?? ''));
+            $sanitized['deployment_webhook_token'] = $submitted_token !== '' ? $submitted_token : (string) $current['deployment_webhook_token'];
+        }
+
         return $sanitized;
     }
 
@@ -348,9 +358,13 @@ final class Admin
             return;
         }
         $requested_tab = isset($_GET['tab']) ? sanitize_key(wp_unslash((string) $_GET['tab'])) : 'main';
+        $requested_settings_tab = isset($_GET['settings_tab']) ? sanitize_key(wp_unslash((string) $_GET['settings_tab'])) : 'general';
+        if ($requested_tab === 'deploy') {
+            $requested_tab = 'settings';
+            $requested_settings_tab = 'deploy';
+        }
         $tabs = [
             'main' => 'Main',
-            'deploy' => 'Deploy',
             'files' => 'Files',
             'activity' => 'Activity Log',
             'settings' => 'Settings',
@@ -380,14 +394,12 @@ final class Admin
             <main class="ragstat-tab-content">
             <?php if ($current_tab === 'main') : ?>
                 <?php self::render_main_tab($status, $archives); ?>
-            <?php elseif ($current_tab === 'deploy') : ?>
-                <?php self::render_deploy_tab($archives, Plugin::settings()); ?>
             <?php elseif ($current_tab === 'files') : ?>
                 <?php self::render_files_tab($archives); ?>
             <?php elseif ($current_tab === 'activity') : ?>
                 <?php self::render_activity_tab(); ?>
             <?php elseif ($current_tab === 'settings') : ?>
-                <?php self::render_settings_tab(Plugin::settings()); ?>
+                <?php self::render_settings_tab(Plugin::settings(), $archives, $requested_settings_tab); ?>
             <?php elseif ($current_tab === 'search') : ?>
                 <?php self::render_search_tab(Plugin::search_settings()); ?>
             <?php elseif ($current_tab === 'hide') : ?>
@@ -427,6 +439,11 @@ final class Admin
     {
         $url = admin_url('admin.php?page=ragnus-static-publisher');
         return $tab === 'main' ? $url : add_query_arg('tab', $tab, $url);
+    }
+
+    private static function settings_page_url(string $settings_tab): string
+    {
+        return add_query_arg('settings_tab', $settings_tab, self::admin_page_url('settings'));
     }
 
     private static function render_main_tab(array $status, array $archives): void
@@ -607,7 +624,7 @@ final class Admin
                     <span class="ragstat-deploy-status <?php echo $github_configured ? 'is-ready' : 'is-pending'; ?>">
                         <?php echo $github_configured ? 'Webhook ayarlı' : 'Yapılandırma gerekli'; ?>
                     </span>
-                    <a class="button button-primary" href="<?php echo esc_url(self::admin_page_url('settings') . '#ragstat-webhook'); ?>">GitHub Ayarları</a>
+                    <a class="button button-primary" href="<?php echo esc_url(self::settings_page_url('deploy') . '#ragstat-webhook'); ?>">GitHub Ayarları</a>
                 </div>
             </section>
 
@@ -700,7 +717,55 @@ final class Admin
         <?php
     }
 
-    private static function render_settings_tab(array $settings): void
+    private static function render_settings_tab(array $settings, array $archives, string $requested_settings_tab): void
+    {
+        $settings_tabs = [
+            'general' => 'Genel',
+            'automation' => 'Otomasyon',
+            'deploy' => 'Deploy',
+        ];
+        $current_settings_tab = isset($settings_tabs[$requested_settings_tab]) ? $requested_settings_tab : 'general';
+        ?>
+        <div class="ragstat-settings-header">
+            <h2>Settings</h2>
+            <p>Statik oluşturma, otomasyon ve yayınlama ayarlarını yönetin.</p>
+        </div>
+        <nav class="ragstat-settings-tabs" aria-label="Settings alt bölümleri">
+            <?php foreach ($settings_tabs as $settings_tab => $label) : ?>
+                <a class="ragstat-settings-tab <?php echo $current_settings_tab === $settings_tab ? 'is-active' : ''; ?>" href="<?php echo esc_url(self::settings_page_url($settings_tab)); ?>" <?php echo $current_settings_tab === $settings_tab ? 'aria-current="page"' : ''; ?>><?php echo esc_html($label); ?></a>
+            <?php endforeach; ?>
+        </nav>
+        <div class="ragstat-settings-panel">
+            <?php if ($current_settings_tab === 'general') : ?>
+                <?php self::render_general_settings($settings); ?>
+            <?php elseif ($current_settings_tab === 'automation') : ?>
+                <?php self::render_automation_settings($settings); ?>
+            <?php else : ?>
+                <?php self::render_deploy_tab($archives, $settings); ?>
+                <?php self::render_deploy_settings($settings); ?>
+            <?php endif; ?>
+        </div>
+        <?php
+    }
+
+    private static function render_general_settings(array $settings): void
+    {
+        ?>
+        <form class="ragstat-settings-form" method="post" action="options.php">
+            <?php settings_fields('ragnus_static'); ?>
+            <input type="hidden" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[_section]" value="general">
+            <table class="form-table" role="presentation">
+                <tr><th><label for="ragstat-target">Canlı Site Adresi</label></th><td><input class="regular-text" id="ragstat-target" type="url" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[target_url]" value="<?php echo esc_attr((string) $settings['target_url']); ?>"><p class="description">Örnek: https://example.com</p></td></tr>
+                <tr><th><label for="ragstat-limit">En Fazla URL</label></th><td><input id="ragstat-limit" type="number" min="10" max="20000" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[maximum_urls]" value="<?php echo esc_attr((string) $settings['maximum_urls']); ?>"></td></tr>
+                <tr><th><label for="ragstat-excluded">Hariç Tutulan Yollar</label></th><td><textarea class="large-text code" rows="7" id="ragstat-excluded" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[excluded_paths]"><?php echo esc_textarea((string) $settings['excluded_paths']); ?></textarea><p class="description">Satır başına bir yol öneki.</p></td></tr>
+                <tr><th><label for="ragstat-archive-retention">Saklanacak ZIP Sayısı</label></th><td><input id="ragstat-archive-retention" type="number" min="1" max="100" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[archive_retention]" value="<?php echo esc_attr((string) $settings['archive_retention']); ?>"><p class="description">En son kaç başarılı export arşivinin saklanacağını belirler. Varsayılan: 5.</p></td></tr>
+            </table>
+            <?php submit_button('Genel Ayarları Kaydet'); ?>
+        </form>
+        <?php
+    }
+
+    private static function render_automation_settings(array $settings): void
     {
         $auto_export_groups = [
             'İçerik' => [
@@ -720,9 +785,9 @@ final class Admin
             ],
         ];
         ?>
-        <h2>Ayarlar</h2>
-        <form class="ragstat-settings-form" method="post" action="options.php">
+        <form class="ragstat-settings-form ragstat-automation-form" method="post" action="options.php">
             <?php settings_fields('ragnus_static'); ?>
+            <input type="hidden" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[_section]" value="automation">
             <section class="ragstat-auto-export-card" aria-labelledby="ragstat-auto-export-title">
                 <div class="ragstat-auto-export-card__heading">
                     <span class="dashicons dashicons-update" aria-hidden="true"></span>
@@ -750,15 +815,23 @@ final class Admin
                 </div>
                 <p class="ragstat-auto-export-card__note"><span class="dashicons dashicons-clock" aria-hidden="true"></span>Arka arkaya yapılan değişiklikler 60 saniye boyunca birleştirilerek tek export ve deploy olarak çalıştırılır.</p>
             </section>
+            <?php submit_button('Otomasyon Ayarlarını Kaydet'); ?>
+        </form>
+        <?php
+    }
+
+    private static function render_deploy_settings(array $settings): void
+    {
+        ?>
+        <form class="ragstat-settings-form ragstat-deploy-settings-form" method="post" action="options.php">
+            <?php settings_fields('ragnus_static'); ?>
+            <input type="hidden" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[_section]" value="deploy">
+            <h3>GitHub Deployment Webhook</h3>
             <table class="form-table" role="presentation">
-                <tr><th><label for="ragstat-target">Canlı Site Adresi</label></th><td><input class="regular-text" id="ragstat-target" type="url" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[target_url]" value="<?php echo esc_attr((string) $settings['target_url']); ?>"><p class="description">Örnek: https://example.com</p></td></tr>
-                <tr><th><label for="ragstat-limit">En Fazla URL</label></th><td><input id="ragstat-limit" type="number" min="10" max="20000" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[maximum_urls]" value="<?php echo esc_attr((string) $settings['maximum_urls']); ?>"></td></tr>
-                <tr><th><label for="ragstat-excluded">Hariç Tutulan Yollar</label></th><td><textarea class="large-text code" rows="7" id="ragstat-excluded" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[excluded_paths]"><?php echo esc_textarea((string) $settings['excluded_paths']); ?></textarea><p class="description">Satır başına bir yol öneki.</p></td></tr>
-                <tr><th><label for="ragstat-archive-retention">Saklanacak ZIP Sayısı</label></th><td><input id="ragstat-archive-retention" type="number" min="1" max="100" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[archive_retention]" value="<?php echo esc_attr((string) $settings['archive_retention']); ?>"><p class="description">En son kaç başarılı export arşivinin saklanacağını belirler. Varsayılan: 5.</p></td></tr>
                 <tr><th><label for="ragstat-webhook">Deployment Webhook</label></th><td><input class="large-text code" id="ragstat-webhook" type="url" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[deployment_webhook_url]" value="<?php echo esc_attr((string) $settings['deployment_webhook_url']); ?>"><p class="description">GitHub için: https://api.github.com/repos/SAHIP/REPO/dispatches</p></td></tr>
                 <tr><th><label for="ragstat-webhook-token">Webhook Bearer Token</label></th><td><input class="regular-text" id="ragstat-webhook-token" type="password" autocomplete="new-password" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[deployment_webhook_token]" value="" placeholder="<?php echo $settings['deployment_webhook_token'] !== '' ? esc_attr('Kayıtlı tokenı korumak için boş bırakın') : ''; ?>"><p class="description">GitHub kullanılıyorsa yalnızca bu repository için Contents: write yetkili fine-grained token kullanın.</p></td></tr>
             </table>
-            <?php submit_button('Ayarları Kaydet'); ?>
+            <?php submit_button('Deploy Ayarlarını Kaydet'); ?>
         </form>
         <?php
     }

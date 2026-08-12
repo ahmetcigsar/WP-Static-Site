@@ -534,6 +534,78 @@
     background: var(--ragstat-surface);
 }
 
+.ragstat-settings-header {
+    margin-bottom: 18px;
+}
+
+.ragstat-settings-header h2 {
+    margin: 0 0 6px;
+    color: var(--ragstat-text);
+    font-size: 20px;
+}
+
+.ragstat-settings-header p {
+    margin: 0;
+    color: var(--ragstat-muted);
+}
+
+.ragstat-settings-tabs {
+    display: flex;
+    gap: 7px;
+    margin-bottom: 22px;
+    padding: 5px;
+    border: 1px solid var(--ragstat-border);
+    border-radius: 11px;
+    background: #e7edf5;
+}
+
+.ragstat-settings-tab {
+    display: inline-flex;
+    min-height: 38px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 18px;
+    border-radius: 7px;
+    color: #475569;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color .16s ease, background-color .16s ease, box-shadow .16s ease;
+}
+
+.ragstat-settings-tab:hover,
+.ragstat-settings-tab:focus {
+    color: var(--ragstat-primary-dark);
+    background: rgba(255, 255, 255, .72);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, .18);
+}
+
+.ragstat-settings-tab.is-active,
+.ragstat-settings-tab.is-active:hover,
+.ragstat-settings-tab.is-active:focus {
+    color: #fff;
+    background: var(--ragstat-primary);
+    box-shadow: 0 4px 10px rgba(37, 99, 235, .22);
+}
+
+.ragstat-settings-panel > .ragstat-deploy-header {
+    margin-top: 2px;
+}
+
+.ragstat-automation-form {
+    padding-top: 1px;
+}
+
+.ragstat-deploy-settings-form {
+    margin-top: 22px;
+}
+
+.ragstat-deploy-settings-form > h3 {
+    margin: 18px 0 4px;
+    color: var(--ragstat-text);
+    font-size: 17px;
+}
+
 .ragstat-settings-form .form-table th {
     color: #334155;
 }
@@ -1418,6 +1490,14 @@ body.ragstat-modal-open {
 
     .ragstat-settings-form {
         padding: 4px 16px 18px;
+    }
+
+    .ragstat-settings-tabs {
+        overflow-x: auto;
+    }
+
+    .ragstat-settings-tab {
+        flex: 1 0 auto;
     }
 
     .ragstat-auto-export-card__heading {

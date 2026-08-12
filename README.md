@@ -10,10 +10,10 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 - Cloudflare `_headers` ve `_redirects` üretimi
 - ZIP ve SHA-256 manifest üretimi
 - Sol ana menüde doküman ikonlu Static Publisher yönetim ekranı
-- Main, Files, Settings, Arama, Hide, Diagnostics, Activity Logs ve About sekmelerine ayrılmış yönetim görünümü
-- Settings altında Genel, Otomasyon, Diller ve Deploy alt sekmeleri
+- Main, Deploy, Files, Settings, Arama, Hide, Diagnostics, Activity Logs ve About sekmelerine ayrılmış yönetim görünümü
+- Settings altında Genel, Otomasyon ve Diller alt sekmeleri
 - WordPress yönetici/site dilini otomatik izleyen Türkçe, İngilizce, İspanyolca, Fransızca, Basitleştirilmiş Çince, Japonca, Arapça ve Portekizce arayüz paketleri
-- Settings > Deploy altında ZIP File, GitHub ve Cloudflare yayın seçenekleri
+- Deploy sekmesinin sol dikey menüsünde ZIP File, GitHub ve Cloudflare yayın seçenekleri
 - Yerel Fuse.js 7.3.0 paketiyle çalışan, alanları ve ağırlıkları yapılandırılabilen statik site araması
 - Hide sekmesinden WordPress yollarını yeniden adlandırma; sürüm, generator, XML-RPC, embed ve emoji izlerini statik çıktıdan temizleme
 - Main sekmesinde son başarılı static oluşturma zamanı ve yeşil ilerleme/tamamlanma göstergesi

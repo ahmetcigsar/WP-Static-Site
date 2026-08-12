@@ -277,17 +277,36 @@ foreach (['transition_post_status', 'created_term', 'wp_update_nav_menu', 'upgra
     }
 }
 
-$_GET['tab'] = 'deploy';
-ob_start();
-Ragnus\StaticPublisher\Admin::render();
-$deploy_html = (string) ob_get_clean();
-unset($_GET['tab']);
+foreach ([
+    'zip' => ['Open ZIP Files'],
+    'github' => ['GitHub Deployment Webhook', 'Save Deploy Settings'],
+    'cloudflare' => ['Cloudflare account required', 'Open Cloudflare'],
+] as $deploy_tab => $panel_expectations) {
+    $_GET = ['tab' => 'deploy', 'deploy_tab' => $deploy_tab];
+    ob_start();
+    Ragnus\StaticPublisher\Admin::render();
+    $deploy_html = (string) ob_get_clean();
 
-foreach (['Deploy', 'ZIP File', 'GitHub', 'Cloudflare', 'Open ZIP Files', 'GitHub Settings'] as $expected) {
-    if (! str_contains($deploy_html, $expected)) {
-        fwrite(STDERR, "Deploy sekmesinde beklenen içerik bulunamadı: {$expected}\n");
+    foreach (['ZIP File', 'GitHub', 'Cloudflare', 'ragstat-deploy-tabs', 'deploy_tab=' . $deploy_tab, ...$panel_expectations] as $expected) {
+        if (! str_contains($deploy_html, $expected)) {
+            fwrite(STDERR, "Deploy {$deploy_tab} sekmesinde beklenen içerik bulunamadı: {$expected}\n");
+            exit(1);
+        }
+    }
+    if (substr_count($deploy_html, 'ragstat-deploy-tab is-active') !== 1) {
+        fwrite(STDERR, "Deploy {$deploy_tab} ekranında tek bir etkin dikey sekme bulunamadı.\n");
         exit(1);
     }
+}
+
+$_GET = ['tab' => 'settings', 'settings_tab' => 'deploy'];
+ob_start();
+Ragnus\StaticPublisher\Admin::render();
+$legacy_deploy_html = (string) ob_get_clean();
+$_GET = [];
+if (! str_contains($legacy_deploy_html, 'GitHub Deployment Webhook') || ! str_contains($legacy_deploy_html, 'deploy_tab=github')) {
+    fwrite(STDERR, "Eski Settings > Deploy bağlantısı yeni üst sekmeye uyarlanmadı.\n");
+    exit(1);
 }
 
 Ragnus\StaticPublisher\Plugin::set_status('stalled-test', 'queued', 0, [

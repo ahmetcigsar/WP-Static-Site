@@ -407,10 +407,63 @@
     color: var(--ragstat-muted);
 }
 
-.ragstat-deploy-grid {
+.ragstat-deploy-layout {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 18px;
+    grid-template-columns: 210px minmax(0, 1fr);
+    gap: 22px;
+    align-items: start;
+}
+
+.ragstat-deploy-tabs {
+    display: flex;
+    position: sticky;
+    top: 46px;
+    flex-direction: column;
+    gap: 7px;
+    padding: 5px;
+    border: 1px solid var(--ragstat-border);
+    border-radius: 11px;
+    background: #e7edf5;
+}
+
+.ragstat-deploy-tab {
+    display: inline-flex;
+    min-height: 42px;
+    gap: 10px;
+    align-items: center;
+    padding: 0 14px;
+    border-radius: 7px;
+    color: #475569;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color .16s ease, background-color .16s ease, box-shadow .16s ease;
+}
+
+.ragstat-deploy-tab .dashicons {
+    width: 19px;
+    height: 19px;
+    font-size: 19px;
+    line-height: 19px;
+}
+
+.ragstat-deploy-tab:hover,
+.ragstat-deploy-tab:focus {
+    color: var(--ragstat-primary-dark);
+    background: rgba(255, 255, 255, .72);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, .18);
+}
+
+.ragstat-deploy-tab.is-active,
+.ragstat-deploy-tab.is-active:hover,
+.ragstat-deploy-tab.is-active:focus {
+    color: #fff;
+    background: var(--ragstat-primary);
+    box-shadow: 0 4px 10px rgba(37, 99, 235, .22);
+}
+
+.ragstat-deploy-panel {
+    min-width: 0;
 }
 
 .ragstat-deploy-card {
@@ -607,6 +660,7 @@
 
 .ragstat-deploy-settings-form {
     margin-top: 22px;
+    max-width: none;
 }
 
 .ragstat-deploy-settings-form > h3 {
@@ -1646,12 +1700,23 @@ body.ragstat-modal-open {
         width: 100%;
     }
 
-    .ragstat-deploy-grid {
+    .ragstat-deploy-layout {
         grid-template-columns: 1fr;
+        gap: 18px;
     }
 
     .ragstat-deploy-card {
         min-height: 0;
+    }
+
+    .ragstat-deploy-tabs {
+        overflow-x: auto;
+        position: static;
+        flex-direction: row;
+    }
+
+    .ragstat-deploy-tab {
+        min-width: max-content;
     }
 
     .ragstat-settings-form {

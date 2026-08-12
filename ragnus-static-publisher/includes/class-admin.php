@@ -375,12 +375,14 @@ final class Admin
         }
         $requested_tab = isset($_GET['tab']) ? sanitize_key(wp_unslash((string) $_GET['tab'])) : 'main';
         $requested_settings_tab = isset($_GET['settings_tab']) ? sanitize_key(wp_unslash((string) $_GET['settings_tab'])) : 'general';
-        if ($requested_tab === 'deploy') {
-            $requested_tab = 'settings';
-            $requested_settings_tab = 'deploy';
+        $requested_deploy_tab = isset($_GET['deploy_tab']) ? sanitize_key(wp_unslash((string) $_GET['deploy_tab'])) : 'zip';
+        if ($requested_tab === 'settings' && $requested_settings_tab === 'deploy') {
+            $requested_tab = 'deploy';
+            $requested_deploy_tab = 'github';
         }
         $tabs = [
             'main' => __('Main', 'ragnus-static-publisher'),
+            'deploy' => __('Deploy', 'ragnus-static-publisher'),
             'files' => __('Files', 'ragnus-static-publisher'),
             'settings' => __('Settings', 'ragnus-static-publisher'),
             'search' => __('Search', 'ragnus-static-publisher'),
@@ -410,12 +412,14 @@ final class Admin
             <main class="ragstat-tab-content">
             <?php if ($current_tab === 'main') : ?>
                 <?php self::render_main_tab($status, $archives); ?>
+            <?php elseif ($current_tab === 'deploy') : ?>
+                <?php self::render_deploy_tab($archives, Plugin::settings(), $requested_deploy_tab); ?>
             <?php elseif ($current_tab === 'files') : ?>
                 <?php self::render_files_tab($archives); ?>
             <?php elseif ($current_tab === 'activity') : ?>
                 <?php self::render_activity_tab(); ?>
             <?php elseif ($current_tab === 'settings') : ?>
-                <?php self::render_settings_tab(Plugin::settings(), $archives, $requested_settings_tab); ?>
+                <?php self::render_settings_tab(Plugin::settings(), $requested_settings_tab); ?>
             <?php elseif ($current_tab === 'search') : ?>
                 <?php self::render_search_tab(Plugin::search_settings()); ?>
             <?php elseif ($current_tab === 'hide') : ?>
@@ -460,6 +464,11 @@ final class Admin
     private static function settings_page_url(string $settings_tab): string
     {
         return add_query_arg('settings_tab', $settings_tab, self::admin_page_url('settings'));
+    }
+
+    private static function deploy_page_url(string $deploy_tab): string
+    {
+        return add_query_arg('deploy_tab', $deploy_tab, self::admin_page_url('deploy'));
     }
 
     private static function render_main_tab(array $status, array $archives): void
@@ -604,10 +613,16 @@ final class Admin
         <?php
     }
 
-    private static function render_deploy_tab(array $archives, array $settings): void
+    private static function render_deploy_tab(array $archives, array $settings, string $requested_deploy_tab): void
     {
         $has_archive = $archives !== [];
         $github_configured = (string) ($settings['deployment_webhook_url'] ?? '') !== '';
+        $deploy_tabs = [
+            'zip' => [__('ZIP File', 'ragnus-static-publisher'), 'dashicons-media-archive'],
+            'github' => [__('GitHub', 'ragnus-static-publisher'), 'dashicons-randomize'],
+            'cloudflare' => [__('Cloudflare', 'ragnus-static-publisher'), 'dashicons-cloud'],
+        ];
+        $current_deploy_tab = isset($deploy_tabs[$requested_deploy_tab]) ? $requested_deploy_tab : 'zip';
         ?>
         <div class="ragstat-deploy-header">
             <div>
@@ -615,46 +630,54 @@ final class Admin
                 <p><?php esc_html_e('Choose the method you\'ll use to publish your static site.', 'ragnus-static-publisher'); ?></p>
             </div>
         </div>
-        <div class="ragstat-deploy-grid">
-            <section class="ragstat-deploy-card" aria-labelledby="ragstat-deploy-zip-title">
-                <span class="ragstat-deploy-card__icon dashicons dashicons-media-archive" aria-hidden="true"></span>
-                <div class="ragstat-deploy-card__content">
-                    <h3 id="ragstat-deploy-zip-title"><?php esc_html_e('ZIP File', 'ragnus-static-publisher'); ?></h3>
-                    <p><?php esc_html_e('Download the created static site package and manually install it on the desired server.', 'ragnus-static-publisher'); ?></p>
-                </div>
-                <div class="ragstat-deploy-card__footer">
-                    <span class="ragstat-deploy-status <?php echo $has_archive ? 'is-ready' : 'is-pending'; ?>">
-                        <?php echo $has_archive ? __('ZIP ready', 'ragnus-static-publisher') : __('Create static site first', 'ragnus-static-publisher'); ?>
-                    </span>
-                    <a class="button button-primary" href="<?php echo esc_url(self::admin_page_url('files')); ?>"><?php esc_html_e('Open ZIP Files', 'ragnus-static-publisher'); ?></a>
-                </div>
-            </section>
-
-            <section class="ragstat-deploy-card" aria-labelledby="ragstat-deploy-github-title">
-                <span class="ragstat-deploy-card__icon dashicons dashicons-randomize" aria-hidden="true"></span>
-                <div class="ragstat-deploy-card__content">
-                    <h3 id="ragstat-deploy-github-title"><?php esc_html_e('GitHub', 'ragnus-static-publisher'); ?></h3>
-                    <p><?php esc_html_e('Automatically trigger the GitHub Actions flow via webhook when the export is complete.', 'ragnus-static-publisher'); ?></p>
-                </div>
-                <div class="ragstat-deploy-card__footer">
-                    <span class="ragstat-deploy-status <?php echo $github_configured ? 'is-ready' : 'is-pending'; ?>">
-                        <?php echo $github_configured ? __('Webhook configured', 'ragnus-static-publisher') : __('Configuration required', 'ragnus-static-publisher'); ?>
-                    </span>
-                    <a class="button button-primary" href="<?php echo esc_url(self::settings_page_url('deploy') . '#ragstat-webhook'); ?>"><?php esc_html_e('GitHub Settings', 'ragnus-static-publisher'); ?></a>
-                </div>
-            </section>
-
-            <section class="ragstat-deploy-card" aria-labelledby="ragstat-deploy-cloudflare-title">
-                <span class="ragstat-deploy-card__icon dashicons dashicons-cloud" aria-hidden="true"></span>
-                <div class="ragstat-deploy-card__content">
-                    <h3 id="ragstat-deploy-cloudflare-title"><?php esc_html_e('Cloudflare', 'ragnus-static-publisher'); ?></h3>
-                    <p><?php esc_html_e('Publish static files to Cloudflare Workers Static Assets with a GitHub Actions workflow.', 'ragnus-static-publisher'); ?></p>
-                </div>
-                <div class="ragstat-deploy-card__footer">
-                    <span class="ragstat-deploy-status is-info"><?php esc_html_e('Cloudflare account required', 'ragnus-static-publisher'); ?></span>
-                    <a class="button button-primary" href="<?php echo esc_url('https://dash.cloudflare.com/'); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Open Cloudflare', 'ragnus-static-publisher'); ?><span class="dashicons dashicons-external" aria-hidden="true"></span></a>
-                </div>
-            </section>
+        <div class="ragstat-deploy-layout">
+            <nav class="ragstat-deploy-tabs" aria-label="<?php echo esc_attr__('Deploy', 'ragnus-static-publisher'); ?>">
+                <?php foreach ($deploy_tabs as $deploy_tab => [$label, $icon]) : ?>
+                    <a class="ragstat-deploy-tab <?php echo $current_deploy_tab === $deploy_tab ? 'is-active' : ''; ?>" href="<?php echo esc_url(self::deploy_page_url($deploy_tab)); ?>" <?php echo $current_deploy_tab === $deploy_tab ? 'aria-current="page"' : ''; ?>>
+                        <span class="dashicons <?php echo esc_attr($icon); ?>" aria-hidden="true"></span>
+                        <span><?php echo esc_html($label); ?></span>
+                    </a>
+                <?php endforeach; ?>
+            </nav>
+            <div class="ragstat-deploy-panel">
+                <?php if ($current_deploy_tab === 'zip') : ?>
+                    <section class="ragstat-deploy-card" aria-labelledby="ragstat-deploy-zip-title">
+                        <span class="ragstat-deploy-card__icon dashicons dashicons-media-archive" aria-hidden="true"></span>
+                        <div class="ragstat-deploy-card__content">
+                            <h3 id="ragstat-deploy-zip-title"><?php esc_html_e('ZIP File', 'ragnus-static-publisher'); ?></h3>
+                            <p><?php esc_html_e('Download the created static site package and manually install it on the desired server.', 'ragnus-static-publisher'); ?></p>
+                        </div>
+                        <div class="ragstat-deploy-card__footer">
+                            <span class="ragstat-deploy-status <?php echo $has_archive ? 'is-ready' : 'is-pending'; ?>"><?php echo $has_archive ? __('ZIP ready', 'ragnus-static-publisher') : __('Create static site first', 'ragnus-static-publisher'); ?></span>
+                            <a class="button button-primary" href="<?php echo esc_url(self::admin_page_url('files')); ?>"><?php esc_html_e('Open ZIP Files', 'ragnus-static-publisher'); ?></a>
+                        </div>
+                    </section>
+                <?php elseif ($current_deploy_tab === 'github') : ?>
+                    <section class="ragstat-deploy-card" aria-labelledby="ragstat-deploy-github-title">
+                        <span class="ragstat-deploy-card__icon dashicons dashicons-randomize" aria-hidden="true"></span>
+                        <div class="ragstat-deploy-card__content">
+                            <h3 id="ragstat-deploy-github-title"><?php esc_html_e('GitHub', 'ragnus-static-publisher'); ?></h3>
+                            <p><?php esc_html_e('Automatically trigger the GitHub Actions flow via webhook when the export is complete.', 'ragnus-static-publisher'); ?></p>
+                        </div>
+                        <div class="ragstat-deploy-card__footer">
+                            <span class="ragstat-deploy-status <?php echo $github_configured ? 'is-ready' : 'is-pending'; ?>"><?php echo $github_configured ? __('Webhook configured', 'ragnus-static-publisher') : __('Configuration required', 'ragnus-static-publisher'); ?></span>
+                        </div>
+                    </section>
+                    <?php self::render_deploy_settings($settings); ?>
+                <?php else : ?>
+                    <section class="ragstat-deploy-card" aria-labelledby="ragstat-deploy-cloudflare-title">
+                        <span class="ragstat-deploy-card__icon dashicons dashicons-cloud" aria-hidden="true"></span>
+                        <div class="ragstat-deploy-card__content">
+                            <h3 id="ragstat-deploy-cloudflare-title"><?php esc_html_e('Cloudflare', 'ragnus-static-publisher'); ?></h3>
+                            <p><?php esc_html_e('Publish static files to Cloudflare Workers Static Assets with a GitHub Actions workflow.', 'ragnus-static-publisher'); ?></p>
+                        </div>
+                        <div class="ragstat-deploy-card__footer">
+                            <span class="ragstat-deploy-status is-info"><?php esc_html_e('Cloudflare account required', 'ragnus-static-publisher'); ?></span>
+                            <a class="button button-primary" href="<?php echo esc_url('https://dash.cloudflare.com/'); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Open Cloudflare', 'ragnus-static-publisher'); ?><span class="dashicons dashicons-external" aria-hidden="true"></span></a>
+                        </div>
+                    </section>
+                <?php endif; ?>
+            </div>
         </div>
         <?php
     }
@@ -733,13 +756,12 @@ final class Admin
         <?php
     }
 
-    private static function render_settings_tab(array $settings, array $archives, string $requested_settings_tab): void
+    private static function render_settings_tab(array $settings, string $requested_settings_tab): void
     {
         $settings_tabs = [
             'general' => __('General', 'ragnus-static-publisher'),
             'automation' => __('Automation', 'ragnus-static-publisher'),
             'languages' => __('Languages', 'ragnus-static-publisher'),
-            'deploy' => __('Deploy', 'ragnus-static-publisher'),
         ];
         $current_settings_tab = isset($settings_tabs[$requested_settings_tab]) ? $requested_settings_tab : 'general';
         ?>
@@ -758,11 +780,8 @@ final class Admin
                     <?php self::render_general_settings($settings); ?>
                 <?php elseif ($current_settings_tab === 'automation') : ?>
                     <?php self::render_automation_settings($settings); ?>
-                <?php elseif ($current_settings_tab === 'languages') : ?>
-                    <?php self::render_language_settings(Plugin::language_settings()); ?>
                 <?php else : ?>
-                    <?php self::render_deploy_tab($archives, $settings); ?>
-                    <?php self::render_deploy_settings($settings); ?>
+                    <?php self::render_language_settings(Plugin::language_settings()); ?>
                 <?php endif; ?>
             </div>
         </div>

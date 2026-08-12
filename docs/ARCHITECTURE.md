@@ -5,7 +5,7 @@
 - WordPress içerik kaynağı ve export motorudur.
 - Cloudflare kimlik bilgileri yalnızca CI secrets içinde tutulur.
 - REST uçları WordPress Application Password ve eklentiye ait `ragnus_static_export` yetkisi ister.
-- Her deployment tam ve atomik bir statik snapshot'tır.
+- Cloudflare CI deployment'ı tam ve atomik bir statik snapshot'tır; SFTP akışı dosyaları doğrudan hedef dizine yükler.
 - Form, arama, yorum, üyelik ve e-ticaret bu MVP'nin kapsamında değildir.
 
 ## Akış
@@ -17,6 +17,16 @@
 5. Snapshot, `_headers`, `_redirects`, dil yönlendirme yapılandırması, manifest ve ZIP oluşturulur.
 6. Export tamamlanınca isteğe bağlı GitHub `repository_dispatch` webhook'u CI akışını tetikler.
 7. CI ZIP'i indirir, doğrular ve Wrangler ile `wp-statik-deneme` Workers Static Assets deployment'ına yükler.
+8. SFTP otomatik yükleme açıksa aynı başarılı build dizinindeki statik dosyalar uzak hedefe aktarılır; bu durum ve hatalar ZIP exportundan ayrı kaydedilir.
+
+## SFTP akışı
+
+- SFTP, paketlenmiş phpseclib 3 istemcisi ve parola kimlik doğrulamasıyla çalışır; phpseclib yüklenemezse SFTP destekli PHP cURL yedek taşıyıcı olarak kullanılabilir.
+- Sunucu, port, kullanıcı, uzak dizin, zaman aşımı ve isteğe bağlı MD5 host fingerprint Deploy > SFTP altında tutulur.
+- Parola Sodium `secretbox` veya OpenSSL AES-256-GCM ile, WordPress `AUTH_KEY` türevi bir anahtar kullanılarak şifrelenir; parola hiçbir admin yanıtına veya filtre verisine eklenmez.
+- Bağlantı testi hedef dizine giriş ve listeleme yetkisini doğrular. Parmak izi girilmişse cURL bağlantı sırasında sunucu anahtarını doğrular.
+- Manuel işlem son başarılı build'i yükler. Otomatik seçenek her başarılı export sonrasında aynı işlemi çalıştırır.
+- Uzak dizinde aynı yolların üzerine yazılır ve eksik alt dizinler oluşturulur. İlgisiz ya da artık exportta bulunmayan uzak dosyalar güvenlik nedeniyle otomatik silinmez.
 
 ## Çoklu dil akışı
 
@@ -36,6 +46,8 @@
 - `WP_APP_PASSWORD` ve Cloudflare token aynı sistem dışında paylaşılmamalıdır.
 - Cloudflare token sadece hedef Pages projesini düzenleyebilecek kapsamda olmalıdır.
 - Otomatik GitHub `repository_dispatch` tetiklemesinde WordPress'te tutulan fine-grained token yalnızca ilgili repository için `Contents: write` yetkisine sahip olmalıdır.
+- SFTP hesabı yalnızca hedef statik dizinde yazma yetkisine sahip olmalı; kabuk, WordPress dizini veya daha geniş sunucu erişimi verilmemelidir.
+- SFTP host fingerprint hosting sağlayıcısından ayrı bir kanalla doğrulanmalıdır. Parmak izi olmadan bağlantı şifrelidir ancak sunucu kimliği sabitlenmez.
 
 ## Bilinen MVP sınırlamaları
 
@@ -46,6 +58,8 @@
 - Çoklu dilde çeviri içeriklerini ve karşılıklı `hreflang` etiketlerini üretmek WordPress çoklu dil eklentisinin sorumluluğundadır.
 - Eklenti Apache/IIS için storage klasörüne erişim engeli yazar. Nginx'te ayrıca `wp-content/uploads/ragnus-static` yolu engellenmelidir; artifact yalnızca kimlik doğrulamalı REST üzerinden indirilir.
 - Origin Cloudflare Access veya HTTP Basic arkasındaysa siteye özel bir MU-plugin ile `ragnus_static_request_args` filtresinden gerekli servis başlıkları eklenmelidir.
+- SFTP deployment parola tabanlıdır; özel anahtar kimlik doğrulaması bu sürümün kapsamında değildir.
+- SFTP doğrudan yükleme atomik değildir ve uzak hedeften eski dosyaları temizlemez.
 
 Örnek Access filtresi:
 

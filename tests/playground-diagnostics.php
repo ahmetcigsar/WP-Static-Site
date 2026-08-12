@@ -33,12 +33,12 @@ $groups = Ragnus\StaticPublisher\Diagnostics::checks($response, $grants, []);
 if (array_keys($groups) !== ['Server', 'WordPress', 'Plugins', 'File System', 'MySQL']) {
     throw new RuntimeException('Diagnostics grupları beklenen sırada değil.');
 }
-if (count($groups['Server']) !== 5
+if (count($groups['Server']) !== 6
     || count($groups['WordPress']) !== 4
     || count($groups['Plugins']) !== 1
     || count($groups['File System']) !== 2
     || count($groups['MySQL']) !== 6) {
-    throw new RuntimeException('Diagnostics beklenen on sekiz kontrolü içermiyor.');
+    throw new RuntimeException('Diagnostics beklenen on dokuz kontrolü içermiyor.');
 }
 
 $checks = [];
@@ -51,7 +51,7 @@ foreach ($groups as $group_checks) {
     }
 }
 
-foreach (['php-version', 'basic-auth', 'php-xml', 'curl', 'docker-site-url', 'permalinks', 'indexable', 'caching', 'wp-cron', 'incompatible-plugins', 'temp-directory-readable', 'temp-directory-writable', 'mysql-delete', 'mysql-insert', 'mysql-select', 'mysql-create', 'mysql-alter', 'mysql-drop'] as $expected_id) {
+foreach (['php-version', 'basic-auth', 'php-xml', 'curl', 'sftp-client', 'docker-site-url', 'permalinks', 'indexable', 'caching', 'wp-cron', 'incompatible-plugins', 'temp-directory-readable', 'temp-directory-writable', 'mysql-delete', 'mysql-insert', 'mysql-select', 'mysql-create', 'mysql-alter', 'mysql-drop'] as $expected_id) {
     if (! isset($checks[$expected_id])) {
         throw new RuntimeException('Diagnostics kontrolü eksik: ' . $expected_id);
     }

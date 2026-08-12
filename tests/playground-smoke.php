@@ -37,6 +37,12 @@ if (($settings['archive_retention'] ?? null) !== 5) {
     fwrite(STDERR, "Varsayılan ZIP saklama sayısı 5 değil.\n");
     exit(1);
 }
+foreach (['sftp_host', 'sftp_username', 'sftp_password', 'sftp_remote_path', 'sftp_auto_deploy'] as $sftp_setting) {
+    if (! array_key_exists($sftp_setting, $settings)) {
+        fwrite(STDERR, "Varsayılan SFTP ayarı eksik: {$sftp_setting}\n");
+        exit(1);
+    }
+}
 $language_defaults = Ragnus\StaticPublisher\Plugin::language_settings();
 if (($language_defaults['enabled'] ?? '') !== '0'
     || ($language_defaults['default_language'] ?? '') !== 'tr') {
@@ -95,6 +101,93 @@ if (($sanitized_settings['auto_export'] ?? '') !== '1'
     fwrite(STDERR, "Otomatik export tetikleyicileri doğru temizlenmedi.\n");
     exit(1);
 }
+
+$sftp_password = 'SFTP smoke secret!';
+if (! class_exists('phpseclib3\\Net\\SFTP')) {
+    fwrite(STDERR, "Paketlenmiş phpseclib SFTP istemcisi yüklenemedi.\n");
+    exit(1);
+}
+$sanitized_sftp = Ragnus\StaticPublisher\Admin::sanitize([
+    '_section' => 'sftp',
+    'sftp_auto_deploy' => '1',
+    'sftp_host' => 'sftp://Files.Example.com/upload',
+    'sftp_port' => 2222,
+    'sftp_username' => 'deploy-user',
+    'sftp_password' => $sftp_password,
+    'sftp_remote_path' => '/var/www/static',
+    'sftp_host_fingerprint' => '01:23:45:67:89:ab:cd:ef:01:23:45:67:89:ab:cd:ef',
+    'sftp_timeout' => 90,
+]);
+if (($sanitized_sftp['sftp_auto_deploy'] ?? '') !== '1'
+    || ($sanitized_sftp['sftp_host'] ?? '') !== 'files.example.com'
+    || ($sanitized_sftp['sftp_port'] ?? 0) !== 2222
+    || ($sanitized_sftp['sftp_remote_path'] ?? '') !== '/var/www/static'
+    || ($sanitized_sftp['sftp_host_fingerprint'] ?? '') !== '0123456789abcdef0123456789abcdef'
+    || ($sanitized_sftp['sftp_password'] ?? '') === $sftp_password
+    || Ragnus\StaticPublisher\Secret_Store::decrypt((string) $sanitized_sftp['sftp_password']) !== $sftp_password) {
+    fwrite(STDERR, "SFTP ayarları veya şifreli parola saklama doğru çalışmıyor.\n");
+    exit(1);
+}
+if (Ragnus\StaticPublisher\SFTP_Deployer::sanitize_remote_path('/var/../secret') !== '') {
+    fwrite(STDERR, "Güvensiz SFTP uzak yolu reddedilmedi.\n");
+    exit(1);
+}
+$incomplete_sftp = Ragnus\StaticPublisher\Admin::sanitize([
+    '_section' => 'sftp',
+    'sftp_auto_deploy' => '1',
+    'sftp_host' => 'files.example.com',
+    'sftp_remote_path' => '/public_html',
+]);
+if (($incomplete_sftp['sftp_auto_deploy'] ?? '') !== '0') {
+    fwrite(STDERR, "Eksik SFTP bilgileriyle otomatik yükleme etkin kaldı.\n");
+    exit(1);
+}
+
+$sftp_job_id = 'sftp-smoke-test';
+$sftp_build_directory = Ragnus\StaticPublisher\Plugin::storage_directory() . '/builds/' . $sftp_job_id;
+wp_mkdir_p($sftp_build_directory . '/assets');
+file_put_contents($sftp_build_directory . '/index.html', '<h1>SFTP</h1>');
+file_put_contents($sftp_build_directory . '/assets/app.css', 'body{}');
+$sftp_deploy_calls = 0;
+add_filter('ragnus_static_sftp_available', '__return_true');
+add_filter('ragnus_static_sftp_test_result', static fn (): array => ['success' => true]);
+add_filter('ragnus_static_sftp_deploy_result', static function ($result, $directory, $public_settings, $job_id, $files) use (&$sftp_deploy_calls, $sftp_build_directory, $sftp_job_id): array {
+    ++$sftp_deploy_calls;
+    if ($directory !== $sftp_build_directory
+        || $job_id !== $sftp_job_id
+        || isset($public_settings['sftp_password'])
+        || $files !== ['assets/app.css', 'index.html']) {
+        return ['success' => false, 'message' => 'SFTP test aktarım kapsamı hatalı.'];
+    }
+    return ['success' => true, 'file_count' => count($files)];
+}, 10, 5);
+$sftp_connection_result = Ragnus\StaticPublisher\SFTP_Deployer::test_connection($sanitized_sftp);
+if (empty($sftp_connection_result['success'])
+    || (Ragnus\StaticPublisher\SFTP_Deployer::status()['state'] ?? '') !== 'connected') {
+    fwrite(STDERR, "SFTP bağlantı testi sonucu kaydedilmedi.\n");
+    exit(1);
+}
+$sftp_result = Ragnus\StaticPublisher\SFTP_Deployer::deploy_job($sftp_job_id, $sanitized_sftp);
+if (($sftp_result['file_count'] ?? 0) !== 2
+    || (Ragnus\StaticPublisher\SFTP_Deployer::status()['state'] ?? '') !== 'completed') {
+    fwrite(STDERR, "SFTP statik dosya aktarımı ve durum kaydı doğrulanamadı.\n");
+    exit(1);
+}
+update_option(Ragnus\StaticPublisher\Plugin::SETTINGS_KEY, $sanitized_sftp);
+delete_option(Ragnus\StaticPublisher\Plugin::DIRTY_KEY);
+Ragnus\StaticPublisher\Plugin::handle_completed_export($sftp_job_id, '', []);
+if ($sftp_deploy_calls !== 2) {
+    fwrite(STDERR, "Başarılı export sonrası otomatik SFTP aktarımı tetiklenmedi.\n");
+    exit(1);
+}
+remove_all_filters('ragnus_static_sftp_deploy_result');
+remove_all_filters('ragnus_static_sftp_test_result');
+remove_all_filters('ragnus_static_sftp_available');
+unlink($sftp_build_directory . '/assets/app.css');
+unlink($sftp_build_directory . '/index.html');
+rmdir($sftp_build_directory . '/assets');
+rmdir($sftp_build_directory);
+update_option(Ragnus\StaticPublisher\Plugin::SETTINGS_KEY, $settings);
 $automatic_settings = array_merge(
     $settings,
     array_fill_keys(array_keys(Ragnus\StaticPublisher\Plugin::auto_export_trigger_defaults()), '0'),
@@ -193,6 +286,12 @@ if (! has_action('wp_ajax_ragnus_static_run_pending', [Ragnus\StaticPublisher\Ad
     fwrite(STDERR, "Bekleyen export için yönetim ekranı çalıştırıcısı kayıtlı değil.\n");
     exit(1);
 }
+foreach (['admin_post_ragnus_static_sftp_test' => 'test_sftp_connection', 'admin_post_ragnus_static_sftp_deploy' => 'deploy_latest_with_sftp'] as $hook => $method) {
+    if (! has_action($hook, [Ragnus\StaticPublisher\Admin::class, $method])) {
+        fwrite(STDERR, "SFTP yönetim işlemi kaydı bulunamadı: {$hook}\n");
+        exit(1);
+    }
+}
 
 wp_set_current_user(1);
 $_GET['tab'] = 'about';
@@ -281,13 +380,14 @@ foreach ([
     'zip' => ['Open ZIP Files'],
     'github' => ['GitHub Deployment Webhook', 'Save Deploy Settings'],
     'cloudflare' => ['Cloudflare account required', 'Open Cloudflare'],
+    'sftp' => ['SFTP Connection', 'Save SFTP Settings', 'Test Connection', 'Upload Latest Static Site'],
 ] as $deploy_tab => $panel_expectations) {
     $_GET = ['tab' => 'deploy', 'deploy_tab' => $deploy_tab];
     ob_start();
     Ragnus\StaticPublisher\Admin::render();
     $deploy_html = (string) ob_get_clean();
 
-    foreach (['ZIP File', 'GitHub', 'Cloudflare', 'ragstat-deploy-tabs', 'deploy_tab=' . $deploy_tab, ...$panel_expectations] as $expected) {
+    foreach (['ZIP File', 'GitHub', 'Cloudflare', 'SFTP', 'ragstat-deploy-tabs', 'deploy_tab=' . $deploy_tab, ...$panel_expectations] as $expected) {
         if (! str_contains($deploy_html, $expected)) {
             fwrite(STDERR, "Deploy {$deploy_tab} sekmesinde beklenen içerik bulunamadı: {$expected}\n");
             exit(1);
@@ -295,6 +395,14 @@ foreach ([
     }
     if (substr_count($deploy_html, 'ragstat-deploy-tab is-active') !== 1) {
         fwrite(STDERR, "Deploy {$deploy_tab} ekranında tek bir etkin dikey sekme bulunamadı.\n");
+        exit(1);
+    }
+    if ($deploy_tab === 'github' && substr_count($deploy_html, 'data-ragstat-github-icon') < 2) {
+        fwrite(STDERR, "GitHub sekmesi ve içerik panelinde GitHub ikonu bulunamadı.\n");
+        exit(1);
+    }
+    if ($deploy_tab === 'cloudflare' && (substr_count($deploy_html, 'data-ragstat-cloudflare-icon') < 2 || substr_count($deploy_html, 'fill="currentColor"') < 4)) {
+        fwrite(STDERR, "Cloudflare sekmesi ve içerik panelinde tek renk Cloudflare SVG ikonu bulunamadı.\n");
         exit(1);
     }
 }

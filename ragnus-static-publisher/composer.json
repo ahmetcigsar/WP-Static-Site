@@ -1,0 +1,15 @@
+{
+    "name": "ragnus/static-publisher",
+    "description": "Static export and deployment tooling for WordPress.",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "require": {
+        "php": ">=8.1",
+        "phpseclib/phpseclib": "^3.0"
+    },
+    "config": {
+        "allow-plugins": false,
+        "optimize-autoloader": true,
+        "sort-packages": true
+    }
+}

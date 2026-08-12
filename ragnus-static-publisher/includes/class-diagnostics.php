@@ -54,6 +54,7 @@ final class Diagnostics
         $php_supported = version_compare(PHP_VERSION, '8.1', '>=');
         $xml_available = extension_loaded('libxml') && class_exists('DOMDocument');
         $curl_available = extension_loaded('curl') && function_exists('curl_init');
+        $sftp_available = SFTP_Deployer::available();
         $permalinks_enabled = (string) get_option('permalink_structure', '') !== '';
         $indexable = (string) get_option('blog_public', '1') === '1';
         $cache_disabled = ! (defined('WP_CACHE') && WP_CACHE);
@@ -105,6 +106,14 @@ final class Diagnostics
                     'label' => __('cURL', 'ragnus-static-publisher'),
                     'passed' => $curl_available,
                     'message' => $curl_available ? __('cURL can be used.', 'ragnus-static-publisher') : __('cURL unavailable; Enable the PHP cURL extension.', 'ragnus-static-publisher'),
+                ],
+                [
+                    'id' => 'sftp-client',
+                    'label' => __('SFTP Client', 'ragnus-static-publisher'),
+                    'passed' => $sftp_available,
+                    'message' => $sftp_available
+                        ? __('The bundled SFTP client is available.', 'ragnus-static-publisher')
+                        : __('No SFTP client is available. Reinstall the complete plugin package to use SFTP deploy.', 'ragnus-static-publisher'),
                 ],
                 [
                     'id' => 'docker-site-url',

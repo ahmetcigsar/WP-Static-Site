@@ -13,7 +13,8 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 - Main, Deploy, Files, Settings, Arama, Hide, Diagnostics, Activity Logs ve About sekmelerine ayrılmış yönetim görünümü
 - Settings altında Genel, Otomasyon ve Diller alt sekmeleri
 - WordPress yönetici/site dilini otomatik izleyen Türkçe, İngilizce, İspanyolca, Fransızca, Basitleştirilmiş Çince, Japonca, Arapça ve Portekizce arayüz paketleri
-- Deploy sekmesinin sol dikey menüsünde ZIP File, GitHub ve Cloudflare yayın seçenekleri
+- Deploy sekmesinin sol dikey menüsünde ZIP File, GitHub, Cloudflare ve SFTP yayın seçenekleri
+- Şifreli parola saklama, bağlantı testi, manuel yükleme ve başarılı export sonrası seçilebilir otomatik yükleme sunan SFTP desteği
 - Yerel Fuse.js 7.3.0 paketiyle çalışan, alanları ve ağırlıkları yapılandırılabilen statik site araması
 - Hide sekmesinden WordPress yollarını yeniden adlandırma; sürüm, generator, XML-RPC, embed ve emoji izlerini statik çıktıdan temizleme
 - Main sekmesinde son başarılı static oluşturma zamanı ve yeşil ilerleme/tamamlanma göstergesi
@@ -44,7 +45,7 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 
 `ragnus-static-publisher` klasörünü WordPress'in `wp-content/plugins/` dizinine kopyalayın ve eklentiyi etkinleştirin. Ardından sol ana menüdeki **Static Publisher** sayfasından canlı domaini ve URL sınırını yapılandırın.
 
-Sunucuda PHP DOM ve Zip eklentileri bulunmalıdır. Uzun export işleri için gerçek sistem cron'u ile `wp-cron.php` çalıştırılması önerilir.
+Sunucuda PHP DOM ve Zip eklentileri bulunmalıdır. SFTP istemcisi eklenti paketine dahildir; PHP cURL/libcurl derlemesinde ayrıca `sftp` protokolü bulunması gerekmez. Uzun export ve SFTP işleri için gerçek sistem cron'u ile `wp-cron.php` çalıştırılması önerilir.
 
 ## WP-CLI
 
@@ -64,6 +65,12 @@ wp ragnus-static export --format=json
 Örnek workflow `.github/workflows/deploy-example.yml` içindedir. Worker adı ve asset ayarları `wrangler.jsonc` içinde tutulur; Custom Domain dashboard tarafından yönetilmeye devam eder. CI kullanıcısına yönetici rolü vermeyin; eklentinin oluşturduğu `Static Publisher Deploy` rolünü seçin ve bu kullanıcıya ayrı bir Application Password üretin.
 
 Tam otomatik akış için eklenti ayarlarında deployment webhook alanını `https://api.github.com/repos/SAHIP/REPO/dispatches` olarak girin. Fine-grained bearer token yalnızca ilgili repository için `Contents: write` yetkisiyle oluşturulmalıdır. Workflow dosyası repository'nin varsayılan branch'inde bulunmalıdır. Cloudflare token hiçbir zaman WordPress'e girilmez.
+
+## SFTP deployment
+
+**Deploy > SFTP** ekranında sunucu, port, kullanıcı adı, parola ve uzak hedef dizini kaydedilir. Parola WordPress güvenlik anahtarlarından türetilen anahtarla Sodium veya OpenSSL kullanılarak şifrelenir ve arayüzde tekrar gösterilmez. Önce **Bağlantıyı Test Et**, ardından **Son Statik Siteyi Yükle** kullanılmalıdır. İstenirse her başarılı export sonrasında otomatik SFTP yüklemesi etkinleştirilebilir.
+
+Sunucu kimliğini doğrulamak için hosting sağlayıcısından alınan 32 karakterlik MD5 SSH host fingerprint değeri girilmesi önerilir. Yükleme aynı uzak yoldaki dosyaların üzerine yazar; hedefteki ilgisiz veya eski dosyaları otomatik silmez. SFTP hatası başarılı ZIP exportunu silmez ve son SFTP durumu ayrı kaydedilir.
 
 ## Çoklu dil yönlendirmesi
 

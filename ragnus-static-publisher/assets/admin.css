@@ -446,6 +446,19 @@
     line-height: 19px;
 }
 
+.ragstat-deploy-tab__github-icon {
+    width: 19px;
+    height: 19px;
+    flex: 0 0 19px;
+}
+
+.ragstat-deploy-tab__cloudflare-icon {
+    width: 25px;
+    height: 19px;
+    flex: 0 0 25px;
+    margin-left: -3px;
+}
+
 .ragstat-deploy-tab:hover,
 .ragstat-deploy-tab:focus {
     color: var(--ragstat-primary-dark);
@@ -495,6 +508,29 @@
     font-size: 25px;
     line-height: 48px;
     text-align: center;
+}
+
+.ragstat-deploy-card__github-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ragstat-deploy-card__cloudflare-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ragstat-primary);
+}
+
+.ragstat-github-icon {
+    width: 27px;
+    height: 27px;
+}
+
+.ragstat-cloudflare-icon {
+    width: 36px;
+    height: 27px;
 }
 
 .ragstat-deploy-card__content {
@@ -667,6 +703,80 @@
     margin: 18px 0 4px;
     color: var(--ragstat-text);
     font-size: 17px;
+}
+
+.ragstat-sftp-settings-form {
+    max-width: none;
+    margin-top: 22px;
+}
+
+.ragstat-sftp-settings-form > h3 {
+    margin: 18px 0 4px;
+    color: var(--ragstat-text);
+    font-size: 17px;
+}
+
+.ragstat-sftp-clear-secret {
+    display: inline-flex;
+    gap: 7px;
+    align-items: center;
+    margin-top: 10px;
+    color: #b91c1c;
+}
+
+.ragstat-sftp-auto-deploy {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin: 8px 0 4px;
+    padding: 16px;
+    border: 1px solid var(--ragstat-border);
+    border-radius: 10px;
+    background: #f8fafc;
+}
+
+.ragstat-sftp-auto-deploy input {
+    margin-top: 2px;
+}
+
+.ragstat-sftp-auto-deploy span {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.ragstat-sftp-auto-deploy small {
+    color: var(--ragstat-muted);
+    font-weight: 400;
+}
+
+.ragstat-sftp-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 16px;
+}
+
+.ragstat-sftp-actions form,
+.ragstat-sftp-actions p {
+    margin: 0;
+}
+
+.ragstat-sftp-last-status {
+    margin-top: 16px;
+    padding: 12px 14px;
+    border-left: 4px solid var(--ragstat-primary);
+    border-radius: 4px;
+    background: #f8fafc;
+    color: var(--ragstat-text);
+}
+
+.ragstat-sftp-last-status span {
+    color: var(--ragstat-muted);
+}
+
+.ragstat-sftp-notice {
+    margin: 0 0 16px;
 }
 
 .ragstat-language-settings-form {
@@ -1721,6 +1831,16 @@ body.ragstat-modal-open {
 
     .ragstat-settings-form {
         padding: 4px 16px 18px;
+    }
+
+    .ragstat-sftp-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .ragstat-sftp-actions form,
+    .ragstat-sftp-actions .button {
+        width: 100%;
     }
 
     .ragstat-settings-layout {

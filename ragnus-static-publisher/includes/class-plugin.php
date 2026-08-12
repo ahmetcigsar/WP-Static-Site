@@ -36,6 +36,8 @@ final class Plugin
         add_action('admin_post_ragnus_static_cleanup_exports', [Admin::class, 'cleanup_exports']);
         add_action('admin_post_ragnus_static_download_archive', [Admin::class, 'download_archive']);
         add_action('admin_post_ragnus_static_archive_bulk', [Admin::class, 'archive_bulk_action']);
+        add_action('admin_post_ragnus_static_sftp_test', [Admin::class, 'test_sftp_connection']);
+        add_action('admin_post_ragnus_static_sftp_deploy', [Admin::class, 'deploy_latest_with_sftp']);
         add_action('update_option_' . self::SETTINGS_KEY, [self::class, 'apply_archive_retention'], 10, 2);
         add_action(self::CRON_HOOK, [self::class, 'run_scheduled'], 10, 1);
         add_action('transition_post_status', [self::class, 'maybe_schedule_after_post_transition'], 20, 3);
@@ -117,6 +119,7 @@ final class Plugin
     {
         wp_clear_scheduled_hook(self::CRON_HOOK);
         delete_transient(self::LOCK_KEY);
+        delete_transient(SFTP_Deployer::LOCK_KEY);
     }
 
     public static function settings(): array
@@ -129,6 +132,14 @@ final class Plugin
             'archive_retention' => 5,
             'deployment_webhook_url' => '',
             'deployment_webhook_token' => '',
+            'sftp_auto_deploy' => '0',
+            'sftp_host' => '',
+            'sftp_port' => 22,
+            'sftp_username' => '',
+            'sftp_password' => '',
+            'sftp_remote_path' => '/public_html',
+            'sftp_host_fingerprint' => '',
+            'sftp_timeout' => 60,
         ], self::auto_export_trigger_defaults()));
     }
 
@@ -450,6 +461,19 @@ final class Plugin
         $source = (string) (self::status()['source'] ?? '');
         if ($source !== 'ci-manual') {
             self::notify_deployment_webhook($job_id, $manifest);
+        }
+
+        $settings = self::settings();
+        if ((string) ($settings['sftp_auto_deploy'] ?? '0') === '1') {
+            try {
+                SFTP_Deployer::deploy_job($job_id, $settings);
+            } catch (Throwable $error) {
+                SFTP_Deployer::record_failure($error->getMessage(), $job_id);
+                error_log(sprintf(
+                    __('[Ragnus Static Publisher] Automatic SFTP upload failed: %s', 'ragnus-static-publisher'),
+                    $error->getMessage()
+                ));
+            }
         }
     }
 

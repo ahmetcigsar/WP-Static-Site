@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Ragnus Static Publisher
  * Description: Exports WordPress sites to static files and prepares them for Cloudflare Pages deployment workflows.
- * Version: 1.16.5
+ * Version: 1.17.0
  * Requires at least: 6.5
  * Requires PHP: 8.1
  * Author: Ragnus
@@ -17,14 +17,21 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-define('RAGSTAT_VERSION', '1.16.5');
+define('RAGSTAT_VERSION', '1.17.0');
 define('RAGSTAT_FILE', __FILE__);
 define('RAGSTAT_DIR', plugin_dir_path(__FILE__));
+
+$ragstat_autoloader = RAGSTAT_DIR . 'vendor/autoload.php';
+if (is_readable($ragstat_autoloader)) {
+    require_once $ragstat_autoloader;
+}
 
 require_once RAGSTAT_DIR . 'includes/class-path-mapper.php';
 require_once RAGSTAT_DIR . 'includes/class-hide-replacements.php';
 require_once RAGSTAT_DIR . 'includes/class-static-search.php';
 require_once RAGSTAT_DIR . 'includes/class-language-routing.php';
+require_once RAGSTAT_DIR . 'includes/class-secret-store.php';
+require_once RAGSTAT_DIR . 'includes/class-sftp-deployer.php';
 require_once RAGSTAT_DIR . 'includes/class-archive-manager.php';
 require_once RAGSTAT_DIR . 'includes/class-activity-log.php';
 require_once RAGSTAT_DIR . 'includes/class-diagnostics.php';

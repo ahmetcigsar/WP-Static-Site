@@ -56,6 +56,16 @@ foreach ($expected_translations as $locale => $expected) {
         exit(1);
     }
 
+    if ($locale === 'tr_TR') {
+        foreach (['SFTP Connection' => 'SFTP Bağlantısı', 'Save SFTP Settings' => 'SFTP Ayarlarını Kaydet', 'Test Connection' => 'Bağlantıyı Test Et'] as $source => $sftp_expected) {
+            $sftp_actual = __($source, 'ragnus-static-publisher');
+            if ($sftp_actual !== $sftp_expected) {
+                fwrite(STDERR, "Türkçe SFTP çevirisi beklenen değerde değil: {$source} => {$sftp_actual}\n");
+                exit(1);
+            }
+        }
+    }
+
 }
 
 restore_current_locale();

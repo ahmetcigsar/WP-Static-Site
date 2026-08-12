@@ -109,6 +109,47 @@ final class Admin
             $sanitized['deployment_webhook_token'] = $submitted_token !== '' ? $submitted_token : (string) $current['deployment_webhook_token'];
         }
 
+        if (in_array($section, ['sftp', 'all'], true)) {
+            $sanitized['sftp_auto_deploy'] = isset($value['sftp_auto_deploy']) ? '1' : '0';
+            $sanitized['sftp_host'] = SFTP_Deployer::sanitize_host((string) ($value['sftp_host'] ?? ''));
+            $sanitized['sftp_port'] = max(1, min(65535, absint($value['sftp_port'] ?? 22)));
+            $sanitized['sftp_username'] = sanitize_text_field((string) ($value['sftp_username'] ?? ''));
+            $submitted_remote_path = (string) ($value['sftp_remote_path'] ?? '/public_html');
+            $remote_path = SFTP_Deployer::sanitize_remote_path($submitted_remote_path);
+            if ($remote_path === '') {
+                add_settings_error(Plugin::SETTINGS_KEY, 'sftp-path-error', __('The SFTP remote directory cannot contain .. path segments.', 'ragnus-static-publisher'), 'error');
+                $remote_path = (string) $current['sftp_remote_path'];
+            }
+            $sanitized['sftp_remote_path'] = $remote_path;
+
+            $submitted_fingerprint = trim((string) ($value['sftp_host_fingerprint'] ?? ''));
+            $fingerprint = SFTP_Deployer::sanitize_fingerprint($submitted_fingerprint);
+            if ($submitted_fingerprint !== '' && $fingerprint === '') {
+                add_settings_error(Plugin::SETTINGS_KEY, 'sftp-fingerprint-error', __('Enter the SFTP server fingerprint as 32 hexadecimal MD5 characters.', 'ragnus-static-publisher'), 'error');
+                $fingerprint = (string) $current['sftp_host_fingerprint'];
+            }
+            $sanitized['sftp_host_fingerprint'] = $fingerprint;
+            $sanitized['sftp_timeout'] = max(10, min(600, absint($value['sftp_timeout'] ?? 60)));
+
+            if (isset($value['sftp_clear_password'])) {
+                $sanitized['sftp_password'] = '';
+            } else {
+                $submitted_password = (string) ($value['sftp_password'] ?? '');
+                if ($submitted_password !== '') {
+                    try {
+                        $sanitized['sftp_password'] = Secret_Store::encrypt($submitted_password);
+                    } catch (\Throwable $error) {
+                        add_settings_error(Plugin::SETTINGS_KEY, 'sftp-secret-error', $error->getMessage(), 'error');
+                        $sanitized['sftp_password'] = (string) $current['sftp_password'];
+                    }
+                }
+            }
+            if ($sanitized['sftp_auto_deploy'] === '1' && ! SFTP_Deployer::configured($sanitized)) {
+                add_settings_error(Plugin::SETTINGS_KEY, 'sftp-auto-error', __('Complete the SFTP connection information before enabling automatic upload.', 'ragnus-static-publisher'), 'error');
+                $sanitized['sftp_auto_deploy'] = '0';
+            }
+        }
+
         return $sanitized;
     }
 
@@ -246,6 +287,47 @@ final class Admin
         check_admin_referer('ragnus_static_refresh_diagnostics');
         Diagnostics::refresh();
         wp_safe_redirect(add_query_arg('checked', '1', self::admin_page_url('diagnostics')));
+        exit;
+    }
+
+    public static function test_sftp_connection(): void
+    {
+        self::authorize_sftp_action('ragnus_static_sftp_test');
+        try {
+            SFTP_Deployer::test_connection();
+            self::redirect_sftp('connection-success');
+        } catch (\Throwable $error) {
+            self::redirect_sftp('error');
+        }
+    }
+
+    public static function deploy_latest_with_sftp(): void
+    {
+        self::authorize_sftp_action('ragnus_static_sftp_deploy');
+        ignore_user_abort(true);
+        if (function_exists('set_time_limit')) {
+            @set_time_limit(0);
+        }
+        try {
+            SFTP_Deployer::deploy_latest();
+            self::redirect_sftp('deploy-success');
+        } catch (\Throwable $error) {
+            SFTP_Deployer::record_failure($error->getMessage());
+            self::redirect_sftp('error');
+        }
+    }
+
+    private static function authorize_sftp_action(string $nonce_action): void
+    {
+        if (! current_user_can('manage_options')) {
+            wp_die(__('You are not authorized for this operation.', 'ragnus-static-publisher'), 403);
+        }
+        check_admin_referer($nonce_action);
+    }
+
+    private static function redirect_sftp(string $notice): void
+    {
+        wp_safe_redirect(add_query_arg('sftp_notice', $notice, self::deploy_page_url('sftp')));
         exit;
     }
 
@@ -617,10 +699,12 @@ final class Admin
     {
         $has_archive = $archives !== [];
         $github_configured = (string) ($settings['deployment_webhook_url'] ?? '') !== '';
+        $sftp_configured = SFTP_Deployer::configured($settings);
         $deploy_tabs = [
             'zip' => [__('ZIP File', 'ragnus-static-publisher'), 'dashicons-media-archive'],
-            'github' => [__('GitHub', 'ragnus-static-publisher'), 'dashicons-randomize'],
-            'cloudflare' => [__('Cloudflare', 'ragnus-static-publisher'), 'dashicons-cloud'],
+            'github' => [__('GitHub', 'ragnus-static-publisher'), 'github'],
+            'cloudflare' => [__('Cloudflare', 'ragnus-static-publisher'), 'cloudflare'],
+            'sftp' => [__('SFTP', 'ragnus-static-publisher'), 'dashicons-upload'],
         ];
         $current_deploy_tab = isset($deploy_tabs[$requested_deploy_tab]) ? $requested_deploy_tab : 'zip';
         ?>
@@ -634,7 +718,13 @@ final class Admin
             <nav class="ragstat-deploy-tabs" aria-label="<?php echo esc_attr__('Deploy', 'ragnus-static-publisher'); ?>">
                 <?php foreach ($deploy_tabs as $deploy_tab => [$label, $icon]) : ?>
                     <a class="ragstat-deploy-tab <?php echo $current_deploy_tab === $deploy_tab ? 'is-active' : ''; ?>" href="<?php echo esc_url(self::deploy_page_url($deploy_tab)); ?>" <?php echo $current_deploy_tab === $deploy_tab ? 'aria-current="page"' : ''; ?>>
-                        <span class="dashicons <?php echo esc_attr($icon); ?>" aria-hidden="true"></span>
+                        <?php if ($icon === 'github') : ?>
+                            <?php self::render_github_icon('ragstat-deploy-tab__github-icon'); ?>
+                        <?php elseif ($icon === 'cloudflare') : ?>
+                            <?php self::render_cloudflare_icon('ragstat-deploy-tab__cloudflare-icon'); ?>
+                        <?php else : ?>
+                            <span class="dashicons <?php echo esc_attr($icon); ?>" aria-hidden="true"></span>
+                        <?php endif; ?>
                         <span><?php echo esc_html($label); ?></span>
                     </a>
                 <?php endforeach; ?>
@@ -654,7 +744,9 @@ final class Admin
                     </section>
                 <?php elseif ($current_deploy_tab === 'github') : ?>
                     <section class="ragstat-deploy-card" aria-labelledby="ragstat-deploy-github-title">
-                        <span class="ragstat-deploy-card__icon dashicons dashicons-randomize" aria-hidden="true"></span>
+                        <span class="ragstat-deploy-card__icon ragstat-deploy-card__github-icon" aria-hidden="true">
+                            <?php self::render_github_icon('ragstat-github-icon'); ?>
+                        </span>
                         <div class="ragstat-deploy-card__content">
                             <h3 id="ragstat-deploy-github-title"><?php esc_html_e('GitHub', 'ragnus-static-publisher'); ?></h3>
                             <p><?php esc_html_e('Automatically trigger the GitHub Actions flow via webhook when the export is complete.', 'ragnus-static-publisher'); ?></p>
@@ -664,9 +756,11 @@ final class Admin
                         </div>
                     </section>
                     <?php self::render_deploy_settings($settings); ?>
-                <?php else : ?>
+                <?php elseif ($current_deploy_tab === 'cloudflare') : ?>
                     <section class="ragstat-deploy-card" aria-labelledby="ragstat-deploy-cloudflare-title">
-                        <span class="ragstat-deploy-card__icon dashicons dashicons-cloud" aria-hidden="true"></span>
+                        <span class="ragstat-deploy-card__icon ragstat-deploy-card__cloudflare-icon" aria-hidden="true">
+                            <?php self::render_cloudflare_icon('ragstat-cloudflare-icon'); ?>
+                        </span>
                         <div class="ragstat-deploy-card__content">
                             <h3 id="ragstat-deploy-cloudflare-title"><?php esc_html_e('Cloudflare', 'ragnus-static-publisher'); ?></h3>
                             <p><?php esc_html_e('Publish static files to Cloudflare Workers Static Assets with a GitHub Actions workflow.', 'ragnus-static-publisher'); ?></p>
@@ -676,9 +770,42 @@ final class Admin
                             <a class="button button-primary" href="<?php echo esc_url('https://dash.cloudflare.com/'); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Open Cloudflare', 'ragnus-static-publisher'); ?><span class="dashicons dashicons-external" aria-hidden="true"></span></a>
                         </div>
                     </section>
+                <?php else : ?>
+                    <section class="ragstat-deploy-card" aria-labelledby="ragstat-deploy-sftp-title">
+                        <span class="ragstat-deploy-card__icon dashicons dashicons-upload" aria-hidden="true"></span>
+                        <div class="ragstat-deploy-card__content">
+                            <h3 id="ragstat-deploy-sftp-title"><?php esc_html_e('SFTP', 'ragnus-static-publisher'); ?></h3>
+                            <p><?php esc_html_e('Upload the generated static files directly to a remote server over an encrypted SFTP connection.', 'ragnus-static-publisher'); ?></p>
+                        </div>
+                        <div class="ragstat-deploy-card__footer">
+                            <span class="ragstat-deploy-status <?php echo $sftp_configured && SFTP_Deployer::available() ? 'is-ready' : 'is-pending'; ?>">
+                                <?php echo $sftp_configured ? (SFTP_Deployer::available() ? esc_html__('SFTP configured', 'ragnus-static-publisher') : esc_html__('SFTP unavailable on this server', 'ragnus-static-publisher')) : esc_html__('Configuration required', 'ragnus-static-publisher'); ?>
+                            </span>
+                        </div>
+                    </section>
+                    <?php self::render_sftp_settings($settings, $has_archive); ?>
                 <?php endif; ?>
             </div>
         </div>
+        <?php
+    }
+
+    private static function render_github_icon(string $class_name): void
+    {
+        ?>
+        <svg class="<?php echo esc_attr($class_name); ?>" data-ragstat-github-icon viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false">
+            <path fill="currentColor" d="M12 .7a11.3 11.3 0 0 0-3.57 22c.57.1.78-.24.78-.55v-2.17c-3.16.69-3.83-1.34-3.83-1.34-.52-1.31-1.26-1.66-1.26-1.66-1.03-.7.08-.69.08-.69 1.14.08 1.74 1.17 1.74 1.17 1.01 1.73 2.66 1.23 3.3.94.1-.73.4-1.23.72-1.51-2.52-.29-5.17-1.26-5.17-5.59 0-1.23.44-2.24 1.17-3.03-.12-.29-.51-1.44.11-2.99 0 0 .95-.31 3.11 1.16a10.75 10.75 0 0 1 5.67 0c2.16-1.47 3.11-1.16 3.11-1.16.62 1.55.23 2.7.11 2.99.73.79 1.17 1.8 1.17 3.03 0 4.34-2.66 5.3-5.19 5.58.41.35.77 1.04.77 2.1v3.11c0 .31.2.66.78.55A11.3 11.3 0 0 0 12 .7Z"/>
+        </svg>
+        <?php
+    }
+
+    private static function render_cloudflare_icon(string $class_name): void
+    {
+        ?>
+        <svg class="<?php echo esc_attr($class_name); ?>" data-ragstat-cloudflare-icon viewBox="54 3 50 23" role="img" aria-hidden="true" focusable="false">
+            <path fill="currentColor" d="M88.1 24c.3-1 .2-2-.3-2.6-.5-.6-1.2-1-2.1-1.1l-17.4-.2c-.1 0-.2-.1-.3-.1-.1-.1-.1-.2 0-.3.1-.2.2-.3.4-.3l17.5-.2c2.1-.1 4.3-1.8 5.1-3.8l1-2.6c0-.1.1-.2 0-.3-1.1-5.1-5.7-8.9-11.1-8.9-5 0-9.3 3.2-10.8 7.7-1-.7-2.2-1.1-3.6-1-2.4.2-4.3 2.2-4.6 4.6-.1.6 0 1.2.1 1.8-3.9.1-7.1 3.3-7.1 7.3 0 .4 0 .7.1 1.1 0 .2.2.3.3.3h32.1c.2 0 .4-.1.4-.3l.3-1.1z"/>
+            <path fill="currentColor" d="M93.6 12.8h-.5c-.1 0-.2.1-.3.2l-.7 2.4c-.3 1-.2 2 .3 2.6.5.6 1.2 1 2.1 1.1l3.7.2c.1 0 .2.1.3.1.1.1.1.2 0 .3-.1.2-.2.3-.4.3l-3.8.2c-2.1.1-4.3 1.8-5.1 3.8l-.2.9c-.1.1 0 .3.2.3h13.2c.2 0 .3-.1.3-.3.2-.8.4-1.7.4-2.6 0-5.2-4.3-9.5-9.5-9.5"/>
+        </svg>
         <?php
     }
 
@@ -873,6 +1000,78 @@ final class Admin
             </table>
             <?php submit_button(__('Save Deploy Settings', 'ragnus-static-publisher')); ?>
         </form>
+        <?php
+    }
+
+    private static function render_sftp_settings(array $settings, bool $has_archive): void
+    {
+        $available = SFTP_Deployer::available();
+        $configured = SFTP_Deployer::configured($settings);
+        $status = SFTP_Deployer::status();
+        $notice = isset($_GET['sftp_notice']) ? sanitize_key(wp_unslash((string) $_GET['sftp_notice'])) : '';
+        $status_message = (string) ($status['message'] ?? '');
+        $status_time = is_string($status['updated_at'] ?? null) ? strtotime((string) $status['updated_at']) : false;
+        ?>
+        <?php if ($notice !== '' && $status_message !== '') : ?>
+            <div class="notice <?php echo $notice === 'error' ? 'notice-error' : 'notice-success'; ?> inline is-dismissible ragstat-sftp-notice" role="status"><p><?php echo esc_html($status_message); ?></p></div>
+        <?php endif; ?>
+        <?php if (! $available) : ?>
+            <div class="notice notice-error inline ragstat-sftp-notice" role="alert"><p><?php esc_html_e('The SFTP client is unavailable. Reinstall the complete plugin package before using this deployment method.', 'ragnus-static-publisher'); ?></p></div>
+        <?php endif; ?>
+
+        <form class="ragstat-settings-form ragstat-sftp-settings-form" method="post" action="options.php">
+            <?php settings_fields('ragnus_static'); ?>
+            <input type="hidden" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[_section]" value="sftp">
+            <h3><?php esc_html_e('SFTP Connection', 'ragnus-static-publisher'); ?></h3>
+            <table class="form-table" role="presentation">
+                <tr>
+                    <th><label for="ragstat-sftp-host"><?php esc_html_e('SFTP Host', 'ragnus-static-publisher'); ?></label></th>
+                    <td><input class="regular-text code" id="ragstat-sftp-host" type="text" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[sftp_host]" value="<?php echo esc_attr((string) $settings['sftp_host']); ?>" placeholder="sftp.example.com"><p class="description"><?php esc_html_e('Enter only the hostname or IP address; do not include sftp://.', 'ragnus-static-publisher'); ?></p></td>
+                </tr>
+                <tr>
+                    <th><label for="ragstat-sftp-port"><?php esc_html_e('Port', 'ragnus-static-publisher'); ?></label></th>
+                    <td><input id="ragstat-sftp-port" type="number" min="1" max="65535" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[sftp_port]" value="<?php echo esc_attr((string) $settings['sftp_port']); ?>"></td>
+                </tr>
+                <tr>
+                    <th><label for="ragstat-sftp-username"><?php esc_html_e('Username', 'ragnus-static-publisher'); ?></label></th>
+                    <td><input class="regular-text" id="ragstat-sftp-username" type="text" autocomplete="username" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[sftp_username]" value="<?php echo esc_attr((string) $settings['sftp_username']); ?>"></td>
+                </tr>
+                <tr>
+                    <th><label for="ragstat-sftp-password"><?php esc_html_e('Password', 'ragnus-static-publisher'); ?></label></th>
+                    <td><input class="regular-text" id="ragstat-sftp-password" type="password" autocomplete="new-password" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[sftp_password]" value="" placeholder="<?php echo (string) $settings['sftp_password'] !== '' ? esc_attr__('Leave blank to keep the saved password', 'ragnus-static-publisher') : ''; ?>"><p class="description"><?php esc_html_e('The password is encrypted using the WordPress security keys and is never shown again.', 'ragnus-static-publisher'); ?></p><?php if ((string) $settings['sftp_password'] !== '') : ?><label class="ragstat-sftp-clear-secret"><input type="checkbox" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[sftp_clear_password]" value="1"> <?php esc_html_e('Delete saved password', 'ragnus-static-publisher'); ?></label><?php endif; ?></td>
+                </tr>
+                <tr>
+                    <th><label for="ragstat-sftp-path"><?php esc_html_e('Remote Directory', 'ragnus-static-publisher'); ?></label></th>
+                    <td><input class="regular-text code" id="ragstat-sftp-path" type="text" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[sftp_remote_path]" value="<?php echo esc_attr((string) $settings['sftp_remote_path']); ?>" placeholder="/public_html"><p class="description"><?php esc_html_e('Static files are uploaded into this directory. Existing files with the same path are overwritten; unrelated remote files are preserved.', 'ragnus-static-publisher'); ?></p></td>
+                </tr>
+                <tr>
+                    <th><label for="ragstat-sftp-fingerprint"><?php esc_html_e('Server MD5 Fingerprint', 'ragnus-static-publisher'); ?></label></th>
+                    <td><input class="regular-text code" id="ragstat-sftp-fingerprint" type="text" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[sftp_host_fingerprint]" value="<?php echo esc_attr((string) $settings['sftp_host_fingerprint']); ?>" placeholder="0123456789abcdef0123456789abcdef"><p class="description"><?php esc_html_e('Recommended. Verify this value with your hosting provider to prevent connecting to the wrong server.', 'ragnus-static-publisher'); ?></p></td>
+                </tr>
+                <tr>
+                    <th><label for="ragstat-sftp-timeout"><?php esc_html_e('Per-file Timeout', 'ragnus-static-publisher'); ?></label></th>
+                    <td><input id="ragstat-sftp-timeout" type="number" min="10" max="600" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[sftp_timeout]" value="<?php echo esc_attr((string) $settings['sftp_timeout']); ?>"> <?php esc_html_e('seconds', 'ragnus-static-publisher'); ?></td>
+                </tr>
+            </table>
+            <label class="ragstat-sftp-auto-deploy"><input type="checkbox" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[sftp_auto_deploy]" value="1" <?php checked((string) $settings['sftp_auto_deploy'], '1'); ?>> <span><strong><?php esc_html_e('Upload automatically after every successful export', 'ragnus-static-publisher'); ?></strong><small><?php esc_html_e('An SFTP failure is recorded separately and does not delete the successfully generated ZIP file.', 'ragnus-static-publisher'); ?></small></span></label>
+            <?php submit_button(__('Save SFTP Settings', 'ragnus-static-publisher')); ?>
+        </form>
+
+        <div class="ragstat-sftp-actions">
+            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                <input type="hidden" name="action" value="ragnus_static_sftp_test">
+                <?php wp_nonce_field('ragnus_static_sftp_test'); ?>
+                <?php submit_button(__('Test Connection', 'ragnus-static-publisher'), 'secondary', 'submit', false, ! $available || ! $configured ? ['disabled' => 'disabled'] : []); ?>
+            </form>
+            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                <input type="hidden" name="action" value="ragnus_static_sftp_deploy">
+                <?php wp_nonce_field('ragnus_static_sftp_deploy'); ?>
+                <?php submit_button(__('Upload Latest Static Site', 'ragnus-static-publisher'), 'primary', 'submit', false, ! $available || ! $configured || ! $has_archive ? ['disabled' => 'disabled'] : []); ?>
+            </form>
+        </div>
+        <?php if ($status_message !== '' && $notice === '') : ?>
+            <div class="ragstat-sftp-last-status"><strong><?php esc_html_e('Last SFTP Status', 'ragnus-static-publisher'); ?>:</strong> <?php echo esc_html($status_message); ?><?php if ($status_time !== false) : ?> <span>— <?php echo esc_html(wp_date((string) get_option('date_format') . ' ' . (string) get_option('time_format'), $status_time)); ?></span><?php endif; ?></div>
+        <?php endif; ?>
         <?php
     }
 

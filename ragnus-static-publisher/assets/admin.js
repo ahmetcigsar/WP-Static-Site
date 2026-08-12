@@ -2,6 +2,7 @@
     'use strict';
 
     const config = window.RagnusStaticPublisherAdmin;
+    const i18n = config && config.i18n ? config.i18n : {};
     const hideContentInput = document.querySelector('#ragstat-hide-wp-content');
     const hideContentPrefixes = document.querySelectorAll('[data-ragstat-content-prefix]');
     if (hideContentInput && hideContentPrefixes.length) {
@@ -108,10 +109,10 @@
     }
 
     const stateLabels = {
-        queued: 'Kuyrukta',
-        running: 'Çalışıyor',
-        completed: 'Tamamlandı',
-        failed: 'Başarısız'
+        queued: i18n.queued || 'Kuyrukta',
+        running: i18n.running || 'Çalışıyor',
+        completed: i18n.completed || 'Tamamlandı',
+        failed: i18n.failed || 'Başarısız'
     };
     const stateElement = root.querySelector('#ragstat-status-state');
     const progressCell = root.querySelector('#ragstat-progress-cell');
@@ -149,7 +150,7 @@
             icon.className = 'dashicons ' + (state === 'completed' ? 'dashicons-yes-alt' : 'dashicons-dismiss');
             icon.setAttribute('aria-hidden', 'true');
             const label = document.createElement('strong');
-            label.textContent = state === 'completed' ? 'Tamamlandı' : 'Başarısız';
+            label.textContent = state === 'completed' ? stateLabels.completed : stateLabels.failed;
             status.append(icon, label);
             progressCell.append(status);
             return;
@@ -158,7 +159,7 @@
         const progressBar = document.createElement('div');
         progressBar.className = 'ragstat-progress ' + (state === 'queued' || state === 'running' ? 'is-active' : '');
         progressBar.setAttribute('role', 'progressbar');
-        progressBar.setAttribute('aria-label', 'Statik oluşturma ilerlemesi');
+        progressBar.setAttribute('aria-label', i18n.progressLabel || 'Statik oluşturma ilerlemesi');
         progressBar.setAttribute('aria-valuemin', '0');
         progressBar.setAttribute('aria-valuemax', '100');
         progressBar.setAttribute('aria-valuenow', String(progress));
@@ -187,7 +188,7 @@
         const active = state === 'queued' || state === 'running';
         const canRetry = state === 'queued' && Boolean(status.stalled);
 
-        replaceText(stateElement, stateLabels[state], 'Henüz Çalışmadı');
+        replaceText(stateElement, stateLabels[state], i18n.notRun || 'Henüz Çalışmadı');
         renderProgress(state, progress);
         replaceText(messageElement, status.status_message, '—');
         replaceText(jobElement, status.job_id, '—');
@@ -209,7 +210,7 @@
         showNotice(String(status.runtime_notice || ''));
         if (submitButton) {
             submitButton.disabled = active && !canRetry;
-            submitButton.value = canRetry ? 'Yeniden Dene' : 'Statik Site Oluştur';
+            submitButton.value = canRetry ? (i18n.retry || 'Yeniden Dene') : (i18n.create || 'Statik Site Oluştur');
         }
         if (downloadButton && state === 'completed') {
             downloadButton.hidden = false;

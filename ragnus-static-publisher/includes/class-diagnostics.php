@@ -11,7 +11,10 @@ final class Diagnostics
     public static function report(): array
     {
         $report = get_option(self::OPTION_KEY, []);
-        if (is_array($report) && is_array($report['groups'] ?? null) && is_string($report['checked_at'] ?? null)) {
+        if (is_array($report)
+            && is_array($report['groups'] ?? null)
+            && is_string($report['checked_at'] ?? null)
+            && ($report['locale'] ?? '') === determine_locale()) {
             return $report;
         }
 
@@ -22,6 +25,7 @@ final class Diagnostics
     {
         $report = [
             'checked_at' => gmdate('c'),
+            'locale' => determine_locale(),
             'groups' => self::checks(),
         ];
         update_option(self::OPTION_KEY, $report, false);
@@ -67,108 +71,108 @@ final class Diagnostics
         $database_privileges = self::database_privileges($database_grants);
 
         $site_message = $site_reachable
-            ? sprintf('Site URL erişilebilir (HTTP %d): %s', $response_code, home_url('/'))
+            ? sprintf(__('Site URL erişilebilir (HTTP %d): %s', 'ragnus-static-publisher'), $response_code, home_url('/'))
             : (is_wp_error($site_response)
-                ? 'Site URL erişilemiyor: ' . $site_response->get_error_message()
-                : sprintf('Site URL beklenmeyen bir HTTP %d yanıtı verdi: %s', $response_code, home_url('/')));
+                ? __('Site URL erişilemiyor: ', 'ragnus-static-publisher') . $site_response->get_error_message()
+                : sprintf(__('Site URL beklenmeyen bir HTTP %d yanıtı verdi: %s', 'ragnus-static-publisher'), $response_code, home_url('/')));
 
         $groups = [
-            'Server' => [
+            __('Server', 'ragnus-static-publisher') => [
                 [
                     'id' => 'php-version',
-                    'label' => 'PHP Sürümü',
+                    'label' => __('PHP Sürümü', 'ragnus-static-publisher'),
                     'passed' => $php_supported,
                     'message' => $php_supported
-                        ? sprintf('PHP 8.1 veya üzeri kullanılabilir. Mevcut sürüm: %s.', PHP_VERSION)
-                        : sprintf('PHP 8.1 veya üzeri gerekli. Mevcut sürüm: %s.', PHP_VERSION),
+                        ? sprintf(__('PHP 8.1 veya üzeri kullanılabilir. Mevcut sürüm: %s.', 'ragnus-static-publisher'), PHP_VERSION)
+                        : sprintf(__('PHP 8.1 veya üzeri gerekli. Mevcut sürüm: %s.', 'ragnus-static-publisher'), PHP_VERSION),
                 ],
                 [
                     'id' => 'basic-auth',
-                    'label' => 'Basic Auth',
+                    'label' => __('Basic Auth', 'ragnus-static-publisher'),
                     'passed' => ! $basic_auth_enabled,
                     'message' => $basic_auth_enabled
-                        ? 'Basic Auth etkin görünüyor; statik tarama kimlik doğrulamasında durabilir.'
-                        : 'Basic Auth etkin değil.',
+                        ? __('Basic Auth etkin görünüyor; statik tarama kimlik doğrulamasında durabilir.', 'ragnus-static-publisher')
+                        : __('Basic Auth etkin değil.', 'ragnus-static-publisher'),
                 ],
                 [
                     'id' => 'php-xml',
-                    'label' => 'PHP-XML',
+                    'label' => __('PHP-XML', 'ragnus-static-publisher'),
                     'passed' => $xml_available,
-                    'message' => $xml_available ? 'php-xml kullanılabilir.' : 'php-xml kullanılamıyor; DOMDocument eklentisini etkinleştirin.',
+                    'message' => $xml_available ? __('php-xml kullanılabilir.', 'ragnus-static-publisher') : __('php-xml kullanılamıyor; DOMDocument eklentisini etkinleştirin.', 'ragnus-static-publisher'),
                 ],
                 [
                     'id' => 'curl',
-                    'label' => 'cURL',
+                    'label' => __('cURL', 'ragnus-static-publisher'),
                     'passed' => $curl_available,
-                    'message' => $curl_available ? 'cURL kullanılabilir.' : 'cURL kullanılamıyor; PHP cURL eklentisini etkinleştirin.',
+                    'message' => $curl_available ? __('cURL kullanılabilir.', 'ragnus-static-publisher') : __('cURL kullanılamıyor; PHP cURL eklentisini etkinleştirin.', 'ragnus-static-publisher'),
                 ],
                 [
                     'id' => 'docker-site-url',
-                    'label' => 'Docker / Site URL',
+                    'label' => __('Docker / Site URL', 'ragnus-static-publisher'),
                     'passed' => $site_reachable,
                     'message' => $site_message,
                 ],
             ],
-            'WordPress' => [
+            __('WordPress', 'ragnus-static-publisher') => [
                 [
                     'id' => 'permalinks',
-                    'label' => 'Kalıcı Bağlantılar',
+                    'label' => __('Kalıcı Bağlantılar', 'ragnus-static-publisher'),
                     'passed' => $permalinks_enabled,
                     'message' => $permalinks_enabled
-                        ? 'WordPress kalıcı bağlantı yapısı ayarlanmış.'
-                        : 'Kalıcı bağlantılar düz yapıda; Ayarlar > Kalıcı Bağlantılar bölümünden bir yapı seçin.',
+                        ? __('WordPress kalıcı bağlantı yapısı ayarlanmış.', 'ragnus-static-publisher')
+                        : __('Kalıcı bağlantılar düz yapıda; Ayarlar > Kalıcı Bağlantılar bölümünden bir yapı seçin.', 'ragnus-static-publisher'),
                 ],
                 [
                     'id' => 'indexable',
-                    'label' => 'Indexlenebilirlik',
+                    'label' => __('Indexlenebilirlik', 'ragnus-static-publisher'),
                     'passed' => $indexable,
                     'message' => $indexable
-                        ? 'Arama motorlarının siteyi indekslemesini engelleyen ayar kapalı.'
-                        : 'Arama motorlarının siteyi indekslemesini engelleyen ayar açık.',
+                        ? __('Arama motorlarının siteyi indekslemesini engelleyen ayar kapalı.', 'ragnus-static-publisher')
+                        : __('Arama motorlarının siteyi indekslemesini engelleyen ayar açık.', 'ragnus-static-publisher'),
                 ],
                 [
                     'id' => 'caching',
-                    'label' => 'Önbellek',
+                    'label' => __('Önbellek', 'ragnus-static-publisher'),
                     'passed' => $cache_disabled,
                     'message' => $cache_disabled
-                        ? 'WordPress sayfa önbelleği devre dışı.'
-                        : 'WP_CACHE etkin; export sırasında eski içerik sunulmadığını doğrulayın.',
+                        ? __('WordPress sayfa önbelleği devre dışı.', 'ragnus-static-publisher')
+                        : __('WP_CACHE etkin; export sırasında eski içerik sunulmadığını doğrulayın.', 'ragnus-static-publisher'),
                 ],
                 [
                     'id' => 'wp-cron',
-                    'label' => 'WP-CRON',
+                    'label' => __('WP-CRON', 'ragnus-static-publisher'),
                     'passed' => $cron_available,
                     'message' => $cron_available
-                        ? 'WordPress cron kullanılabilir.'
-                        : 'WordPress cron devre dışı; zamanlanmış export işleri çalışmayabilir.',
+                        ? __('WordPress cron kullanılabilir.', 'ragnus-static-publisher')
+                        : __('WordPress cron devre dışı; zamanlanmış export işleri çalışmayabilir.', 'ragnus-static-publisher'),
                 ],
             ],
-            'Eklentiler' => [
+            __('Eklentiler', 'ragnus-static-publisher') => [
                 [
                     'id' => 'incompatible-plugins',
-                    'label' => 'Uyumsuz Eklentiler',
+                    'label' => __('Uyumsuz Eklentiler', 'ragnus-static-publisher'),
                     'passed' => $incompatible_plugins === [],
                     'message' => $incompatible_plugins === []
-                        ? 'Etkin uyumsuz eklenti bulunamadı.'
-                        : 'Statik taramayı engelleyebilecek etkin eklentiler: ' . implode(', ', $incompatible_plugins) . '.',
+                        ? __('Etkin uyumsuz eklenti bulunamadı.', 'ragnus-static-publisher')
+                        : __('Statik taramayı engelleyebilecek etkin eklentiler: ', 'ragnus-static-publisher') . implode(', ', $incompatible_plugins) . '.',
                 ],
             ],
-            'Dosya Sistemi' => [
+            __('Dosya Sistemi', 'ragnus-static-publisher') => [
                 [
                     'id' => 'temp-directory-readable',
-                    'label' => 'Geçici Dizin Okunabilir',
+                    'label' => __('Geçici Dizin Okunabilir', 'ragnus-static-publisher'),
                     'passed' => $temporary_readable,
                     'message' => $temporary_readable
-                        ? sprintf('Web sunucusu geçici dizini okuyabiliyor: %s', $temporary_directory)
-                        : sprintf('Web sunucusu geçici dizini okuyamıyor: %s', $temporary_directory),
+                        ? sprintf(__('Web sunucusu geçici dizini okuyabiliyor: %s', 'ragnus-static-publisher'), $temporary_directory)
+                        : sprintf(__('Web sunucusu geçici dizini okuyamıyor: %s', 'ragnus-static-publisher'), $temporary_directory),
                 ],
                 [
                     'id' => 'temp-directory-writable',
-                    'label' => 'Geçici Dizin Yazılabilir',
+                    'label' => __('Geçici Dizin Yazılabilir', 'ragnus-static-publisher'),
                     'passed' => $temporary_writable,
                     'message' => $temporary_writable
-                        ? sprintf('Web sunucusu geçici dizine yazabiliyor: %s', $temporary_directory)
-                        : sprintf('Web sunucusu geçici dizine yazamıyor: %s', $temporary_directory),
+                        ? sprintf(__('Web sunucusu geçici dizine yazabiliyor: %s', 'ragnus-static-publisher'), $temporary_directory)
+                        : sprintf(__('Web sunucusu geçici dizine yazamıyor: %s', 'ragnus-static-publisher'), $temporary_directory),
                 ],
             ],
         ];
@@ -181,8 +185,8 @@ final class Diagnostics
                 'label' => $privilege,
                 'passed' => $has_privilege,
                 'message' => $has_privilege
-                    ? sprintf('MySQL kullanıcısı %s yetkisine sahip.', $privilege)
-                    : sprintf('MySQL kullanıcısında %s yetkisi bulunamadı.', $privilege),
+                    ? sprintf(__('MySQL kullanıcısı %s yetkisine sahip.', 'ragnus-static-publisher'), $privilege)
+                    : sprintf(__('MySQL kullanıcısında %s yetkisi bulunamadı.', 'ragnus-static-publisher'), $privilege),
             ];
         }
 

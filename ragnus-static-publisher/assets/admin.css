@@ -549,10 +549,19 @@
     color: var(--ragstat-muted);
 }
 
+.ragstat-settings-layout {
+    display: grid;
+    grid-template-columns: 190px minmax(0, 1fr);
+    gap: 22px;
+    align-items: start;
+}
+
 .ragstat-settings-tabs {
     display: flex;
+    position: sticky;
+    top: 46px;
+    flex-direction: column;
     gap: 7px;
-    margin-bottom: 22px;
     padding: 5px;
     border: 1px solid var(--ragstat-border);
     border-radius: 11px;
@@ -563,7 +572,7 @@
     display: inline-flex;
     min-height: 38px;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     padding: 0 18px;
     border-radius: 7px;
     color: #475569;
@@ -798,13 +807,25 @@
     border-left: 1px solid #e8edf3;
 }
 
+.rtl .ragstat-auto-export-group + .ragstat-auto-export-group {
+    border-right: 1px solid #e8edf3;
+    border-left: 0;
+}
+
 .ragstat-auto-export-group legend {
-    margin-bottom: 10px;
+    float: left;
+    width: 100%;
+    margin: 0 0 10px;
+    padding: 0;
     color: #334155;
     font-size: 13px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: .04em;
+}
+
+.ragstat-auto-export-group legend + .ragstat-auto-export-option {
+    clear: both;
 }
 
 .ragstat-auto-export-option {
@@ -1219,6 +1240,33 @@
     box-shadow: none;
 }
 
+.ragstat-files-notice {
+    max-width: 1160px;
+    padding: 2px 42px 2px 12px;
+    border: 1px solid;
+    color: #172033;
+    background: #fff;
+}
+
+.ragstat-files-notice.notice-success {
+    border-color: #22c55e;
+    background: #f0fdf4;
+}
+
+.ragstat-files-notice.notice-warning {
+    border-color: #f59e0b;
+    background: #fffbeb;
+}
+
+.ragstat-files-notice p {
+    color: inherit;
+    font-weight: 600;
+}
+
+.ragstat-files-notice .notice-dismiss::before {
+    color: #475569;
+}
+
 body.ragstat-modal-open {
     overflow: hidden;
 }
@@ -1399,20 +1447,17 @@ body.ragstat-modal-open {
     height: 32px;
     align-items: center;
     justify-content: center;
-    border: 2px solid currentColor;
-    border-radius: 50%;
-    background: currentColor;
 }
 
 .ragstat-diagnostic-icon.is-passed { color: var(--ragstat-success); }
 .ragstat-diagnostic-icon.is-failed { color: var(--ragstat-danger); }
 
 .ragstat-diagnostic-icon .dashicons {
-    width: 21px;
-    height: 21px;
-    color: #fff;
-    font-size: 21px;
-    line-height: 21px;
+    width: 24px;
+    height: 24px;
+    color: currentColor;
+    font-size: 24px;
+    line-height: 24px;
 }
 
 .ragstat-about-card {
@@ -1613,12 +1658,17 @@ body.ragstat-modal-open {
         padding: 4px 16px 18px;
     }
 
+    .ragstat-settings-layout {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
     .ragstat-settings-tabs {
-        overflow-x: auto;
+        position: static;
     }
 
     .ragstat-settings-tab {
-        flex: 1 0 auto;
+        width: auto;
     }
 
     .ragstat-auto-export-card__heading {

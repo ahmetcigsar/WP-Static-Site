@@ -47,7 +47,7 @@ final class REST_Controller
     public static function create(WP_REST_Request $request): WP_REST_Response
     {
         if (get_transient(Plugin::LOCK_KEY)) {
-            return new WP_REST_Response(['message' => 'Export işlemi zaten çalışıyor.', 'status' => Plugin::status()], 409);
+            return new WP_REST_Response(['message' => __('Export işlemi zaten çalışıyor.', 'ragnus-static-publisher'), 'status' => Plugin::status()], 409);
         }
 
         $job_id = Plugin::schedule_export('ci-manual');
@@ -63,7 +63,7 @@ final class REST_Controller
     {
         $archive = Archive_Manager::latest();
         if ($archive === null || ! is_readable((string) $archive['path'])) {
-            return new WP_REST_Response(['message' => 'İndirilebilir export bulunamadı.'], 404);
+            return new WP_REST_Response(['message' => __('İndirilebilir export bulunamadı.', 'ragnus-static-publisher')], 404);
         }
 
         return new File_Response((string) $archive['path']);

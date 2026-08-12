@@ -4,10 +4,12 @@ Tags: static site, cloudflare workers, export
 Requires at least: 6.5
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.16.0
+Stable tag: 1.16.3
 License: GPLv2 or later
 
 WordPress sitelerini statik dosyalara aktarır ve harici yayın akışları için güvenli REST uçları sağlar.
+
+Türkçe, İngilizce, İspanyolca, Fransızca, Basitleştirilmiş Çince, Japonca, Arapça ve Portekizce yönetim arayüzü içerir. Eklenti WordPress yönetici dilini otomatik kullanır.
 
 == Description ==
 

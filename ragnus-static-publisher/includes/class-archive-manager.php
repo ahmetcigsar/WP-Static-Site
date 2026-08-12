@@ -114,21 +114,21 @@ final class Archive_Manager
     {
         $archives = self::selected($ids);
         if ($archives === []) {
-            throw new RuntimeException('İndirilecek ZIP dosyası bulunamadı.');
+            throw new RuntimeException(__('İndirilecek ZIP dosyası bulunamadı.', 'ragnus-static-publisher'));
         }
         if (! class_exists(ZipArchive::class)) {
-            throw new RuntimeException('PHP ZipArchive eklentisi kurulu değil.');
+            throw new RuntimeException(__('PHP ZipArchive eklentisi kurulu değil.', 'ragnus-static-publisher'));
         }
 
         $bundle_path = tempnam(get_temp_dir(), 'ragstat-');
         if (! is_string($bundle_path) || $bundle_path === '') {
-            throw new RuntimeException('Geçici indirme paketi oluşturulamadı.');
+            throw new RuntimeException(__('Geçici indirme paketi oluşturulamadı.', 'ragnus-static-publisher'));
         }
 
         $zip = new ZipArchive();
         if ($zip->open($bundle_path, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
             unlink($bundle_path);
-            throw new RuntimeException('Toplu indirme paketi oluşturulamadı.');
+            throw new RuntimeException(__('Toplu indirme paketi oluşturulamadı.', 'ragnus-static-publisher'));
         }
 
         foreach ($archives as $archive) {

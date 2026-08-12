@@ -69,6 +69,16 @@ final class Admin
             'runnerUrl' => admin_url('admin-ajax.php'),
             'runnerNonce' => wp_create_nonce('ragnus_static_run_pending'),
             'pollInterval' => 2000,
+            'i18n' => [
+                'queued' => __('Kuyrukta', 'ragnus-static-publisher'),
+                'running' => __('Çalışıyor', 'ragnus-static-publisher'),
+                'completed' => __('Tamamlandı', 'ragnus-static-publisher'),
+                'failed' => __('Başarısız', 'ragnus-static-publisher'),
+                'notRun' => __('Henüz Çalışmadı', 'ragnus-static-publisher'),
+                'progressLabel' => __('Static oluşturma ilerlemesi', 'ragnus-static-publisher'),
+                'retry' => __('Yeniden Dene', 'ragnus-static-publisher'),
+                'create' => __('Statik Site Oluştur', 'ragnus-static-publisher'),
+            ],
         ]);
     }
 
@@ -161,7 +171,7 @@ final class Admin
     public static function start_export(): void
     {
         if (! current_user_can('manage_options')) {
-            wp_die('Bu işlem için yetkiniz yok.', 403);
+            wp_die(__('Bu işlem için yetkiniz yok.', 'ragnus-static-publisher'), 403);
         }
         check_admin_referer('ragnus_static_export');
         $current_status = Plugin::public_status();
@@ -186,13 +196,13 @@ final class Admin
     public static function download_export(): void
     {
         if (! current_user_can('manage_options')) {
-            wp_die('Bu işlem için yetkiniz yok.', 403);
+            wp_die(__('Bu işlem için yetkiniz yok.', 'ragnus-static-publisher'), 403);
         }
         check_admin_referer('ragnus_static_download');
 
         $archive = Archive_Manager::latest();
         if ($archive === null || ! is_readable((string) $archive['path'])) {
-            wp_die('İndirilebilir export bulunamadı.', 404);
+            wp_die(__('İndirilebilir export bulunamadı.', 'ragnus-static-publisher'), 404);
         }
 
         self::send_file((string) $archive['path'], (string) $archive['id'] . '.zip');
@@ -201,7 +211,7 @@ final class Admin
     public static function run_pending_export(): void
     {
         if (! current_user_can('manage_options')) {
-            wp_send_json_error(['message' => 'Bu işlem için yetkiniz yok.'], 403);
+            wp_send_json_error(['message' => __('Bu işlem için yetkiniz yok.', 'ragnus-static-publisher')], 403);
         }
         check_ajax_referer('ragnus_static_run_pending', 'nonce');
 
@@ -211,7 +221,7 @@ final class Admin
             wp_send_json_success(['status' => Plugin::public_status()]);
         }
         if (get_transient(Plugin::LOCK_KEY)) {
-            wp_send_json_error(['message' => 'Export işlemi zaten çalışıyor.'], 409);
+            wp_send_json_error(['message' => __('Export işlemi zaten çalışıyor.', 'ragnus-static-publisher')], 409);
         }
 
         $scheduled = wp_next_scheduled(Plugin::CRON_HOOK, [$job_id]);
@@ -230,7 +240,7 @@ final class Admin
     public static function refresh_diagnostics(): void
     {
         if (! current_user_can('manage_options')) {
-            wp_die('Bu işlem için yetkiniz yok.', 403);
+            wp_die(__('Bu işlem için yetkiniz yok.', 'ragnus-static-publisher'), 403);
         }
         check_admin_referer('ragnus_static_refresh_diagnostics');
         Diagnostics::refresh();
@@ -241,14 +251,14 @@ final class Admin
     public static function download_archive(): void
     {
         if (! current_user_can('manage_options')) {
-            wp_die('Bu işlem için yetkiniz yok.', 403);
+            wp_die(__('Bu işlem için yetkiniz yok.', 'ragnus-static-publisher'), 403);
         }
 
         $archive_id = isset($_GET['archive_id']) ? sanitize_file_name(wp_unslash((string) $_GET['archive_id'])) : '';
         check_admin_referer('ragnus_static_download_archive_' . $archive_id);
         $archive = Archive_Manager::find($archive_id);
         if ($archive === null || ! is_readable((string) $archive['path'])) {
-            wp_die('İndirilebilir ZIP dosyası bulunamadı.', 404);
+            wp_die(__('İndirilebilir ZIP dosyası bulunamadı.', 'ragnus-static-publisher'), 404);
         }
 
         self::send_file((string) $archive['path'], $archive_id . '.zip');
@@ -257,7 +267,7 @@ final class Admin
     public static function archive_bulk_action(): void
     {
         if (! current_user_can('manage_options')) {
-            wp_die('Bu işlem için yetkiniz yok.', 403);
+            wp_die(__('Bu işlem için yetkiniz yok.', 'ragnus-static-publisher'), 403);
         }
         check_admin_referer('ragnus_static_archive_bulk');
 
@@ -338,7 +348,7 @@ final class Admin
     public static function cleanup_exports(): void
     {
         if (! current_user_can('manage_options')) {
-            wp_die('Bu işlem için yetkiniz yok.', 403);
+            wp_die(__('Bu işlem için yetkiniz yok.', 'ragnus-static-publisher'), 403);
         }
         check_admin_referer('ragnus_static_cleanup_exports');
 
@@ -381,6 +391,7 @@ final class Admin
         $current_tab = isset($tabs[$requested_tab]) ? $requested_tab : 'main';
         $status = Plugin::public_status();
         $archives = Archive_Manager::archives();
+        ob_start();
         ?>
         <div class="wrap ragstat-admin">
             <header class="ragstat-admin-header">
@@ -418,6 +429,167 @@ final class Admin
             <?php self::render_confirmation_modal(); ?>
         </div>
         <?php
+        echo self::translate_admin_markup((string) ob_get_clean());
+    }
+
+    private static function translate_admin_markup(string $html): string
+    {
+        $translations = [
+            'Main' => esc_html__('Main', 'ragnus-static-publisher'),
+            'Files' => esc_html__('Files', 'ragnus-static-publisher'),
+            'Settings' => esc_html__('Settings', 'ragnus-static-publisher'),
+            'Arama' => esc_html__('Arama', 'ragnus-static-publisher'),
+            'Hide' => esc_html__('Hide', 'ragnus-static-publisher'),
+            'Diagnostics' => esc_html__('Diagnostics', 'ragnus-static-publisher'),
+            'Activity Logs' => esc_html__('Activity Logs', 'ragnus-static-publisher'),
+            'About' => esc_html__('About', 'ragnus-static-publisher'),
+            'WordPress sitenizin statik kopyasını üretin. Cloudflare kimlik bilgileri bu eklentide tutulmaz.' => esc_html__('WordPress sitenizin statik kopyasını üretin. Cloudflare kimlik bilgileri bu eklentide tutulmaz.', 'ragnus-static-publisher'),
+            'Static Publisher bölümleri' => esc_html__('Static Publisher bölümleri', 'ragnus-static-publisher'),
+            'İşlemi Onaylayın' => esc_html__('İşlemi Onaylayın', 'ragnus-static-publisher'),
+            'Vazgeç' => esc_html__('Vazgeç', 'ragnus-static-publisher'),
+            'Sil' => esc_html__('Sil', 'ragnus-static-publisher'),
+            'Yayın Durumu' => esc_html__('Yayın Durumu', 'ragnus-static-publisher'),
+            'Durum' => esc_html__('Durum', 'ragnus-static-publisher'),
+            'İlerleme' => esc_html__('İlerleme', 'ragnus-static-publisher'),
+            'Static oluşturma ilerlemesi' => esc_html__('Static oluşturma ilerlemesi', 'ragnus-static-publisher'),
+            'Tamamlandı' => esc_html__('Tamamlandı', 'ragnus-static-publisher'),
+            'Başarısız' => esc_html__('Başarısız', 'ragnus-static-publisher'),
+            'Aşama' => esc_html__('Aşama', 'ragnus-static-publisher'),
+            'İş Kimliği' => esc_html__('İş Kimliği', 'ragnus-static-publisher'),
+            'URL Sayısı' => esc_html__('URL Sayısı', 'ragnus-static-publisher'),
+            'İşlenen Adres' => esc_html__('İşlenen Adres', 'ragnus-static-publisher'),
+            'Son Statik Oluşturma' => esc_html__('Son Statik Oluşturma', 'ragnus-static-publisher'),
+            'Hata' => esc_html__('Hata', 'ragnus-static-publisher'),
+            'İndir' => esc_html__('İndir', 'ragnus-static-publisher'),
+            'ZIP Dosyaları' => esc_html__('ZIP Dosyaları', 'ragnus-static-publisher'),
+            'Export devam ederken eski dosyalar silinemez.' => esc_html__('Export devam ederken eski dosyalar silinemez.', 'ragnus-static-publisher'),
+            'Export devam ederken ZIP dosyaları silinemez.' => esc_html__('Export devam ederken ZIP dosyaları silinemez.', 'ragnus-static-publisher'),
+            'İşlem yapmak için en az bir ZIP dosyası seçin.' => esc_html__('İşlem yapmak için en az bir ZIP dosyası seçin.', 'ragnus-static-publisher'),
+            'Geçerli bir toplu işlem seçin.' => esc_html__('Geçerli bir toplu işlem seçin.', 'ragnus-static-publisher'),
+            'Henüz oluşturulmuş bir ZIP dosyası yok.' => esc_html__('Henüz oluşturulmuş bir ZIP dosyası yok.', 'ragnus-static-publisher'),
+            'Toplu İşlem Seçin' => esc_html__('Toplu İşlem Seçin', 'ragnus-static-publisher'),
+            'Toplu İşlem' => esc_html__('Toplu İşlem', 'ragnus-static-publisher'),
+            'Seçilenleri İndir' => esc_html__('Seçilenleri İndir', 'ragnus-static-publisher'),
+            'Seçilenleri Sil' => esc_html__('Seçilenleri Sil', 'ragnus-static-publisher'),
+            'Uygula' => esc_html__('Uygula', 'ragnus-static-publisher'),
+            'Tümünü Seç' => esc_html__('Tümünü Seç', 'ragnus-static-publisher'),
+            'Sıra' => esc_html__('Sıra', 'ragnus-static-publisher'),
+            'Oluşturma Tarihi' => esc_html__('Oluşturma Tarihi', 'ragnus-static-publisher'),
+            'Oluşturma Saati' => esc_html__('Oluşturma Saati', 'ragnus-static-publisher'),
+            'İşlem' => esc_html__('İşlem', 'ragnus-static-publisher'),
+            'Eski Dosyaları Sil' => esc_html__('Eski Dosyaları Sil', 'ragnus-static-publisher'),
+            'Activity Logs' => esc_html__('Activity Logs', 'ragnus-static-publisher'),
+            'En son static işlemine ait kayıtlar:' => esc_html__('En son static işlemine ait kayıtlar:', 'ragnus-static-publisher'),
+            'Kayıt Sayısı:' => esc_html__('Kayıt Sayısı:', 'ragnus-static-publisher'),
+            'Log Kayıtlarında Ara' => esc_html__('Log Kayıtlarında Ara', 'ragnus-static-publisher'),
+            'Ara' => esc_html__('Ara', 'ragnus-static-publisher'),
+            'Aramayı Temizle' => esc_html__('Aramayı Temizle', 'ragnus-static-publisher'),
+            'Kaynak Adres' => esc_html__('Kaynak Adres', 'ragnus-static-publisher'),
+            'Statik Adres' => esc_html__('Statik Adres', 'ragnus-static-publisher'),
+            'Tarih' => esc_html__('Tarih', 'ragnus-static-publisher'),
+            'Saat' => esc_html__('Saat', 'ragnus-static-publisher'),
+            'Henüz kaydedilmiş bir export etkinliği yok.' => esc_html__('Henüz kaydedilmiş bir export etkinliği yok.', 'ragnus-static-publisher'),
+            'Statik oluşturma, otomasyon ve yayınlama ayarlarını yönetin.' => esc_html__('Statik oluşturma, otomasyon ve yayınlama ayarlarını yönetin.', 'ragnus-static-publisher'),
+            'Settings alt bölümleri' => esc_html__('Settings alt bölümleri', 'ragnus-static-publisher'),
+            'Genel' => esc_html__('Genel', 'ragnus-static-publisher'),
+            'Otomasyon' => esc_html__('Otomasyon', 'ragnus-static-publisher'),
+            'Diller' => esc_html__('Diller', 'ragnus-static-publisher'),
+            'Deploy' => esc_html__('Deploy', 'ragnus-static-publisher'),
+            'Canlı Site Adresi' => esc_html__('Canlı Site Adresi', 'ragnus-static-publisher'),
+            'Örnek: https://example.com' => esc_html__('Örnek: https://example.com', 'ragnus-static-publisher'),
+            'En Fazla URL' => esc_html__('En Fazla URL', 'ragnus-static-publisher'),
+            'Hariç Tutulan Yollar' => esc_html__('Hariç Tutulan Yollar', 'ragnus-static-publisher'),
+            'Satır başına bir yol öneki.' => esc_html__('Satır başına bir yol öneki.', 'ragnus-static-publisher'),
+            'Saklanacak ZIP Sayısı' => esc_html__('Saklanacak ZIP Sayısı', 'ragnus-static-publisher'),
+            'En son kaç başarılı export arşivinin saklanacağını belirler. Varsayılan: 5.' => esc_html__('En son kaç başarılı export arşivinin saklanacağını belirler. Varsayılan: 5.', 'ragnus-static-publisher'),
+            'En son ZIP dosyası korunur; önceki ZIP dosyaları ve bunlara ait geçici build klasörleri kalıcı olarak silinir.' => esc_html__('En son ZIP dosyası korunur; önceki ZIP dosyaları ve bunlara ait geçici build klasörleri kalıcı olarak silinir.', 'ragnus-static-publisher'),
+            'Otomatik Statik Site Oluşturma ve Deploy' => esc_html__('Otomatik Statik Site Oluşturma ve Deploy', 'ragnus-static-publisher'),
+            'Seçilen değişikliklerden sonra statik site oluşturulur; deployment webhook ayarlıysa deploy akışı otomatik tetiklenir.' => esc_html__('Seçilen değişikliklerden sonra statik site oluşturulur; deployment webhook ayarlıysa deploy akışı otomatik tetiklenir.', 'ragnus-static-publisher'),
+            'Otomatik statik site oluşturmayı etkinleştir' => esc_html__('Otomatik statik site oluşturmayı etkinleştir', 'ragnus-static-publisher'),
+            'Arka arkaya yapılan değişiklikler 60 saniye boyunca birleştirilerek tek export ve deploy olarak çalıştırılır.' => esc_html__('Arka arkaya yapılan değişiklikler 60 saniye boyunca birleştirilerek tek export ve deploy olarak çalıştırılır.', 'ragnus-static-publisher'),
+            'GitHub Deployment Webhook' => esc_html__('GitHub Deployment Webhook', 'ragnus-static-publisher'),
+            'Deployment Webhook' => esc_html__('Deployment Webhook', 'ragnus-static-publisher'),
+            'GitHub için: https://api.github.com/repos/SAHIP/REPO/dispatches' => esc_html__('GitHub için: https://api.github.com/repos/SAHIP/REPO/dispatches', 'ragnus-static-publisher'),
+            'Webhook Bearer Token' => esc_html__('Webhook Bearer Token', 'ragnus-static-publisher'),
+            'GitHub kullanılıyorsa yalnızca bu repository için Contents: write yetkili fine-grained token kullanın.' => esc_html__('GitHub kullanılıyorsa yalnızca bu repository için Contents: write yetkili fine-grained token kullanın.', 'ragnus-static-publisher'),
+            'Tarayıcı Diline Göre Yönlendirme' => esc_html__('Tarayıcı Diline Göre Yönlendirme', 'ragnus-static-publisher'),
+            'Ziyaretçi ana adrese geldiğinde önce kayıtlı tercihi, ardından tarayıcısının dil sırası kullanılır.' => esc_html__('Ziyaretçi ana adrese geldiğinde önce kayıtlı tercihi, ardından tarayıcısının dil sırası kullanılır.', 'ragnus-static-publisher'),
+            'Desteklenen Dil Kodları' => esc_html__('Desteklenen Dil Kodları', 'ragnus-static-publisher'),
+            'Her satıra bir dil yazın. Bu kodların WordPress’te' => esc_html__('Her satıra bir dil yazın. Bu kodların WordPress’te', 'ragnus-static-publisher'),
+            'gibi karşılıkları bulunmalıdır.' => esc_html__('gibi karşılıkları bulunmalıdır.', 'ragnus-static-publisher'),
+            'Varsayılan Dil' => esc_html__('Varsayılan Dil', 'ragnus-static-publisher'),
+            'Tarayıcı dili desteklenmiyorsa bu dil açılır.' => esc_html__('Tarayıcı dili desteklenmiyorsa bu dil açılır.', 'ragnus-static-publisher'),
+            'Dil Tercihi Süresi' => esc_html__('Dil Tercihi Süresi', 'ragnus-static-publisher'),
+            'Kullanıcının açıkça ziyaret ettiği dil daha sonraki girişlerde korunur.' => esc_html__('Kullanıcının açıkça ziyaret ettiği dil daha sonraki girişlerde korunur.', 'ragnus-static-publisher'),
+            'gün' => esc_html__('gün', 'ragnus-static-publisher'),
+            'Yönlendirme yalnızca sitenin' => esc_html__('Yönlendirme yalnızca sitenin', 'ragnus-static-publisher'),
+            'adresinde çalışır. Dil içeren doğrudan bağlantılar değiştirilmez.' => esc_html__('adresinde çalışır. Dil içeren doğrudan bağlantılar değiştirilmez.', 'ragnus-static-publisher'),
+            'Statik Arama' => esc_html__('Statik Arama', 'ragnus-static-publisher'),
+            'Fuse.js ile çalışan, sunucu gerektirmeyen statik site aramasını yapılandırın.' => esc_html__('Fuse.js ile çalışan, sunucu gerektirmeyen statik site aramasını yapılandırın.', 'ragnus-static-publisher'),
+            'Arama sayfası, indeks ve gerekli Fuse.js dosyaları export ZIP’ine eklenir.' => esc_html__('Arama sayfası, indeks ve gerekli Fuse.js dosyaları export ZIP’ine eklenir.', 'ragnus-static-publisher'),
+            'Arama Sayfası Yolu' => esc_html__('Arama Sayfası Yolu', 'ragnus-static-publisher'),
+            'Gösterilecek Sonuç Sayısı' => esc_html__('Gösterilecek Sonuç Sayısı', 'ragnus-static-publisher'),
+            'Minimum Arama Karakteri' => esc_html__('Minimum Arama Karakteri', 'ragnus-static-publisher'),
+            'İçerik Karakter Sınırı' => esc_html__('İçerik Karakter Sınırı', 'ragnus-static-publisher'),
+            'Her sayfadan indekse alınacak en fazla metin uzunluğu.' => esc_html__('Her sayfadan indekse alınacak en fazla metin uzunluğu.', 'ragnus-static-publisher'),
+            'Bulanıklık Eşiği' => esc_html__('Bulanıklık Eşiği', 'ragnus-static-publisher'),
+            'Düşük değer daha kesin, yüksek değer daha toleranslı sonuç verir.' => esc_html__('Düşük değer daha kesin, yüksek değer daha toleranslı sonuç verir.', 'ragnus-static-publisher'),
+            'Kelime Eşleştirme' => esc_html__('Kelime Eşleştirme', 'ragnus-static-publisher'),
+            'Tüm kelimeler eşleşsin' => esc_html__('Tüm kelimeler eşleşsin', 'ragnus-static-publisher'),
+            'Herhangi bir kelime eşleşsin' => esc_html__('Herhangi bir kelime eşleşsin', 'ragnus-static-publisher'),
+            'İndeksleme Seçicileri' => esc_html__('İndeksleme Seçicileri', 'ragnus-static-publisher'),
+            'Sayfa ve yazı HTML’inden hangi alanların alınacağını CSS selector ile belirleyin.' => esc_html__('Sayfa ve yazı HTML’inden hangi alanların alınacağını CSS selector ile belirleyin.', 'ragnus-static-publisher'),
+            'Başlık İçin CSS Selector' => esc_html__('Başlık İçin CSS Selector', 'ragnus-static-publisher'),
+            'İçerik İçin CSS Selector' => esc_html__('İçerik İçin CSS Selector', 'ragnus-static-publisher'),
+            'Özet İçin CSS Selector' => esc_html__('Özet İçin CSS Selector', 'ragnus-static-publisher'),
+            'Alan bulunamazsa içerikten otomatik kısa özet üretilir.' => esc_html__('Alan bulunamazsa içerikten otomatik kısa özet üretilir.', 'ragnus-static-publisher'),
+            'İndeks Dışında Tutulacak URL’ler' => esc_html__('İndeks Dışında Tutulacak URL’ler', 'ragnus-static-publisher'),
+            'Satır başına tam URL, URL parçası veya kelime yazabilirsiniz.' => esc_html__('Satır başına tam URL, URL parçası veya kelime yazabilirsiniz.', 'ragnus-static-publisher'),
+            'Fuse.js Alanları ve Ağırlıkları' => esc_html__('Fuse.js Alanları ve Ağırlıkları', 'ragnus-static-publisher'),
+            'Aranacak alanları seçin ve sonuç sıralamasındaki etkilerini belirleyin.' => esc_html__('Aranacak alanları seçin ve sonuç sıralamasındaki etkilerini belirleyin.', 'ragnus-static-publisher'),
+            'Ağırlık' => esc_html__('Ağırlık', 'ragnus-static-publisher'),
+            'WordPress İzlerini Gizle' => esc_html__('WordPress İzlerini Gizle', 'ragnus-static-publisher'),
+            'Seçilen WordPress tanımlayıcılarını statik HTML çıktısından kaldırır.' => esc_html__('Seçilen WordPress tanımlayıcılarını statik HTML çıktısından kaldırır.', 'ragnus-static-publisher'),
+            'WordPress\'e özgü dizin ve yol adlarının statik çıktıda hangi adlarla kullanılacağını belirleyin. Kaynak WordPress dosyaları değiştirilmez.' => esc_html__('WordPress\'e özgü dizin ve yol adlarının statik çıktıda hangi adlarla kullanılacağını belirleyin. Kaynak WordPress dosyaları değiştirilmez.', 'ragnus-static-publisher'),
+            'Statik çıktıda' => esc_html__('Statik çıktıda', 'ragnus-static-publisher'),
+            'yolunun yerine kullanılacak yol.' => esc_html__('yolunun yerine kullanılacak yol.', 'ragnus-static-publisher'),
+            'yolunun yerine kullanılacak alt dizin.' => esc_html__('yolunun yerine kullanılacak alt dizin.', 'ragnus-static-publisher'),
+            'Aktif tema içindeki' => esc_html__('Aktif tema içindeki', 'ragnus-static-publisher'),
+            'dosyasının statik çıktıdaki adı.' => esc_html__('dosyasının statik çıktıdaki adı.', 'ragnus-static-publisher'),
+            'dizininin yerine kullanılacak ad.' => esc_html__('dizininin yerine kullanılacak ad.', 'ragnus-static-publisher'),
+            'WP-Content Dizini' => esc_html__('WP-Content Dizini', 'ragnus-static-publisher'),
+            'WP-Includes Dizini' => esc_html__('WP-Includes Dizini', 'ragnus-static-publisher'),
+            'Uploads Dizini' => esc_html__('Uploads Dizini', 'ragnus-static-publisher'),
+            'Plugins Dizini' => esc_html__('Plugins Dizini', 'ragnus-static-publisher'),
+            'Themes Dizini' => esc_html__('Themes Dizini', 'ragnus-static-publisher'),
+            'Tema Stil Dosyası' => esc_html__('Tema Stil Dosyası', 'ragnus-static-publisher'),
+            'Yazar URL\'si' => esc_html__('Yazar URL\'si', 'ragnus-static-publisher'),
+            'Statik Çıktıda Devre Dışı Bırak' => esc_html__('Statik Çıktıda Devre Dışı Bırak', 'ragnus-static-publisher'),
+            'Statik sitede kullanılmayan WordPress bağlantı ve betiklerini temizler.' => esc_html__('Statik sitede kullanılmayan WordPress bağlantı ve betiklerini temizler.', 'ragnus-static-publisher'),
+            'Diagnostics kontrolleri güncellendi.' => esc_html__('Diagnostics kontrolleri güncellendi.', 'ragnus-static-publisher'),
+            'Son kontrol:' => esc_html__('Son kontrol:', 'ragnus-static-publisher'),
+            'Tekrar Kontrol Et' => esc_html__('Tekrar Kontrol Et', 'ragnus-static-publisher'),
+            'Başarılı' => esc_html__('Başarılı', 'ragnus-static-publisher'),
+            'Ragnus Static Publisher' => esc_html__('Ragnus Static Publisher', 'ragnus-static-publisher'),
+            'WordPress sitenizi statik dosyalara dönüştürmek ve yayın süreçlerine hazırlamak için geliştirilmiştir.' => esc_html__('WordPress sitenizi statik dosyalara dönüştürmek ve yayın süreçlerine hazırlamak için geliştirilmiştir.', 'ragnus-static-publisher'),
+            'Versiyon Numarası' => esc_html__('Versiyon Numarası', 'ragnus-static-publisher'),
+            'Destek Maili' => esc_html__('Destek Maili', 'ragnus-static-publisher'),
+            'Eklenti Web Sitesi' => esc_html__('Eklenti Web Sitesi', 'ragnus-static-publisher'),
+            'Statik sitenizi yayınlamak için kullanacağınız yöntemi seçin.' => esc_html__('Statik sitenizi yayınlamak için kullanacağınız yöntemi seçin.', 'ragnus-static-publisher'),
+            'Oluşturulan statik site paketini indirip istediğiniz sunucuya manuel olarak yükleyin.' => esc_html__('Oluşturulan statik site paketini indirip istediğiniz sunucuya manuel olarak yükleyin.', 'ragnus-static-publisher'),
+            'Önce statik site oluşturun' => esc_html__('Önce statik site oluşturun', 'ragnus-static-publisher'),
+            'ZIP hazır' => esc_html__('ZIP hazır', 'ragnus-static-publisher'),
+            'ZIP Dosyalarını Aç' => esc_html__('ZIP Dosyalarını Aç', 'ragnus-static-publisher'),
+            'Export tamamlandığında GitHub Actions akışını webhook ile otomatik olarak tetikleyin.' => esc_html__('Export tamamlandığında GitHub Actions akışını webhook ile otomatik olarak tetikleyin.', 'ragnus-static-publisher'),
+            'Yapılandırma gerekli' => esc_html__('Yapılandırma gerekli', 'ragnus-static-publisher'),
+            'Webhook ayarlı' => esc_html__('Webhook ayarlı', 'ragnus-static-publisher'),
+            'GitHub Ayarları' => esc_html__('GitHub Ayarları', 'ragnus-static-publisher'),
+            'GitHub Actions akışıyla statik dosyaları Cloudflare Workers Static Assets üzerinde yayınlayın.' => esc_html__('GitHub Actions akışıyla statik dosyaları Cloudflare Workers Static Assets üzerinde yayınlayın.', 'ragnus-static-publisher'),
+            'Cloudflare hesabı gerekir' => esc_html__('Cloudflare hesabı gerekir', 'ragnus-static-publisher'),
+            'Cloudflare\'ı Aç' => esc_html__('Cloudflare\'ı Aç', 'ragnus-static-publisher'),
+        ];
+
+        return strtr($html, $translations);
     }
 
     private static function render_confirmation_modal(): void
@@ -456,10 +628,10 @@ final class Admin
         $state = (string) ($status['state'] ?? '');
         $progress = max(0, min(100, absint($status['progress'] ?? 0)));
         $state_labels = [
-            'queued' => 'Kuyrukta',
-            'running' => 'Çalışıyor',
-            'completed' => 'Tamamlandı',
-            'failed' => 'Başarısız',
+            'queued' => __('Kuyrukta', 'ragnus-static-publisher'),
+            'running' => __('Çalışıyor', 'ragnus-static-publisher'),
+            'completed' => __('Tamamlandı', 'ragnus-static-publisher'),
+            'failed' => __('Başarısız', 'ragnus-static-publisher'),
         ];
         $last_completed_at = is_string($status['last_completed_at'] ?? null)
             ? $status['last_completed_at']
@@ -474,7 +646,7 @@ final class Admin
         <div id="ragstat-runtime-notice" class="notice notice-warning inline ragstat-runtime-notice" role="status" <?php echo $runtime_notice === '' ? 'hidden' : ''; ?>><p><?php echo esc_html($runtime_notice); ?></p></div>
         <table class="widefat striped ragstat-status-table">
             <tbody>
-            <tr><th>Durum</th><td id="ragstat-status-state"><?php echo esc_html($state_labels[$state] ?? 'Henüz Çalışmadı'); ?></td></tr>
+            <tr><th>Durum</th><td id="ragstat-status-state"><?php echo esc_html($state_labels[$state] ?? __('Henüz Çalışmadı', 'ragnus-static-publisher')); ?></td></tr>
             <tr>
                 <th>İlerleme</th>
                 <td id="ragstat-progress-cell">
@@ -502,7 +674,7 @@ final class Admin
         <form class="ragstat-actions" method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
             <input type="hidden" name="action" value="ragnus_static_export">
             <?php wp_nonce_field('ragnus_static_export'); ?>
-            <?php submit_button('Statik Site Oluştur', 'primary', 'submit', false, $is_active ? ['disabled' => 'disabled'] : []); ?>
+            <?php submit_button(__('Statik Site Oluştur', 'ragnus-static-publisher'), 'primary', 'submit', false, $is_active ? ['disabled' => 'disabled'] : []); ?>
             <a id="ragstat-download" class="button" href="<?php echo esc_url(wp_nonce_url(admin_url('admin-post.php?action=ragnus_static_download'), 'ragnus_static_download')); ?>" <?php echo $archives === [] ? 'hidden' : ''; ?>>İndir</a>
         </form>
         </div>
@@ -516,23 +688,23 @@ final class Admin
         ?>
         <h2>ZIP Dosyaları</h2>
         <?php if ($cleanup_status === 'success') : ?>
-            <div class="notice notice-success is-dismissible"><p><?php echo esc_html(sprintf('%d eski ZIP dosyası silindi.', absint($_GET['deleted'] ?? 0))); ?></p></div>
+            <div class="notice notice-success inline is-dismissible ragstat-files-notice"><p><?php echo esc_html(sprintf(__('%d eski ZIP dosyası silindi.', 'ragnus-static-publisher'), absint($_GET['deleted'] ?? 0))); ?></p></div>
         <?php elseif ($cleanup_status === 'partial') : ?>
-            <div class="notice notice-warning is-dismissible"><p><?php echo esc_html(sprintf('%1$d eski ZIP dosyası silindi, %2$d dosya silinemedi.', absint($_GET['deleted'] ?? 0), absint($_GET['failed'] ?? 0))); ?></p></div>
+            <div class="notice notice-warning inline is-dismissible ragstat-files-notice"><p><?php echo esc_html(sprintf(__('%1$d eski ZIP dosyası silindi, %2$d dosya silinemedi.', 'ragnus-static-publisher'), absint($_GET['deleted'] ?? 0), absint($_GET['failed'] ?? 0))); ?></p></div>
         <?php elseif ($cleanup_status === 'running') : ?>
-            <div class="notice notice-warning is-dismissible"><p>Export devam ederken eski dosyalar silinemez.</p></div>
+            <div class="notice notice-warning inline is-dismissible ragstat-files-notice"><p>Export devam ederken eski dosyalar silinemez.</p></div>
         <?php endif; ?>
 
         <?php if ($archive_notice === 'deleted') : ?>
-            <div class="notice notice-success is-dismissible"><p><?php echo esc_html(sprintf('%d ZIP dosyası silindi.', absint($_GET['deleted'] ?? 0))); ?></p></div>
+            <div class="notice notice-success inline is-dismissible ragstat-files-notice"><p><?php echo esc_html(sprintf(__('%d ZIP dosyası silindi.', 'ragnus-static-publisher'), absint($_GET['deleted'] ?? 0))); ?></p></div>
         <?php elseif ($archive_notice === 'partial') : ?>
-            <div class="notice notice-warning is-dismissible"><p><?php echo esc_html(sprintf('%1$d ZIP dosyası silindi, %2$d dosya silinemedi.', absint($_GET['deleted'] ?? 0), absint($_GET['failed'] ?? 0))); ?></p></div>
+            <div class="notice notice-warning inline is-dismissible ragstat-files-notice"><p><?php echo esc_html(sprintf(__('%1$d ZIP dosyası silindi, %2$d dosya silinemedi.', 'ragnus-static-publisher'), absint($_GET['deleted'] ?? 0), absint($_GET['failed'] ?? 0))); ?></p></div>
         <?php elseif ($archive_notice === 'no-selection') : ?>
-            <div class="notice notice-warning is-dismissible"><p>İşlem yapmak için en az bir ZIP dosyası seçin.</p></div>
+            <div class="notice notice-warning inline is-dismissible ragstat-files-notice"><p>İşlem yapmak için en az bir ZIP dosyası seçin.</p></div>
         <?php elseif ($archive_notice === 'invalid-action') : ?>
-            <div class="notice notice-warning is-dismissible"><p>Geçerli bir toplu işlem seçin.</p></div>
+            <div class="notice notice-warning inline is-dismissible ragstat-files-notice"><p>Geçerli bir toplu işlem seçin.</p></div>
         <?php elseif ($archive_notice === 'running') : ?>
-            <div class="notice notice-warning is-dismissible"><p>Export devam ederken ZIP dosyaları silinemez.</p></div>
+            <div class="notice notice-warning inline is-dismissible ragstat-files-notice"><p>Export devam ederken ZIP dosyaları silinemez.</p></div>
         <?php endif; ?>
 
         <?php if ($archives === []) : ?>
@@ -550,7 +722,7 @@ final class Admin
                             <option value="delete">Seçilenleri Sil</option>
                         </select>
                         <?php submit_button('Uygula', 'action', 'bulk_submit', false, [
-                            'data-ragstat-confirm' => 'Seçilen ZIP dosyaları kalıcı olarak silinecek. Devam edilsin mi?',
+                            'data-ragstat-confirm' => __('Seçilen ZIP dosyaları kalıcı olarak silinecek. Devam edilsin mi?', 'ragnus-static-publisher'),
                             'data-ragstat-confirm-action' => 'delete',
                         ]); ?>
                     </div>
@@ -585,8 +757,8 @@ final class Admin
         <form class="ragstat-cleanup-form" method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
             <input type="hidden" name="action" value="ragnus_static_cleanup_exports">
             <?php wp_nonce_field('ragnus_static_cleanup_exports'); ?>
-            <?php submit_button('Eski Dosyaları Sil', 'delete', 'submit', false, [
-                'data-ragstat-confirm' => 'En son ZIP dışındaki tüm eski ZIP dosyaları silinecek. Devam edilsin mi?',
+            <?php submit_button(__('Eski Dosyaları Sil', 'ragnus-static-publisher'), 'delete', 'submit', false, [
+                'data-ragstat-confirm' => __('En son ZIP dışındaki tüm eski ZIP dosyaları silinecek. Devam edilsin mi?', 'ragnus-static-publisher'),
             ]); ?>
             <p class="description">En son ZIP dosyası korunur; önceki ZIP dosyaları ve bunlara ait geçici build klasörleri kalıcı olarak silinir.</p>
         </form>
@@ -613,7 +785,7 @@ final class Admin
                 </div>
                 <div class="ragstat-deploy-card__footer">
                     <span class="ragstat-deploy-status <?php echo $has_archive ? 'is-ready' : 'is-pending'; ?>">
-                        <?php echo $has_archive ? 'ZIP hazır' : 'Önce statik site oluşturun'; ?>
+                        <?php echo $has_archive ? __('ZIP hazır', 'ragnus-static-publisher') : __('Önce statik site oluşturun', 'ragnus-static-publisher'); ?>
                     </span>
                     <a class="button button-primary" href="<?php echo esc_url(self::admin_page_url('files')); ?>">ZIP Dosyalarını Aç</a>
                 </div>
@@ -627,7 +799,7 @@ final class Admin
                 </div>
                 <div class="ragstat-deploy-card__footer">
                     <span class="ragstat-deploy-status <?php echo $github_configured ? 'is-ready' : 'is-pending'; ?>">
-                        <?php echo $github_configured ? 'Webhook ayarlı' : 'Yapılandırma gerekli'; ?>
+                        <?php echo $github_configured ? __('Webhook ayarlı', 'ragnus-static-publisher') : __('Yapılandırma gerekli', 'ragnus-static-publisher'); ?>
                     </span>
                     <a class="button button-primary" href="<?php echo esc_url(self::settings_page_url('deploy') . '#ragstat-webhook'); ?>">GitHub Ayarları</a>
                 </div>
@@ -736,22 +908,24 @@ final class Admin
             <h2>Settings</h2>
             <p>Statik oluşturma, otomasyon ve yayınlama ayarlarını yönetin.</p>
         </div>
-        <nav class="ragstat-settings-tabs" aria-label="Settings alt bölümleri">
-            <?php foreach ($settings_tabs as $settings_tab => $label) : ?>
-                <a class="ragstat-settings-tab <?php echo $current_settings_tab === $settings_tab ? 'is-active' : ''; ?>" href="<?php echo esc_url(self::settings_page_url($settings_tab)); ?>" <?php echo $current_settings_tab === $settings_tab ? 'aria-current="page"' : ''; ?>><?php echo esc_html($label); ?></a>
-            <?php endforeach; ?>
-        </nav>
-        <div class="ragstat-settings-panel">
-            <?php if ($current_settings_tab === 'general') : ?>
-                <?php self::render_general_settings($settings); ?>
-            <?php elseif ($current_settings_tab === 'automation') : ?>
-                <?php self::render_automation_settings($settings); ?>
-            <?php elseif ($current_settings_tab === 'languages') : ?>
-                <?php self::render_language_settings(Plugin::language_settings()); ?>
-            <?php else : ?>
-                <?php self::render_deploy_tab($archives, $settings); ?>
-                <?php self::render_deploy_settings($settings); ?>
-            <?php endif; ?>
+        <div class="ragstat-settings-layout">
+            <nav class="ragstat-settings-tabs" aria-label="Settings alt bölümleri">
+                <?php foreach ($settings_tabs as $settings_tab => $label) : ?>
+                    <a class="ragstat-settings-tab <?php echo $current_settings_tab === $settings_tab ? 'is-active' : ''; ?>" href="<?php echo esc_url(self::settings_page_url($settings_tab)); ?>" <?php echo $current_settings_tab === $settings_tab ? 'aria-current="page"' : ''; ?>><?php echo esc_html($label); ?></a>
+                <?php endforeach; ?>
+            </nav>
+            <div class="ragstat-settings-panel">
+                <?php if ($current_settings_tab === 'general') : ?>
+                    <?php self::render_general_settings($settings); ?>
+                <?php elseif ($current_settings_tab === 'automation') : ?>
+                    <?php self::render_automation_settings($settings); ?>
+                <?php elseif ($current_settings_tab === 'languages') : ?>
+                    <?php self::render_language_settings(Plugin::language_settings()); ?>
+                <?php else : ?>
+                    <?php self::render_deploy_tab($archives, $settings); ?>
+                    <?php self::render_deploy_settings($settings); ?>
+                <?php endif; ?>
+            </div>
         </div>
         <?php
     }
@@ -776,20 +950,20 @@ final class Admin
     private static function render_automation_settings(array $settings): void
     {
         $auto_export_groups = [
-            'İçerik' => [
-                'auto_export_post_created' => ['Yeni yazı yayınlandığında', 'Yeni bir blog yazısı ilk kez yayınlandığında.'],
-                'auto_export_post_updated' => ['Mevcut yazı güncellendiğinde', 'Yayındaki bir blog yazısı değiştirildiğinde veya yayından kaldırıldığında.'],
-                'auto_export_page_created' => ['Yeni sayfa yayınlandığında', 'Yeni bir sayfa ilk kez yayınlandığında.'],
-                'auto_export_page_updated' => ['Mevcut sayfa güncellendiğinde', 'Yayındaki bir sayfa değiştirildiğinde veya yayından kaldırıldığında.'],
-                'auto_export_custom_content' => ['Özel içerik türleri değiştiğinde', 'Ürün, portföy ve benzeri yayındaki özel içerikler değiştiğinde.'],
+            __('İçerik', 'ragnus-static-publisher') => [
+                'auto_export_post_created' => [__('Yeni yazı yayınlandığında', 'ragnus-static-publisher'), __('Yeni bir blog yazısı ilk kez yayınlandığında.', 'ragnus-static-publisher')],
+                'auto_export_post_updated' => [__('Mevcut yazı güncellendiğinde', 'ragnus-static-publisher'), __('Yayındaki bir blog yazısı değiştirildiğinde veya yayından kaldırıldığında.', 'ragnus-static-publisher')],
+                'auto_export_page_created' => [__('Yeni sayfa yayınlandığında', 'ragnus-static-publisher'), __('Yeni bir sayfa ilk kez yayınlandığında.', 'ragnus-static-publisher')],
+                'auto_export_page_updated' => [__('Mevcut sayfa güncellendiğinde', 'ragnus-static-publisher'), __('Yayındaki bir sayfa değiştirildiğinde veya yayından kaldırıldığında.', 'ragnus-static-publisher')],
+                'auto_export_custom_content' => [__('Özel içerik türleri değiştiğinde', 'ragnus-static-publisher'), __('Ürün, portföy ve benzeri yayındaki özel içerikler değiştiğinde.', 'ragnus-static-publisher')],
             ],
-            'Yapı ve Tasarım' => [
-                'auto_export_taxonomy' => ['Kategori veya etiket değiştiğinde', 'Kategori, etiket ya da özel sınıflandırmalar değiştirildiğinde.'],
-                'auto_export_media' => ['Medya değiştiğinde', 'Görsel veya başka bir medya dosyası eklendiğinde, güncellendiğinde ya da silindiğinde.'],
-                'auto_export_menu' => ['Menü değiştiğinde', 'Gezinme menülerinin yapısı veya bağlantıları değiştirildiğinde.'],
-                'auto_export_widgets' => ['Bileşenler değiştiğinde', 'Widget ve bileşen yerleşimleri güncellendiğinde.'],
-                'auto_export_theme' => ['Tema değiştiğinde', 'Tema değiştirildiğinde, güncellendiğinde veya özelleştirici ayarları kaydedildiğinde.'],
-                'auto_export_site_settings' => ['Site ayarları değiştiğinde', 'Site adı, açıklama, ana sayfa, okuma veya kalıcı bağlantı ayarları değiştirildiğinde.'],
+            __('Yapı ve Tasarım', 'ragnus-static-publisher') => [
+                'auto_export_taxonomy' => [__('Kategori veya etiket değiştiğinde', 'ragnus-static-publisher'), __('Kategori, etiket ya da özel sınıflandırmalar değiştirildiğinde.', 'ragnus-static-publisher')],
+                'auto_export_media' => [__('Medya değiştiğinde', 'ragnus-static-publisher'), __('Görsel veya başka bir medya dosyası eklendiğinde, güncellendiğinde ya da silindiğinde.', 'ragnus-static-publisher')],
+                'auto_export_menu' => [__('Menü değiştiğinde', 'ragnus-static-publisher'), __('Gezinme menülerinin yapısı veya bağlantıları değiştirildiğinde.', 'ragnus-static-publisher')],
+                'auto_export_widgets' => [__('Bileşenler değiştiğinde', 'ragnus-static-publisher'), __('Widget ve bileşen yerleşimleri güncellendiğinde.', 'ragnus-static-publisher')],
+                'auto_export_theme' => [__('Tema değiştiğinde', 'ragnus-static-publisher'), __('Tema değiştirildiğinde, güncellendiğinde veya özelleştirici ayarları kaydedildiğinde.', 'ragnus-static-publisher')],
+                'auto_export_site_settings' => [__('Site ayarları değiştiğinde', 'ragnus-static-publisher'), __('Site adı, açıklama, ana sayfa, okuma veya kalıcı bağlantı ayarları değiştirildiğinde.', 'ragnus-static-publisher')],
             ],
         ];
         ?>
@@ -941,10 +1115,10 @@ final class Admin
                 <div class="ragstat-search-fields">
                     <?php
                     $index_fields = [
-                        'title' => ['Başlık', 'Başlık eşleşmelerini en üstte gösterir.'],
-                        'excerpt' => ['Özet', 'Kısa açıklama ve özet metninde arar.'],
-                        'content' => ['İçerik', 'Sayfa ve yazının ana metninde arar.'],
-                        'taxonomies' => ['Kategori ve Etiketler', 'WordPress kategori ve etiket adlarını indekse ekler.'],
+                        'title' => [__('Başlık', 'ragnus-static-publisher'), __('Başlık eşleşmelerini en üstte gösterir.', 'ragnus-static-publisher')],
+                        'excerpt' => [__('Özet', 'ragnus-static-publisher'), __('Kısa açıklama ve özet metninde arar.', 'ragnus-static-publisher')],
+                        'content' => [__('İçerik', 'ragnus-static-publisher'), __('Sayfa ve yazının ana metninde arar.', 'ragnus-static-publisher')],
+                        'taxonomies' => [__('Kategori ve Etiketler', 'ragnus-static-publisher'), __('WordPress kategori ve etiket adlarını indekse ekler.', 'ragnus-static-publisher')],
                     ];
                     foreach ($index_fields as $field => [$label, $description]) :
                         $weight_key = $field === 'taxonomies' ? 'taxonomy_weight' : $field . '_weight';
@@ -1023,10 +1197,10 @@ final class Admin
                 </div>
                 <?php
                 $hide_toggles = [
-                    'hide_wordpress_version' => ['WordPress Sürümünü Gizle', 'WordPress çekirdek sürümünü belirten asset sürüm parametrelerini kaldırır.'],
-                    'hide_generator_meta' => ['WordPress Generator Meta Etiketini Gizle', 'WordPress sürümünü açıklayan generator meta etiketini kaldırır.'],
-                    'hide_wordpress_dns_prefetch' => ['WordPress DNS Prefetch Bağlantısını Gizle', 'WordPress servislerine ait DNS prefetch bağlantılarını kaldırır.'],
-                    'hide_rsd_header' => ['RSD Header Bağlantısını Gizle', 'Really Simple Discovery bağlantısını statik HTML’den kaldırır.'],
+                    'hide_wordpress_version' => [__('WordPress Sürümünü Gizle', 'ragnus-static-publisher'), __('WordPress çekirdek sürümünü belirten asset sürüm parametrelerini kaldırır.', 'ragnus-static-publisher')],
+                    'hide_generator_meta' => [__('WordPress Generator Meta Etiketini Gizle', 'ragnus-static-publisher'), __('WordPress sürümünü açıklayan generator meta etiketini kaldırır.', 'ragnus-static-publisher')],
+                    'hide_wordpress_dns_prefetch' => [__('WordPress DNS Prefetch Bağlantısını Gizle', 'ragnus-static-publisher'), __('WordPress servislerine ait DNS prefetch bağlantılarını kaldırır.', 'ragnus-static-publisher')],
+                    'hide_rsd_header' => [__('RSD Header Bağlantısını Gizle', 'ragnus-static-publisher'), __('Really Simple Discovery bağlantısını statik HTML’den kaldırır.', 'ragnus-static-publisher')],
                 ];
                 foreach ($hide_toggles as $key => [$label, $description]) :
                     $field_id = 'ragstat-' . str_replace('_', '-', $key);
@@ -1054,11 +1228,11 @@ final class Admin
                 </div>
                 <?php
                 $disable_toggles = [
-                    'disable_xml_rpc' => ['XML-RPC Bağlantılarını Devre Dışı Bırak', 'XML-RPC ve pingback keşif bağlantılarını kaldırır.'],
-                    'disable_embed_scripts' => ['Embed Scriptlerini Devre Dışı Bırak', 'WordPress embed betiklerini statik HTML’den kaldırır.'],
-                    'disable_db_debug' => ['Frontend DB Debug Bilgisini Devre Dışı Bırak', 'Yalnızca export isteklerinde veritabanı hata ayrıntılarının gösterilmesini engeller.'],
-                    'disable_wlw_manifest' => ['WLW Manifest Bağlantısını Devre Dışı Bırak', 'Windows Live Writer manifest bağlantısını kaldırır.'],
-                    'disable_emojis' => ['Emoji Scriptlerini Devre Dışı Bırak', 'WordPress emoji scriptlerini ve stillerini statik HTML’den kaldırır.'],
+                    'disable_xml_rpc' => [__('XML-RPC Bağlantılarını Devre Dışı Bırak', 'ragnus-static-publisher'), __('XML-RPC ve pingback keşif bağlantılarını kaldırır.', 'ragnus-static-publisher')],
+                    'disable_embed_scripts' => [__('Embed Scriptlerini Devre Dışı Bırak', 'ragnus-static-publisher'), __('WordPress embed betiklerini statik HTML’den kaldırır.', 'ragnus-static-publisher')],
+                    'disable_db_debug' => [__('Frontend DB Debug Bilgisini Devre Dışı Bırak', 'ragnus-static-publisher'), __('Yalnızca export isteklerinde veritabanı hata ayrıntılarının gösterilmesini engeller.', 'ragnus-static-publisher')],
+                    'disable_wlw_manifest' => [__('WLW Manifest Bağlantısını Devre Dışı Bırak', 'ragnus-static-publisher'), __('Windows Live Writer manifest bağlantısını kaldırır.', 'ragnus-static-publisher')],
+                    'disable_emojis' => [__('Emoji Scriptlerini Devre Dışı Bırak', 'ragnus-static-publisher'), __('WordPress emoji scriptlerini ve stillerini statik HTML’den kaldırır.', 'ragnus-static-publisher')],
                 ];
                 foreach ($disable_toggles as $key => [$label, $description]) :
                     $field_id = 'ragstat-' . str_replace('_', '-', $key);

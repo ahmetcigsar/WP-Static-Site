@@ -1,0 +1,1256 @@
+# Chinese (Simplified) translations for Ragnus Static Publisher.
+msgid ""
+msgstr ""
+"Project-Id-Version: Ragnus Static Publisher 1.16.3\n"
+"Report-Msgid-Bugs-To: info@ragnus.co\n"
+"POT-Creation-Date: 2026-08-12 22:07+0300\n"
+"PO-Revision-Date: 2026-08-12 22:07+0300\n"
+"Last-Translator: Ragnus <info@ragnus.co>\n"
+"Language-Team: Chinese (Simplified)\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Ragnus translation build\n"
+
+#: ragnus-static-publisher/includes/class-admin.php:73
+#: ragnus-static-publisher/includes/class-admin.php:631
+msgid "Kuyrukta"
+msgstr "在队列中"
+
+#: ragnus-static-publisher/includes/class-admin.php:74
+#: ragnus-static-publisher/includes/class-admin.php:632
+msgid "Çalışıyor"
+msgstr "在职的"
+
+#: ragnus-static-publisher/includes/class-admin.php:75
+#: ragnus-static-publisher/includes/class-admin.php:455
+#: ragnus-static-publisher/includes/class-admin.php:633
+msgid "Tamamlandı"
+msgstr "完全的"
+
+#: ragnus-static-publisher/includes/class-admin.php:76
+#: ragnus-static-publisher/includes/class-admin.php:456
+#: ragnus-static-publisher/includes/class-admin.php:634
+msgid "Başarısız"
+msgstr "不成功"
+
+#: ragnus-static-publisher/includes/class-admin.php:77
+#: ragnus-static-publisher/includes/class-admin.php:649
+msgid "Henüz Çalışmadı"
+msgstr "尚未工作"
+
+#: ragnus-static-publisher/includes/class-admin.php:78
+#: ragnus-static-publisher/includes/class-admin.php:454
+msgid "Static oluşturma ilerlemesi"
+msgstr "静态渲染进度"
+
+#: ragnus-static-publisher/includes/class-admin.php:79
+msgid "Yeniden Dene"
+msgstr "再试一次"
+
+#: ragnus-static-publisher/includes/class-admin.php:80
+#: ragnus-static-publisher/includes/class-admin.php:677
+msgid "Statik Site Oluştur"
+msgstr "创建静态站点"
+
+#: ragnus-static-publisher/includes/class-admin.php:174
+#: ragnus-static-publisher/includes/class-admin.php:199
+#: ragnus-static-publisher/includes/class-admin.php:214
+#: ragnus-static-publisher/includes/class-admin.php:243
+#: ragnus-static-publisher/includes/class-admin.php:254
+#: ragnus-static-publisher/includes/class-admin.php:270
+#: ragnus-static-publisher/includes/class-admin.php:351
+msgid "Bu işlem için yetkiniz yok."
+msgstr "您无权执行此操作。"
+
+#: ragnus-static-publisher/includes/class-admin.php:205
+#: ragnus-static-publisher/includes/class-rest-controller.php:66
+msgid "İndirilebilir export bulunamadı."
+msgstr "找不到可下载的导出。"
+
+#: ragnus-static-publisher/includes/class-admin.php:224
+#: ragnus-static-publisher/includes/class-rest-controller.php:50
+msgid "Export işlemi zaten çalışıyor."
+msgstr "导出过程已在运行。"
+
+#: ragnus-static-publisher/includes/class-admin.php:261
+msgid "İndirilebilir ZIP dosyası bulunamadı."
+msgstr "找不到可下载的 ZIP 文件。"
+
+#: ragnus-static-publisher/includes/class-admin.php:438
+msgid "Main"
+msgstr "主页"
+
+#: ragnus-static-publisher/includes/class-admin.php:439
+msgid "Files"
+msgstr "文件"
+
+#: ragnus-static-publisher/includes/class-admin.php:440
+msgid "Settings"
+msgstr "设置"
+
+#: ragnus-static-publisher/includes/class-admin.php:441
+msgid "Arama"
+msgstr "搜索"
+
+#: ragnus-static-publisher/includes/class-admin.php:442
+msgid "Hide"
+msgstr "隐藏"
+
+#: ragnus-static-publisher/includes/class-admin.php:443
+msgid "Diagnostics"
+msgstr "诊断"
+
+#: ragnus-static-publisher/includes/class-admin.php:444
+#: ragnus-static-publisher/includes/class-admin.php:481
+msgid "Activity Logs"
+msgstr "活动日志"
+
+#: ragnus-static-publisher/includes/class-admin.php:445
+msgid "About"
+msgstr "关于"
+
+#: ragnus-static-publisher/includes/class-admin.php:446
+msgid ""
+"WordPress sitenizin statik kopyasını üretin. Cloudflare kimlik bilgileri bu "
+"eklentide tutulmaz."
+msgstr "生成 WordPress 网站的静态副本。 Cloudflare 凭据不保存在此插件中。"
+
+#: ragnus-static-publisher/includes/class-admin.php:447
+msgid "Static Publisher bölümleri"
+msgstr "静态发布者部分"
+
+#: ragnus-static-publisher/includes/class-admin.php:448
+msgid "İşlemi Onaylayın"
+msgstr "确认交易"
+
+#: ragnus-static-publisher/includes/class-admin.php:449
+msgid "Vazgeç"
+msgstr "取消"
+
+#: ragnus-static-publisher/includes/class-admin.php:450
+msgid "Sil"
+msgstr "西尔"
+
+#: ragnus-static-publisher/includes/class-admin.php:451
+msgid "Yayın Durumu"
+msgstr "出版状态"
+
+#: ragnus-static-publisher/includes/class-admin.php:452
+msgid "Durum"
+msgstr "硬粒小麦"
+
+#: ragnus-static-publisher/includes/class-admin.php:453
+msgid "İlerleme"
+msgstr "进步"
+
+#: ragnus-static-publisher/includes/class-admin.php:457
+msgid "Aşama"
+msgstr "阶段"
+
+#: ragnus-static-publisher/includes/class-admin.php:458
+msgid "İş Kimliği"
+msgstr "企业ID"
+
+#: ragnus-static-publisher/includes/class-admin.php:459
+msgid "URL Sayısı"
+msgstr "网址数量"
+
+#: ragnus-static-publisher/includes/class-admin.php:460
+msgid "İşlenen Adres"
+msgstr "处理后的地址"
+
+#: ragnus-static-publisher/includes/class-admin.php:461
+msgid "Son Statik Oluşturma"
+msgstr "最终静态渲染"
+
+#: ragnus-static-publisher/includes/class-admin.php:462
+msgid "Hata"
+msgstr "甚至"
+
+#: ragnus-static-publisher/includes/class-admin.php:463
+msgid "İndir"
+msgstr "下载"
+
+#: ragnus-static-publisher/includes/class-admin.php:464
+msgid "ZIP Dosyaları"
+msgstr "压缩文件"
+
+#: ragnus-static-publisher/includes/class-admin.php:465
+msgid "Export devam ederken eski dosyalar silinemez."
+msgstr "导出过程中无法删除旧文件。"
+
+#: ragnus-static-publisher/includes/class-admin.php:466
+msgid "Export devam ederken ZIP dosyaları silinemez."
+msgstr "导出过程中无法删除 ZIP 文件。"
+
+#: ragnus-static-publisher/includes/class-admin.php:467
+msgid "İşlem yapmak için en az bir ZIP dosyası seçin."
+msgstr "至少选择一个要处理的 ZIP 文件。"
+
+#: ragnus-static-publisher/includes/class-admin.php:468
+msgid "Geçerli bir toplu işlem seçin."
+msgstr "请选择有效的批量操作。"
+
+#: ragnus-static-publisher/includes/class-admin.php:469
+msgid "Henüz oluşturulmuş bir ZIP dosyası yok."
+msgstr "尚未创建 ZIP 文件。"
+
+#: ragnus-static-publisher/includes/class-admin.php:470
+msgid "Toplu İşlem Seçin"
+msgstr "选择批量操作"
+
+#: ragnus-static-publisher/includes/class-admin.php:471
+msgid "Toplu İşlem"
+msgstr "批处理"
+
+#: ragnus-static-publisher/includes/class-admin.php:472
+msgid "Seçilenleri İndir"
+msgstr "下载所选内容"
+
+#: ragnus-static-publisher/includes/class-admin.php:473
+msgid "Seçilenleri Sil"
+msgstr "删除所选内容"
+
+#: ragnus-static-publisher/includes/class-admin.php:474
+msgid "Uygula"
+msgstr "申请"
+
+#: ragnus-static-publisher/includes/class-admin.php:475
+msgid "Tümünü Seç"
+msgstr "选择全部"
+
+#: ragnus-static-publisher/includes/class-admin.php:476
+msgid "Sıra"
+msgstr "排"
+
+#: ragnus-static-publisher/includes/class-admin.php:477
+msgid "Oluşturma Tarihi"
+msgstr "创建日期"
+
+#: ragnus-static-publisher/includes/class-admin.php:478
+msgid "Oluşturma Saati"
+msgstr "创建时间"
+
+#: ragnus-static-publisher/includes/class-admin.php:479
+msgid "İşlem"
+msgstr "过程"
+
+#: ragnus-static-publisher/includes/class-admin.php:480
+#: ragnus-static-publisher/includes/class-admin.php:760
+msgid "Eski Dosyaları Sil"
+msgstr "删除旧文件"
+
+#: ragnus-static-publisher/includes/class-admin.php:482
+msgid "En son static işlemine ait kayıtlar:"
+msgstr "最后一次静态交易记录："
+
+#: ragnus-static-publisher/includes/class-admin.php:483
+msgid "Kayıt Sayısı:"
+msgstr "记录数："
+
+#: ragnus-static-publisher/includes/class-admin.php:484
+msgid "Log Kayıtlarında Ara"
+msgstr "搜索日志记录"
+
+#: ragnus-static-publisher/includes/class-admin.php:485
+msgid "Ara"
+msgstr "搜索"
+
+#: ragnus-static-publisher/includes/class-admin.php:486
+msgid "Aramayı Temizle"
+msgstr "清除搜索"
+
+#: ragnus-static-publisher/includes/class-admin.php:487
+msgid "Kaynak Adres"
+msgstr "源地址"
+
+#: ragnus-static-publisher/includes/class-admin.php:488
+msgid "Statik Adres"
+msgstr "静态地址"
+
+#: ragnus-static-publisher/includes/class-admin.php:489
+msgid "Tarih"
+msgstr "历史"
+
+#: ragnus-static-publisher/includes/class-admin.php:490
+msgid "Saat"
+msgstr "片刻"
+
+#: ragnus-static-publisher/includes/class-admin.php:491
+msgid "Henüz kaydedilmiş bir export etkinliği yok."
+msgstr "尚未记录导出事件。"
+
+#: ragnus-static-publisher/includes/class-admin.php:492
+msgid "Statik oluşturma, otomasyon ve yayınlama ayarlarını yönetin."
+msgstr "管理静态生成、自动化和发布设置。"
+
+#: ragnus-static-publisher/includes/class-admin.php:493
+msgid "Settings alt bölümleri"
+msgstr "设置小节"
+
+#: ragnus-static-publisher/includes/class-admin.php:494
+msgid "Genel"
+msgstr "常规"
+
+#: ragnus-static-publisher/includes/class-admin.php:495
+msgid "Otomasyon"
+msgstr "自动化"
+
+#: ragnus-static-publisher/includes/class-admin.php:496
+msgid "Diller"
+msgstr "语言"
+
+#: ragnus-static-publisher/includes/class-admin.php:497
+msgid "Deploy"
+msgstr "部署"
+
+#: ragnus-static-publisher/includes/class-admin.php:498
+msgid "Canlı Site Adresi"
+msgstr "实时站点地址"
+
+#: ragnus-static-publisher/includes/class-admin.php:499
+msgid "Örnek: https://example.com"
+msgstr "示例：https://example.com"
+
+#: ragnus-static-publisher/includes/class-admin.php:500
+msgid "En Fazla URL"
+msgstr "大多数网址"
+
+#: ragnus-static-publisher/includes/class-admin.php:501
+msgid "Hariç Tutulan Yollar"
+msgstr "排除的路径"
+
+#: ragnus-static-publisher/includes/class-admin.php:502
+msgid "Satır başına bir yol öneki."
+msgstr "每行一个路径前缀。"
+
+#: ragnus-static-publisher/includes/class-admin.php:503
+msgid "Saklanacak ZIP Sayısı"
+msgstr "要存储的 ZIP 数量"
+
+#: ragnus-static-publisher/includes/class-admin.php:504
+msgid ""
+"En son kaç başarılı export arşivinin saklanacağını belirler. Varsayılan: 5."
+msgstr "确定将存储多少个最后成功导出的存档。默认值：5。"
+
+#: ragnus-static-publisher/includes/class-admin.php:505
+msgid ""
+"En son ZIP dosyası korunur; önceki ZIP dosyaları ve bunlara ait geçici build"
+" klasörleri kalıcı olarak silinir."
+msgstr "保留最新的 ZIP 文件；以前的 ZIP 文件及其临时构建文件夹将被永久删除。"
+
+#: ragnus-static-publisher/includes/class-admin.php:506
+msgid "Otomatik Statik Site Oluşturma ve Deploy"
+msgstr "自动静态站点创建和部署"
+
+#: ragnus-static-publisher/includes/class-admin.php:507
+msgid ""
+"Seçilen değişikliklerden sonra statik site oluşturulur; deployment webhook "
+"ayarlıysa deploy akışı otomatik tetiklenir."
+msgstr "选定更改后，静态站点就创建好了；如果设置了部署 Webhook，则会自动触发部署流程。"
+
+#: ragnus-static-publisher/includes/class-admin.php:508
+msgid "Otomatik statik site oluşturmayı etkinleştir"
+msgstr "启用自动静态站点生成"
+
+#: ragnus-static-publisher/includes/class-admin.php:509
+msgid ""
+"Arka arkaya yapılan değişiklikler 60 saniye boyunca birleştirilerek tek "
+"export ve deploy olarak çalıştırılır."
+msgstr "连续进行的更改将合并 60 秒，并作为单个导出和部署运行。"
+
+#: ragnus-static-publisher/includes/class-admin.php:510
+msgid "GitHub Deployment Webhook"
+msgstr "GitHub 部署 Webhook"
+
+#: ragnus-static-publisher/includes/class-admin.php:511
+msgid "Deployment Webhook"
+msgstr "部署Webhook"
+
+#: ragnus-static-publisher/includes/class-admin.php:512
+msgid "GitHub için: https://api.github.com/repos/SAHIP/REPO/dispatches"
+msgstr "对于 GitHub：https://api.github.com/repos/SAHIP/REPO/dispatches"
+
+#: ragnus-static-publisher/includes/class-admin.php:513
+msgid "Webhook Bearer Token"
+msgstr "Webhook 承载令牌"
+
+#: ragnus-static-publisher/includes/class-admin.php:514
+msgid ""
+"GitHub kullanılıyorsa yalnızca bu repository için Contents: write yetkili "
+"fine-grained token kullanın."
+msgstr "如果使用 GitHub，请使用 Contents: 仅为此存储库写入授权的细粒度令牌。"
+
+#: ragnus-static-publisher/includes/class-admin.php:515
+msgid "Tarayıcı Diline Göre Yönlendirme"
+msgstr "按浏览器语言重定向"
+
+#: ragnus-static-publisher/includes/class-admin.php:516
+msgid ""
+"Ziyaretçi ana adrese geldiğinde önce kayıtlı tercihi, ardından tarayıcısının"
+" dil sırası kullanılır."
+msgstr "当访问者到达主要地址时，首先使用保存的首选项，然后使用浏览器的语言序列。"
+
+#: ragnus-static-publisher/includes/class-admin.php:517
+msgid "Desteklenen Dil Kodları"
+msgstr "支持的语言代码"
+
+#: ragnus-static-publisher/includes/class-admin.php:518
+msgid "Her satıra bir dil yazın. Bu kodların WordPress’te"
+msgstr "每行写一种语言。 WordPress 中的这些代码"
+
+#: ragnus-static-publisher/includes/class-admin.php:519
+msgid "gibi karşılıkları bulunmalıdır."
+msgstr "应该有这样的等价物。"
+
+#: ragnus-static-publisher/includes/class-admin.php:520
+msgid "Varsayılan Dil"
+msgstr "默认语言"
+
+#: ragnus-static-publisher/includes/class-admin.php:521
+msgid "Tarayıcı dili desteklenmiyorsa bu dil açılır."
+msgstr "如果不支持浏览器语言，则打开该语言。"
+
+#: ragnus-static-publisher/includes/class-admin.php:522
+msgid "Dil Tercihi Süresi"
+msgstr "语言偏好保留期限"
+
+#: ragnus-static-publisher/includes/class-admin.php:523
+msgid ""
+"Kullanıcının açıkça ziyaret ettiği dil daha sonraki girişlerde korunur."
+msgstr "用户明确访问的语言将被保留以供后续登录使用。"
+
+#: ragnus-static-publisher/includes/class-admin.php:524
+msgid "gün"
+msgstr "天"
+
+#: ragnus-static-publisher/includes/class-admin.php:525
+msgid "Yönlendirme yalnızca sitenin"
+msgstr "重定向仅适用于该网站"
+
+#: ragnus-static-publisher/includes/class-admin.php:526
+msgid "adresinde çalışır. Dil içeren doğrudan bağlantılar değiştirilmez."
+msgstr "它的工作原理是。包含语言的直接链接不会更改。"
+
+#: ragnus-static-publisher/includes/class-admin.php:527
+msgid "Statik Arama"
+msgstr "静态搜索"
+
+#: ragnus-static-publisher/includes/class-admin.php:528
+msgid ""
+"Fuse.js ile çalışan, sunucu gerektirmeyen statik site aramasını "
+"yapılandırın."
+msgstr "配置不需要服务器的静态站点搜索，由 Fuse.js 提供支持。"
+
+#: ragnus-static-publisher/includes/class-admin.php:529
+msgid ""
+"Arama sayfası, indeks ve gerekli Fuse.js dosyaları export ZIP’ine eklenir."
+msgstr "搜索页面、索引和必要的 Fuse.js 文件将添加到导出 ZIP 中。"
+
+#: ragnus-static-publisher/includes/class-admin.php:530
+msgid "Arama Sayfası Yolu"
+msgstr "搜索页面路径"
+
+#: ragnus-static-publisher/includes/class-admin.php:531
+msgid "Gösterilecek Sonuç Sayısı"
+msgstr "要显示的结果数"
+
+#: ragnus-static-publisher/includes/class-admin.php:532
+msgid "Minimum Arama Karakteri"
+msgstr "最小搜索字符数"
+
+#: ragnus-static-publisher/includes/class-admin.php:533
+msgid "İçerik Karakter Sınırı"
+msgstr "内容字符限制"
+
+#: ragnus-static-publisher/includes/class-admin.php:534
+msgid "Her sayfadan indekse alınacak en fazla metin uzunluğu."
+msgstr "每页索引的最大文本长度。"
+
+#: ragnus-static-publisher/includes/class-admin.php:535
+msgid "Bulanıklık Eşiği"
+msgstr "模糊阈值"
+
+#: ragnus-static-publisher/includes/class-admin.php:536
+msgid "Düşük değer daha kesin, yüksek değer daha toleranslı sonuç verir."
+msgstr "较低的值提供更精确的结果，较高的值提供更宽容的结果。"
+
+#: ragnus-static-publisher/includes/class-admin.php:537
+msgid "Kelime Eşleştirme"
+msgstr "单词匹配"
+
+#: ragnus-static-publisher/includes/class-admin.php:538
+msgid "Tüm kelimeler eşleşsin"
+msgstr "匹配所有单词"
+
+#: ragnus-static-publisher/includes/class-admin.php:539
+msgid "Herhangi bir kelime eşleşsin"
+msgstr "匹配任何单词"
+
+#: ragnus-static-publisher/includes/class-admin.php:540
+msgid "İndeksleme Seçicileri"
+msgstr "索引选择器"
+
+#: ragnus-static-publisher/includes/class-admin.php:541
+msgid ""
+"Sayfa ve yazı HTML’inden hangi alanların alınacağını CSS selector ile "
+"belirleyin."
+msgstr "确定要从页面中获取哪些字段并使用 CSS 选择器发布 HTML。"
+
+#: ragnus-static-publisher/includes/class-admin.php:542
+msgid "Başlık İçin CSS Selector"
+msgstr "CSS 标题选择器"
+
+#: ragnus-static-publisher/includes/class-admin.php:543
+msgid "İçerik İçin CSS Selector"
+msgstr "CSS 内容选择器"
+
+#: ragnus-static-publisher/includes/class-admin.php:544
+msgid "Özet İçin CSS Selector"
+msgstr "摘要 CSS 选择器"
+
+#: ragnus-static-publisher/includes/class-admin.php:545
+msgid "Alan bulunamazsa içerikten otomatik kısa özet üretilir."
+msgstr "如果未找到该字段，则会根据内容自动生成简短摘要。"
+
+#: ragnus-static-publisher/includes/class-admin.php:546
+msgid "İndeks Dışında Tutulacak URL’ler"
+msgstr "从索引中排除的 URL"
+
+#: ragnus-static-publisher/includes/class-admin.php:547
+msgid "Satır başına tam URL, URL parçası veya kelime yazabilirsiniz."
+msgstr "您可以键入完整的 URL、URL 片段或每行单词。"
+
+#: ragnus-static-publisher/includes/class-admin.php:548
+msgid "Fuse.js Alanları ve Ağırlıkları"
+msgstr "Fuse.js 字段和权重"
+
+#: ragnus-static-publisher/includes/class-admin.php:549
+msgid ""
+"Aranacak alanları seçin ve sonuç sıralamasındaki etkilerini belirleyin."
+msgstr "选择要搜索的字段并确定它们对结果排名的影响。"
+
+#: ragnus-static-publisher/includes/class-admin.php:550
+msgid "Ağırlık"
+msgstr "重量"
+
+#: ragnus-static-publisher/includes/class-admin.php:551
+msgid "WordPress İzlerini Gizle"
+msgstr "隐藏 WordPress 痕迹"
+
+#: ragnus-static-publisher/includes/class-admin.php:552
+msgid "Seçilen WordPress tanımlayıcılarını statik HTML çıktısından kaldırır."
+msgstr "从静态 HTML 输出中删除选定的 WordPress 标识符。"
+
+#: ragnus-static-publisher/includes/class-admin.php:553
+msgid ""
+"WordPress'e özgü dizin ve yol adlarının statik çıktıda hangi adlarla "
+"kullanılacağını belirleyin. Kaynak WordPress dosyaları değiştirilmez."
+msgstr "指定静态输出中将使用哪些特定于 WordPress 的目录和路径名。 WordPress 源文件未被修改。"
+
+#: ragnus-static-publisher/includes/class-admin.php:554
+msgid "Statik çıktıda"
+msgstr "在静态输出中"
+
+#: ragnus-static-publisher/includes/class-admin.php:555
+msgid "yolunun yerine kullanılacak yol."
+msgstr "要使用的路径而不是路径。"
+
+#: ragnus-static-publisher/includes/class-admin.php:556
+msgid "yolunun yerine kullanılacak alt dizin."
+msgstr "用于代替路径的子目录。"
+
+#: ragnus-static-publisher/includes/class-admin.php:557
+msgid "Aktif tema içindeki"
+msgstr "在活动主题中"
+
+#: ragnus-static-publisher/includes/class-admin.php:558
+msgid "dosyasının statik çıktıdaki adı."
+msgstr "静态输出中的文件名。"
+
+#: ragnus-static-publisher/includes/class-admin.php:559
+msgid "dizininin yerine kullanılacak ad."
+msgstr "要替换目录的名称。"
+
+#: ragnus-static-publisher/includes/class-admin.php:560
+msgid "WP-Content Dizini"
+msgstr "WP-内容 Dizini"
+
+#: ragnus-static-publisher/includes/class-admin.php:561
+msgid "WP-Includes Dizini"
+msgstr "WP-包含目录"
+
+#: ragnus-static-publisher/includes/class-admin.php:562
+msgid "Uploads Dizini"
+msgstr "上传目录"
+
+#: ragnus-static-publisher/includes/class-admin.php:563
+msgid "Plugins Dizini"
+msgstr "插件目录"
+
+#: ragnus-static-publisher/includes/class-admin.php:564
+msgid "Themes Dizini"
+msgstr "主题目录"
+
+#: ragnus-static-publisher/includes/class-admin.php:565
+msgid "Tema Stil Dosyası"
+msgstr "主题样式文件"
+
+#: ragnus-static-publisher/includes/class-admin.php:566
+msgid "Yazar URL'si"
+msgstr "作者网址"
+
+#: ragnus-static-publisher/includes/class-admin.php:567
+msgid "Statik Çıktıda Devre Dışı Bırak"
+msgstr "禁用静态输出"
+
+#: ragnus-static-publisher/includes/class-admin.php:568
+msgid ""
+"Statik sitede kullanılmayan WordPress bağlantı ve betiklerini temizler."
+msgstr "清理静态站点上未使用的 WordPress 链接和脚本。"
+
+#: ragnus-static-publisher/includes/class-admin.php:569
+msgid "Diagnostics kontrolleri güncellendi."
+msgstr "诊断检查已更新。"
+
+#: ragnus-static-publisher/includes/class-admin.php:570
+msgid "Son kontrol:"
+msgstr "他的控制："
+
+#: ragnus-static-publisher/includes/class-admin.php:571
+msgid "Tekrar Kontrol Et"
+msgstr "再次检查"
+
+#: ragnus-static-publisher/includes/class-admin.php:572
+msgid "Başarılı"
+msgstr "成功的"
+
+#: ragnus-static-publisher/includes/class-admin.php:573
+msgid "Ragnus Static Publisher"
+msgstr "拉格纳斯静态出版商"
+
+#: ragnus-static-publisher/includes/class-admin.php:574
+msgid ""
+"WordPress sitenizi statik dosyalara dönüştürmek ve yayın süreçlerine "
+"hazırlamak için geliştirilmiştir."
+msgstr "它的开发目的是将您的 WordPress 网站转换为静态文件并为发布过程做好准备。"
+
+#: ragnus-static-publisher/includes/class-admin.php:575
+msgid "Versiyon Numarası"
+msgstr "版本号"
+
+#: ragnus-static-publisher/includes/class-admin.php:576
+msgid "Destek Maili"
+msgstr "支持电子邮件"
+
+#: ragnus-static-publisher/includes/class-admin.php:577
+msgid "Eklenti Web Sitesi"
+msgstr "插件网站"
+
+#: ragnus-static-publisher/includes/class-admin.php:578
+msgid "Statik sitenizi yayınlamak için kullanacağınız yöntemi seçin."
+msgstr "选择用于发布静态站点的方法。"
+
+#: ragnus-static-publisher/includes/class-admin.php:579
+msgid ""
+"Oluşturulan statik site paketini indirip istediğiniz sunucuya manuel olarak "
+"yükleyin."
+msgstr "下载创建的静态站点包并手动安装到所需的服务器上。"
+
+#: ragnus-static-publisher/includes/class-admin.php:580
+#: ragnus-static-publisher/includes/class-admin.php:788
+msgid "Önce statik site oluşturun"
+msgstr "首先创建静态站点"
+
+#: ragnus-static-publisher/includes/class-admin.php:581
+#: ragnus-static-publisher/includes/class-admin.php:788
+msgid "ZIP hazır"
+msgstr "邮编准备就绪"
+
+#: ragnus-static-publisher/includes/class-admin.php:582
+msgid "ZIP Dosyalarını Aç"
+msgstr "打开 ZIP 文件"
+
+#: ragnus-static-publisher/includes/class-admin.php:583
+msgid ""
+"Export tamamlandığında GitHub Actions akışını webhook ile otomatik olarak "
+"tetikleyin."
+msgstr "导出完成后，通过 webhook 自动触发 GitHub Actions 流程。"
+
+#: ragnus-static-publisher/includes/class-admin.php:584
+#: ragnus-static-publisher/includes/class-admin.php:802
+msgid "Yapılandırma gerekli"
+msgstr "需要配置"
+
+#: ragnus-static-publisher/includes/class-admin.php:585
+#: ragnus-static-publisher/includes/class-admin.php:802
+msgid "Webhook ayarlı"
+msgstr "网络钩子集"
+
+#: ragnus-static-publisher/includes/class-admin.php:586
+msgid "GitHub Ayarları"
+msgstr "GitHub 设置"
+
+#: ragnus-static-publisher/includes/class-admin.php:587
+msgid ""
+"GitHub Actions akışıyla statik dosyaları Cloudflare Workers Static Assets "
+"üzerinde yayınlayın."
+msgstr "使用 GitHub Actions feed 将静态文件发布到 Cloudflare Workers 静态资产。"
+
+#: ragnus-static-publisher/includes/class-admin.php:588
+msgid "Cloudflare hesabı gerekir"
+msgstr "需要 Cloudflare 账户"
+
+#: ragnus-static-publisher/includes/class-admin.php:589
+msgid "Cloudflare'ı Aç"
+msgstr "打开 Cloudflare"
+
+#: ragnus-static-publisher/includes/class-admin.php:691
+#, php-format
+msgid "%d eski ZIP dosyası silindi."
+msgstr "旧的 ZIP 文件 %d 已被删除。"
+
+#: ragnus-static-publisher/includes/class-admin.php:693
+#, php-format
+msgid "%1$d eski ZIP dosyası silindi, %2$d dosya silinemedi."
+msgstr "%1$d 旧 ZIP 文件已删除，%2$d 文件无法删除。"
+
+#: ragnus-static-publisher/includes/class-admin.php:699
+#, php-format
+msgid "%d ZIP dosyası silindi."
+msgstr "%d ZIP 文件已被删除。"
+
+#: ragnus-static-publisher/includes/class-admin.php:701
+#, php-format
+msgid "%1$d ZIP dosyası silindi, %2$d dosya silinemedi."
+msgstr "ZIP 文件 %1$d 已删除，文件 %2$d 无法删除。"
+
+#: ragnus-static-publisher/includes/class-admin.php:725
+msgid "Seçilen ZIP dosyaları kalıcı olarak silinecek. Devam edilsin mi?"
+msgstr "选定的 ZIP 文件将被永久删除。我们应该继续吗？"
+
+#: ragnus-static-publisher/includes/class-admin.php:761
+msgid ""
+"En son ZIP dışındaki tüm eski ZIP dosyaları silinecek. Devam edilsin mi?"
+msgstr "除最新 ZIP 之外的所有旧 ZIP 文件都将被删除。我们应该继续吗？"
+
+#: ragnus-static-publisher/includes/class-admin.php:953
+#: ragnus-static-publisher/includes/class-admin.php:1120
+msgid "İçerik"
+msgstr "内容"
+
+#: ragnus-static-publisher/includes/class-admin.php:954
+msgid "Yeni yazı yayınlandığında"
+msgstr "当有新文章发表时"
+
+#: ragnus-static-publisher/includes/class-admin.php:954
+msgid "Yeni bir blog yazısı ilk kez yayınlandığında."
+msgstr "当第一次发布新的博客文章时。"
+
+#: ragnus-static-publisher/includes/class-admin.php:955
+msgid "Mevcut yazı güncellendiğinde"
+msgstr "当前帖子更新时"
+
+#: ragnus-static-publisher/includes/class-admin.php:955
+msgid ""
+"Yayındaki bir blog yazısı değiştirildiğinde veya yayından kaldırıldığında."
+msgstr "当实时博客文章被更改或删除时。"
+
+#: ragnus-static-publisher/includes/class-admin.php:956
+msgid "Yeni sayfa yayınlandığında"
+msgstr "当新页面发布时"
+
+#: ragnus-static-publisher/includes/class-admin.php:956
+msgid "Yeni bir sayfa ilk kez yayınlandığında."
+msgstr "当第一次发布新页面时。"
+
+#: ragnus-static-publisher/includes/class-admin.php:957
+msgid "Mevcut sayfa güncellendiğinde"
+msgstr "当前页面更新时"
+
+#: ragnus-static-publisher/includes/class-admin.php:957
+msgid "Yayındaki bir sayfa değiştirildiğinde veya yayından kaldırıldığında."
+msgstr "当已发布的页面被更改或删除时。"
+
+#: ragnus-static-publisher/includes/class-admin.php:958
+msgid "Özel içerik türleri değiştiğinde"
+msgstr "当自定义内容类型发生变化时"
+
+#: ragnus-static-publisher/includes/class-admin.php:958
+msgid "Ürün, portföy ve benzeri yayındaki özel içerikler değiştiğinde."
+msgstr "当出版物中的产品、产品组合等特殊内容发生变化时。"
+
+#: ragnus-static-publisher/includes/class-admin.php:960
+msgid "Yapı ve Tasarım"
+msgstr "结构与设计"
+
+#: ragnus-static-publisher/includes/class-admin.php:961
+msgid "Kategori veya etiket değiştiğinde"
+msgstr "当类别或标签发生变化时"
+
+#: ragnus-static-publisher/includes/class-admin.php:961
+msgid "Kategori, etiket ya da özel sınıflandırmalar değiştirildiğinde."
+msgstr "当类别、标签或自定义分类发生更改时。"
+
+#: ragnus-static-publisher/includes/class-admin.php:962
+msgid "Medya değiştiğinde"
+msgstr "当媒体发生变化时"
+
+#: ragnus-static-publisher/includes/class-admin.php:962
+msgid ""
+"Görsel veya başka bir medya dosyası eklendiğinde, güncellendiğinde ya da "
+"silindiğinde."
+msgstr "添加、更新或删除图像或其他媒体文件时。"
+
+#: ragnus-static-publisher/includes/class-admin.php:963
+msgid "Menü değiştiğinde"
+msgstr "当菜单改变时"
+
+#: ragnus-static-publisher/includes/class-admin.php:963
+msgid "Gezinme menülerinin yapısı veya bağlantıları değiştirildiğinde."
+msgstr "当导航菜单的结构或链接发生更改时。"
+
+#: ragnus-static-publisher/includes/class-admin.php:964
+msgid "Bileşenler değiştiğinde"
+msgstr "当组件发生变化时"
+
+#: ragnus-static-publisher/includes/class-admin.php:964
+msgid "Widget ve bileşen yerleşimleri güncellendiğinde."
+msgstr "当小部件和小部件布局更新时。"
+
+#: ragnus-static-publisher/includes/class-admin.php:965
+msgid "Tema değiştiğinde"
+msgstr "当主题改变时"
+
+#: ragnus-static-publisher/includes/class-admin.php:965
+msgid ""
+"Tema değiştirildiğinde, güncellendiğinde veya özelleştirici ayarları "
+"kaydedildiğinde."
+msgstr "当主题更改、更新或保存定制器设置时。"
+
+#: ragnus-static-publisher/includes/class-admin.php:966
+msgid "Site ayarları değiştiğinde"
+msgstr "当站点设置更改时"
+
+#: ragnus-static-publisher/includes/class-admin.php:966
+msgid ""
+"Site adı, açıklama, ana sayfa, okuma veya kalıcı bağlantı ayarları "
+"değiştirildiğinde."
+msgstr "当网站名称、描述、主页、阅读或永久链接设置发生更改时。"
+
+#: ragnus-static-publisher/includes/class-admin.php:1118
+msgid "Başlık"
+msgstr "标题"
+
+#: ragnus-static-publisher/includes/class-admin.php:1118
+msgid "Başlık eşleşmelerini en üstte gösterir."
+msgstr "在顶部显示标题匹配项。"
+
+#: ragnus-static-publisher/includes/class-admin.php:1119
+msgid "Özet"
+msgstr "概括"
+
+#: ragnus-static-publisher/includes/class-admin.php:1119
+msgid "Kısa açıklama ve özet metninde arar."
+msgstr "在标语和摘要的文本中搜索。"
+
+#: ragnus-static-publisher/includes/class-admin.php:1120
+msgid "Sayfa ve yazının ana metninde arar."
+msgstr "它在页面和文章的正文中进行搜索。"
+
+#: ragnus-static-publisher/includes/class-admin.php:1121
+msgid "Kategori ve Etiketler"
+msgstr "类别和标签"
+
+#: ragnus-static-publisher/includes/class-admin.php:1121
+msgid "WordPress kategori ve etiket adlarını indekse ekler."
+msgstr "WordPress 将类别和标签名称添加到索引中。"
+
+#: ragnus-static-publisher/includes/class-admin.php:1200
+msgid "WordPress Sürümünü Gizle"
+msgstr "隐藏 WordPress 版本"
+
+#: ragnus-static-publisher/includes/class-admin.php:1200
+msgid ""
+"WordPress çekirdek sürümünü belirten asset sürüm parametrelerini kaldırır."
+msgstr "删除指定 WordPress 核心版本的资产版本参数。"
+
+#: ragnus-static-publisher/includes/class-admin.php:1201
+msgid "WordPress Generator Meta Etiketini Gizle"
+msgstr "隐藏 WordPress 生成器元标记"
+
+#: ragnus-static-publisher/includes/class-admin.php:1201
+msgid "WordPress sürümünü açıklayan generator meta etiketini kaldırır."
+msgstr "它删除了描述 WordPress 版本的生成器元标记。"
+
+#: ragnus-static-publisher/includes/class-admin.php:1202
+msgid "WordPress DNS Prefetch Bağlantısını Gizle"
+msgstr "隐藏 WordPress DNS 预取连接"
+
+#: ragnus-static-publisher/includes/class-admin.php:1202
+msgid "WordPress servislerine ait DNS prefetch bağlantılarını kaldırır."
+msgstr "删除 WordPress 服务的 DNS 预取连接。"
+
+#: ragnus-static-publisher/includes/class-admin.php:1203
+msgid "RSD Header Bağlantısını Gizle"
+msgstr "隐藏 RSD 标题链接"
+
+#: ragnus-static-publisher/includes/class-admin.php:1203
+msgid "Really Simple Discovery bağlantısını statik HTML’den kaldırır."
+msgstr "非常简单 从静态 HTML 中删除 Discovery 链接。"
+
+#: ragnus-static-publisher/includes/class-admin.php:1231
+msgid "XML-RPC Bağlantılarını Devre Dışı Bırak"
+msgstr "禁用 XML-RPC 链接"
+
+#: ragnus-static-publisher/includes/class-admin.php:1231
+msgid "XML-RPC ve pingback keşif bağlantılarını kaldırır."
+msgstr "删除 XML-RPC 和 pingback 发现连接。"
+
+#: ragnus-static-publisher/includes/class-admin.php:1232
+msgid "Embed Scriptlerini Devre Dışı Bırak"
+msgstr "禁用嵌入脚本"
+
+#: ragnus-static-publisher/includes/class-admin.php:1232
+msgid "WordPress embed betiklerini statik HTML’den kaldırır."
+msgstr "从静态 HTML 中删除 WordPress 嵌入脚本。"
+
+#: ragnus-static-publisher/includes/class-admin.php:1233
+msgid "Frontend DB Debug Bilgisini Devre Dışı Bırak"
+msgstr "禁用前端数据库调试信息"
+
+#: ragnus-static-publisher/includes/class-admin.php:1233
+msgid ""
+"Yalnızca export isteklerinde veritabanı hata ayrıntılarının gösterilmesini "
+"engeller."
+msgstr "它仅防止在导出请求中显示数据库错误详细信息。"
+
+#: ragnus-static-publisher/includes/class-admin.php:1234
+msgid "WLW Manifest Bağlantısını Devre Dışı Bırak"
+msgstr "禁用 WLW 清单链接"
+
+#: ragnus-static-publisher/includes/class-admin.php:1234
+msgid "Windows Live Writer manifest bağlantısını kaldırır."
+msgstr "Windows Live Writer 删除清单链接。"
+
+#: ragnus-static-publisher/includes/class-admin.php:1235
+msgid "Emoji Scriptlerini Devre Dışı Bırak"
+msgstr "禁用表情符号脚本"
+
+#: ragnus-static-publisher/includes/class-admin.php:1235
+msgid "WordPress emoji scriptlerini ve stillerini statik HTML’den kaldırır."
+msgstr "从静态 HTML 中删除 WordPress 表情符号脚本和样式。"
+
+#: ragnus-static-publisher/includes/class-archive-manager.php:117
+msgid "İndirilecek ZIP dosyası bulunamadı."
+msgstr "找不到可供下载的 ZIP 文件。"
+
+#: ragnus-static-publisher/includes/class-archive-manager.php:120
+#: ragnus-static-publisher/includes/class-exporter.php:583
+msgid "PHP ZipArchive eklentisi kurulu değil."
+msgstr "PHP ZipArchive 扩展未安装。"
+
+#: ragnus-static-publisher/includes/class-archive-manager.php:125
+msgid "Geçici indirme paketi oluşturulamadı."
+msgstr "无法创建临时下载包。"
+
+#: ragnus-static-publisher/includes/class-archive-manager.php:131
+msgid "Toplu indirme paketi oluşturulamadı."
+msgstr "无法创建批量下载包。"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:74
+#, php-format
+msgid "Site URL erişilebilir (HTTP %d): %s"
+msgstr "可访问的站点 URL (HTTP %d)：%s"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:76
+msgid "Site URL erişilemiyor: "
+msgstr "站点 URL 无法访问："
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:77
+#, php-format
+msgid "Site URL beklenmeyen bir HTTP %d yanıtı verdi: %s"
+msgstr "站点 URL 返回意外的 HTTP %d 响应：%s"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:80
+msgid "Server"
+msgstr "服务器"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:83
+msgid "PHP Sürümü"
+msgstr "PHP版本"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:86
+#, php-format
+msgid "PHP 8.1 veya üzeri kullanılabilir. Mevcut sürüm: %s."
+msgstr "可以使用PHP 8.1或以上版本。当前版本：%s。"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:87
+#, php-format
+msgid "PHP 8.1 veya üzeri gerekli. Mevcut sürüm: %s."
+msgstr "需要 PHP 8.1 或更高版本。当前版本：%s。"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:91
+msgid "Basic Auth"
+msgstr "基本认证"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:94
+msgid ""
+"Basic Auth etkin görünüyor; statik tarama kimlik doğrulamasında durabilir."
+msgstr "Basic Auth 似乎已启用；静态抓取可能会在身份验证处停止。"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:95
+msgid "Basic Auth etkin değil."
+msgstr "Basic Auth 未启用。"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:99
+msgid "PHP-XML"
+msgstr "PHP-XML"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:101
+msgid "php-xml kullanılabilir."
+msgstr "可以使用 php-xml。"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:101
+msgid "php-xml kullanılamıyor; DOMDocument eklentisini etkinleştirin."
+msgstr "php-xml 不可用；启用 DOMDocument 插件。"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:105
+msgid "cURL"
+msgstr "卷曲"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:107
+msgid "cURL kullanılabilir."
+msgstr "可以使用 cURL。"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:107
+msgid "cURL kullanılamıyor; PHP cURL eklentisini etkinleştirin."
+msgstr "cURL 不可用；启用 PHP cURL 扩展。"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:111
+msgid "Docker / Site URL"
+msgstr "Docker / 站点 URL"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:116
+msgid "WordPress"
+msgstr "WordPress"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:119
+msgid "Kalıcı Bağlantılar"
+msgstr "固定链接"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:122
+msgid "WordPress kalıcı bağlantı yapısı ayarlanmış."
+msgstr "WordPress 永久链接结构已设置。"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:123
+msgid ""
+"Kalıcı bağlantılar düz yapıda; Ayarlar > Kalıcı Bağlantılar bölümünden bir "
+"yapı seçin."
+msgstr "永久链接具有扁平结构；在“设置”>“永久链接”中选择一个结构。"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:127
+msgid "Indexlenebilirlik"
+msgstr "可转位性"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:130
+msgid "Arama motorlarının siteyi indekslemesini engelleyen ayar kapalı."
+msgstr "阻止搜索引擎对网站建立索引的设置已关闭。"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:131
+msgid "Arama motorlarının siteyi indekslemesini engelleyen ayar açık."
+msgstr "阻止搜索引擎对网站建立索引的设置已打开。"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:135
+msgid "Önbellek"
+msgstr "缓存"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:138
+msgid "WordPress sayfa önbelleği devre dışı."
+msgstr "WordPress 页面缓存已禁用。"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:139
+msgid "WP_CACHE etkin; export sırasında eski içerik sunulmadığını doğrulayın."
+msgstr "WP_CACHE 已启用；验证导出期间不会提供过时的内容。"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:143
+msgid "WP-CRON"
+msgstr "WP-CRON"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:146
+msgid "WordPress cron kullanılabilir."
+msgstr "WordPress cron 可用。"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:147
+msgid "WordPress cron devre dışı; zamanlanmış export işleri çalışmayabilir."
+msgstr "WordPress cron 已禁用；计划的导出作业可能无法运行。"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:150
+msgid "Eklentiler"
+msgstr "插件"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:153
+msgid "Uyumsuz Eklentiler"
+msgstr "不兼容的插件"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:156
+msgid "Etkin uyumsuz eklenti bulunamadı."
+msgstr "未发现活动的不兼容插件。"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:157
+msgid "Statik taramayı engelleyebilecek etkin eklentiler: "
+msgstr "可能阻止静态扫描的活动插件："
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:160
+msgid "Dosya Sistemi"
+msgstr "文件系统"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:163
+msgid "Geçici Dizin Okunabilir"
+msgstr "临时目录可读"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:166
+#, php-format
+msgid "Web sunucusu geçici dizini okuyabiliyor: %s"
+msgstr "Web 服务器能够读取临时目录：%s"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:167
+#, php-format
+msgid "Web sunucusu geçici dizini okuyamıyor: %s"
+msgstr "Web 服务器无法读取临时目录：%s"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:171
+msgid "Geçici Dizin Yazılabilir"
+msgstr "临时目录可写"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:174
+#, php-format
+msgid "Web sunucusu geçici dizine yazabiliyor: %s"
+msgstr "Web 服务器能够写入临时目录：%s"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:175
+#, php-format
+msgid "Web sunucusu geçici dizine yazamıyor: %s"
+msgstr "Web 服务器无法写入临时目录：%s"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:188
+#, php-format
+msgid "MySQL kullanıcısı %s yetkisine sahip."
+msgstr "MySQL 用户具有 %s 权限。"
+
+#: ragnus-static-publisher/includes/class-diagnostics.php:189
+#, php-format
+msgid "MySQL kullanıcısında %s yetkisi bulunamadı."
+msgstr "在 MySQL 用户上未找到 %s 授权。"
+
+#: ragnus-static-publisher/includes/class-exporter.php:47
+msgid "Başka bir export işlemi halen çalışıyor."
+msgstr "另一个导出任务仍在运行。"
+
+#: ragnus-static-publisher/includes/class-exporter.php:60
+msgid "Export klasörü hazırlanıyor."
+msgstr "正在准备导出文件夹。"
+
+#: ragnus-static-publisher/includes/class-exporter.php:71
+msgid "Fuse.js arama indeksi hazırlanıyor."
+msgstr "正在准备 Fuse.js 搜索索引。"
+
+#: ragnus-static-publisher/includes/class-exporter.php:78
+msgid "Cloudflare yapılandırma dosyaları hazırlanıyor."
+msgstr "Cloudflare 配置文件正在准备中。"
+
+#: ragnus-static-publisher/includes/class-exporter.php:84
+msgid "Export manifesti hazırlanıyor."
+msgstr "出口舱单正在准备中。"
+
+#: ragnus-static-publisher/includes/class-exporter.php:89
+msgid "ZIP arşivi oluşturuluyor."
+msgstr "正在创建 ZIP 存档。"
+
+#: ragnus-static-publisher/includes/class-exporter.php:101
+msgid "Statik site başarıyla oluşturuldu."
+msgstr "静态站点已创建成功。"
+
+#: ragnus-static-publisher/includes/class-exporter.php:115
+msgid "Statik site oluşturulamadı."
+msgstr "创建静态站点失败。"
+
+#: ragnus-static-publisher/includes/class-exporter.php:133
+msgid "Export klasörü oluşturulamadı."
+msgstr "无法创建导出文件夹。"
+
+#: ragnus-static-publisher/includes/class-exporter.php:211
+msgid "Güvenli olmayan dosya yolu atlandı."
+msgstr "已跳过不安全的文件路径。"
+
+#: ragnus-static-publisher/includes/class-exporter.php:230
+msgid "Kaynak statik dosyaya dönüştürüldü."
+msgstr "源已转换为静态文件。"
+
+#: ragnus-static-publisher/includes/class-exporter.php:242
+msgid "Site taraması tamamlandı."
+msgstr "站点扫描完成。"
+
+#: ragnus-static-publisher/includes/class-exporter.php:248
+msgid "URL sınırına ulaşıldı; bazı kaynaklar export dışında kaldı."
+msgstr "达到 URL 限制；一些资源被排除在出口之外。"
+
+#: ragnus-static-publisher/includes/class-exporter.php:261
+msgid "Site adresleri statik dosyalara dönüştürülüyor."
+msgstr "站点地址转换为静态文件。"
+
+#: ragnus-static-publisher/includes/class-exporter.php:541
+msgid "Dosya yazılamadı: "
+msgstr "写入文件失败："
+
+#: ragnus-static-publisher/includes/class-exporter.php:554
+#, php-format
+msgid "Dil kökü export edilemedi: /%s/"
+msgstr "无法导出语言根：/%s/"
+
+#: ragnus-static-publisher/includes/class-exporter.php:589
+msgid "ZIP arşivi oluşturulamadı."
+msgstr "无法创建 ZIP 存档。"
+
+#: ragnus-static-publisher/includes/class-plugin.php:244
+msgid "Export işi sıraya alındı."
+msgstr "导出作业已排队。"
+
+#: ragnus-static-publisher/includes/class-plugin.php:318
+msgid ""
+"Export işi 90 saniyeden uzun süredir kuyrukta. WP-Cron veya sunucu loopback "
+"isteklerini kontrol edin."
+msgstr "导出作业已在队列中等待超过 90 秒。检查 WP-Cron 或服务器环回请求。"
+
+#: ragnus-static-publisher/includes/class-plugin.php:324
+msgid ""
+"Export işi beklenenden uzun süredir çalışıyor. Sunucu hata kayıtlarını ve "
+"PHP çalışma süresi sınırını kontrol edin."
+msgstr "出口工作的运行时间比预期的要长。检查服务器错误日志和 PHP 正常运行时间限制。"
+
+#: ragnus-static-publisher/includes/class-plugin.php:433
+msgid "Otomatik export işi sıraya alındı."
+msgstr "自动导出作业已排队。"
+
+#: ragnus-static-publisher/includes/class-plugin.php:459
+msgid "[Ragnus Static Publisher] Bazı eski export arşivleri silinemedi."
+msgstr "[Ragnus Static Publisher] 无法删除一些旧的导出存档。"
+
+#: ragnus-static-publisher/includes/class-plugin.php:495
+msgid "[Ragnus Static Publisher] Deployment webhook gönderilemedi."
+msgstr "[Ragnus Static Publisher] 无法发送部署 webhook。"
+
+#: ragnus-static-publisher/includes/class-plugin.php:513
+#, php-format
+msgid "Export tamamlandı: %d URL"
+msgstr "导出完成：%d 个 URL"
+
+#. Plugin description.
+#: ragnus-static-publisher/ragnus-static-publisher.php:4
+msgid ""
+"Exports WordPress sites to static files and prepares them for Cloudflare "
+"Pages deployment workflows."
+msgstr "将 WordPress 站点导出到静态文件并为 Cloudflare Pages 部署工作流程做好准备。"

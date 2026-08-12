@@ -30,13 +30,13 @@ $response = [
 $grants = ['GRANT ALL PRIVILEGES ON `wordpress`.* TO `wordpress`@`%`'];
 $groups = Ragnus\StaticPublisher\Diagnostics::checks($response, $grants, []);
 
-if (array_keys($groups) !== ['Server', 'WordPress', 'Eklentiler', 'Dosya Sistemi', 'MySQL']) {
+if (array_keys($groups) !== ['Server', 'WordPress', 'Plugins', 'File System', 'MySQL']) {
     throw new RuntimeException('Diagnostics grupları beklenen sırada değil.');
 }
 if (count($groups['Server']) !== 5
     || count($groups['WordPress']) !== 4
-    || count($groups['Eklentiler']) !== 1
-    || count($groups['Dosya Sistemi']) !== 2
+    || count($groups['Plugins']) !== 1
+    || count($groups['File System']) !== 2
     || count($groups['MySQL']) !== 6) {
     throw new RuntimeException('Diagnostics beklenen on sekiz kontrolü içermiyor.');
 }
@@ -70,8 +70,8 @@ $incompatible_groups = Ragnus\StaticPublisher\Diagnostics::checks(
     $grants,
     ['password-protected/password-protected.php']
 );
-if ($incompatible_groups['Eklentiler'][0]['passed']
-    || ! str_contains($incompatible_groups['Eklentiler'][0]['message'], 'Password Protected')) {
+if ($incompatible_groups['Plugins'][0]['passed']
+    || ! str_contains($incompatible_groups['Plugins'][0]['message'], 'Password Protected')) {
     throw new RuntimeException('Uyumsuz etkin eklenti doğru algılanmadı.');
 }
 
@@ -89,6 +89,7 @@ if ($unauthorized_checks['basic-auth']['passed'] || $unauthorized_checks['docker
 
 update_option(Ragnus\StaticPublisher\Diagnostics::OPTION_KEY, [
     'checked_at' => gmdate('c'),
+    'locale' => determine_locale(),
     'groups' => ['Test' => [[
         'id' => 'failed-test',
         'label' => 'Başarısız Test',
@@ -102,7 +103,7 @@ ob_start();
 Ragnus\StaticPublisher\Admin::render();
 $diagnostics_html = (string) ob_get_clean();
 unset($_GET['tab']);
-foreach (['Tekrar Kontrol Et', 'is-failed', 'dashicons-no-alt', 'aria-label="Başarısız"'] as $expected) {
+foreach (['Check Again', 'is-failed', 'dashicons-no-alt', 'aria-label="Failed"'] as $expected) {
     if (! str_contains($diagnostics_html, $expected)) {
         throw new RuntimeException('Diagnostics olumsuz durum arayüzü eksik: ' . $expected);
     }

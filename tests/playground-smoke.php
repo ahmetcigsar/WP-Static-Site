@@ -201,11 +201,24 @@ Ragnus\StaticPublisher\Admin::render();
 $about_html = (string) ob_get_clean();
 unset($_GET['tab']);
 
-foreach (['About', 'Versiyon Numarası', RAGSTAT_VERSION, 'mailto:info@ragnus.co', 'https://ragnus.co/'] as $expected) {
+foreach (['About', 'Version Number', RAGSTAT_VERSION, 'mailto:info@ragnus.co', 'https://ragnus.co/'] as $expected) {
     if (! str_contains($about_html, $expected)) {
-        fwrite(STDERR, "About sekmesinde beklenen içerik bulunamadı: {$expected}\n");
+        fwrite(STDERR, "About sekmesinde beklenen içerik bulunamadı: {$expected} (locale=" . determine_locale() . ', direct=' . __('About', 'ragnus-static-publisher') . ")\n");
         exit(1);
     }
+}
+
+$_GET['tab'] = 'files';
+$_GET['archive_notice'] = 'deleted';
+$_GET['deleted'] = '1';
+ob_start();
+Ragnus\StaticPublisher\Admin::render();
+$files_notice_html = (string) ob_get_clean();
+unset($_GET['tab'], $_GET['archive_notice'], $_GET['deleted']);
+if (! str_contains($files_notice_html, 'notice-success inline is-dismissible ragstat-files-notice')
+    || ! str_contains($files_notice_html, '1 ZIP file has been deleted.')) {
+    fwrite(STDERR, "Files silme bildirimi içerik alanında inline olarak gösterilmiyor.\n");
+    exit(1);
 }
 
 $admin_source = (string) file_get_contents(RAGSTAT_DIR . 'includes/class-admin.php');
@@ -270,7 +283,7 @@ Ragnus\StaticPublisher\Admin::render();
 $deploy_html = (string) ob_get_clean();
 unset($_GET['tab']);
 
-foreach (['Deploy', 'ZIP File', 'GitHub', 'Cloudflare', 'ZIP Dosyalarını Aç', 'GitHub Ayarları'] as $expected) {
+foreach (['Deploy', 'ZIP File', 'GitHub', 'Cloudflare', 'Open ZIP Files', 'GitHub Settings'] as $expected) {
     if (! str_contains($deploy_html, $expected)) {
         fwrite(STDERR, "Deploy sekmesinde beklenen içerik bulunamadı: {$expected}\n");
         exit(1);

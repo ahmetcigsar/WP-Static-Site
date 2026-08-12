@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Ragnus Static Publisher
  * Description: WordPress sitelerini statik dosyalara aktarır ve Cloudflare Pages yayın akışlarına hazırlar.
- * Version: 1.14.0
+ * Version: 1.14.1
  * Requires at least: 6.5
  * Requires PHP: 8.1
  * Author: Ragnus
@@ -16,7 +16,7 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-define('RAGSTAT_VERSION', '1.14.0');
+define('RAGSTAT_VERSION', '1.14.1');
 define('RAGSTAT_FILE', __FILE__);
 define('RAGSTAT_DIR', plugin_dir_path(__FILE__));
 

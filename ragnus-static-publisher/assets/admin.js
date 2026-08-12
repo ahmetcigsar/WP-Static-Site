@@ -14,6 +14,94 @@
         hideContentInput.addEventListener('input', updateHidePrefixes);
         updateHidePrefixes();
     }
+
+    const confirmModal = document.querySelector('[data-ragstat-confirm-modal]');
+    if (confirmModal) {
+        const confirmMessage = confirmModal.querySelector('#ragstat-confirm-message');
+        const confirmButton = confirmModal.querySelector('[data-ragstat-confirm-accept]');
+        const cancelButtons = confirmModal.querySelectorAll('[data-ragstat-confirm-cancel]');
+        let pendingButton = null;
+        let previousFocus = null;
+
+        const closeConfirmModal = function () {
+            confirmModal.hidden = true;
+            document.body.classList.remove('ragstat-modal-open');
+            pendingButton = null;
+            if (previousFocus) {
+                previousFocus.focus();
+            }
+            previousFocus = null;
+        };
+
+        const openConfirmModal = function (button) {
+            pendingButton = button;
+            previousFocus = document.activeElement;
+            confirmMessage.textContent = button.dataset.ragstatConfirm || '';
+            confirmModal.hidden = false;
+            document.body.classList.add('ragstat-modal-open');
+            confirmButton.focus();
+        };
+
+        document.addEventListener('click', function (event) {
+            const button = event.target.closest('[data-ragstat-confirm]');
+            if (!button) {
+                return;
+            }
+
+            const requiredAction = button.dataset.ragstatConfirmAction;
+            const selectedAction = button.form && button.form.elements.archive_bulk_action
+                ? button.form.elements.archive_bulk_action.value
+                : '';
+            if (requiredAction && selectedAction !== requiredAction) {
+                return;
+            }
+
+            event.preventDefault();
+            openConfirmModal(button);
+        });
+
+        cancelButtons.forEach(function (button) {
+            button.addEventListener('click', closeConfirmModal);
+        });
+
+        confirmButton.addEventListener('click', function () {
+            const button = pendingButton;
+            if (!button || !button.form) {
+                closeConfirmModal();
+                return;
+            }
+            if (button.hasAttribute('data-ragstat-clear-bulk-action') && button.form.elements.archive_bulk_action) {
+                button.form.elements.archive_bulk_action.value = '';
+            }
+            confirmModal.hidden = true;
+            document.body.classList.remove('ragstat-modal-open');
+            pendingButton = null;
+            previousFocus = null;
+            button.form.requestSubmit(button);
+        });
+
+        confirmModal.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                closeConfirmModal();
+                return;
+            }
+            if (event.key !== 'Tab') {
+                return;
+            }
+            const focusable = Array.from(confirmModal.querySelectorAll('button:not([disabled])'));
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (event.shiftKey && document.activeElement === first) {
+                event.preventDefault();
+                last.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+                event.preventDefault();
+                first.focus();
+            }
+        });
+    }
+
     const root = document.querySelector('[data-ragstat-status-root]');
     if (!config || !root) {
         return;

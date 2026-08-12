@@ -1026,6 +1026,95 @@
     box-shadow: none;
 }
 
+body.ragstat-modal-open {
+    overflow: hidden;
+}
+
+.ragstat-confirm-modal[hidden] {
+    display: none !important;
+}
+
+.ragstat-confirm-modal {
+    position: fixed;
+    z-index: 100000;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.ragstat-confirm-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, .58);
+    backdrop-filter: blur(2px);
+}
+
+.ragstat-confirm-modal__dialog {
+    position: relative;
+    display: grid;
+    width: min(440px, 100%);
+    grid-template-columns: 48px 1fr;
+    gap: 16px;
+    padding: 24px;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 24px 70px rgba(15, 23, 42, .28);
+}
+
+.ragstat-confirm-modal__icon {
+    display: inline-flex;
+    width: 48px;
+    height: 48px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #fef2f2;
+    color: #dc2626;
+    font-size: 25px;
+    line-height: 48px;
+}
+
+.ragstat-confirm-modal__content h2 {
+    margin: 1px 0 8px;
+    color: #172033;
+    font-size: 19px;
+    line-height: 1.35;
+}
+
+.ragstat-confirm-modal__content p {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.ragstat-confirm-modal__actions {
+    display: flex;
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.ragstat-confirm-modal__actions .button {
+    min-width: 92px;
+    text-align: center;
+}
+
+.ragstat-confirm-modal__confirm.button-primary {
+    border-color: #dc2626;
+    background: #dc2626;
+}
+
+.ragstat-confirm-modal__confirm.button-primary:hover,
+.ragstat-confirm-modal__confirm.button-primary:focus {
+    border-color: #b91c1c;
+    background: #b91c1c;
+}
+
 .ragstat-diagnostics-summary {
     margin: 5px 0 0;
     color: var(--ragstat-muted);
@@ -1268,6 +1357,18 @@
     .ragstat-tab-content {
         padding: 16px;
         border-radius: 12px;
+    }
+
+    .ragstat-confirm-modal__dialog {
+        grid-template-columns: 40px 1fr;
+        padding: 20px;
+    }
+
+    .ragstat-confirm-modal__icon {
+        width: 40px;
+        height: 40px;
+        font-size: 22px;
+        line-height: 40px;
     }
 
     .ragstat-status-table tbody th {

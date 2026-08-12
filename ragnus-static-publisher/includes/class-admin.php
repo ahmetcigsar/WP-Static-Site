@@ -398,6 +398,27 @@ final class Admin
                 <?php self::render_about_tab(); ?>
             <?php endif; ?>
             </main>
+            <?php self::render_confirmation_modal(); ?>
+        </div>
+        <?php
+    }
+
+    private static function render_confirmation_modal(): void
+    {
+        ?>
+        <div class="ragstat-confirm-modal" data-ragstat-confirm-modal hidden>
+            <div class="ragstat-confirm-modal__backdrop" data-ragstat-confirm-cancel></div>
+            <div class="ragstat-confirm-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="ragstat-confirm-title" aria-describedby="ragstat-confirm-message">
+                <span class="ragstat-confirm-modal__icon dashicons dashicons-warning" aria-hidden="true"></span>
+                <div class="ragstat-confirm-modal__content">
+                    <h2 id="ragstat-confirm-title">İşlemi Onaylayın</h2>
+                    <p id="ragstat-confirm-message"></p>
+                </div>
+                <div class="ragstat-confirm-modal__actions">
+                    <button type="button" class="button" data-ragstat-confirm-cancel>Vazgeç</button>
+                    <button type="button" class="button button-primary ragstat-confirm-modal__confirm" data-ragstat-confirm-accept>Sil</button>
+                </div>
+            </div>
         </div>
         <?php
     }
@@ -506,7 +527,10 @@ final class Admin
                             <option value="download">Seçilenleri İndir</option>
                             <option value="delete">Seçilenleri Sil</option>
                         </select>
-                        <?php submit_button('Uygula', 'action', 'bulk_submit', false, ['onclick' => "if (this.form.archive_bulk_action.value === 'delete') return confirm('Seçilen ZIP dosyaları kalıcı olarak silinecek. Devam edilsin mi?');"]); ?>
+                        <?php submit_button('Uygula', 'action', 'bulk_submit', false, [
+                            'data-ragstat-confirm' => 'Seçilen ZIP dosyaları kalıcı olarak silinecek. Devam edilsin mi?',
+                            'data-ragstat-confirm-action' => 'delete',
+                        ]); ?>
                     </div>
                     <br class="clear">
                 </div>
@@ -528,7 +552,7 @@ final class Admin
                             <td><?php echo $archive['url_count'] === null ? '—' : esc_html((string) $archive['url_count']); ?></td>
                             <td><?php echo esc_html(wp_date((string) get_option('date_format'), (int) $archive['created_at'])); ?></td>
                             <td><?php echo esc_html(wp_date((string) get_option('time_format'), (int) $archive['created_at'])); ?></td>
-                            <td><a class="button button-small" href="<?php echo esc_url($download_url); ?>">İndir</a> <button class="button button-small button-link-delete" type="submit" name="delete_archive" value="<?php echo esc_attr($archive_id); ?>" onclick="if (!confirm('Bu ZIP dosyası kalıcı olarak silinecek. Devam edilsin mi?')) return false; this.form.archive_bulk_action.value = '';">Sil</button></td>
+                            <td><a class="button button-small" href="<?php echo esc_url($download_url); ?>">İndir</a> <button class="button button-small button-link-delete" type="submit" name="delete_archive" value="<?php echo esc_attr($archive_id); ?>" data-ragstat-confirm="Bu ZIP dosyası kalıcı olarak silinecek. Devam edilsin mi?" data-ragstat-clear-bulk-action>Sil</button></td>
                         </tr>
                     <?php endforeach; ?>
                     </tbody>
@@ -539,7 +563,9 @@ final class Admin
         <form class="ragstat-cleanup-form" method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
             <input type="hidden" name="action" value="ragnus_static_cleanup_exports">
             <?php wp_nonce_field('ragnus_static_cleanup_exports'); ?>
-            <?php submit_button('Eski Dosyaları Sil', 'delete', 'submit', false, ['onclick' => "return confirm('En son ZIP dışındaki tüm eski ZIP dosyaları silinecek. Devam edilsin mi?');"]); ?>
+            <?php submit_button('Eski Dosyaları Sil', 'delete', 'submit', false, [
+                'data-ragstat-confirm' => 'En son ZIP dışındaki tüm eski ZIP dosyaları silinecek. Devam edilsin mi?',
+            ]); ?>
             <p class="description">En son ZIP dosyası korunur; önceki ZIP dosyaları ve bunlara ait geçici build klasörleri kalıcı olarak silinir.</p>
         </form>
         <?php

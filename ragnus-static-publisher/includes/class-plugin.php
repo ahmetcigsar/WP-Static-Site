@@ -13,6 +13,7 @@ final class Plugin
     public const HIDE_SETTINGS_KEY = 'ragnus_static_hide_settings';
     public const SEARCH_SETTINGS_KEY = 'ragnus_static_search_settings';
     public const LANGUAGE_SETTINGS_KEY = 'ragnus_static_language_settings';
+    public const SEO_PLUGIN_SETTINGS_KEY = 'ragnus_static_seo_plugin_settings';
     public const STATUS_KEY = 'ragnus_static_status';
     public const LOCK_KEY = 'ragnus_static_export_lock';
     public const DIRTY_KEY = 'ragnus_static_export_dirty';
@@ -215,6 +216,22 @@ final class Plugin
     public static function language_settings(): array
     {
         return wp_parse_args(get_option(self::LANGUAGE_SETTINGS_KEY, []), Language_Routing::defaults());
+    }
+
+    public static function seo_plugin_defaults(): array
+    {
+        return [
+            'rank_math_enabled' => '1',
+            'rank_math_metadata' => '1',
+            'rank_math_schema' => '1',
+            'rank_math_sitemaps' => '1',
+            'rank_math_robots' => '1',
+        ];
+    }
+
+    public static function seo_plugin_settings(): array
+    {
+        return wp_parse_args(get_option(self::SEO_PLUGIN_SETTINGS_KEY, []), self::seo_plugin_defaults());
     }
 
     public static function search_settings(): array

@@ -417,6 +417,34 @@ if (! str_contains($legacy_deploy_html, 'GitHub Deployment Webhook') || ! str_co
     exit(1);
 }
 
+$_GET = ['tab' => 'seo', 'seo_tab' => 'plugins'];
+ob_start();
+Ragnus\StaticPublisher\Admin::render();
+$seo_html = (string) ob_get_clean();
+if (! str_contains($seo_html, 'SEO Plugins') || ! str_contains($seo_html, 'Rank Math SEO') || ! str_contains($seo_html, 'Save SEO Plugin Settings')) {
+    fwrite(STDERR, "SEO Plugins dikey sekmesi veya Rank Math ayarları bulunamadı.\n");
+    exit(1);
+}
+
+$_GET = ['tab' => 'seo', 'seo_tab' => 'language'];
+ob_start();
+Ragnus\StaticPublisher\Admin::render();
+$seo_language_html = (string) ob_get_clean();
+if (! str_contains($seo_language_html, 'Redirection by Browser Language') || ! str_contains($seo_language_html, 'Save Language Settings')) {
+    fwrite(STDERR, "SEO > Language dikey sekmesinde dil ayarları bulunamadı.\n");
+    exit(1);
+}
+
+$_GET = ['tab' => 'settings', 'settings_tab' => 'languages'];
+ob_start();
+Ragnus\StaticPublisher\Admin::render();
+$legacy_languages_html = (string) ob_get_clean();
+$_GET = [];
+if (! str_contains($legacy_languages_html, 'SEO Plugins') || ! str_contains($legacy_languages_html, 'tab=seo')) {
+    fwrite(STDERR, "Eski Settings > Languages bağlantısı yeni SEO üst sekmesine uyarlanmadı.\n");
+    exit(1);
+}
+
 Ragnus\StaticPublisher\Plugin::set_status('stalled-test', 'queued', 0, [
     'queued_at' => gmdate('c', time() - 120),
     'status_message' => 'Export işi sıraya alındı.',

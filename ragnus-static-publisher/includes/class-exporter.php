@@ -24,6 +24,7 @@ final class Exporter
     private Hide_Replacements $hide_replacements;
     private Static_Search $static_search;
     private Language_Routing $language_routing;
+    private Rank_Math_Integration $rank_math_integration;
     private array $search_documents = [];
 
     public function __construct()
@@ -35,6 +36,7 @@ final class Exporter
         $this->hide_replacements = new Hide_Replacements(Plugin::hide_settings());
         $this->static_search = new Static_Search(Plugin::search_settings());
         $this->language_routing = new Language_Routing();
+        $this->rank_math_integration = new Rank_Math_Integration($this->origin, $this->target);
         $this->excluded_prefixes = array_values(array_filter(array_map(
             'trim',
             preg_split('/\r\n|\r|\n/', (string) $settings['excluded_paths']) ?: []
@@ -64,6 +66,10 @@ final class Exporter
             ]);
             $this->reported_progress = 2;
             $this->crawl();
+            $this->rank_math_integration->export_root_files(
+                fn (string $path, string $contents) => $this->write_file($path, $contents),
+                fn (string $level, string $message, string $url = '') => $this->add_log($level, $message, $url)
+            );
             $this->validate_language_outputs();
             if ($this->static_search->enabled()) {
                 Plugin::set_status($job_id, 'running', 86, [
@@ -292,6 +298,12 @@ final class Exporter
 
     private function process_html(string $html, string $base_url): array
     {
+        $search_settings = $this->static_search->settings();
+        $html = $this->rank_math_integration->process_html(
+            $html,
+            $this->static_search->enabled(),
+            (string) ($search_settings['page_path'] ?? 'arama')
+        );
         if (! class_exists(DOMDocument::class)) {
             return [$this->rewrite_html_for_output($html), []];
         }
@@ -638,6 +650,7 @@ final class Exporter
                 'settings' => $this->static_search->settings(),
             ],
             'language_routing' => json_decode($this->language_routing->config_json(), true),
+            'rank_math' => $this->rank_math_integration->manifest_data(),
             'build_sha256' => hash('sha256', (string) wp_json_encode($file_hashes, JSON_UNESCAPED_SLASHES)),
         ];
         $this->write_file('ragnus-static-manifest.json', (string) wp_json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));

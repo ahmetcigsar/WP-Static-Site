@@ -33,6 +33,10 @@
 - Çoklu dil özelliği yalnızca `/tr/`, `/en/` gibi dizin tabanlı WordPress çeviri URL'leriyle çalışır.
 - Etkin dillerin kök adresleri normal içerik seed'lerine ek olarak crawl kuyruğuna alınır; her dil için `/<dil>/index.html` üretilmesi zorunludur.
 - Export `ragnus-language-config.json` ve tercih kaydı için `ragnus-language-preference.js` üretir.
+- Çoklu dil yönlendirme ayarları yönetim arayüzündeki üst seviye `SEO` sekmesinde tutulur; option anahtarı geriye dönük uyumluluk için değişmez.
+- `SEO > SEO Plugins`, Rank Math sayfa metadata, JSON-LD, sitemap ve robots çıktılarının statik pakete dahil edilmesini ayrı seçeneklerle yönetir.
+- Rank Math sitemap ağacı yalnızca aynı origin içindeki güvenli `*.xml`/`*.xsl` sitemap yollarından takip edilir; en fazla 100 dosya alınır ve bütün origin adresleri canlı hedef domaine dönüştürülür.
+- Rank Math JSON-LD URL değerleri hedef domaine taşınır. Statik arama etkinse `SearchAction` hedefi statik arama yoluna çevrilir; dinamik WordPress araması statik çıktıda bırakılmaz.
 - Cloudflare Worker yalnızca `/` yolunda çalışır. Açık dil tercihi çerezi `Accept-Language` değerinden, `Accept-Language` ise varsayılan dilden önceliklidir.
 - Yönlendirme kullanıcıya bağlı olduğu için `302`, `Cache-Control: private, no-store` ve `Vary: Accept-Language, Cookie` kullanılır.
 - Dil içeren yollar doğrudan Static Assets tarafından sunulur; Worker bunları başka dile yönlendirmez.

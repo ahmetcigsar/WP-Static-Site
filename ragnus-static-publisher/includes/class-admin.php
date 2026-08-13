@@ -41,6 +41,11 @@ final class Admin
             'sanitize_callback' => [Language_Routing::class, 'sanitize'],
             'default' => Language_Routing::defaults(),
         ]);
+        register_setting('ragnus_static_seo_plugins', Plugin::SEO_PLUGIN_SETTINGS_KEY, [
+            'type' => 'array',
+            'sanitize_callback' => [self::class, 'sanitize_seo_plugin_settings'],
+            'default' => Plugin::seo_plugin_defaults(),
+        ]);
     }
 
     public static function enqueue_assets(string $hook_suffix): void
@@ -150,6 +155,15 @@ final class Admin
             }
         }
 
+        return $sanitized;
+    }
+
+    public static function sanitize_seo_plugin_settings(array $value): array
+    {
+        $sanitized = [];
+        foreach (array_keys(Plugin::seo_plugin_defaults()) as $key) {
+            $sanitized[$key] = isset($value[$key]) ? '1' : '0';
+        }
         return $sanitized;
     }
 
@@ -458,15 +472,19 @@ final class Admin
         $requested_tab = isset($_GET['tab']) ? sanitize_key(wp_unslash((string) $_GET['tab'])) : 'main';
         $requested_settings_tab = isset($_GET['settings_tab']) ? sanitize_key(wp_unslash((string) $_GET['settings_tab'])) : 'general';
         $requested_deploy_tab = isset($_GET['deploy_tab']) ? sanitize_key(wp_unslash((string) $_GET['deploy_tab'])) : 'zip';
+        $requested_seo_tab = isset($_GET['seo_tab']) ? sanitize_key(wp_unslash((string) $_GET['seo_tab'])) : 'plugins';
         if ($requested_tab === 'settings' && $requested_settings_tab === 'deploy') {
             $requested_tab = 'deploy';
             $requested_deploy_tab = 'github';
+        } elseif ($requested_tab === 'settings' && $requested_settings_tab === 'languages') {
+            $requested_tab = 'seo';
         }
         $tabs = [
             'main' => __('Main', 'ragnus-static-publisher'),
             'deploy' => __('Deploy', 'ragnus-static-publisher'),
             'files' => __('Files', 'ragnus-static-publisher'),
             'settings' => __('Settings', 'ragnus-static-publisher'),
+            'seo' => __('SEO', 'ragnus-static-publisher'),
             'search' => __('Search', 'ragnus-static-publisher'),
             'hide' => __('Hide', 'ragnus-static-publisher'),
             'diagnostics' => __('Diagnostics', 'ragnus-static-publisher'),
@@ -502,6 +520,8 @@ final class Admin
                 <?php self::render_activity_tab(); ?>
             <?php elseif ($current_tab === 'settings') : ?>
                 <?php self::render_settings_tab(Plugin::settings(), $requested_settings_tab); ?>
+            <?php elseif ($current_tab === 'seo') : ?>
+                <?php self::render_seo_tab($requested_seo_tab); ?>
             <?php elseif ($current_tab === 'search') : ?>
                 <?php self::render_search_tab(Plugin::search_settings()); ?>
             <?php elseif ($current_tab === 'hide') : ?>
@@ -551,6 +571,11 @@ final class Admin
     private static function deploy_page_url(string $deploy_tab): string
     {
         return add_query_arg('deploy_tab', $deploy_tab, self::admin_page_url('deploy'));
+    }
+
+    private static function seo_page_url(string $seo_tab): string
+    {
+        return add_query_arg('seo_tab', $seo_tab, self::admin_page_url('seo'));
     }
 
     private static function render_main_tab(array $status, array $archives): void
@@ -888,7 +913,6 @@ final class Admin
         $settings_tabs = [
             'general' => __('General', 'ragnus-static-publisher'),
             'automation' => __('Automation', 'ragnus-static-publisher'),
-            'languages' => __('Languages', 'ragnus-static-publisher'),
         ];
         $current_settings_tab = isset($settings_tabs[$requested_settings_tab]) ? $requested_settings_tab : 'general';
         ?>
@@ -905,13 +929,88 @@ final class Admin
             <div class="ragstat-settings-panel">
                 <?php if ($current_settings_tab === 'general') : ?>
                     <?php self::render_general_settings($settings); ?>
-                <?php elseif ($current_settings_tab === 'automation') : ?>
+                <?php else : ?>
                     <?php self::render_automation_settings($settings); ?>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php
+    }
+
+    private static function render_seo_tab(string $requested_seo_tab): void
+    {
+        $seo_tabs = [
+            'plugins' => [__('SEO Plugins', 'ragnus-static-publisher'), 'dashicons-admin-plugins'],
+            'language' => [__('Language', 'ragnus-static-publisher'), 'dashicons-translation'],
+        ];
+        $current_seo_tab = isset($seo_tabs[$requested_seo_tab]) ? $requested_seo_tab : 'plugins';
+        ?>
+        <div class="ragstat-seo-header">
+            <h2><?php esc_html_e('SEO', 'ragnus-static-publisher'); ?></h2>
+            <p><?php esc_html_e('Manage SEO plugin output and multilingual search engine signals in the static site.', 'ragnus-static-publisher'); ?></p>
+        </div>
+        <div class="ragstat-seo-layout">
+            <nav class="ragstat-seo-tabs" aria-label="<?php echo esc_attr__('SEO', 'ragnus-static-publisher'); ?>">
+                <?php foreach ($seo_tabs as $seo_tab => [$label, $icon]) : ?>
+                    <a class="ragstat-seo-tab <?php echo $current_seo_tab === $seo_tab ? 'is-active' : ''; ?>" href="<?php echo esc_url(self::seo_page_url($seo_tab)); ?>" <?php echo $current_seo_tab === $seo_tab ? 'aria-current="page"' : ''; ?>>
+                        <span class="dashicons <?php echo esc_attr($icon); ?>" aria-hidden="true"></span>
+                        <span><?php echo esc_html($label); ?></span>
+                    </a>
+                <?php endforeach; ?>
+            </nav>
+            <div class="ragstat-seo-panel">
+                <?php if ($current_seo_tab === 'plugins') : ?>
+                    <?php self::render_seo_plugins(Plugin::seo_plugin_settings()); ?>
                 <?php else : ?>
                     <?php self::render_language_settings(Plugin::language_settings()); ?>
                 <?php endif; ?>
             </div>
         </div>
+        <?php
+    }
+
+    private static function render_seo_plugins(array $settings): void
+    {
+        $rank_math_active = defined('RANK_MATH_VERSION');
+        $option_name = Plugin::SEO_PLUGIN_SETTINGS_KEY;
+        $outputs = [
+            'rank_math_metadata' => [__('Page Metadata', 'ragnus-static-publisher'), __('Keep Rank Math robots, canonical, Open Graph and Twitter Card tags. Internal URLs are converted to the live static domain.', 'ragnus-static-publisher')],
+            'rank_math_schema' => [__('Schema Structured Data', 'ragnus-static-publisher'), __('Keep Rank Math JSON-LD data, convert its URLs to the live domain, and adapt SearchAction to static search.', 'ragnus-static-publisher')],
+            'rank_math_sitemaps' => [__('XML Sitemaps', 'ragnus-static-publisher'), __('Copy the Rank Math sitemap index, child sitemaps and sitemap stylesheet into the static package.', 'ragnus-static-publisher')],
+            'rank_math_robots' => [__('Robots.txt', 'ragnus-static-publisher'), __('Copy Rank Math robots.txt rules and point the sitemap declaration to the live static domain.', 'ragnus-static-publisher')],
+        ];
+        ?>
+        <form class="ragstat-settings-form ragstat-seo-plugins-form" method="post" action="options.php">
+            <?php settings_fields('ragnus_static_seo_plugins'); ?>
+            <section class="ragstat-seo-plugin-card" aria-labelledby="ragstat-rank-math-title">
+                <div class="ragstat-seo-plugin-card__heading">
+                    <span class="dashicons dashicons-chart-area" aria-hidden="true"></span>
+                    <div>
+                        <h3 id="ragstat-rank-math-title">Rank Math SEO</h3>
+                        <p><?php esc_html_e('Choose which Rank Math outputs will be included in the generated static site.', 'ragnus-static-publisher'); ?></p>
+                    </div>
+                    <span class="ragstat-deploy-status <?php echo $rank_math_active ? 'is-ready' : 'is-pending'; ?>">
+                        <?php echo $rank_math_active ? esc_html(sprintf(__('Active — version %s', 'ragnus-static-publisher'), (string) RANK_MATH_VERSION)) : esc_html__('Not active', 'ragnus-static-publisher'); ?>
+                    </span>
+                </div>
+                <label class="ragstat-seo-plugin-master">
+                    <input type="checkbox" name="<?php echo esc_attr($option_name); ?>[rank_math_enabled]" value="1" <?php checked((string) ($settings['rank_math_enabled'] ?? '0'), '1'); ?>>
+                    <span><strong><?php esc_html_e('Include Rank Math outputs in the static site', 'ragnus-static-publisher'); ?></strong><small><?php esc_html_e('When disabled, Rank Math metadata and schema blocks are removed and its sitemap and robots files are not exported.', 'ragnus-static-publisher'); ?></small></span>
+                </label>
+                <div class="ragstat-seo-output-list">
+                    <?php foreach ($outputs as $key => [$label, $description]) : ?>
+                        <label class="ragstat-seo-output-option">
+                            <input type="checkbox" name="<?php echo esc_attr($option_name); ?>[<?php echo esc_attr($key); ?>]" value="1" <?php checked((string) ($settings[$key] ?? '0'), '1'); ?>>
+                            <span><strong><?php echo esc_html($label); ?></strong><small><?php echo esc_html($description); ?></small></span>
+                        </label>
+                    <?php endforeach; ?>
+                </div>
+                <?php if (! $rank_math_active) : ?>
+                    <p class="ragstat-language-card__note"><span class="dashicons dashicons-info-outline" aria-hidden="true"></span><?php esc_html_e('These settings are preserved, but no Rank Math output will be exported until the plugin is active.', 'ragnus-static-publisher'); ?></p>
+                <?php endif; ?>
+            </section>
+            <?php submit_button(__('Save SEO Plugin Settings', 'ragnus-static-publisher')); ?>
+        </form>
         <?php
     }
 

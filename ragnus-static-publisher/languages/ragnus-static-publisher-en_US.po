@@ -1,7 +1,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Ragnus Static Publisher 1.17.0\n"
+"Project-Id-Version: Ragnus Static Publisher 1.19.0\n"
 "Report-Msgid-Bugs-To: info@ragnus.co\n"
 "POT-Creation-Date: 2026-08-13 00:31+0300\n"
 "PO-Revision-Date: 2026-08-12 22:57+0300\n"
@@ -138,9 +138,13 @@ msgstr "Files"
 msgid "Settings"
 msgstr "Settings"
 
-#: ragnus-static-publisher/includes/class-admin.php:470
-#: ragnus-static-publisher/includes/class-admin.php:832
-#: ragnus-static-publisher/includes/class-admin.php:1127
+#: ragnus-static-publisher/includes/class-admin.php:472
+msgid "SEO"
+msgstr "SEO"
+
+#: ragnus-static-publisher/includes/class-admin.php:473
+#: ragnus-static-publisher/includes/class-admin.php:837
+#: ragnus-static-publisher/includes/class-admin.php:1134
 #: ragnus-static-publisher/includes/class-static-search.php:250
 msgid "Search"
 msgstr "Search"

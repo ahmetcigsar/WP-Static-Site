@@ -10,8 +10,10 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 - Cloudflare `_headers` ve `_redirects` üretimi
 - ZIP ve SHA-256 manifest üretimi
 - Sol ana menüde doküman ikonlu Static Publisher yönetim ekranı
-- Main, Deploy, Files, Settings, Arama, Hide, Diagnostics, Activity Logs ve About sekmelerine ayrılmış yönetim görünümü
-- Settings altında Genel, Otomasyon ve Diller alt sekmeleri
+- Main, Deploy, Files, Settings, SEO, Arama, Hide, Diagnostics, Activity Logs ve About sekmelerine ayrılmış yönetim görünümü
+- Settings altında Genel ve Otomasyon alt sekmeleri
+- SEO ana sekmesinde SEO Plugins ve Language dikey sekmeleri
+- Rank Math metadata, Schema, XML sitemap ve robots.txt çıktılarının statik pakete ayrı ayrı dahil edilmesi
 - WordPress yönetici/site dilini otomatik izleyen Türkçe, İngilizce, İspanyolca, Fransızca, Basitleştirilmiş Çince, Japonca, Arapça ve Portekizce arayüz paketleri
 - Deploy sekmesinin sol dikey menüsünde ZIP File, GitHub, Cloudflare ve SFTP yayın seçenekleri
 - Şifreli parola saklama, bağlantı testi, manuel yükleme ve başarılı export sonrası seçilebilir otomatik yükleme sunan SFTP desteği
@@ -74,11 +76,15 @@ Sunucu kimliğini doğrulamak için hosting sağlayıcısından alınan 32 karak
 
 ## Çoklu dil yönlendirmesi
 
-WordPress çoklu dil eklentisi çevirileri dizin tabanlı adreslerde yayınlamalıdır: `/tr/`, `/en/`, `/de/`. Static Publisher içindeki **Settings > Diller** ekranında aynı dil kodlarını satır başına bir tane olacak şekilde girin, varsayılan dili seçin ve yönlendirmeyi etkinleştirin.
+WordPress çoklu dil eklentisi çevirileri dizin tabanlı adreslerde yayınlamalıdır: `/tr/`, `/en/`, `/de/`. Static Publisher içindeki **SEO** ekranında aynı dil kodlarını satır başına bir tane olacak şekilde girin, varsayılan dili seçin ve yönlendirmeyi etkinleştirin.
 
 Exporter her dil kökünü ayrıca tarar ve eksik bir dil kökü varsa export işlemini başarısız sayar. Statik paketteki `ragnus-language-config.json` Cloudflare Worker tarafından okunur. Worker sadece `/` isteğinde önce `ragnus_language` çerezini, sonra `Accept-Language` başlığını, son olarak varsayılan dili kullanır. `/en/about/` gibi açık dil adresleri yeniden yönlendirilmez. Dil dizinindeki bir sayfa ziyaret edildiğinde tercih çerezi güncellenir.
 
 Her çeviri sayfası WordPress tarafında doğru `lang`, canonical ve karşılıklı `hreflang` etiketlerini üretmelidir. Exporter `hreflang` adreslerini canlı statik domaine taşır ve kök yönlendirici için eksikse `x-default` ekler. Query-string tabanlı `?lang=en` yapısı desteklenmez.
+
+## Rank Math SEO entegrasyonu
+
+**SEO > SEO Plugins** ekranından Rank Math entegrasyonu etkinleştirilebilir. Sayfa metadata etiketleri, JSON-LD Schema, XML sitemap ailesi ve `robots.txt` çıktısı ayrı ayrı seçilir. Exporter iç URL'leri canlı statik domaine dönüştürür; statik arama açıksa Rank Math `SearchAction` hedefini statik arama sayfasına uyarlar.
 
 ## Geliştirme doğrulaması
 

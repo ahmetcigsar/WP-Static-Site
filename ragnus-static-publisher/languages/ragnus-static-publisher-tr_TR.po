@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Ragnus Static Publisher 1.17.0\n"
+"Project-Id-Version: Ragnus Static Publisher 1.19.0\n"
 "Report-Msgid-Bugs-To: info@ragnus.co\n"
 "POT-Creation-Date: 2026-08-13 00:31+0300\n"
 "PO-Revision-Date: 2026-08-13 00:17+0300\n"
@@ -139,9 +139,73 @@ msgstr "Dosyalar"
 msgid "Settings"
 msgstr "Ayarlar"
 
-#: ragnus-static-publisher/includes/class-admin.php:470
-#: ragnus-static-publisher/includes/class-admin.php:832
-#: ragnus-static-publisher/includes/class-admin.php:1127
+#: ragnus-static-publisher/includes/class-admin.php:472
+msgid "SEO"
+msgstr "SEO"
+
+msgid "SEO Plugins"
+msgstr "SEO Eklentileri"
+
+msgid "Language"
+msgstr "Dil"
+
+msgid "Manage SEO plugin output and multilingual search engine signals in the static site."
+msgstr "Statik sitedeki SEO eklentisi çıktılarını ve çok dilli arama motoru sinyallerini yönetin."
+
+msgid "Page Metadata"
+msgstr "Sayfa Meta Verileri"
+
+msgid "Keep Rank Math robots, canonical, Open Graph and Twitter Card tags. Internal URLs are converted to the live static domain."
+msgstr "Rank Math robots, canonical, Open Graph ve Twitter Card etiketlerini korur. İç URL'ler canlı statik domaine dönüştürülür."
+
+msgid "Schema Structured Data"
+msgstr "Schema Yapılandırılmış Verileri"
+
+msgid "Keep Rank Math JSON-LD data, convert its URLs to the live domain, and adapt SearchAction to static search."
+msgstr "Rank Math JSON-LD verilerini korur, URL'lerini canlı domaine dönüştürür ve SearchAction hedefini statik aramaya uyarlar."
+
+msgid "XML Sitemaps"
+msgstr "XML Site Haritaları"
+
+msgid "Copy the Rank Math sitemap index, child sitemaps and sitemap stylesheet into the static package."
+msgstr "Rank Math site haritası indeksini, alt site haritalarını ve site haritası stil dosyasını statik pakete kopyalar."
+
+msgid "Robots.txt"
+msgstr "Robots.txt"
+
+msgid "Copy Rank Math robots.txt rules and point the sitemap declaration to the live static domain."
+msgstr "Rank Math robots.txt kurallarını kopyalar ve site haritası bildirimini canlı statik domaine yönlendirir."
+
+msgid "Choose which Rank Math outputs will be included in the generated static site."
+msgstr "Oluşturulan statik siteye hangi Rank Math çıktılarının dahil edileceğini seçin."
+
+msgid "Active — version %s"
+msgstr "Etkin — sürüm %s"
+
+msgid "Not active"
+msgstr "Etkin değil"
+
+msgid "Include Rank Math outputs in the static site"
+msgstr "Rank Math çıktılarını statik siteye dahil et"
+
+msgid "When disabled, Rank Math metadata and schema blocks are removed and its sitemap and robots files are not exported."
+msgstr "Devre dışı olduğunda Rank Math meta veri ve schema blokları kaldırılır; site haritası ve robots dosyaları export edilmez."
+
+msgid "These settings are preserved, but no Rank Math output will be exported until the plugin is active."
+msgstr "Bu ayarlar korunur ancak eklenti etkin olana kadar hiçbir Rank Math çıktısı export edilmez."
+
+msgid "Save SEO Plugin Settings"
+msgstr "SEO Eklentisi Ayarlarını Kaydet"
+
+msgid "Rank Math sitemap could not be exported."
+msgstr "Rank Math site haritası export edilemedi."
+
+msgid "Rank Math robots.txt could not be exported."
+msgstr "Rank Math robots.txt export edilemedi."
+
+#: ragnus-static-publisher/includes/class-admin.php:473
+#: ragnus-static-publisher/includes/class-admin.php:837
+#: ragnus-static-publisher/includes/class-admin.php:1134
 #: ragnus-static-publisher/includes/class-static-search.php:250
 msgid "Search"
 msgstr "Ara"

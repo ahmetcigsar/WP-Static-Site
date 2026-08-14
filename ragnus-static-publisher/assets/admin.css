@@ -152,7 +152,13 @@
 }
 
 .ragstat-files-table {
+    width: 100%;
     max-width: 1160px;
+}
+
+.ragstat-files-table-wrap {
+    overflow-x: auto;
+    width: 100%;
 }
 
 .ragstat-files-table .ragstat-number-column {
@@ -946,6 +952,17 @@
     margin-left: 5px;
     font-size: 16px;
     line-height: 16px;
+}
+
+.ragstat-deploy-card__files {
+    min-width: 0;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--ragstat-border);
+}
+
+.ragstat-deploy-card__files > h2 {
+    margin-top: 0;
 }
 
 .ragstat-deploy-status {

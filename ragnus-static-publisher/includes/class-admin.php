@@ -703,6 +703,7 @@ final class Admin
                     </div>
                     <br class="clear">
                 </div>
+                <div class="ragstat-files-table-wrap">
                 <table class="widefat striped ragstat-files-table">
                     <thead><tr><td class="manage-column check-column"><input id="cb-select-all-1" type="checkbox"><label for="cb-select-all-1"><span class="screen-reader-text"><?php esc_html_e('Select All', 'ragnus-static-publisher'); ?></span></label></td><th class="ragstat-number-column"><?php esc_html_e('Order', 'ragnus-static-publisher'); ?></th><th><?php esc_html_e('Job ID', 'ragnus-static-publisher'); ?></th><th><?php esc_html_e('URL Count', 'ragnus-static-publisher'); ?></th><th><?php esc_html_e('Creation Date', 'ragnus-static-publisher'); ?></th><th><?php esc_html_e('Creation Time', 'ragnus-static-publisher'); ?></th><th><?php esc_html_e('Actions', 'ragnus-static-publisher'); ?></th></tr></thead>
                     <tbody>
@@ -726,6 +727,7 @@ final class Admin
                     <?php endforeach; ?>
                     </tbody>
                 </table>
+                </div>
                 <?php if ($total_pages > 1) : ?>
                     <?php
                     $pagination_base = str_replace(
@@ -809,9 +811,11 @@ final class Admin
                         <div class="ragstat-deploy-card__footer">
                             <span class="ragstat-deploy-status <?php echo $has_archive ? 'is-ready' : 'is-pending'; ?>"><?php echo $has_archive ? __('ZIP ready', 'ragnus-static-publisher') : __('Create static site first', 'ragnus-static-publisher'); ?></span>
                         </div>
+                        <div class="ragstat-deploy-card__files">
+                            <?php self::render_zip_files($archives); ?>
+                        </div>
                     </section>
                     <?php self::render_zip_settings($settings); ?>
-                    <?php self::render_zip_files($archives); ?>
                 <?php elseif ($current_deploy_tab === 'github') : ?>
                     <section class="ragstat-deploy-card" aria-labelledby="ragstat-deploy-github-title">
                         <span class="ragstat-deploy-card__icon ragstat-deploy-card__github-icon" aria-hidden="true">

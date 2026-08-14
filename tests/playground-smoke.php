@@ -460,6 +460,17 @@ foreach ([
         fwrite(STDERR, "Deploy {$deploy_tab} ekranında tek bir etkin dikey sekme bulunamadı.\n");
         exit(1);
     }
+    if ($deploy_tab === 'zip') {
+        $zip_card_start = strpos($deploy_html, '<section class="ragstat-deploy-card" aria-labelledby="ragstat-deploy-zip-title">');
+        $zip_files_start = strpos($deploy_html, 'class="ragstat-deploy-card__files"');
+        $zip_card_end = $zip_card_start === false ? false : strpos($deploy_html, '</section>', $zip_card_start);
+        $zip_settings_start = strpos($deploy_html, 'class="ragstat-settings-form ragstat-zip-settings-form"');
+        if ($zip_card_start === false || $zip_files_start === false || $zip_card_end === false || $zip_settings_start === false
+            || ! ($zip_card_start < $zip_files_start && $zip_files_start < $zip_card_end && $zip_card_end < $zip_settings_start)) {
+            fwrite(STDERR, "ZIP Files listesi ZIP File kartının içine taşınmadı.\n");
+            exit(1);
+        }
+    }
     if ($deploy_tab === 'github' && substr_count($deploy_html, 'data-ragstat-github-icon') < 2) {
         fwrite(STDERR, "GitHub sekmesi ve içerik panelinde GitHub ikonu bulunamadı.\n");
         exit(1);

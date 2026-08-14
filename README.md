@@ -20,7 +20,7 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 - SureRank SEO, The SEO Framework ve Yoast SEO için içerik türü bazlı metadata, Schema, XML sitemap ve robots.txt entegrasyonları
 - WordPress yönetici/site dilini otomatik izleyen Türkçe, İngilizce, İspanyolca, Fransızca, Basitleştirilmiş Çince, Japonca, Arapça ve Portekizce arayüz paketleri
 - Deploy sekmesinin sol dikey menüsünde ZIP File, GitHub, Cloudflare, SFTP ve Auto Deploy seçenekleri
-- Deploy > ZIP File altında saklama ayarı, indirme/silme işlemleri ve 10 kayıtlık sayfalama ile ZIP dosya yönetimi
+- Deploy > ZIP File kartında indirme/silme işlemleri ve 10 kayıtlık sayfalama ile ZIP dosya yönetimi; kartın altında arşiv saklama ayarı
 - Şifreli parola saklama, bağlantı testi, manuel yükleme ve başarılı export sonrası seçilebilir otomatik yükleme sunan SFTP desteği
 - Yerel Fuse.js 7.3.0 paketiyle çalışan, alanları ve ağırlıkları yapılandırılabilen statik site araması
 - Hide sekmesinden WordPress yollarını yeniden adlandırma; sürüm, generator, XML-RPC, embed ve emoji izlerini statik çıktıdan temizleme

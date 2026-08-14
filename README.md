@@ -14,6 +14,7 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 - Settings altında Genel ve Otomasyon alt sekmeleri
 - SEO ana sekmesinde SEO Plugins ve Language dikey sekmeleri
 - Rank Math metadata, Schema, XML sitemap ve robots.txt çıktılarının statik pakete ayrı ayrı dahil edilmesi
+- All in One SEO metadata, Schema, XML sitemap ve robots.txt çıktılarının statik pakete ayrı ayrı dahil edilmesi
 - WordPress yönetici/site dilini otomatik izleyen Türkçe, İngilizce, İspanyolca, Fransızca, Basitleştirilmiş Çince, Japonca, Arapça ve Portekizce arayüz paketleri
 - Deploy sekmesinin sol dikey menüsünde ZIP File, GitHub, Cloudflare ve SFTP yayın seçenekleri
 - Şifreli parola saklama, bağlantı testi, manuel yükleme ve başarılı export sonrası seçilebilir otomatik yükleme sunan SFTP desteği
@@ -86,6 +87,10 @@ Her çeviri sayfası WordPress tarafında doğru `lang`, canonical ve karşılı
 
 **SEO > SEO Plugins** ekranından Rank Math entegrasyonu etkinleştirilebilir. Sayfa metadata etiketleri, JSON-LD Schema, XML sitemap ailesi ve `robots.txt` çıktısı ayrı ayrı seçilir. Exporter iç URL'leri canlı statik domaine dönüştürür; statik arama açıksa Rank Math `SearchAction` hedefini statik arama sayfasına uyarlar.
 
+## All in One SEO entegrasyonu
+
+**SEO > SEO Plugins** ekranından All in One SEO entegrasyonu etkinleştirilebilir. Sayfa metadata etiketleri, JSON-LD Schema, XML sitemap ailesi ve `robots.txt` çıktısı ayrı ayrı seçilir. Exporter AIOSEO tarafından üretilen iç URL'leri canlı statik domaine dönüştürür; statik arama açıksa `SearchAction` hedefini statik arama sayfasına uyarlar.
+
 ## Geliştirme doğrulaması
 
 ```bash
@@ -98,6 +103,7 @@ npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=ragnu
 npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=ragnus-static-publisher --mount=.:/workspace -- /workspace/tests/playground-activity-log.php
 npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=ragnus-static-publisher --mount=.:/workspace -- /workspace/tests/playground-archives.php
 npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=ragnus-static-publisher --mount=.:/workspace -- /workspace/tests/playground-export.php
+npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=ragnus-static-publisher --mount=.:/workspace -- /workspace/tests/playground-aioseo.php
 ```
 
 Mimari ve sınırlar için `docs/ARCHITECTURE.md` dosyasına bakın.

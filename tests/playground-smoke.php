@@ -421,8 +421,8 @@ $_GET = ['tab' => 'seo', 'seo_tab' => 'plugins'];
 ob_start();
 Ragnus\StaticPublisher\Admin::render();
 $seo_html = (string) ob_get_clean();
-if (! str_contains($seo_html, 'SEO Plugins') || ! str_contains($seo_html, 'Rank Math SEO') || ! str_contains($seo_html, 'Save SEO Plugin Settings')) {
-    fwrite(STDERR, "SEO Plugins dikey sekmesi veya Rank Math ayarları bulunamadı.\n");
+if (! str_contains($seo_html, 'SEO Plugins') || ! str_contains($seo_html, 'Rank Math SEO') || ! str_contains($seo_html, 'All in One SEO') || ! str_contains($seo_html, 'aioseo_enabled') || ! str_contains($seo_html, 'Save SEO Plugin Settings')) {
+    fwrite(STDERR, "SEO Plugins dikey sekmesi, Rank Math veya All in One SEO ayarları bulunamadı.\n");
     exit(1);
 }
 

@@ -226,6 +226,11 @@ final class Plugin
             'rank_math_schema' => '1',
             'rank_math_sitemaps' => '1',
             'rank_math_robots' => '1',
+            'aioseo_enabled' => '1',
+            'aioseo_metadata' => '1',
+            'aioseo_schema' => '1',
+            'aioseo_sitemaps' => '1',
+            'aioseo_robots' => '1',
         ];
     }
 

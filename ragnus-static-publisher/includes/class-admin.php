@@ -972,12 +972,19 @@ final class Admin
     private static function render_seo_plugins(array $settings): void
     {
         $rank_math_active = defined('RANK_MATH_VERSION');
+        $aioseo_active = defined('AIOSEO_VERSION') || function_exists('aioseo');
         $option_name = Plugin::SEO_PLUGIN_SETTINGS_KEY;
-        $outputs = [
+        $rank_math_outputs = [
             'rank_math_metadata' => [__('Page Metadata', 'ragnus-static-publisher'), __('Keep Rank Math robots, canonical, Open Graph and Twitter Card tags. Internal URLs are converted to the live static domain.', 'ragnus-static-publisher')],
             'rank_math_schema' => [__('Schema Structured Data', 'ragnus-static-publisher'), __('Keep Rank Math JSON-LD data, convert its URLs to the live domain, and adapt SearchAction to static search.', 'ragnus-static-publisher')],
             'rank_math_sitemaps' => [__('XML Sitemaps', 'ragnus-static-publisher'), __('Copy the Rank Math sitemap index, child sitemaps and sitemap stylesheet into the static package.', 'ragnus-static-publisher')],
             'rank_math_robots' => [__('Robots.txt', 'ragnus-static-publisher'), __('Copy Rank Math robots.txt rules and point the sitemap declaration to the live static domain.', 'ragnus-static-publisher')],
+        ];
+        $aioseo_outputs = [
+            'aioseo_metadata' => [__('Page Metadata', 'ragnus-static-publisher'), __('Keep All in One SEO robots, canonical, Open Graph and Twitter Card tags. Internal URLs are converted to the live static domain.', 'ragnus-static-publisher')],
+            'aioseo_schema' => [__('Schema Structured Data', 'ragnus-static-publisher'), __('Keep All in One SEO JSON-LD data, convert its URLs to the live domain, and adapt SearchAction to static search.', 'ragnus-static-publisher')],
+            'aioseo_sitemaps' => [__('XML Sitemaps', 'ragnus-static-publisher'), __('Copy the All in One SEO sitemap index, child sitemaps and sitemap stylesheet into the static package.', 'ragnus-static-publisher')],
+            'aioseo_robots' => [__('Robots.txt', 'ragnus-static-publisher'), __('Copy All in One SEO robots.txt rules and point sitemap declarations to the live static domain.', 'ragnus-static-publisher')],
         ];
         ?>
         <form class="ragstat-settings-form ragstat-seo-plugins-form" method="post" action="options.php">
@@ -998,7 +1005,7 @@ final class Admin
                     <span><strong><?php esc_html_e('Include Rank Math outputs in the static site', 'ragnus-static-publisher'); ?></strong><small><?php esc_html_e('When disabled, Rank Math metadata and schema blocks are removed and its sitemap and robots files are not exported.', 'ragnus-static-publisher'); ?></small></span>
                 </label>
                 <div class="ragstat-seo-output-list">
-                    <?php foreach ($outputs as $key => [$label, $description]) : ?>
+                    <?php foreach ($rank_math_outputs as $key => [$label, $description]) : ?>
                         <label class="ragstat-seo-output-option">
                             <input type="checkbox" name="<?php echo esc_attr($option_name); ?>[<?php echo esc_attr($key); ?>]" value="1" <?php checked((string) ($settings[$key] ?? '0'), '1'); ?>>
                             <span><strong><?php echo esc_html($label); ?></strong><small><?php echo esc_html($description); ?></small></span>
@@ -1007,6 +1014,33 @@ final class Admin
                 </div>
                 <?php if (! $rank_math_active) : ?>
                     <p class="ragstat-language-card__note"><span class="dashicons dashicons-info-outline" aria-hidden="true"></span><?php esc_html_e('These settings are preserved, but no Rank Math output will be exported until the plugin is active.', 'ragnus-static-publisher'); ?></p>
+                <?php endif; ?>
+            </section>
+            <section class="ragstat-seo-plugin-card" aria-labelledby="ragstat-aioseo-title">
+                <div class="ragstat-seo-plugin-card__heading">
+                    <span class="dashicons dashicons-chart-line" aria-hidden="true"></span>
+                    <div>
+                        <h3 id="ragstat-aioseo-title">All in One SEO</h3>
+                        <p><?php esc_html_e('Choose which All in One SEO outputs will be included in the generated static site.', 'ragnus-static-publisher'); ?></p>
+                    </div>
+                    <span class="ragstat-deploy-status <?php echo $aioseo_active ? 'is-ready' : 'is-pending'; ?>">
+                        <?php echo $aioseo_active ? esc_html(sprintf(__('Active — version %s', 'ragnus-static-publisher'), defined('AIOSEO_VERSION') ? (string) AIOSEO_VERSION : '')) : esc_html__('Not active', 'ragnus-static-publisher'); ?>
+                    </span>
+                </div>
+                <label class="ragstat-seo-plugin-master">
+                    <input type="checkbox" name="<?php echo esc_attr($option_name); ?>[aioseo_enabled]" value="1" <?php checked((string) ($settings['aioseo_enabled'] ?? '0'), '1'); ?>>
+                    <span><strong><?php esc_html_e('Include All in One SEO outputs in the static site', 'ragnus-static-publisher'); ?></strong><small><?php esc_html_e('When disabled, All in One SEO metadata and schema blocks are removed and its sitemap and robots files are not exported.', 'ragnus-static-publisher'); ?></small></span>
+                </label>
+                <div class="ragstat-seo-output-list">
+                    <?php foreach ($aioseo_outputs as $key => [$label, $description]) : ?>
+                        <label class="ragstat-seo-output-option">
+                            <input type="checkbox" name="<?php echo esc_attr($option_name); ?>[<?php echo esc_attr($key); ?>]" value="1" <?php checked((string) ($settings[$key] ?? '0'), '1'); ?>>
+                            <span><strong><?php echo esc_html($label); ?></strong><small><?php echo esc_html($description); ?></small></span>
+                        </label>
+                    <?php endforeach; ?>
+                </div>
+                <?php if (! $aioseo_active) : ?>
+                    <p class="ragstat-language-card__note"><span class="dashicons dashicons-info-outline" aria-hidden="true"></span><?php esc_html_e('These settings are preserved, but no All in One SEO output will be exported until the plugin is active.', 'ragnus-static-publisher'); ?></p>
                 <?php endif; ?>
             </section>
             <?php submit_button(__('Save SEO Plugin Settings', 'ragnus-static-publisher')); ?>

@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Ragnus Static Publisher 1.19.0\n"
+"Project-Id-Version: Ragnus Static Publisher 1.20.0\n"
 "Report-Msgid-Bugs-To: info@ragnus.co\n"
 "POT-Creation-Date: 2026-08-13 00:31+0300\n"
 "PO-Revision-Date: 2026-08-13 00:17+0300\n"
@@ -1834,6 +1834,36 @@ msgstr "MySQL kullanıcısı %s yetkisine sahip."
 #, php-format
 msgid "The MySQL user does not have the %s privilege."
 msgstr "MySQL kullanıcısında %s yetkisi bulunamadı."
+
+msgid "Choose which All in One SEO outputs will be included in the generated static site."
+msgstr "Oluşturulan statik siteye hangi All in One SEO çıktılarının dahil edileceğini seçin."
+
+msgid "Keep All in One SEO robots, canonical, Open Graph and Twitter Card tags. Internal URLs are converted to the live static domain."
+msgstr "All in One SEO robots, canonical, Open Graph ve Twitter Card etiketlerini korur. İç URL'ler canlı statik domaine dönüştürülür."
+
+msgid "Keep All in One SEO JSON-LD data, convert its URLs to the live domain, and adapt SearchAction to static search."
+msgstr "All in One SEO JSON-LD verilerini korur, URL'lerini canlı domaine dönüştürür ve SearchAction hedefini statik aramaya uyarlar."
+
+msgid "Copy the All in One SEO sitemap index, child sitemaps and sitemap stylesheet into the static package."
+msgstr "All in One SEO site haritası indeksini, alt site haritalarını ve site haritası stil dosyasını statik pakete kopyalar."
+
+msgid "Copy All in One SEO robots.txt rules and point sitemap declarations to the live static domain."
+msgstr "All in One SEO robots.txt kurallarını kopyalar ve site haritası bildirimlerini canlı statik domaine yönlendirir."
+
+msgid "Include All in One SEO outputs in the static site"
+msgstr "All in One SEO çıktılarını statik siteye dahil et"
+
+msgid "When disabled, All in One SEO metadata and schema blocks are removed and its sitemap and robots files are not exported."
+msgstr "Devre dışı olduğunda All in One SEO meta veri ve schema blokları kaldırılır; site haritası ve robots dosyaları export edilmez."
+
+msgid "These settings are preserved, but no All in One SEO output will be exported until the plugin is active."
+msgstr "Bu ayarlar korunur ancak eklenti etkin olana kadar hiçbir All in One SEO çıktısı export edilmez."
+
+msgid "All in One SEO sitemap could not be exported."
+msgstr "All in One SEO site haritası export edilemedi."
+
+msgid "All in One SEO robots.txt could not be exported."
+msgstr "All in One SEO robots.txt export edilemedi."
 
 #~ msgid ""
 #~ "This server's PHP cURL extension does not include SFTP protocol support. "

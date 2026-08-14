@@ -6,7 +6,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Ragnus Static Publisher 1.19.0\n"
+"Project-Id-Version: Ragnus Static Publisher 1.20.0\n"
 "Report-Msgid-Bugs-To: info@ragnus.co\n"
 "POT-Creation-Date: 2026-08-13 00:31+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -1764,4 +1764,34 @@ msgstr ""
 #: ragnus-static-publisher/includes/class-diagnostics.php:198
 #, php-format
 msgid "The MySQL user does not have the %s privilege."
+msgstr ""
+
+msgid "Choose which All in One SEO outputs will be included in the generated static site."
+msgstr ""
+
+msgid "Keep All in One SEO robots, canonical, Open Graph and Twitter Card tags. Internal URLs are converted to the live static domain."
+msgstr ""
+
+msgid "Keep All in One SEO JSON-LD data, convert its URLs to the live domain, and adapt SearchAction to static search."
+msgstr ""
+
+msgid "Copy the All in One SEO sitemap index, child sitemaps and sitemap stylesheet into the static package."
+msgstr ""
+
+msgid "Copy All in One SEO robots.txt rules and point sitemap declarations to the live static domain."
+msgstr ""
+
+msgid "Include All in One SEO outputs in the static site"
+msgstr ""
+
+msgid "When disabled, All in One SEO metadata and schema blocks are removed and its sitemap and robots files are not exported."
+msgstr ""
+
+msgid "These settings are preserved, but no All in One SEO output will be exported until the plugin is active."
+msgstr ""
+
+msgid "All in One SEO sitemap could not be exported."
+msgstr ""
+
+msgid "All in One SEO robots.txt could not be exported."
 msgstr ""

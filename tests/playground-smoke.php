@@ -421,8 +421,19 @@ $_GET = ['tab' => 'seo', 'seo_tab' => 'plugins'];
 ob_start();
 Ragnus\StaticPublisher\Admin::render();
 $seo_html = (string) ob_get_clean();
-if (! str_contains($seo_html, 'SEO Plugins') || ! str_contains($seo_html, 'Rank Math SEO') || ! str_contains($seo_html, 'All in One SEO') || ! str_contains($seo_html, 'aioseo_enabled') || ! str_contains($seo_html, 'SEOPress') || ! str_contains($seo_html, 'seopress_enabled') || ! str_contains($seo_html, 'SureRank SEO') || ! str_contains($seo_html, 'surerank_enabled') || ! str_contains($seo_html, 'The SEO Framework') || ! str_contains($seo_html, 'seo_framework_enabled') || ! str_contains($seo_html, 'Yoast SEO') || ! str_contains($seo_html, 'yoast_enabled') || ! str_contains($seo_html, 'Post Metadata') || ! str_contains($seo_html, 'Custom Post Type Metadata') || ! str_contains($seo_html, 'Archive &amp; Taxonomy Metadata') || ! str_contains($seo_html, 'Save SEO Plugin Settings')) {
+if (! str_contains($seo_html, 'SEO Plugins') || ! str_contains($seo_html, 'Rank Math SEO') || ! str_contains($seo_html, 'All in One SEO') || ! str_contains($seo_html, 'aioseo_enabled') || ! str_contains($seo_html, 'SEOPress') || ! str_contains($seo_html, 'seopress_enabled') || ! str_contains($seo_html, 'SureRank SEO') || ! str_contains($seo_html, 'surerank_enabled') || ! str_contains($seo_html, 'The SEO Framework') || ! str_contains($seo_html, 'seo_framework_enabled') || ! str_contains($seo_html, 'Yoast SEO') || ! str_contains($seo_html, 'yoast_enabled') || ! str_contains($seo_html, 'Post Metadata') || ! str_contains($seo_html, 'Custom Post Type Metadata') || ! str_contains($seo_html, 'Archive &amp; Taxonomy Metadata') || ! str_contains($seo_html, 'data-ragstat-seo-toggle') || ! str_contains($seo_html, 'data-ragstat-output-count') || ! str_contains($seo_html, '>Metadata<') || ! str_contains($seo_html, '>Technical SEO<') || ! str_contains($seo_html, 'ragstat-seo-save-bar') || ! str_contains($seo_html, 'Save SEO Plugin Settings')) {
     fwrite(STDERR, "SEO Plugins dikey sekmesi, Rank Math, All in One SEO veya SEOPress ayarları bulunamadı.\n");
+    exit(1);
+}
+
+if (! defined('RANK_MATH_VERSION')) {
+    define('RANK_MATH_VERSION', 'test');
+}
+ob_start();
+Ragnus\StaticPublisher\Admin::render();
+$active_seo_html = (string) ob_get_clean();
+if (! str_contains($active_seo_html, 'Detected SEO plugin:') || ! str_contains($active_seo_html, 'ragstat-seo-plugin-card is-expanded') || ! str_contains($active_seo_html, 'aria-expanded="true"') || ! str_contains($active_seo_html, 'id="ragstat-rank-math-settings" data-ragstat-seo-panel')) {
+    fwrite(STDERR, "Etkin SEO eklentisi üste alınmadı veya varsayılan olarak açılmadı.\n");
     exit(1);
 }
 

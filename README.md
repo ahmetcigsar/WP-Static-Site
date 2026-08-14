@@ -13,6 +13,7 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 - Main, Deploy, Files, Settings, SEO, Arama, Hide, Diagnostics, Activity Logs ve About sekmelerine ayrılmış yönetim görünümü
 - Settings altında Genel ve Otomasyon alt sekmeleri
 - SEO ana sekmesinde SEO Plugins ve Language dikey sekmeleri
+- SEO Plugins ekranında etkin eklentiyi öne çıkaran, çıktı sayılarını özetleyen ve Metadata/Teknik SEO seçeneklerini açılır kartlarda gruplayan düzen
 - Rank Math metadata çıktılarının sayfa, yazı, özel içerik türü ve arşiv/taksonomi bazında; Schema, XML sitemap ve robots.txt çıktılarının ayrıca yönetilmesi
 - All in One SEO metadata çıktılarının sayfa, yazı, özel içerik türü ve arşiv/taksonomi bazında; Schema, XML sitemap ve robots.txt çıktılarının ayrıca yönetilmesi
 - SEOPress metadata çıktılarının sayfa, yazı, özel içerik türü ve arşiv/taksonomi bazında; Schema, XML sitemap ve robots.txt çıktılarının ayrıca yönetilmesi

@@ -103,6 +103,53 @@
         });
     }
 
+    const seoPluginCards = Array.from(document.querySelectorAll('[data-ragstat-seo-card]'));
+    if (seoPluginCards.length) {
+        const setSeoCardExpanded = function (card, expanded) {
+            const toggle = card.querySelector('[data-ragstat-seo-toggle]');
+            const panel = card.querySelector('[data-ragstat-seo-panel]');
+            if (!toggle || !panel) {
+                return;
+            }
+            toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+            panel.hidden = !expanded;
+            card.classList.toggle('is-expanded', expanded);
+        };
+
+        const updateSeoOutputCount = function (card) {
+            const count = card.querySelector('[data-ragstat-output-count]');
+            const outputs = Array.from(card.querySelectorAll('[data-ragstat-seo-output]'));
+            if (!count || !outputs.length) {
+                return;
+            }
+            const selected = outputs.filter(function (input) {
+                return input.checked;
+            }).length;
+            const selectedElement = count.querySelector('strong');
+            if (selectedElement) {
+                selectedElement.textContent = String(selected);
+            }
+        };
+
+        seoPluginCards.forEach(function (card) {
+            const toggle = card.querySelector('[data-ragstat-seo-toggle]');
+            if (toggle) {
+                toggle.addEventListener('click', function () {
+                    const willExpand = toggle.getAttribute('aria-expanded') !== 'true';
+                    seoPluginCards.forEach(function (otherCard) {
+                        setSeoCardExpanded(otherCard, willExpand && otherCard === card);
+                    });
+                });
+            }
+            card.querySelectorAll('[data-ragstat-seo-output]').forEach(function (input) {
+                input.addEventListener('change', function () {
+                    updateSeoOutputCount(card);
+                });
+            });
+            updateSeoOutputCount(card);
+        });
+    }
+
     const root = document.querySelector('[data-ragstat-status-root]');
     if (!config || !root) {
         return;

@@ -625,15 +625,21 @@
 }
 
 .ragstat-seo-plugin-card__icon {
+    display: grid;
     width: 44px;
     height: 44px;
     flex: 0 0 44px;
-    color: var(--ragstat-primary);
+    place-items: center;
+    color: #475569;
     border-radius: 12px;
-    background: #e8efff;
-    font-size: 23px;
-    line-height: 44px;
-    text-align: center;
+    background: #f1f5f9;
+}
+
+.ragstat-seo-plugin-card__icon svg {
+    display: block;
+    width: 25px;
+    height: 25px;
+    fill: currentColor;
 }
 
 .ragstat-seo-plugin-card__identity {

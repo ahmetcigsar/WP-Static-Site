@@ -425,6 +425,10 @@ if (! str_contains($seo_html, 'SEO Plugins') || ! str_contains($seo_html, 'Rank 
     fwrite(STDERR, "SEO Plugins dikey sekmesi, Rank Math, All in One SEO veya SEOPress ayarları bulunamadı.\n");
     exit(1);
 }
+if (substr_count($seo_html, '<svg viewBox=') !== 6 || str_contains($seo_html, 'dashicons-chart-area') || str_contains($seo_html, 'dashicons-chart-pie')) {
+    fwrite(STDERR, "SEO eklenti kartlarının resmi tek renkli SVG ikonları bulunamadı.\n");
+    exit(1);
+}
 
 if (! defined('RANK_MATH_VERSION')) {
     define('RANK_MATH_VERSION', 'test');

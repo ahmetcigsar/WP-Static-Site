@@ -992,7 +992,6 @@ final class Admin
                 'id' => 'rank-math',
                 'prefix' => 'rank_math',
                 'label' => 'Rank Math SEO',
-                'icon' => 'dashicons-chart-area',
                 'active' => defined('RANK_MATH_VERSION'),
                 'version' => defined('RANK_MATH_VERSION') ? (string) RANK_MATH_VERSION : '',
                 'description' => __('Choose which Rank Math outputs will be included in the generated static site.', 'ragnus-static-publisher'),
@@ -1006,7 +1005,6 @@ final class Admin
                 'id' => 'aioseo',
                 'prefix' => 'aioseo',
                 'label' => 'All in One SEO',
-                'icon' => 'dashicons-chart-line',
                 'active' => defined('AIOSEO_VERSION') || function_exists('aioseo'),
                 'version' => defined('AIOSEO_VERSION') ? (string) AIOSEO_VERSION : '',
                 'description' => __('Choose which All in One SEO outputs will be included in the generated static site.', 'ragnus-static-publisher'),
@@ -1020,7 +1018,6 @@ final class Admin
                 'id' => 'seopress',
                 'prefix' => 'seopress',
                 'label' => 'SEOPress',
-                'icon' => 'dashicons-performance',
                 'active' => defined('SEOPRESS_VERSION'),
                 'version' => defined('SEOPRESS_VERSION') ? (string) SEOPRESS_VERSION : '',
                 'description' => __('Choose which SEOPress outputs will be included in the generated static site.', 'ragnus-static-publisher'),
@@ -1034,7 +1031,6 @@ final class Admin
                 'id' => 'surerank',
                 'prefix' => 'surerank',
                 'label' => 'SureRank SEO',
-                'icon' => 'dashicons-search',
                 'active' => defined('SURERANK_VERSION'),
                 'version' => defined('SURERANK_VERSION') ? (string) SURERANK_VERSION : '',
                 'description' => sprintf(__('Choose which %s outputs will be included in the generated static site.', 'ragnus-static-publisher'), 'SureRank SEO'),
@@ -1044,7 +1040,6 @@ final class Admin
                 'id' => 'seo-framework',
                 'prefix' => 'seo_framework',
                 'label' => 'The SEO Framework',
-                'icon' => 'dashicons-shield-alt',
                 'active' => defined('THE_SEO_FRAMEWORK_VERSION'),
                 'version' => defined('THE_SEO_FRAMEWORK_VERSION') ? (string) THE_SEO_FRAMEWORK_VERSION : '',
                 'description' => sprintf(__('Choose which %s outputs will be included in the generated static site.', 'ragnus-static-publisher'), 'The SEO Framework'),
@@ -1054,7 +1049,6 @@ final class Admin
                 'id' => 'yoast',
                 'prefix' => 'yoast',
                 'label' => 'Yoast SEO',
-                'icon' => 'dashicons-chart-pie',
                 'active' => defined('WPSEO_VERSION'),
                 'version' => defined('WPSEO_VERSION') ? (string) WPSEO_VERSION : '',
                 'description' => sprintf(__('Choose which %s outputs will be included in the generated static site.', 'ragnus-static-publisher'), 'Yoast SEO'),
@@ -1111,7 +1105,9 @@ final class Admin
         <section class="ragstat-seo-plugin-card <?php echo $expanded ? 'is-expanded' : ''; ?>" aria-labelledby="ragstat-<?php echo esc_attr($id); ?>-title" data-ragstat-seo-card>
             <div class="ragstat-seo-plugin-card__heading">
                 <button class="ragstat-seo-plugin-card__toggle" type="button" aria-expanded="<?php echo $expanded ? 'true' : 'false'; ?>" aria-controls="<?php echo esc_attr($panel_id); ?>" data-ragstat-seo-toggle>
-                    <span class="ragstat-seo-plugin-card__icon dashicons <?php echo esc_attr((string) $plugin['icon']); ?>" aria-hidden="true"></span>
+                    <span class="ragstat-seo-plugin-card__icon" aria-hidden="true">
+                        <?php self::render_seo_plugin_icon($id); ?>
+                    </span>
                     <span class="ragstat-seo-plugin-card__identity">
                         <strong id="ragstat-<?php echo esc_attr($id); ?>-title"><?php echo esc_html($label); ?></strong>
                         <small><?php echo esc_html((string) $plugin['description']); ?></small>
@@ -1139,6 +1135,24 @@ final class Admin
             </div>
         </section>
         <?php
+    }
+
+    /**
+     * Render monochrome marks sourced from each plugin's official SVG artwork.
+     */
+    private static function render_seo_plugin_icon(string $plugin_id): void
+    {
+        $icons = [
+            'rank-math' => '<svg viewBox="0 0 462.03 462.03" focusable="false"><path d="m462 234.84-76.17 3.43 13.43 21-127 81.18-126-52.93-146.26 60.97 10.14 24.34 136.1-56.71 128.57 54 138.69-88.61 13.43 21z"/><path d="M54.1 312.78l92.18-38.41 4.49 1.89v-54.58H54.1zm210.9-223.57v235.05l7.26 3 89.43-57.05v-181zM159.56 280l96.67 40.62V155.43h-96.67z"/></svg>',
+            'aioseo' => '<svg viewBox="0 0 20 20" focusable="false"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 20a10 10 0 1 0 0-20 10 10 0 0 0 0 20ZM8.408 3.66a.54.54 0 0 0-.617-.222 6.7 6.7 0 0 0-.767.326.55.55 0 0 0-.28.603l.171.868a.62.62 0 0 1-.22.594c-.274.227-.526.484-.752.769a.6.6 0 0 1-.582.227l-.85-.172a.54.54 0 0 0-.59.288 7.8 7.8 0 0 0-.316.784.55.55 0 0 0 .219.629l.722.49a.63.63 0 0 1 .256.579 5.5 5.5 0 0 0 .003 1.087.63.63 0 0 1-.255.58l-.72.491a.55.55 0 0 0-.218.63c.09.267.197.529.32.783a.54.54 0 0 0 .589.286l.85-.175a.6.6 0 0 1 .582.225c.223.28.475.537.754.768a.62.62 0 0 1 .222.593l-.168.868a.55.55 0 0 0 .283.602c.247.123.504.23.768.323.38.133.913-.344 1.307-.697a.93.93 0 0 0 .315-.684v-1.452a2.7 2.7 0 0 1-2.03-2.627V9.432c0-.117.093-.212.208-.212h.721V7.703a.372.372 0 1 1 .743 0V9.22h1.95V7.703a.372.372 0 1 1 .743 0V9.22h.721c.115 0 .208.095.208.212v1.541a2.7 2.7 0 0 1-2.14 2.652v1.467c0 .268.124.519.324.693.401.35.944.823 1.322.689.262-.092.518-.201.767-.326a.55.55 0 0 0 .28-.602l-.171-.868a.62.62 0 0 1 .22-.594c.274-.228.526-.485.752-.77a.6.6 0 0 1 .582-.226l.85.171a.54.54 0 0 0 .59-.288c.12-.253.226-.515.316-.784a.55.55 0 0 0-.219-.629l-.722-.49a.63.63 0 0 1-.256-.578 5.5 5.5 0 0 0-.003-1.087.63.63 0 0 1 .255-.58l.72-.492a.55.55 0 0 0 .218-.63 7 7 0 0 0-.32-.783.54.54 0 0 0-.589-.285l-.85.175a.6.6 0 0 1-.582-.225 5.4 5.4 0 0 0-.754-.768.62.62 0 0 1-.222-.594l.168-.868a.55.55 0 0 0-.283-.602 7.3 7.3 0 0 0-.768-.323.54.54 0 0 0-.616.224l-.48.737a.6.6 0 0 1-.567.261 5.2 5.2 0 0 0-1.065.003.6.6 0 0 1-.568-.259l-.482-.735Z"/></svg>',
+            'seopress' => '<svg viewBox="0 0 50 50" focusable="false"><g transform="translate(-10.312 25.104) rotate(-45)"><path d="M38.121 32.49h-7.178a.777.777 0 0 0 0 1.551h7.178a.777.777 0 0 0 0-1.551ZM30.943 1.641h7.178a.777.777 0 0 0 0-1.551h-7.178a.777.777 0 0 0 0 1.551Z" transform="translate(-16.332 -2.549)"/><path d="M46.264.11a6.5 6.5 0 0 0-6.45 5.722h-8.831a.777.777 0 0 0 0 1.551h8.831A6.5 6.5 0 1 0 46.264.11Zm0 11.406a4.906 4.906 0 1 1 4.906-4.907 4.906 4.906 0 0 1-4.906 4.907Z" transform="translate(-16.357 18.394)"/></g></svg>',
+            'surerank' => '<svg viewBox="0 0 36 36" focusable="false"><path fill-rule="evenodd" clip-rule="evenodd" d="M17.519 35.5c9.675 0 17.519-7.835 17.519-17.5S27.194.5 17.519.5 0 8.335 0 18s7.844 17.5 17.519 17.5Zm.075-26.25c-1.406 0-3.353.804-4.348 1.795l-2.701 2.692H24.01l4.503-4.487H17.594Zm4.175 15.705c-.995.991-2.942 1.795-4.348 1.795H6.502l4.503-4.487H24.47l-2.701 2.692Zm4.376-8.974H8.298l-.843.841c-1.996 1.795-1.404 3.197 1.392 3.197h17.895l.843-.841c1.977-1.784 1.356-3.197-1.44-3.197Z"/></svg>',
+            'seo-framework' => '<svg viewBox="55 55 165 165" focusable="false"><path d="M202.307 159.892H180.58c-.52 0-.693-.116-.693-.693v-21.727c0-.578-.173-.693-.693-.693H160.47c-.52 0-.693.116-.693.693v21.727c0 .52-.116.693-.693.693h-21.727c-.578 0-.693.173-.693.693v18.723c0 .52.116.693.693.693h21.727c.52 0 .693.116.693.693v21.727c0 .578.173.693.693.693h18.723c.52 0 .693-.116.693-.693v-21.727c0-.52.116-.693.693-.693h21.727c.578 0 .693-.173.693-.693v-18.723c.001-.52-.115-.693-.692-.693Z"/><path d="m200.564 96.085-26.143-23.924a1.5 1.5 0 0 0-1.011-.392H79.499A7.5 7.5 0 0 0 72 79.268v116.465a7.5 7.5 0 0 0 7.499 7.499h70.974v-12.944c0-.809 0-.809-.867-.809H86.562c-.867 0-.751.058-.751-.751V86.447c0-.867-.116-.809.809-.809h82.229c.404 0 .693.058.982.347l19.185 17.567c.405.347.52.693.52 1.156v45.766h12.713c.751 0 .751 0 .751-.809v-48.047c0-2.105-.884-4.113-2.436-5.533Z"/></svg>',
+            'yoast' => '<svg viewBox="45 0 425 500" focusable="false"><path d="M74.4 337.3v34.9c21.6-.9 38.5-8 52.8-22.5s27.4-38 39.9-72.9l92.6-248h-44.8L140.3 236l-37-116.2h-41l54.4 139.8a57.54 57.54 0 0 1 0 41.8c-5.5 14.2-15.4 30.9-42.3 35.9Z"/><circle cx="368.33" cy="124.68" r="97.34"/><path d="M294.78 254.75a63.6 63.6 0 1 0-62.84 110.6 63.6 63.6 0 0 0 62.84-110.6ZM222.31 450.07A38.18 38.18 0 1 0 146 450a38.18 38.18 0 0 0 76.31.07Z"/></svg>',
+        ];
+
+        // All paths intentionally inherit one UI color instead of brand colors.
+        echo $icons[$plugin_id] ?? $icons['rank-math']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
     private static function render_seo_output_group(string $legend, array $outputs, string $option_name, array $settings): void

@@ -15,7 +15,10 @@ if (is_wp_error($activation)) {
 
 $enabled_settings = [
     'aioseo_enabled' => '1',
-    'aioseo_metadata' => '1',
+    'aioseo_metadata_pages' => '1',
+    'aioseo_metadata_posts' => '1',
+    'aioseo_metadata_custom_post_types' => '1',
+    'aioseo_metadata_archives' => '1',
     'aioseo_schema' => '1',
     'aioseo_sitemaps' => '1',
     'aioseo_robots' => '1',
@@ -55,11 +58,14 @@ if (str_contains($without_static_search, 'SearchAction') || str_contains($withou
 }
 
 $metadata_disabled = new Ragnus\StaticPublisher\AIOSEO_Integration($origin, $target, array_merge($enabled_settings, [
-    'aioseo_metadata' => '0',
+    'aioseo_metadata_posts' => '0',
 ]));
-$metadata_disabled_html = $metadata_disabled->process_html($html, true, 'arama');
+$metadata_disabled_html = $metadata_disabled->process_html($html, true, 'arama', 'posts');
 if (str_contains($metadata_disabled_html, 'rel="canonical"') || ! str_contains($metadata_disabled_html, 'aioseo-schema')) {
     throw new RuntimeException('AIOSEO metadata seçimi Schema çıktısından bağımsız çalışmadı.');
+}
+if (! str_contains($metadata_disabled->process_html($html, true, 'arama', 'pages'), 'rel="canonical"')) {
+    throw new RuntimeException('AIOSEO post metadata seçimi sayfa metadata çıktısını etkilememeliydi.');
 }
 
 $schema_disabled = new Ragnus\StaticPublisher\AIOSEO_Integration($origin, $target, array_merge($enabled_settings, [
@@ -119,7 +125,7 @@ if (str_contains($disabled->process_html($html, true, 'arama'), 'All in One SEO'
 }
 
 $manifest = $integration->manifest_data();
-if (empty($manifest['active']) || ($manifest['version'] ?? '') !== 'test-version' || ($manifest['settings']['aioseo_enabled'] ?? '') !== '1') {
+if (empty($manifest['active']) || ($manifest['version'] ?? '') !== 'test-version' || ($manifest['settings']['aioseo_metadata_posts'] ?? '') !== '1') {
     throw new RuntimeException('AIOSEO manifest bilgisi eksik.');
 }
 

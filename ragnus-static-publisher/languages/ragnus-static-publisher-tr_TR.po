@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Ragnus Static Publisher 1.20.0\n"
+"Project-Id-Version: Ragnus Static Publisher 1.23.0\n"
 "Report-Msgid-Bugs-To: info@ragnus.co\n"
 "POT-Creation-Date: 2026-08-13 00:31+0300\n"
 "PO-Revision-Date: 2026-08-13 00:17+0300\n"
@@ -1864,6 +1864,93 @@ msgstr "All in One SEO site haritası export edilemedi."
 
 msgid "All in One SEO robots.txt could not be exported."
 msgstr "All in One SEO robots.txt export edilemedi."
+
+msgid "Choose which SEOPress outputs will be included in the generated static site."
+msgstr "Oluşturulan statik siteye hangi SEOPress çıktılarının dahil edileceğini seçin."
+
+msgid "Keep SEOPress robots, description, canonical, Open Graph and Twitter Card tags. Internal URLs are converted to the live static domain."
+msgstr "SEOPress robots, açıklama, canonical, Open Graph ve Twitter Card etiketlerini korur. İç URL'ler canlı statik domaine dönüştürülür."
+
+msgid "Keep SEOPress JSON-LD data, convert its URLs to the live domain, and adapt SearchAction to static search."
+msgstr "SEOPress JSON-LD verilerini korur, URL'lerini canlı domaine dönüştürür ve SearchAction hedefini statik aramaya uyarlar."
+
+msgid "Copy the SEOPress sitemap index, child sitemaps and sitemap stylesheets into the static package."
+msgstr "SEOPress site haritası indeksini, alt site haritalarını ve site haritası stil dosyalarını statik pakete kopyalar."
+
+msgid "Copy SEOPress robots.txt rules and point sitemap declarations to the live static domain."
+msgstr "SEOPress robots.txt kurallarını kopyalar ve site haritası bildirimlerini canlı statik domaine yönlendirir."
+
+msgid "Include SEOPress outputs in the static site"
+msgstr "SEOPress çıktılarını statik siteye dahil et"
+
+msgid "When disabled, SEOPress metadata and schema outputs are removed and its sitemap and robots files are not exported."
+msgstr "Devre dışı olduğunda SEOPress meta veri ve schema çıktıları kaldırılır; site haritası ve robots dosyaları export edilmez."
+
+msgid "These settings are preserved, but no SEOPress output will be exported until the plugin is active."
+msgstr "Bu ayarlar korunur ancak eklenti etkin olana kadar hiçbir SEOPress çıktısı export edilmez."
+
+msgid "SEOPress sitemap could not be exported."
+msgstr "SEOPress site haritası export edilemedi."
+
+msgid "SEOPress robots.txt could not be exported."
+msgstr "SEOPress robots.txt export edilemedi."
+
+msgid "Post Metadata"
+msgstr "Yazı Meta Verileri"
+
+msgid "Custom Post Type Metadata"
+msgstr "Özel İçerik Türü Meta Verileri"
+
+msgid "Archive & Taxonomy Metadata"
+msgstr "Arşiv ve Taksonomi Meta Verileri"
+
+msgid "Keep SEO metadata on WordPress pages."
+msgstr "WordPress sayfalarındaki SEO meta verilerini korur."
+
+msgid "Keep SEO metadata on WordPress posts."
+msgstr "WordPress yazılarındaki SEO meta verilerini korur."
+
+msgid "Keep SEO metadata on public custom post types such as products and portfolios."
+msgstr "Ürün ve portföy gibi herkese açık özel içerik türlerindeki SEO meta verilerini korur."
+
+msgid "Keep SEO metadata on the posts page, archives, categories, tags, author pages and other listing views."
+msgstr "Yazılar sayfası, arşivler, kategoriler, etiketler, yazar sayfaları ve diğer liste görünümlerindeki SEO meta verilerini korur."
+
+#, php-format
+msgid "Choose which %s outputs will be included in the generated static site."
+msgstr "Oluşturulan statik siteye hangi %s çıktılarının dahil edileceğini seçin."
+
+#, php-format
+msgid "Keep %s JSON-LD data, convert its URLs to the live domain, and adapt SearchAction to static search."
+msgstr "%s JSON-LD verilerini korur, URL'lerini canlı domaine dönüştürür ve SearchAction hedefini statik aramaya uyarlar."
+
+#, php-format
+msgid "Copy %s sitemap and its linked sitemap files into the static package."
+msgstr "%s site haritasını ve bağlantılı site haritası dosyalarını statik pakete kopyalar."
+
+#, php-format
+msgid "Copy %s robots.txt rules and point sitemap declarations to the live static domain."
+msgstr "%s robots.txt kurallarını kopyalar ve site haritası bildirimlerini canlı statik domaine yönlendirir."
+
+#, php-format
+msgid "Include %s outputs in the static site"
+msgstr "%s çıktılarını statik siteye dahil et"
+
+#, php-format
+msgid "When disabled, %s metadata and schema outputs are removed and its sitemap and robots files are not exported."
+msgstr "Devre dışı olduğunda %s meta veri ve schema çıktıları kaldırılır; site haritası ve robots dosyaları export edilmez."
+
+#, php-format
+msgid "These settings are preserved, but no %s output will be exported until the plugin is active."
+msgstr "Bu ayarlar korunur ancak eklenti etkin olana kadar hiçbir %s çıktısı export edilmez."
+
+#, php-format
+msgid "%s sitemap could not be exported."
+msgstr "%s site haritası export edilemedi."
+
+#, php-format
+msgid "%s robots.txt could not be exported."
+msgstr "%s robots.txt export edilemedi."
 
 #~ msgid ""
 #~ "This server's PHP cURL extension does not include SFTP protocol support. "

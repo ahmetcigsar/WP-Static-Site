@@ -421,8 +421,8 @@ $_GET = ['tab' => 'seo', 'seo_tab' => 'plugins'];
 ob_start();
 Ragnus\StaticPublisher\Admin::render();
 $seo_html = (string) ob_get_clean();
-if (! str_contains($seo_html, 'SEO Plugins') || ! str_contains($seo_html, 'Rank Math SEO') || ! str_contains($seo_html, 'All in One SEO') || ! str_contains($seo_html, 'aioseo_enabled') || ! str_contains($seo_html, 'Save SEO Plugin Settings')) {
-    fwrite(STDERR, "SEO Plugins dikey sekmesi, Rank Math veya All in One SEO ayarları bulunamadı.\n");
+if (! str_contains($seo_html, 'SEO Plugins') || ! str_contains($seo_html, 'Rank Math SEO') || ! str_contains($seo_html, 'All in One SEO') || ! str_contains($seo_html, 'aioseo_enabled') || ! str_contains($seo_html, 'SEOPress') || ! str_contains($seo_html, 'seopress_enabled') || ! str_contains($seo_html, 'SureRank SEO') || ! str_contains($seo_html, 'surerank_enabled') || ! str_contains($seo_html, 'The SEO Framework') || ! str_contains($seo_html, 'seo_framework_enabled') || ! str_contains($seo_html, 'Yoast SEO') || ! str_contains($seo_html, 'yoast_enabled') || ! str_contains($seo_html, 'Post Metadata') || ! str_contains($seo_html, 'Custom Post Type Metadata') || ! str_contains($seo_html, 'Archive &amp; Taxonomy Metadata') || ! str_contains($seo_html, 'Save SEO Plugin Settings')) {
+    fwrite(STDERR, "SEO Plugins dikey sekmesi, Rank Math, All in One SEO veya SEOPress ayarları bulunamadı.\n");
     exit(1);
 }
 

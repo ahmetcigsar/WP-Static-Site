@@ -26,6 +26,10 @@ final class Exporter
     private Language_Routing $language_routing;
     private Rank_Math_Integration $rank_math_integration;
     private AIOSEO_Integration $aioseo_integration;
+    private SEOPress_Integration $seopress_integration;
+    private Block_SEO_Integration $surerank_integration;
+    private Block_SEO_Integration $seo_framework_integration;
+    private Block_SEO_Integration $yoast_integration;
     private array $search_documents = [];
 
     public function __construct()
@@ -39,6 +43,28 @@ final class Exporter
         $this->language_routing = new Language_Routing();
         $this->rank_math_integration = new Rank_Math_Integration($this->origin, $this->target);
         $this->aioseo_integration = new AIOSEO_Integration($this->origin, $this->target);
+        $this->seopress_integration = new SEOPress_Integration($this->origin, $this->target);
+        $this->surerank_integration = new Block_SEO_Integration($this->origin, $this->target, [
+            'prefix' => 'surerank',
+            'constant' => 'SURERANK_VERSION',
+            'label' => 'SureRank SEO',
+            'block_pattern' => '#<!--\s*SureRank Meta Data\s*-->.*?<!--\s*/SureRank Meta Data\s*-->#is',
+            'sitemap_path' => '/sitemap_index.xml',
+        ]);
+        $this->seo_framework_integration = new Block_SEO_Integration($this->origin, $this->target, [
+            'prefix' => 'seo_framework',
+            'constant' => 'THE_SEO_FRAMEWORK_VERSION',
+            'label' => 'The SEO Framework',
+            'block_pattern' => '#<!--\s*The SEO Framework\b.*?-->.*?<!--\s*/\s*The SEO Framework\b.*?-->#is',
+            'sitemap_path' => '/sitemap.xml',
+        ]);
+        $this->yoast_integration = new Block_SEO_Integration($this->origin, $this->target, [
+            'prefix' => 'yoast',
+            'constant' => 'WPSEO_VERSION',
+            'label' => 'Yoast SEO',
+            'block_pattern' => '#<!--\s*This site is optimized with the .*?Yoast SEO.*?-->.*?<!--\s*/\s*Yoast SEO.*?-->#is',
+            'sitemap_path' => '/sitemap_index.xml',
+        ]);
         $this->excluded_prefixes = array_values(array_filter(array_map(
             'trim',
             preg_split('/\r\n|\r|\n/', (string) $settings['excluded_paths']) ?: []
@@ -76,6 +102,16 @@ final class Exporter
                 fn (string $path, string $contents) => $this->write_file($path, $contents),
                 fn (string $level, string $message, string $url = '') => $this->add_log($level, $message, $url)
             );
+            $this->seopress_integration->export_root_files(
+                fn (string $path, string $contents) => $this->write_file($path, $contents),
+                fn (string $level, string $message, string $url = '') => $this->add_log($level, $message, $url)
+            );
+            foreach ([$this->surerank_integration, $this->seo_framework_integration, $this->yoast_integration] as $integration) {
+                $integration->export_root_files(
+                    fn (string $path, string $contents) => $this->write_file($path, $contents),
+                    fn (string $level, string $message, string $url = '') => $this->add_log($level, $message, $url)
+                );
+            }
             $this->validate_language_outputs();
             if ($this->static_search->enabled()) {
                 Plugin::set_status($job_id, 'running', 86, [
@@ -305,16 +341,33 @@ final class Exporter
     private function process_html(string $html, string $base_url): array
     {
         $search_settings = $this->static_search->settings();
+        $metadata_group = $this->metadata_group_for_url($base_url);
         $html = $this->rank_math_integration->process_html(
             $html,
             $this->static_search->enabled(),
-            (string) ($search_settings['page_path'] ?? 'arama')
+            (string) ($search_settings['page_path'] ?? 'arama'),
+            $metadata_group
         );
         $html = $this->aioseo_integration->process_html(
             $html,
             $this->static_search->enabled(),
-            (string) ($search_settings['page_path'] ?? 'arama')
+            (string) ($search_settings['page_path'] ?? 'arama'),
+            $metadata_group
         );
+        $html = $this->seopress_integration->process_html(
+            $html,
+            $this->static_search->enabled(),
+            (string) ($search_settings['page_path'] ?? 'arama'),
+            $metadata_group
+        );
+        foreach ([$this->surerank_integration, $this->seo_framework_integration, $this->yoast_integration] as $integration) {
+            $html = $integration->process_html(
+                $html,
+                $this->static_search->enabled(),
+                (string) ($search_settings['page_path'] ?? 'arama'),
+                $metadata_group
+            );
+        }
         if (! class_exists(DOMDocument::class)) {
             return [$this->rewrite_html_for_output($html), []];
         }
@@ -368,6 +421,30 @@ final class Exporter
         // etmek tema işaretlemesini değiştirebildiğinden çıktı üzerinde sadece origin
         // dönüşümü uygulanır.
         return [$this->rewrite_html_for_output($html), array_values(array_unique($discovered))];
+    }
+
+    private function metadata_group_for_url(string $url): string
+    {
+        $request_url = untrailingslashit((string) preg_replace('/[?#].*$/', '', $url));
+        $home_url = untrailingslashit(home_url('/'));
+        if (get_option('show_on_front') === 'page' && (int) get_option('page_on_front') > 0 && $request_url === $home_url) {
+            return 'pages';
+        }
+        $post_id = url_to_postid($url);
+        if ($post_id <= 0) {
+            return 'archives';
+        }
+        if ((int) get_option('page_for_posts') === $post_id) {
+            return 'archives';
+        }
+        $post_type = get_post_type($post_id);
+        if ($post_type === 'page') {
+            return 'pages';
+        }
+        if ($post_type === 'post') {
+            return 'posts';
+        }
+        return 'custom_post_types';
     }
 
     private function extract_css_urls(string $css, string $base_url): array
@@ -663,6 +740,10 @@ final class Exporter
             'language_routing' => json_decode($this->language_routing->config_json(), true),
             'rank_math' => $this->rank_math_integration->manifest_data(),
             'aioseo' => $this->aioseo_integration->manifest_data(),
+            'seopress' => $this->seopress_integration->manifest_data(),
+            'surerank' => $this->surerank_integration->manifest_data(),
+            'seo_framework' => $this->seo_framework_integration->manifest_data(),
+            'yoast' => $this->yoast_integration->manifest_data(),
             'build_sha256' => hash('sha256', (string) wp_json_encode($file_hashes, JSON_UNESCAPED_SLASHES)),
         ];
         $this->write_file('ragnus-static-manifest.json', (string) wp_json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));

@@ -222,21 +222,71 @@ final class Plugin
     {
         return [
             'rank_math_enabled' => '1',
-            'rank_math_metadata' => '1',
+            'rank_math_metadata_pages' => '1',
+            'rank_math_metadata_posts' => '1',
+            'rank_math_metadata_custom_post_types' => '1',
+            'rank_math_metadata_archives' => '1',
             'rank_math_schema' => '1',
             'rank_math_sitemaps' => '1',
             'rank_math_robots' => '1',
             'aioseo_enabled' => '1',
-            'aioseo_metadata' => '1',
+            'aioseo_metadata_pages' => '1',
+            'aioseo_metadata_posts' => '1',
+            'aioseo_metadata_custom_post_types' => '1',
+            'aioseo_metadata_archives' => '1',
             'aioseo_schema' => '1',
             'aioseo_sitemaps' => '1',
             'aioseo_robots' => '1',
+            'seopress_enabled' => '1',
+            'seopress_metadata_pages' => '1',
+            'seopress_metadata_posts' => '1',
+            'seopress_metadata_custom_post_types' => '1',
+            'seopress_metadata_archives' => '1',
+            'seopress_schema' => '1',
+            'seopress_sitemaps' => '1',
+            'seopress_robots' => '1',
+            'surerank_enabled' => '1',
+            'surerank_metadata_pages' => '1',
+            'surerank_metadata_posts' => '1',
+            'surerank_metadata_custom_post_types' => '1',
+            'surerank_metadata_archives' => '1',
+            'surerank_schema' => '1',
+            'surerank_sitemaps' => '1',
+            'surerank_robots' => '1',
+            'seo_framework_enabled' => '1',
+            'seo_framework_metadata_pages' => '1',
+            'seo_framework_metadata_posts' => '1',
+            'seo_framework_metadata_custom_post_types' => '1',
+            'seo_framework_metadata_archives' => '1',
+            'seo_framework_schema' => '1',
+            'seo_framework_sitemaps' => '1',
+            'seo_framework_robots' => '1',
+            'yoast_enabled' => '1',
+            'yoast_metadata_pages' => '1',
+            'yoast_metadata_posts' => '1',
+            'yoast_metadata_custom_post_types' => '1',
+            'yoast_metadata_archives' => '1',
+            'yoast_schema' => '1',
+            'yoast_sitemaps' => '1',
+            'yoast_robots' => '1',
         ];
     }
 
     public static function seo_plugin_settings(): array
     {
-        return wp_parse_args(get_option(self::SEO_PLUGIN_SETTINGS_KEY, []), self::seo_plugin_defaults());
+        $stored = get_option(self::SEO_PLUGIN_SETTINGS_KEY, []);
+        $stored = is_array($stored) ? $stored : [];
+        foreach (['rank_math', 'aioseo', 'seopress', 'surerank', 'seo_framework', 'yoast'] as $plugin) {
+            $legacy = (string) ($stored[$plugin . '_metadata'] ?? '1');
+            foreach (['pages', 'posts', 'custom_post_types', 'archives'] as $group) {
+                $key = $plugin . '_metadata_' . $group;
+                if (! array_key_exists($key, $stored)) {
+                    $stored[$key] = $legacy;
+                }
+            }
+            unset($stored[$plugin . '_metadata']);
+        }
+        return wp_parse_args($stored, self::seo_plugin_defaults());
     }
 
     public static function search_settings(): array

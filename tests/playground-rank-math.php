@@ -15,7 +15,10 @@ if (is_wp_error($activation)) {
 
 update_option(Ragnus\StaticPublisher\Plugin::SEO_PLUGIN_SETTINGS_KEY, [
     'rank_math_enabled' => '1',
-    'rank_math_metadata' => '1',
+    'rank_math_metadata_pages' => '1',
+    'rank_math_metadata_posts' => '1',
+    'rank_math_metadata_custom_post_types' => '1',
+    'rank_math_metadata_archives' => '1',
     'rank_math_schema' => '1',
     'rank_math_sitemaps' => '1',
     'rank_math_robots' => '1',
@@ -36,6 +39,20 @@ if (! str_contains($processed, 'https://static.example.com') || ! str_contains($
 $without_static_search = $integration->process_html($html, false, 'arama');
 if (str_contains($without_static_search, 'SearchAction') || str_contains($without_static_search, '?s={search_term_string}')) {
     throw new RuntimeException('Statik arama kapalıyken dinamik Rank Math SearchAction kaldırılmadı.');
+}
+
+$post_metadata_disabled = new Ragnus\StaticPublisher\Rank_Math_Integration($origin, $target, [
+    'rank_math_enabled' => '1',
+    'rank_math_metadata_pages' => '1',
+    'rank_math_metadata_posts' => '0',
+    'rank_math_metadata_custom_post_types' => '1',
+    'rank_math_metadata_archives' => '1',
+]);
+if (str_contains($post_metadata_disabled->process_html($html, true, 'arama', 'posts'), 'rel="canonical"')) {
+    throw new RuntimeException('Rank Math post metadata kapalıyken canonical kaldırılmadı.');
+}
+if (! str_contains($post_metadata_disabled->process_html($html, true, 'arama', 'pages'), 'rel="canonical"')) {
+    throw new RuntimeException('Rank Math post metadata seçimi sayfa metadata çıktısını etkilememeliydi.');
 }
 
 add_filter('pre_http_request', static function ($preempt, array $args, string $url) use ($origin) {

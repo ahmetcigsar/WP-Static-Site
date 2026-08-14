@@ -24,13 +24,13 @@ final class Rank_Math_Integration
         return defined('RANK_MATH_VERSION') && (string) $this->settings['rank_math_enabled'] === '1';
     }
 
-    public function process_html(string $html, bool $static_search_enabled, string $static_search_path): string
+    public function process_html(string $html, bool $static_search_enabled, string $static_search_path, string $metadata_group = 'archives'): string
     {
         if (! $this->enabled()) {
             return $this->remove_rank_math_block($html);
         }
 
-        if ((string) $this->settings['rank_math_metadata'] !== '1') {
+        if (! $this->metadata_enabled($metadata_group)) {
             $html = preg_replace_callback(
                 '#<!-- Search Engine Optimization by Rank Math.*?<!-- /Rank Math WordPress SEO plugin -->#is',
                 static function (array $match): string {
@@ -82,6 +82,11 @@ final class Rank_Math_Integration
             'version' => defined('RANK_MATH_VERSION') ? (string) RANK_MATH_VERSION : '',
             'settings' => $this->settings,
         ];
+    }
+
+    private function metadata_enabled(string $group): bool
+    {
+        return (string) ($this->settings['rank_math_metadata_' . $group] ?? '0') === '1';
     }
 
     private function remove_rank_math_block(string $html): string

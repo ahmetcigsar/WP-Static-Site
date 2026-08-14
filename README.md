@@ -13,8 +13,10 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 - Main, Deploy, Files, Settings, SEO, Arama, Hide, Diagnostics, Activity Logs ve About sekmelerine ayrılmış yönetim görünümü
 - Settings altında Genel ve Otomasyon alt sekmeleri
 - SEO ana sekmesinde SEO Plugins ve Language dikey sekmeleri
-- Rank Math metadata, Schema, XML sitemap ve robots.txt çıktılarının statik pakete ayrı ayrı dahil edilmesi
-- All in One SEO metadata, Schema, XML sitemap ve robots.txt çıktılarının statik pakete ayrı ayrı dahil edilmesi
+- Rank Math metadata çıktılarının sayfa, yazı, özel içerik türü ve arşiv/taksonomi bazında; Schema, XML sitemap ve robots.txt çıktılarının ayrıca yönetilmesi
+- All in One SEO metadata çıktılarının sayfa, yazı, özel içerik türü ve arşiv/taksonomi bazında; Schema, XML sitemap ve robots.txt çıktılarının ayrıca yönetilmesi
+- SEOPress metadata çıktılarının sayfa, yazı, özel içerik türü ve arşiv/taksonomi bazında; Schema, XML sitemap ve robots.txt çıktılarının ayrıca yönetilmesi
+- SureRank SEO, The SEO Framework ve Yoast SEO için içerik türü bazlı metadata, Schema, XML sitemap ve robots.txt entegrasyonları
 - WordPress yönetici/site dilini otomatik izleyen Türkçe, İngilizce, İspanyolca, Fransızca, Basitleştirilmiş Çince, Japonca, Arapça ve Portekizce arayüz paketleri
 - Deploy sekmesinin sol dikey menüsünde ZIP File, GitHub, Cloudflare ve SFTP yayın seçenekleri
 - Şifreli parola saklama, bağlantı testi, manuel yükleme ve başarılı export sonrası seçilebilir otomatik yükleme sunan SFTP desteği
@@ -85,11 +87,19 @@ Her çeviri sayfası WordPress tarafında doğru `lang`, canonical ve karşılı
 
 ## Rank Math SEO entegrasyonu
 
-**SEO > SEO Plugins** ekranından Rank Math entegrasyonu etkinleştirilebilir. Sayfa metadata etiketleri, JSON-LD Schema, XML sitemap ailesi ve `robots.txt` çıktısı ayrı ayrı seçilir. Exporter iç URL'leri canlı statik domaine dönüştürür; statik arama açıksa Rank Math `SearchAction` hedefini statik arama sayfasına uyarlar.
+**SEO > SEO Plugins** ekranından Rank Math entegrasyonu etkinleştirilebilir. Metadata; sayfa, yazı, özel içerik türü ve arşiv/taksonomi için ayrı ayrı yönetilir. JSON-LD Schema, XML sitemap ailesi ve `robots.txt` çıktısı da bağımsız seçilir. Exporter iç URL'leri canlı statik domaine dönüştürür; statik arama açıksa Rank Math `SearchAction` hedefini statik arama sayfasına uyarlar.
 
 ## All in One SEO entegrasyonu
 
-**SEO > SEO Plugins** ekranından All in One SEO entegrasyonu etkinleştirilebilir. Sayfa metadata etiketleri, JSON-LD Schema, XML sitemap ailesi ve `robots.txt` çıktısı ayrı ayrı seçilir. Exporter AIOSEO tarafından üretilen iç URL'leri canlı statik domaine dönüştürür; statik arama açıksa `SearchAction` hedefini statik arama sayfasına uyarlar.
+**SEO > SEO Plugins** ekranından All in One SEO entegrasyonu etkinleştirilebilir. Metadata; sayfa, yazı, özel içerik türü ve arşiv/taksonomi için ayrı ayrı yönetilir. JSON-LD Schema, XML sitemap ailesi ve `robots.txt` çıktısı da bağımsız seçilir. Exporter AIOSEO tarafından üretilen iç URL'leri canlı statik domaine dönüştürür; statik arama açıksa `SearchAction` hedefini statik arama sayfasına uyarlar.
+
+## SEOPress entegrasyonu
+
+**SEO > SEO Plugins** ekranından SEOPress entegrasyonu etkinleştirilebilir. Metadata; sayfa, yazı, özel içerik türü ve arşiv/taksonomi için ayrı ayrı yönetilir. JSON-LD Schema, `/sitemaps.xml` ile başlayan XML sitemap ailesi ve `robots.txt` çıktısı da bağımsız seçilir. Exporter iç URL'leri canlı statik domaine dönüştürür; statik arama açıksa `SearchAction` hedefini statik arama sayfasına uyarlar.
+
+## SureRank SEO, The SEO Framework ve Yoast SEO entegrasyonları
+
+**SEO > SEO Plugins** ekranında her eklenti için ayrı bir kart bulunur. Metadata; sayfa, yazı, özel içerik türü ve arşiv/taksonomi için ayrı ayrı yönetilir. JSON-LD Schema, eklentiye ait XML sitemap ailesi ve `robots.txt` bağımsız seçilir. SureRank ve Yoast sitemap taraması `/sitemap_index.xml`, The SEO Framework taraması `/sitemap.xml` adresinden başlar; yalnızca aynı kaynak alan adındaki XML/XSL dosyaları pakete alınır.
 
 ## Geliştirme doğrulaması
 
@@ -104,6 +114,9 @@ npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=ragnu
 npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=ragnus-static-publisher --mount=.:/workspace -- /workspace/tests/playground-archives.php
 npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=ragnus-static-publisher --mount=.:/workspace -- /workspace/tests/playground-export.php
 npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=ragnus-static-publisher --mount=.:/workspace -- /workspace/tests/playground-aioseo.php
+npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=ragnus-static-publisher --mount=.:/workspace -- /workspace/tests/playground-seopress.php
+npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=ragnus-static-publisher --mount=.:/workspace -- /workspace/tests/playground-seo-metadata-groups.php
+npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=ragnus-static-publisher --mount=.:/workspace -- /workspace/tests/playground-additional-seo.php
 ```
 
 Mimari ve sınırlar için `docs/ARCHITECTURE.md` dosyasına bakın.

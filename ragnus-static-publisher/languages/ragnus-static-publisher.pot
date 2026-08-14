@@ -6,7 +6,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Ragnus Static Publisher 1.20.0\n"
+"Project-Id-Version: Ragnus Static Publisher 1.23.0\n"
 "Report-Msgid-Bugs-To: info@ragnus.co\n"
 "POT-Creation-Date: 2026-08-13 00:31+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -1794,4 +1794,91 @@ msgid "All in One SEO sitemap could not be exported."
 msgstr ""
 
 msgid "All in One SEO robots.txt could not be exported."
+msgstr ""
+
+msgid "Choose which SEOPress outputs will be included in the generated static site."
+msgstr ""
+
+msgid "Keep SEOPress robots, description, canonical, Open Graph and Twitter Card tags. Internal URLs are converted to the live static domain."
+msgstr ""
+
+msgid "Keep SEOPress JSON-LD data, convert its URLs to the live domain, and adapt SearchAction to static search."
+msgstr ""
+
+msgid "Copy the SEOPress sitemap index, child sitemaps and sitemap stylesheets into the static package."
+msgstr ""
+
+msgid "Copy SEOPress robots.txt rules and point sitemap declarations to the live static domain."
+msgstr ""
+
+msgid "Include SEOPress outputs in the static site"
+msgstr ""
+
+msgid "When disabled, SEOPress metadata and schema outputs are removed and its sitemap and robots files are not exported."
+msgstr ""
+
+msgid "These settings are preserved, but no SEOPress output will be exported until the plugin is active."
+msgstr ""
+
+msgid "SEOPress sitemap could not be exported."
+msgstr ""
+
+msgid "SEOPress robots.txt could not be exported."
+msgstr ""
+
+msgid "Post Metadata"
+msgstr ""
+
+msgid "Custom Post Type Metadata"
+msgstr ""
+
+msgid "Archive & Taxonomy Metadata"
+msgstr ""
+
+msgid "Keep SEO metadata on WordPress pages."
+msgstr ""
+
+msgid "Keep SEO metadata on WordPress posts."
+msgstr ""
+
+msgid "Keep SEO metadata on public custom post types such as products and portfolios."
+msgstr ""
+
+msgid "Keep SEO metadata on the posts page, archives, categories, tags, author pages and other listing views."
+msgstr ""
+
+#, php-format
+msgid "Choose which %s outputs will be included in the generated static site."
+msgstr ""
+
+#, php-format
+msgid "Keep %s JSON-LD data, convert its URLs to the live domain, and adapt SearchAction to static search."
+msgstr ""
+
+#, php-format
+msgid "Copy %s sitemap and its linked sitemap files into the static package."
+msgstr ""
+
+#, php-format
+msgid "Copy %s robots.txt rules and point sitemap declarations to the live static domain."
+msgstr ""
+
+#, php-format
+msgid "Include %s outputs in the static site"
+msgstr ""
+
+#, php-format
+msgid "When disabled, %s metadata and schema outputs are removed and its sitemap and robots files are not exported."
+msgstr ""
+
+#, php-format
+msgid "These settings are preserved, but no %s output will be exported until the plugin is active."
+msgstr ""
+
+#, php-format
+msgid "%s sitemap could not be exported."
+msgstr ""
+
+#, php-format
+msgid "%s robots.txt could not be exported."
 msgstr ""

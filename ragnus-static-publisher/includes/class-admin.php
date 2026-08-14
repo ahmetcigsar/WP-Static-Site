@@ -973,19 +973,41 @@ final class Admin
     {
         $rank_math_active = defined('RANK_MATH_VERSION');
         $aioseo_active = defined('AIOSEO_VERSION') || function_exists('aioseo');
+        $seopress_active = defined('SEOPRESS_VERSION');
+        $surerank_active = defined('SURERANK_VERSION');
+        $seo_framework_active = defined('THE_SEO_FRAMEWORK_VERSION');
+        $yoast_active = defined('WPSEO_VERSION');
         $option_name = Plugin::SEO_PLUGIN_SETTINGS_KEY;
-        $rank_math_outputs = [
-            'rank_math_metadata' => [__('Page Metadata', 'ragnus-static-publisher'), __('Keep Rank Math robots, canonical, Open Graph and Twitter Card tags. Internal URLs are converted to the live static domain.', 'ragnus-static-publisher')],
+        $metadata_outputs = static function (string $prefix): array {
+            return [
+                $prefix . '_metadata_pages' => [__('Page Metadata', 'ragnus-static-publisher'), __('Keep SEO metadata on WordPress pages.', 'ragnus-static-publisher')],
+                $prefix . '_metadata_posts' => [__('Post Metadata', 'ragnus-static-publisher'), __('Keep SEO metadata on WordPress posts.', 'ragnus-static-publisher')],
+                $prefix . '_metadata_custom_post_types' => [__('Custom Post Type Metadata', 'ragnus-static-publisher'), __('Keep SEO metadata on public custom post types such as products and portfolios.', 'ragnus-static-publisher')],
+                $prefix . '_metadata_archives' => [__('Archive & Taxonomy Metadata', 'ragnus-static-publisher'), __('Keep SEO metadata on the posts page, archives, categories, tags, author pages and other listing views.', 'ragnus-static-publisher')],
+            ];
+        };
+        $rank_math_outputs = array_merge($metadata_outputs('rank_math'), [
             'rank_math_schema' => [__('Schema Structured Data', 'ragnus-static-publisher'), __('Keep Rank Math JSON-LD data, convert its URLs to the live domain, and adapt SearchAction to static search.', 'ragnus-static-publisher')],
             'rank_math_sitemaps' => [__('XML Sitemaps', 'ragnus-static-publisher'), __('Copy the Rank Math sitemap index, child sitemaps and sitemap stylesheet into the static package.', 'ragnus-static-publisher')],
             'rank_math_robots' => [__('Robots.txt', 'ragnus-static-publisher'), __('Copy Rank Math robots.txt rules and point the sitemap declaration to the live static domain.', 'ragnus-static-publisher')],
-        ];
-        $aioseo_outputs = [
-            'aioseo_metadata' => [__('Page Metadata', 'ragnus-static-publisher'), __('Keep All in One SEO robots, canonical, Open Graph and Twitter Card tags. Internal URLs are converted to the live static domain.', 'ragnus-static-publisher')],
+        ]);
+        $aioseo_outputs = array_merge($metadata_outputs('aioseo'), [
             'aioseo_schema' => [__('Schema Structured Data', 'ragnus-static-publisher'), __('Keep All in One SEO JSON-LD data, convert its URLs to the live domain, and adapt SearchAction to static search.', 'ragnus-static-publisher')],
             'aioseo_sitemaps' => [__('XML Sitemaps', 'ragnus-static-publisher'), __('Copy the All in One SEO sitemap index, child sitemaps and sitemap stylesheet into the static package.', 'ragnus-static-publisher')],
             'aioseo_robots' => [__('Robots.txt', 'ragnus-static-publisher'), __('Copy All in One SEO robots.txt rules and point sitemap declarations to the live static domain.', 'ragnus-static-publisher')],
-        ];
+        ]);
+        $seopress_outputs = array_merge($metadata_outputs('seopress'), [
+            'seopress_schema' => [__('Schema Structured Data', 'ragnus-static-publisher'), __('Keep SEOPress JSON-LD data, convert its URLs to the live domain, and adapt SearchAction to static search.', 'ragnus-static-publisher')],
+            'seopress_sitemaps' => [__('XML Sitemaps', 'ragnus-static-publisher'), __('Copy the SEOPress sitemap index, child sitemaps and sitemap stylesheets into the static package.', 'ragnus-static-publisher')],
+            'seopress_robots' => [__('Robots.txt', 'ragnus-static-publisher'), __('Copy SEOPress robots.txt rules and point sitemap declarations to the live static domain.', 'ragnus-static-publisher')],
+        ]);
+        $additional_outputs = static function (string $prefix, string $label) use ($metadata_outputs): array {
+            return array_merge($metadata_outputs($prefix), [
+                $prefix . '_schema' => [__('Schema Structured Data', 'ragnus-static-publisher'), sprintf(__('Keep %s JSON-LD data, convert its URLs to the live domain, and adapt SearchAction to static search.', 'ragnus-static-publisher'), $label)],
+                $prefix . '_sitemaps' => [__('XML Sitemaps', 'ragnus-static-publisher'), sprintf(__('Copy %s sitemap and its linked sitemap files into the static package.', 'ragnus-static-publisher'), $label)],
+                $prefix . '_robots' => [__('Robots.txt', 'ragnus-static-publisher'), sprintf(__('Copy %s robots.txt rules and point sitemap declarations to the live static domain.', 'ragnus-static-publisher'), $label)],
+            ]);
+        };
         ?>
         <form class="ragstat-settings-form ragstat-seo-plugins-form" method="post" action="options.php">
             <?php settings_fields('ragnus_static_seo_plugins'); ?>
@@ -1043,8 +1065,75 @@ final class Admin
                     <p class="ragstat-language-card__note"><span class="dashicons dashicons-info-outline" aria-hidden="true"></span><?php esc_html_e('These settings are preserved, but no All in One SEO output will be exported until the plugin is active.', 'ragnus-static-publisher'); ?></p>
                 <?php endif; ?>
             </section>
+            <section class="ragstat-seo-plugin-card" aria-labelledby="ragstat-seopress-title">
+                <div class="ragstat-seo-plugin-card__heading">
+                    <span class="dashicons dashicons-performance" aria-hidden="true"></span>
+                    <div>
+                        <h3 id="ragstat-seopress-title">SEOPress</h3>
+                        <p><?php esc_html_e('Choose which SEOPress outputs will be included in the generated static site.', 'ragnus-static-publisher'); ?></p>
+                    </div>
+                    <span class="ragstat-deploy-status <?php echo $seopress_active ? 'is-ready' : 'is-pending'; ?>">
+                        <?php echo $seopress_active ? esc_html(sprintf(__('Active — version %s', 'ragnus-static-publisher'), (string) SEOPRESS_VERSION)) : esc_html__('Not active', 'ragnus-static-publisher'); ?>
+                    </span>
+                </div>
+                <label class="ragstat-seo-plugin-master">
+                    <input type="checkbox" name="<?php echo esc_attr($option_name); ?>[seopress_enabled]" value="1" <?php checked((string) ($settings['seopress_enabled'] ?? '0'), '1'); ?>>
+                    <span><strong><?php esc_html_e('Include SEOPress outputs in the static site', 'ragnus-static-publisher'); ?></strong><small><?php esc_html_e('When disabled, SEOPress metadata and schema outputs are removed and its sitemap and robots files are not exported.', 'ragnus-static-publisher'); ?></small></span>
+                </label>
+                <div class="ragstat-seo-output-list">
+                    <?php foreach ($seopress_outputs as $key => [$label, $description]) : ?>
+                        <label class="ragstat-seo-output-option">
+                            <input type="checkbox" name="<?php echo esc_attr($option_name); ?>[<?php echo esc_attr($key); ?>]" value="1" <?php checked((string) ($settings[$key] ?? '0'), '1'); ?>>
+                            <span><strong><?php echo esc_html($label); ?></strong><small><?php echo esc_html($description); ?></small></span>
+                        </label>
+                    <?php endforeach; ?>
+                </div>
+                <?php if (! $seopress_active) : ?>
+                    <p class="ragstat-language-card__note"><span class="dashicons dashicons-info-outline" aria-hidden="true"></span><?php esc_html_e('These settings are preserved, but no SEOPress output will be exported until the plugin is active.', 'ragnus-static-publisher'); ?></p>
+                <?php endif; ?>
+            </section>
+            <?php
+            self::render_additional_seo_plugin_card('surerank', 'SureRank SEO', 'dashicons-search', $surerank_active, $surerank_active ? (string) SURERANK_VERSION : '', $additional_outputs('surerank', 'SureRank SEO'), $option_name);
+            self::render_additional_seo_plugin_card('seo-framework', 'The SEO Framework', 'dashicons-shield-alt', $seo_framework_active, $seo_framework_active ? (string) THE_SEO_FRAMEWORK_VERSION : '', $additional_outputs('seo_framework', 'The SEO Framework'), $option_name, 'seo_framework');
+            self::render_additional_seo_plugin_card('yoast', 'Yoast SEO', 'dashicons-chart-pie', $yoast_active, $yoast_active ? (string) WPSEO_VERSION : '', $additional_outputs('yoast', 'Yoast SEO'), $option_name);
+            ?>
             <?php submit_button(__('Save SEO Plugin Settings', 'ragnus-static-publisher')); ?>
         </form>
+        <?php
+    }
+
+    private static function render_additional_seo_plugin_card(string $id, string $label, string $icon, bool $active, string $version, array $outputs, string $option_name, ?string $prefix = null): void
+    {
+        $prefix = $prefix ?? $id;
+        ?>
+        <section class="ragstat-seo-plugin-card" aria-labelledby="ragstat-<?php echo esc_attr($id); ?>-title">
+            <div class="ragstat-seo-plugin-card__heading">
+                <span class="dashicons <?php echo esc_attr($icon); ?>" aria-hidden="true"></span>
+                <div>
+                    <h3 id="ragstat-<?php echo esc_attr($id); ?>-title"><?php echo esc_html($label); ?></h3>
+                    <p><?php echo esc_html(sprintf(__('Choose which %s outputs will be included in the generated static site.', 'ragnus-static-publisher'), $label)); ?></p>
+                </div>
+                <span class="ragstat-deploy-status <?php echo $active ? 'is-ready' : 'is-pending'; ?>">
+                    <?php echo $active ? esc_html(sprintf(__('Active — version %s', 'ragnus-static-publisher'), $version)) : esc_html__('Not active', 'ragnus-static-publisher'); ?>
+                </span>
+            </div>
+            <label class="ragstat-seo-plugin-master">
+                <input type="checkbox" name="<?php echo esc_attr($option_name); ?>[<?php echo esc_attr($prefix); ?>_enabled]" value="1" <?php checked((string) (Plugin::seo_plugin_settings()[$prefix . '_enabled'] ?? '0'), '1'); ?>>
+                <span><strong><?php echo esc_html(sprintf(__('Include %s outputs in the static site', 'ragnus-static-publisher'), $label)); ?></strong><small><?php echo esc_html(sprintf(__('When disabled, %s metadata and schema outputs are removed and its sitemap and robots files are not exported.', 'ragnus-static-publisher'), $label)); ?></small></span>
+            </label>
+            <div class="ragstat-seo-output-list">
+                <?php $settings = Plugin::seo_plugin_settings(); ?>
+                <?php foreach ($outputs as $key => [$output_label, $description]) : ?>
+                    <label class="ragstat-seo-output-option">
+                        <input type="checkbox" name="<?php echo esc_attr($option_name); ?>[<?php echo esc_attr($key); ?>]" value="1" <?php checked((string) ($settings[$key] ?? '0'), '1'); ?>>
+                        <span><strong><?php echo esc_html($output_label); ?></strong><small><?php echo esc_html($description); ?></small></span>
+                    </label>
+                <?php endforeach; ?>
+            </div>
+            <?php if (! $active) : ?>
+                <p class="ragstat-language-card__note"><span class="dashicons dashicons-info-outline" aria-hidden="true"></span><?php echo esc_html(sprintf(__('These settings are preserved, but no %s output will be exported until the plugin is active.', 'ragnus-static-publisher'), $label)); ?></p>
+            <?php endif; ?>
+        </section>
         <?php
     }
 

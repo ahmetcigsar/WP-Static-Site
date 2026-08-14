@@ -1,7 +1,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Ragnus Static Publisher 1.24.1\n"
+"Project-Id-Version: Ragnus Static Publisher 1.24.5\n"
 "Report-Msgid-Bugs-To: info@ragnus.co\n"
 "POT-Creation-Date: 2026-08-13 00:31+0300\n"
 "PO-Revision-Date: 2026-08-12 22:57+0300\n"
@@ -145,8 +145,8 @@ msgstr "SEO"
 msgid "SEO Plugins"
 msgstr ""
 
-msgid "Language"
-msgstr ""
+msgid "Multilingual"
+msgstr "Multilingüe"
 
 msgid ""
 "Manage SEO plugin output and multilingual search engine signals in the "
@@ -455,8 +455,8 @@ msgid "SFTP"
 msgstr ""
 
 #: ragnus-static-publisher/includes/class-admin.php:714
-msgid "Choose the method you'll use to publish your static site."
-msgstr "Elija el método que utilizará para publicar su sitio estático."
+msgid "Choose how to publish your static site and configure automatic deploys."
+msgstr "Elija cómo publicar su sitio estático y configure los despliegues automáticos."
 
 #: ragnus-static-publisher/includes/class-admin.php:738
 msgid ""
@@ -592,18 +592,16 @@ msgid "General"
 msgstr "General"
 
 #: ragnus-static-publisher/includes/class-admin.php:890
-msgid "Automation"
-msgstr "Automatización"
+msgid "Auto Deploy"
+msgstr "Despliegue automático"
 
 #: ragnus-static-publisher/includes/class-admin.php:891
 msgid "Languages"
 msgstr "Idiomas"
 
 #: ragnus-static-publisher/includes/class-admin.php:897
-msgid "Manage static generation, automation and publishing settings."
-msgstr ""
-"Administre la configuración de generación, automatización y publicación "
-"estática."
+msgid "Manage static generation settings."
+msgstr "Administre la configuración de generación estática."
 
 #: ragnus-static-publisher/includes/class-admin.php:900
 msgid "Settings subsections"
@@ -644,6 +642,9 @@ msgstr ""
 #: ragnus-static-publisher/includes/class-admin.php:930
 msgid "Save General Settings"
 msgstr "Guardar configuración general"
+
+msgid "Save ZIP Settings"
+msgstr "Guardar ajustes de ZIP"
 
 #: ragnus-static-publisher/includes/class-admin.php:938
 #: ragnus-static-publisher/includes/class-admin.php:1177
@@ -779,8 +780,8 @@ msgstr ""
 "ejecutan como una única exportación e implementación."
 
 #: ragnus-static-publisher/includes/class-admin.php:985
-msgid "Save Automation Settings"
-msgstr "Guardar configuración de automatización"
+msgid "Save Auto Deploy Settings"
+msgstr "Guardar ajustes de despliegue automático"
 
 #: ragnus-static-publisher/includes/class-admin.php:996
 msgid "GitHub Deployment Webhook"

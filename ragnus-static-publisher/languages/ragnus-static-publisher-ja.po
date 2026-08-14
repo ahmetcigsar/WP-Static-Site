@@ -1,7 +1,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Ragnus Static Publisher 1.24.1\n"
+"Project-Id-Version: Ragnus Static Publisher 1.24.5\n"
 "Report-Msgid-Bugs-To: info@ragnus.co\n"
 "POT-Creation-Date: 2026-08-13 00:31+0300\n"
 "PO-Revision-Date: 2026-08-12 22:57+0300\n"
@@ -145,8 +145,8 @@ msgstr "SEO"
 msgid "SEO Plugins"
 msgstr ""
 
-msgid "Language"
-msgstr ""
+msgid "Multilingual"
+msgstr "多言語"
 
 msgid ""
 "Manage SEO plugin output and multilingual search engine signals in the "
@@ -452,8 +452,8 @@ msgid "SFTP"
 msgstr ""
 
 #: ragnus-static-publisher/includes/class-admin.php:714
-msgid "Choose the method you'll use to publish your static site."
-msgstr "静的サイトを公開するために使用する方法を選択します。"
+msgid "Choose how to publish your static site and configure automatic deploys."
+msgstr "静的サイトの公開方法を選択し、自動デプロイを設定します。"
 
 #: ragnus-static-publisher/includes/class-admin.php:738
 msgid ""
@@ -589,16 +589,16 @@ msgid "General"
 msgstr "一般"
 
 #: ragnus-static-publisher/includes/class-admin.php:890
-msgid "Automation"
-msgstr "自動化"
+msgid "Auto Deploy"
+msgstr "自動デプロイ"
 
 #: ragnus-static-publisher/includes/class-admin.php:891
 msgid "Languages"
 msgstr "言語"
 
 #: ragnus-static-publisher/includes/class-admin.php:897
-msgid "Manage static generation, automation and publishing settings."
-msgstr "静的生成、自動化、公開設定を管理します。"
+msgid "Manage static generation settings."
+msgstr "静的生成設定を管理します。"
 
 #: ragnus-static-publisher/includes/class-admin.php:900
 msgid "Settings subsections"
@@ -639,6 +639,9 @@ msgstr ""
 #: ragnus-static-publisher/includes/class-admin.php:930
 msgid "Save General Settings"
 msgstr "一般設定の保存"
+
+msgid "Save ZIP Settings"
+msgstr "ZIP 設定を保存"
 
 #: ragnus-static-publisher/includes/class-admin.php:938
 #: ragnus-static-publisher/includes/class-admin.php:1177
@@ -768,8 +771,8 @@ msgstr ""
 "て実行されます。"
 
 #: ragnus-static-publisher/includes/class-admin.php:985
-msgid "Save Automation Settings"
-msgstr "オートメーション設定の保存"
+msgid "Save Auto Deploy Settings"
+msgstr "自動デプロイ設定を保存"
 
 #: ragnus-static-publisher/includes/class-admin.php:996
 msgid "GitHub Deployment Webhook"

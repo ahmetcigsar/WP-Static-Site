@@ -6,7 +6,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Ragnus Static Publisher 1.24.1\n"
+"Project-Id-Version: Ragnus Static Publisher 1.24.5\n"
 "Report-Msgid-Bugs-To: info@ragnus.co\n"
 "POT-Creation-Date: 2026-08-13 00:31+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -146,7 +146,7 @@ msgstr ""
 msgid "SEO Plugins"
 msgstr ""
 
-msgid "Language"
+msgid "Multilingual"
 msgstr ""
 
 msgid "Manage SEO plugin output and multilingual search engine signals in the static site."
@@ -429,7 +429,7 @@ msgid "SFTP"
 msgstr ""
 
 #: ragnus-static-publisher/includes/class-admin.php:714
-msgid "Choose the method you'll use to publish your static site."
+msgid "Choose how to publish your static site and configure automatic deploys."
 msgstr ""
 
 #: ragnus-static-publisher/includes/class-admin.php:738
@@ -559,7 +559,7 @@ msgid "General"
 msgstr ""
 
 #: ragnus-static-publisher/includes/class-admin.php:890
-msgid "Automation"
+msgid "Auto Deploy"
 msgstr ""
 
 #: ragnus-static-publisher/includes/class-admin.php:891
@@ -567,7 +567,7 @@ msgid "Languages"
 msgstr ""
 
 #: ragnus-static-publisher/includes/class-admin.php:897
-msgid "Manage static generation, automation and publishing settings."
+msgid "Manage static generation settings."
 msgstr ""
 
 #: ragnus-static-publisher/includes/class-admin.php:900
@@ -606,6 +606,9 @@ msgstr ""
 
 #: ragnus-static-publisher/includes/class-admin.php:930
 msgid "Save General Settings"
+msgstr ""
+
+msgid "Save ZIP Settings"
 msgstr ""
 
 #: ragnus-static-publisher/includes/class-admin.php:938
@@ -729,7 +732,7 @@ msgid ""
 msgstr ""
 
 #: ragnus-static-publisher/includes/class-admin.php:985
-msgid "Save Automation Settings"
+msgid "Save Auto Deploy Settings"
 msgstr ""
 
 #: ragnus-static-publisher/includes/class-admin.php:996

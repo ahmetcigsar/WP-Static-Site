@@ -102,6 +102,17 @@ if (($sanitized_settings['auto_export'] ?? '') !== '1'
     exit(1);
 }
 
+$sanitized_zip = Ragnus\StaticPublisher\Admin::sanitize([
+    '_section' => 'zip',
+    'archive_retention' => 12,
+]);
+if (($sanitized_zip['archive_retention'] ?? 0) !== 12
+    || ($sanitized_zip['target_url'] ?? '') !== ($settings['target_url'] ?? '')
+    || ($sanitized_zip['maximum_urls'] ?? 0) !== ($settings['maximum_urls'] ?? 0)) {
+    fwrite(STDERR, "ZIP saklama ayarı diğer General ayarları korunarak kaydedilmedi.\n");
+    exit(1);
+}
+
 $sftp_password = 'SFTP smoke secret!';
 if (! class_exists('phpseclib3\\Net\\SFTP')) {
     fwrite(STDERR, "Paketlenmiş phpseclib SFTP istemcisi yüklenemedi.\n");
@@ -316,7 +327,48 @@ $files_notice_html = (string) ob_get_clean();
 unset($_GET['tab'], $_GET['archive_notice'], $_GET['deleted']);
 if (! str_contains($files_notice_html, 'notice-success inline is-dismissible ragstat-files-notice')
     || ! str_contains($files_notice_html, '1 ZIP file has been deleted.')) {
-    fwrite(STDERR, "Files silme bildirimi içerik alanında inline olarak gösterilmiyor.\n");
+    fwrite(STDERR, "Eski Files bağlantısı Deploy > ZIP File ekranına yönlenmiyor veya silme bildirimi inline gösterilmiyor.\n");
+    exit(1);
+}
+if (! str_contains($files_notice_html, 'deploy_tab=zip')
+    || ! str_contains($files_notice_html, 'ragstat-deploy-tab is-active')
+    || str_contains($files_notice_html, 'tab=files')) {
+    fwrite(STDERR, "Files ana sekmesi kaldırılmadı veya eski bağlantı Deploy > ZIP File ekranına taşınmadı.\n");
+    exit(1);
+}
+
+$archive_fixture = [];
+for ($archive_number = 1; $archive_number <= 11; $archive_number++) {
+    $archive_fixture[] = [
+        'id' => 'archive-' . $archive_number,
+        'job_id' => 'job-' . $archive_number,
+        'url_count' => $archive_number,
+        'created_at' => time() - $archive_number,
+    ];
+}
+$zip_files_renderer = new ReflectionMethod(Ragnus\StaticPublisher\Admin::class, 'render_zip_files');
+$zip_files_renderer->setAccessible(true);
+$_GET = [];
+ob_start();
+$zip_files_renderer->invoke(null, $archive_fixture);
+$zip_page_one_html = (string) ob_get_clean();
+if (! str_contains($zip_page_one_html, 'job-1')
+    || ! str_contains($zip_page_one_html, 'job-10')
+    || str_contains($zip_page_one_html, 'job-11')
+    || ! str_contains($zip_page_one_html, 'zip_page=2')
+    || ! str_contains($zip_page_one_html, 'ragstat-zip-pagination')) {
+    fwrite(STDERR, "ZIP dosyaları ilk sayfada 10 kayıtla sınırlandırılmadı.\n");
+    exit(1);
+}
+$_GET = ['zip_page' => '2'];
+ob_start();
+$zip_files_renderer->invoke(null, $archive_fixture);
+$zip_page_two_html = (string) ob_get_clean();
+$_GET = [];
+if (! str_contains($zip_page_two_html, 'job-11')
+    || str_contains($zip_page_two_html, 'job-10')
+    || ! preg_match('/ragstat-number-column[^>]*>11<\/td>/', $zip_page_two_html)) {
+    fwrite(STDERR, "ZIP dosyaları ikinci sayfada doğru kayıt ve sıra numarasıyla gösterilmiyor.\n");
     exit(1);
 }
 
@@ -365,7 +417,7 @@ foreach (["'hide' => __('Hide'", 'render_hide_tab', 'Save Hide Settings'] as $ex
 }
 foreach (['Automatic Static Site Creation and Deploy', 'When a new article is published', 'When the current page is updated', 'When the theme changes', 'When site settings change'] as $expected) {
     if (! str_contains($admin_source, $expected)) {
-        fwrite(STDERR, "Settings otomatik deploy kartında beklenen içerik bulunamadı: {$expected}\n");
+        fwrite(STDERR, "Deploy > Auto Deploy kartında beklenen içerik bulunamadı: {$expected}\n");
         exit(1);
     }
 }
@@ -376,18 +428,29 @@ foreach (['transition_post_status', 'created_term', 'wp_update_nav_menu', 'upgra
     }
 }
 
+$_GET = ['tab' => 'settings', 'settings_tab' => 'general'];
+ob_start();
+Ragnus\StaticPublisher\Admin::render();
+$settings_html = (string) ob_get_clean();
+$_GET = [];
+if (! str_contains($settings_html, 'Save General Settings') || str_contains($settings_html, 'settings_tab=automation') || str_contains($settings_html, 'Automatic Static Site Creation and Deploy') || str_contains($settings_html, 'Number of ZIPs to Store')) {
+    fwrite(STDERR, "Automation veya ZIP saklama ayarı Settings ekranından kaldırılmadı.\n");
+    exit(1);
+}
+
 foreach ([
-    'zip' => ['Open ZIP Files'],
+    'zip' => ['ZIP Files', 'Number of ZIPs to Store', 'Save ZIP Settings', 'value="zip"'],
     'github' => ['GitHub Deployment Webhook', 'Save Deploy Settings'],
     'cloudflare' => ['Cloudflare account required', 'Open Cloudflare'],
     'sftp' => ['SFTP Connection', 'Save SFTP Settings', 'Test Connection', 'Upload Latest Static Site'],
+    'auto-deploy' => ['Automatic Static Site Creation and Deploy', 'Save Auto Deploy Settings'],
 ] as $deploy_tab => $panel_expectations) {
     $_GET = ['tab' => 'deploy', 'deploy_tab' => $deploy_tab];
     ob_start();
     Ragnus\StaticPublisher\Admin::render();
     $deploy_html = (string) ob_get_clean();
 
-    foreach (['ZIP File', 'GitHub', 'Cloudflare', 'SFTP', 'ragstat-deploy-tabs', 'deploy_tab=' . $deploy_tab, ...$panel_expectations] as $expected) {
+    foreach (['ZIP File', 'GitHub', 'Cloudflare', 'SFTP', 'Auto Deploy', 'ragstat-deploy-tabs', 'deploy_tab=' . $deploy_tab, ...$panel_expectations] as $expected) {
         if (! str_contains($deploy_html, $expected)) {
             fwrite(STDERR, "Deploy {$deploy_tab} sekmesinde beklenen içerik bulunamadı: {$expected}\n");
             exit(1);
@@ -405,6 +468,16 @@ foreach ([
         fwrite(STDERR, "Cloudflare sekmesi ve içerik panelinde tek renk Cloudflare SVG ikonu bulunamadı.\n");
         exit(1);
     }
+}
+
+$_GET = ['tab' => 'settings', 'settings_tab' => 'automation'];
+ob_start();
+Ragnus\StaticPublisher\Admin::render();
+$legacy_automation_html = (string) ob_get_clean();
+$_GET = [];
+if (! str_contains($legacy_automation_html, 'Automatic Static Site Creation and Deploy') || ! str_contains($legacy_automation_html, 'deploy_tab=auto-deploy') || str_contains($legacy_automation_html, 'settings_tab=automation')) {
+    fwrite(STDERR, "Eski Settings > Automation bağlantısı yeni Deploy > Auto Deploy sekmesine uyarlanmadı.\n");
+    exit(1);
 }
 
 $_GET = ['tab' => 'settings', 'settings_tab' => 'deploy'];
@@ -445,8 +518,8 @@ $_GET = ['tab' => 'seo', 'seo_tab' => 'language'];
 ob_start();
 Ragnus\StaticPublisher\Admin::render();
 $seo_language_html = (string) ob_get_clean();
-if (! str_contains($seo_language_html, 'Redirection by Browser Language') || ! str_contains($seo_language_html, 'Save Language Settings')) {
-    fwrite(STDERR, "SEO > Language dikey sekmesinde dil ayarları bulunamadı.\n");
+if (! str_contains($seo_language_html, 'Multilingual') || ! str_contains($seo_language_html, 'Redirection by Browser Language') || ! str_contains($seo_language_html, 'Save Language Settings')) {
+    fwrite(STDERR, "SEO > Multilingual dikey sekmesinde dil ayarları bulunamadı.\n");
     exit(1);
 }
 

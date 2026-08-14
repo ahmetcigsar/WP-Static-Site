@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Ragnus Static Publisher 1.24.1\n"
+"Project-Id-Version: Ragnus Static Publisher 1.24.5\n"
 "Report-Msgid-Bugs-To: info@ragnus.co\n"
 "POT-Creation-Date: 2026-08-13 00:31+0300\n"
 "PO-Revision-Date: 2026-08-13 00:17+0300\n"
@@ -146,8 +146,8 @@ msgstr "SEO"
 msgid "SEO Plugins"
 msgstr "SEO Eklentileri"
 
-msgid "Language"
-msgstr "Dil"
+msgid "Multilingual"
+msgstr "Çoklu Dil"
 
 msgid ""
 "Manage SEO plugin output and multilingual search engine signals in the "
@@ -465,8 +465,8 @@ msgid "SFTP"
 msgstr "SFTP"
 
 #: ragnus-static-publisher/includes/class-admin.php:714
-msgid "Choose the method you'll use to publish your static site."
-msgstr "Statik sitenizi yayınlamak için kullanacağınız yöntemi seçin."
+msgid "Choose how to publish your static site and configure automatic deploys."
+msgstr "Statik sitenizi nasıl yayınlayacağınızı seçin ve otomatik deploy ayarlarını yapılandırın."
 
 #: ragnus-static-publisher/includes/class-admin.php:738
 msgid ""
@@ -603,16 +603,16 @@ msgid "General"
 msgstr "Genel"
 
 #: ragnus-static-publisher/includes/class-admin.php:890
-msgid "Automation"
-msgstr "Otomasyon"
+msgid "Auto Deploy"
+msgstr "Otomatik Deploy"
 
 #: ragnus-static-publisher/includes/class-admin.php:891
 msgid "Languages"
 msgstr "Diller"
 
 #: ragnus-static-publisher/includes/class-admin.php:897
-msgid "Manage static generation, automation and publishing settings."
-msgstr "Statik oluşturma, otomasyon ve yayınlama ayarlarını yönetin."
+msgid "Manage static generation settings."
+msgstr "Statik oluşturma ayarlarını yönetin."
 
 #: ragnus-static-publisher/includes/class-admin.php:900
 msgid "Settings subsections"
@@ -652,6 +652,9 @@ msgstr ""
 #: ragnus-static-publisher/includes/class-admin.php:930
 msgid "Save General Settings"
 msgstr "Genel Ayarları Kaydet"
+
+msgid "Save ZIP Settings"
+msgstr "ZIP Ayarlarını Kaydet"
 
 #: ragnus-static-publisher/includes/class-admin.php:938
 #: ragnus-static-publisher/includes/class-admin.php:1177
@@ -785,8 +788,8 @@ msgstr ""
 "export ve deploy olarak çalıştırılır."
 
 #: ragnus-static-publisher/includes/class-admin.php:985
-msgid "Save Automation Settings"
-msgstr "Otomasyon Ayarlarını Kaydet"
+msgid "Save Auto Deploy Settings"
+msgstr "Otomatik Deploy Ayarlarını Kaydet"
 
 #: ragnus-static-publisher/includes/class-admin.php:996
 msgid "GitHub Deployment Webhook"

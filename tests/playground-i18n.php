@@ -33,6 +33,39 @@ $expected_translations = [
     'pt_BR' => 'Configurações',
     'pt_PT' => 'Definições',
 ];
+$expected_multilingual_translations = [
+    'tr_TR' => 'Çoklu Dil',
+    'en_US' => 'Multilingual',
+    'es_ES' => 'Multilingüe',
+    'fr_FR' => 'Multilingue',
+    'zh_CN' => '多语言',
+    'ja' => '多言語',
+    'ar' => 'متعدد اللغات',
+    'pt_BR' => 'Multilíngue',
+    'pt_PT' => 'Multilingue',
+];
+$expected_auto_deploy_translations = [
+    'tr_TR' => 'Otomatik Deploy',
+    'en_US' => 'Auto Deploy',
+    'es_ES' => 'Despliegue automático',
+    'fr_FR' => 'Déploiement automatique',
+    'zh_CN' => '自动部署',
+    'ja' => '自動デプロイ',
+    'ar' => 'النشر التلقائي',
+    'pt_BR' => 'Deploy automático',
+    'pt_PT' => 'Deploy automático',
+];
+$expected_save_zip_translations = [
+    'tr_TR' => 'ZIP Ayarlarını Kaydet',
+    'en_US' => 'Save ZIP Settings',
+    'es_ES' => 'Guardar ajustes de ZIP',
+    'fr_FR' => 'Enregistrer les réglages ZIP',
+    'zh_CN' => '保存 ZIP 设置',
+    'ja' => 'ZIP 設定を保存',
+    'ar' => 'حفظ إعدادات ZIP',
+    'pt_BR' => 'Salvar configurações de ZIP',
+    'pt_PT' => 'Guardar definições de ZIP',
+];
 
 foreach ($expected_translations as $locale => $expected) {
     restore_current_locale();
@@ -52,6 +85,36 @@ foreach ($expected_translations as $locale => $expected) {
             is_readable($mofile) ? 'readable' : 'missing',
             $direct_loaded ? 'loaded' : 'failed',
             __('Settings', 'ragnus-static-publisher')
+        ));
+        exit(1);
+    }
+
+    $multilingual_actual = __('Multilingual', 'ragnus-static-publisher');
+    if ($multilingual_actual !== $expected_multilingual_translations[$locale]) {
+        fwrite(STDERR, sprintf(
+            "%s Çoklu Dil çevirisi beklenen değerde değil: %s\n",
+            $locale,
+            $multilingual_actual
+        ));
+        exit(1);
+    }
+
+    $auto_deploy_actual = __('Auto Deploy', 'ragnus-static-publisher');
+    if ($auto_deploy_actual !== $expected_auto_deploy_translations[$locale]) {
+        fwrite(STDERR, sprintf(
+            "%s Auto Deploy çevirisi beklenen değerde değil: %s\n",
+            $locale,
+            $auto_deploy_actual
+        ));
+        exit(1);
+    }
+
+    $save_zip_actual = __('Save ZIP Settings', 'ragnus-static-publisher');
+    if ($save_zip_actual !== $expected_save_zip_translations[$locale]) {
+        fwrite(STDERR, sprintf(
+            "%s ZIP ayarları kaydet çevirisi beklenen değerde değil: %s\n",
+            $locale,
+            $save_zip_actual
         ));
         exit(1);
     }

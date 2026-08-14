@@ -160,6 +160,44 @@
     text-align: center;
 }
 
+.ragstat-zip-pagination {
+    display: flex;
+    justify-content: flex-end;
+    margin: 18px 0 4px;
+}
+
+.ragstat-zip-pagination .page-numbers {
+    display: flex;
+    gap: 6px;
+    margin: 0;
+}
+
+.ragstat-zip-pagination .page-numbers li {
+    margin: 0;
+}
+
+.ragstat-zip-pagination a.page-numbers,
+.ragstat-zip-pagination span.page-numbers {
+    display: inline-flex;
+    min-width: 32px;
+    min-height: 32px;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 9px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    background: #fff;
+    color: #1d4ed8;
+    text-decoration: none;
+}
+
+.ragstat-zip-pagination span.current {
+    border-color: #1d4ed8;
+    background: #1d4ed8;
+    color: #fff;
+}
+
 .ragstat-activity-table {
     max-width: 1300px;
 }

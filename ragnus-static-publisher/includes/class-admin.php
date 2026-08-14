@@ -98,7 +98,10 @@ final class Admin
             $sanitized['target_url'] = esc_url_raw(untrailingslashit((string) ($value['target_url'] ?? home_url())));
             $sanitized['maximum_urls'] = max(10, min(20000, absint($value['maximum_urls'] ?? 2000)));
             $sanitized['excluded_paths'] = sanitize_textarea_field((string) ($value['excluded_paths'] ?? ''));
-            $sanitized['archive_retention'] = max(1, min(100, absint($value['archive_retention'] ?? 5)));
+        }
+
+        if (in_array($section, ['zip', 'all'], true)) {
+            $sanitized['archive_retention'] = max(1, min(100, absint($value['archive_retention'] ?? ($current['archive_retention'] ?? 5))));
         }
 
         if (in_array($section, ['automation', 'all'], true)) {
@@ -434,11 +437,17 @@ final class Admin
 
     private static function redirect_archive_notice(string $notice, array $result = []): void
     {
-        wp_safe_redirect(add_query_arg([
+        $query = [
             'archive_notice' => $notice,
             'deleted' => absint($result['deleted'] ?? 0),
             'failed' => absint($result['failed'] ?? 0),
-        ], self::admin_page_url('files')));
+        ];
+        $zip_page = isset($_POST['zip_page']) ? max(1, absint(wp_unslash((string) $_POST['zip_page']))) : 1;
+        if ($zip_page > 1) {
+            $query['zip_page'] = $zip_page;
+        }
+
+        wp_safe_redirect(add_query_arg($query, self::deploy_page_url('zip')));
         exit;
     }
 
@@ -450,7 +459,7 @@ final class Admin
         check_admin_referer('ragnus_static_cleanup_exports');
 
         if (get_transient(Plugin::LOCK_KEY)) {
-            wp_safe_redirect(add_query_arg('cleanup', 'running', self::admin_page_url('files')));
+            wp_safe_redirect(add_query_arg('cleanup', 'running', self::deploy_page_url('zip')));
             exit;
         }
 
@@ -460,7 +469,7 @@ final class Admin
             'deleted' => $result['deleted'],
             'failed' => $result['failed'],
         ];
-        wp_safe_redirect(add_query_arg($query, self::admin_page_url('files')));
+        wp_safe_redirect(add_query_arg($query, self::deploy_page_url('zip')));
         exit;
     }
 
@@ -473,16 +482,21 @@ final class Admin
         $requested_settings_tab = isset($_GET['settings_tab']) ? sanitize_key(wp_unslash((string) $_GET['settings_tab'])) : 'general';
         $requested_deploy_tab = isset($_GET['deploy_tab']) ? sanitize_key(wp_unslash((string) $_GET['deploy_tab'])) : 'zip';
         $requested_seo_tab = isset($_GET['seo_tab']) ? sanitize_key(wp_unslash((string) $_GET['seo_tab'])) : 'plugins';
-        if ($requested_tab === 'settings' && $requested_settings_tab === 'deploy') {
+        if ($requested_tab === 'settings' && $requested_settings_tab === 'automation') {
+            $requested_tab = 'deploy';
+            $requested_deploy_tab = 'auto-deploy';
+        } elseif ($requested_tab === 'settings' && $requested_settings_tab === 'deploy') {
             $requested_tab = 'deploy';
             $requested_deploy_tab = 'github';
         } elseif ($requested_tab === 'settings' && $requested_settings_tab === 'languages') {
             $requested_tab = 'seo';
+        } elseif ($requested_tab === 'files') {
+            $requested_tab = 'deploy';
+            $requested_deploy_tab = 'zip';
         }
         $tabs = [
             'main' => __('Main', 'ragnus-static-publisher'),
             'deploy' => __('Deploy', 'ragnus-static-publisher'),
-            'files' => __('Files', 'ragnus-static-publisher'),
             'settings' => __('Settings', 'ragnus-static-publisher'),
             'seo' => __('SEO', 'ragnus-static-publisher'),
             'search' => __('Search', 'ragnus-static-publisher'),
@@ -514,8 +528,6 @@ final class Admin
                 <?php self::render_main_tab($status, $archives); ?>
             <?php elseif ($current_tab === 'deploy') : ?>
                 <?php self::render_deploy_tab($archives, Plugin::settings(), $requested_deploy_tab); ?>
-            <?php elseif ($current_tab === 'files') : ?>
-                <?php self::render_files_tab($archives); ?>
             <?php elseif ($current_tab === 'activity') : ?>
                 <?php self::render_activity_tab(); ?>
             <?php elseif ($current_tab === 'settings') : ?>
@@ -636,10 +648,17 @@ final class Admin
         <?php
     }
 
-    private static function render_files_tab(array $archives): void
+    private static function render_zip_files(array $archives): void
     {
         $cleanup_status = isset($_GET['cleanup']) ? sanitize_key(wp_unslash((string) $_GET['cleanup'])) : '';
         $archive_notice = isset($_GET['archive_notice']) ? sanitize_key(wp_unslash((string) $_GET['archive_notice'])) : '';
+        $per_page = 10;
+        $total_archives = count($archives);
+        $total_pages = max(1, (int) ceil($total_archives / $per_page));
+        $current_page = isset($_GET['zip_page']) ? max(1, absint(wp_unslash((string) $_GET['zip_page']))) : 1;
+        $current_page = min($current_page, $total_pages);
+        $archive_offset = ($current_page - 1) * $per_page;
+        $visible_archives = array_slice($archives, $archive_offset, $per_page);
         ?>
         <h2><?php esc_html_e('ZIP Files', 'ragnus-static-publisher'); ?></h2>
         <?php if ($cleanup_status === 'success') : ?>
@@ -667,6 +686,7 @@ final class Admin
         <?php else : ?>
             <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                 <input type="hidden" name="action" value="ragnus_static_archive_bulk">
+                <input type="hidden" name="zip_page" value="<?php echo esc_attr((string) $current_page); ?>">
                 <?php wp_nonce_field('ragnus_static_archive_bulk'); ?>
                 <div class="tablenav top">
                     <div class="alignleft actions bulkactions">
@@ -686,7 +706,7 @@ final class Admin
                 <table class="widefat striped ragstat-files-table">
                     <thead><tr><td class="manage-column check-column"><input id="cb-select-all-1" type="checkbox"><label for="cb-select-all-1"><span class="screen-reader-text"><?php esc_html_e('Select All', 'ragnus-static-publisher'); ?></span></label></td><th class="ragstat-number-column"><?php esc_html_e('Order', 'ragnus-static-publisher'); ?></th><th><?php esc_html_e('Job ID', 'ragnus-static-publisher'); ?></th><th><?php esc_html_e('URL Count', 'ragnus-static-publisher'); ?></th><th><?php esc_html_e('Creation Date', 'ragnus-static-publisher'); ?></th><th><?php esc_html_e('Creation Time', 'ragnus-static-publisher'); ?></th><th><?php esc_html_e('Actions', 'ragnus-static-publisher'); ?></th></tr></thead>
                     <tbody>
-                    <?php foreach ($archives as $archive_index => $archive) : ?>
+                    <?php foreach ($visible_archives as $archive_index => $archive) : ?>
                         <?php
                         $archive_id = (string) $archive['id'];
                         $download_url = wp_nonce_url(
@@ -696,7 +716,7 @@ final class Admin
                         ?>
                         <tr>
                             <th scope="row" class="check-column"><input type="checkbox" name="archive_ids[]" value="<?php echo esc_attr($archive_id); ?>"><span class="screen-reader-text"><?php echo esc_html(sprintf(__('Select %s', 'ragnus-static-publisher'), (string) $archive['job_id'])); ?></span></th>
-                            <td class="ragstat-number-column"><?php echo esc_html((string) ($archive_index + 1)); ?></td>
+                            <td class="ragstat-number-column"><?php echo esc_html((string) ($archive_offset + $archive_index + 1)); ?></td>
                             <td><code><?php echo esc_html((string) $archive['job_id']); ?></code></td>
                             <td><?php echo $archive['url_count'] === null ? '—' : esc_html((string) $archive['url_count']); ?></td>
                             <td><?php echo esc_html(wp_date((string) get_option('date_format'), (int) $archive['created_at'])); ?></td>
@@ -706,6 +726,29 @@ final class Admin
                     <?php endforeach; ?>
                     </tbody>
                 </table>
+                <?php if ($total_pages > 1) : ?>
+                    <?php
+                    $pagination_base = str_replace(
+                        '999999999',
+                        '%#%',
+                        add_query_arg('zip_page', 999999999, self::deploy_page_url('zip'))
+                    );
+                    $pagination = paginate_links([
+                        'base' => $pagination_base,
+                        'format' => '',
+                        'current' => $current_page,
+                        'total' => $total_pages,
+                        'type' => 'list',
+                        'prev_text' => __('‹ Previous', 'ragnus-static-publisher'),
+                        'next_text' => __('Next ›', 'ragnus-static-publisher'),
+                    ]);
+                    ?>
+                    <?php if (is_string($pagination)) : ?>
+                        <nav class="ragstat-zip-pagination" aria-label="<?php echo esc_attr__('ZIP Files', 'ragnus-static-publisher'); ?>">
+                            <?php echo wp_kses_post($pagination); ?>
+                        </nav>
+                    <?php endif; ?>
+                <?php endif; ?>
             </form>
         <?php endif; ?>
 
@@ -730,13 +773,14 @@ final class Admin
             'github' => [__('GitHub', 'ragnus-static-publisher'), 'github'],
             'cloudflare' => [__('Cloudflare', 'ragnus-static-publisher'), 'cloudflare'],
             'sftp' => [__('SFTP', 'ragnus-static-publisher'), 'dashicons-upload'],
+            'auto-deploy' => [__('Auto Deploy', 'ragnus-static-publisher'), 'dashicons-update'],
         ];
         $current_deploy_tab = isset($deploy_tabs[$requested_deploy_tab]) ? $requested_deploy_tab : 'zip';
         ?>
         <div class="ragstat-deploy-header">
             <div>
                 <h2><?php esc_html_e('Deploy', 'ragnus-static-publisher'); ?></h2>
-                <p><?php esc_html_e('Choose the method you\'ll use to publish your static site.', 'ragnus-static-publisher'); ?></p>
+                <p><?php esc_html_e('Choose how to publish your static site and configure automatic deploys.', 'ragnus-static-publisher'); ?></p>
             </div>
         </div>
         <div class="ragstat-deploy-layout">
@@ -764,9 +808,10 @@ final class Admin
                         </div>
                         <div class="ragstat-deploy-card__footer">
                             <span class="ragstat-deploy-status <?php echo $has_archive ? 'is-ready' : 'is-pending'; ?>"><?php echo $has_archive ? __('ZIP ready', 'ragnus-static-publisher') : __('Create static site first', 'ragnus-static-publisher'); ?></span>
-                            <a class="button button-primary" href="<?php echo esc_url(self::admin_page_url('files')); ?>"><?php esc_html_e('Open ZIP Files', 'ragnus-static-publisher'); ?></a>
                         </div>
                     </section>
+                    <?php self::render_zip_settings($settings); ?>
+                    <?php self::render_zip_files($archives); ?>
                 <?php elseif ($current_deploy_tab === 'github') : ?>
                     <section class="ragstat-deploy-card" aria-labelledby="ragstat-deploy-github-title">
                         <span class="ragstat-deploy-card__icon ragstat-deploy-card__github-icon" aria-hidden="true">
@@ -795,7 +840,7 @@ final class Admin
                             <a class="button button-primary" href="<?php echo esc_url('https://dash.cloudflare.com/'); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Open Cloudflare', 'ragnus-static-publisher'); ?><span class="dashicons dashicons-external" aria-hidden="true"></span></a>
                         </div>
                     </section>
-                <?php else : ?>
+                <?php elseif ($current_deploy_tab === 'sftp') : ?>
                     <section class="ragstat-deploy-card" aria-labelledby="ragstat-deploy-sftp-title">
                         <span class="ragstat-deploy-card__icon dashicons dashicons-upload" aria-hidden="true"></span>
                         <div class="ragstat-deploy-card__content">
@@ -809,6 +854,8 @@ final class Admin
                         </div>
                     </section>
                     <?php self::render_sftp_settings($settings, $has_archive); ?>
+                <?php else : ?>
+                    <?php self::render_automation_settings($settings); ?>
                 <?php endif; ?>
             </div>
         </div>
@@ -912,13 +959,12 @@ final class Admin
     {
         $settings_tabs = [
             'general' => __('General', 'ragnus-static-publisher'),
-            'automation' => __('Automation', 'ragnus-static-publisher'),
         ];
         $current_settings_tab = isset($settings_tabs[$requested_settings_tab]) ? $requested_settings_tab : 'general';
         ?>
         <div class="ragstat-settings-header">
             <h2><?php esc_html_e('Settings', 'ragnus-static-publisher'); ?></h2>
-            <p><?php esc_html_e('Manage static generation, automation and publishing settings.', 'ragnus-static-publisher'); ?></p>
+            <p><?php esc_html_e('Manage static generation settings.', 'ragnus-static-publisher'); ?></p>
         </div>
         <div class="ragstat-settings-layout">
             <nav class="ragstat-settings-tabs" aria-label="<?php echo esc_attr__('Settings subsections', 'ragnus-static-publisher'); ?>">
@@ -927,11 +973,7 @@ final class Admin
                 <?php endforeach; ?>
             </nav>
             <div class="ragstat-settings-panel">
-                <?php if ($current_settings_tab === 'general') : ?>
-                    <?php self::render_general_settings($settings); ?>
-                <?php else : ?>
-                    <?php self::render_automation_settings($settings); ?>
-                <?php endif; ?>
+                <?php self::render_general_settings($settings); ?>
             </div>
         </div>
         <?php
@@ -941,7 +983,7 @@ final class Admin
     {
         $seo_tabs = [
             'plugins' => [__('SEO Plugins', 'ragnus-static-publisher'), 'dashicons-admin-plugins'],
-            'language' => [__('Language', 'ragnus-static-publisher'), 'dashicons-translation'],
+            'language' => [__('Multilingual', 'ragnus-static-publisher'), 'dashicons-translation'],
         ];
         $current_seo_tab = isset($seo_tabs[$requested_seo_tab]) ? $requested_seo_tab : 'plugins';
         ?>
@@ -1182,9 +1224,22 @@ final class Admin
                 <tr><th><label for="ragstat-target"><?php esc_html_e('Live Site Address', 'ragnus-static-publisher'); ?></label></th><td><input class="regular-text" id="ragstat-target" type="url" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[target_url]" value="<?php echo esc_attr((string) $settings['target_url']); ?>"><p class="description"><?php esc_html_e('Example: https://example.com', 'ragnus-static-publisher'); ?></p></td></tr>
                 <tr><th><label for="ragstat-limit"><?php esc_html_e('Most URLs', 'ragnus-static-publisher'); ?></label></th><td><input id="ragstat-limit" type="number" min="10" max="20000" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[maximum_urls]" value="<?php echo esc_attr((string) $settings['maximum_urls']); ?>"></td></tr>
                 <tr><th><label for="ragstat-excluded"><?php esc_html_e('Excluded Paths', 'ragnus-static-publisher'); ?></label></th><td><textarea class="large-text code" rows="7" id="ragstat-excluded" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[excluded_paths]"><?php echo esc_textarea((string) $settings['excluded_paths']); ?></textarea><p class="description"><?php esc_html_e('One path prefix per line.', 'ragnus-static-publisher'); ?></p></td></tr>
-                <tr><th><label for="ragstat-archive-retention"><?php esc_html_e('Number of ZIPs to Store', 'ragnus-static-publisher'); ?></label></th><td><input id="ragstat-archive-retention" type="number" min="1" max="100" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[archive_retention]" value="<?php echo esc_attr((string) $settings['archive_retention']); ?>"><p class="description"><?php esc_html_e('Determines how many last successful export archives will be stored. Default: 5.', 'ragnus-static-publisher'); ?></p></td></tr>
             </table>
             <?php submit_button(__('Save General Settings', 'ragnus-static-publisher')); ?>
+        </form>
+        <?php
+    }
+
+    private static function render_zip_settings(array $settings): void
+    {
+        ?>
+        <form class="ragstat-settings-form ragstat-zip-settings-form" method="post" action="options.php">
+            <?php settings_fields('ragnus_static'); ?>
+            <input type="hidden" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[_section]" value="zip">
+            <table class="form-table" role="presentation">
+                <tr><th><label for="ragstat-archive-retention"><?php esc_html_e('Number of ZIPs to Store', 'ragnus-static-publisher'); ?></label></th><td><input id="ragstat-archive-retention" type="number" min="1" max="100" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[archive_retention]" value="<?php echo esc_attr((string) $settings['archive_retention']); ?>"><p class="description"><?php esc_html_e('Determines how many last successful export archives will be stored. Default: 5.', 'ragnus-static-publisher'); ?></p></td></tr>
+            </table>
+            <?php submit_button(__('Save ZIP Settings', 'ragnus-static-publisher')); ?>
         </form>
         <?php
     }
@@ -1239,7 +1294,7 @@ final class Admin
                 </div>
                 <p class="ragstat-auto-export-card__note"><span class="dashicons dashicons-clock" aria-hidden="true"></span><?php esc_html_e('Changes made consecutively are combined for 60 seconds and run as a single export and deploy.', 'ragnus-static-publisher'); ?></p>
             </section>
-            <?php submit_button(__('Save Automation Settings', 'ragnus-static-publisher')); ?>
+            <?php submit_button(__('Save Auto Deploy Settings', 'ragnus-static-publisher')); ?>
         </form>
         <?php
     }

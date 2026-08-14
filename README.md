@@ -10,16 +10,17 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 - Cloudflare `_headers` ve `_redirects` üretimi
 - ZIP ve SHA-256 manifest üretimi
 - Sol ana menüde doküman ikonlu Static Publisher yönetim ekranı
-- Main, Deploy, Files, Settings, SEO, Arama, Hide, Diagnostics, Activity Logs ve About sekmelerine ayrılmış yönetim görünümü
-- Settings altında Genel ve Otomasyon alt sekmeleri
-- SEO ana sekmesinde SEO Plugins ve Language dikey sekmeleri
+- Main, Deploy, Settings, SEO, Arama, Hide, Diagnostics, Activity Logs ve About sekmelerine ayrılmış yönetim görünümü
+- Settings altında Genel ayarlar
+- SEO ana sekmesinde SEO Plugins ve Multilingual dikey sekmeleri
 - SEO Plugins ekranında etkin eklentiyi öne çıkaran, çıktı sayılarını özetleyen ve Metadata/Teknik SEO seçeneklerini açılır kartlarda gruplayan düzen
 - Rank Math metadata çıktılarının sayfa, yazı, özel içerik türü ve arşiv/taksonomi bazında; Schema, XML sitemap ve robots.txt çıktılarının ayrıca yönetilmesi
 - All in One SEO metadata çıktılarının sayfa, yazı, özel içerik türü ve arşiv/taksonomi bazında; Schema, XML sitemap ve robots.txt çıktılarının ayrıca yönetilmesi
 - SEOPress metadata çıktılarının sayfa, yazı, özel içerik türü ve arşiv/taksonomi bazında; Schema, XML sitemap ve robots.txt çıktılarının ayrıca yönetilmesi
 - SureRank SEO, The SEO Framework ve Yoast SEO için içerik türü bazlı metadata, Schema, XML sitemap ve robots.txt entegrasyonları
 - WordPress yönetici/site dilini otomatik izleyen Türkçe, İngilizce, İspanyolca, Fransızca, Basitleştirilmiş Çince, Japonca, Arapça ve Portekizce arayüz paketleri
-- Deploy sekmesinin sol dikey menüsünde ZIP File, GitHub, Cloudflare ve SFTP yayın seçenekleri
+- Deploy sekmesinin sol dikey menüsünde ZIP File, GitHub, Cloudflare, SFTP ve Auto Deploy seçenekleri
+- Deploy > ZIP File altında saklama ayarı, indirme/silme işlemleri ve 10 kayıtlık sayfalama ile ZIP dosya yönetimi
 - Şifreli parola saklama, bağlantı testi, manuel yükleme ve başarılı export sonrası seçilebilir otomatik yükleme sunan SFTP desteği
 - Yerel Fuse.js 7.3.0 paketiyle çalışan, alanları ve ağırlıkları yapılandırılabilen statik site araması
 - Hide sekmesinden WordPress yollarını yeniden adlandırma; sürüm, generator, XML-RPC, embed ve emoji izlerini statik çıktıdan temizleme

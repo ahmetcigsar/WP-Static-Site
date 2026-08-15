@@ -448,13 +448,14 @@ foreach ([
     'cloudflare' => ['Cloudflare account required', 'Open Cloudflare'],
     'sftp' => ['SFTP Connection', 'Save SFTP Settings', 'Test Connection', 'Upload Latest Static Site'],
     'auto-deploy' => ['Automatic Static Site Creation and Deploy', 'Save Auto Deploy Settings'],
+    'multilingual' => ['Redirection by Browser Language', 'Save Language Settings'],
 ] as $deploy_tab => $panel_expectations) {
     $_GET = ['tab' => 'deploy', 'deploy_tab' => $deploy_tab];
     ob_start();
     Ragnus\StaticPublisher\Admin::render();
     $deploy_html = (string) ob_get_clean();
 
-    foreach (['ZIP File', 'GitHub', 'Cloudflare', 'SFTP', 'Auto Deploy', 'ragstat-deploy-tabs', 'deploy_tab=' . $deploy_tab, ...$panel_expectations] as $expected) {
+    foreach (['ZIP File', 'GitHub', 'Cloudflare', 'SFTP', 'Auto Deploy', 'Multilingual', 'ragstat-deploy-tabs', 'deploy_tab=' . $deploy_tab, ...$panel_expectations] as $expected) {
         if (! str_contains($deploy_html, $expected)) {
             fwrite(STDERR, "Deploy {$deploy_tab} sekmesinde beklenen içerik bulunamadı: {$expected}\n");
             exit(1);
@@ -517,6 +518,10 @@ if (substr_count($seo_html, '<svg viewBox=') !== 6 || str_contains($seo_html, 'd
     fwrite(STDERR, "SEO eklenti kartlarının resmi tek renkli SVG ikonları bulunamadı.\n");
     exit(1);
 }
+if (str_contains($seo_html, 'seo_tab=language') || str_contains($seo_html, 'Redirection by Browser Language')) {
+    fwrite(STDERR, "Multilingual ayarları SEO ekranından kaldırılmadı.\n");
+    exit(1);
+}
 
 if (! defined('RANK_MATH_VERSION')) {
     define('RANK_MATH_VERSION', 'test');
@@ -533,8 +538,8 @@ $_GET = ['tab' => 'seo', 'seo_tab' => 'language'];
 ob_start();
 Ragnus\StaticPublisher\Admin::render();
 $seo_language_html = (string) ob_get_clean();
-if (! str_contains($seo_language_html, 'Multilingual') || ! str_contains($seo_language_html, 'Redirection by Browser Language') || ! str_contains($seo_language_html, 'Save Language Settings')) {
-    fwrite(STDERR, "SEO > Multilingual dikey sekmesinde dil ayarları bulunamadı.\n");
+if (! str_contains($seo_language_html, 'Multilingual') || ! str_contains($seo_language_html, 'Redirection by Browser Language') || ! str_contains($seo_language_html, 'Save Language Settings') || ! str_contains($seo_language_html, 'deploy_tab=multilingual')) {
+    fwrite(STDERR, "Eski SEO > Multilingual bağlantısı Deploy > Multilingual ekranına uyarlanmadı.\n");
     exit(1);
 }
 
@@ -543,8 +548,8 @@ ob_start();
 Ragnus\StaticPublisher\Admin::render();
 $legacy_languages_html = (string) ob_get_clean();
 $_GET = [];
-if (! str_contains($legacy_languages_html, 'SEO Plugins') || ! str_contains($legacy_languages_html, 'tab=seo')) {
-    fwrite(STDERR, "Eski Settings > Languages bağlantısı yeni SEO üst sekmesine uyarlanmadı.\n");
+if (! str_contains($legacy_languages_html, 'Redirection by Browser Language') || ! str_contains($legacy_languages_html, 'deploy_tab=multilingual')) {
+    fwrite(STDERR, "Eski Settings > Languages bağlantısı Deploy > Multilingual ekranına uyarlanmadı.\n");
     exit(1);
 }
 

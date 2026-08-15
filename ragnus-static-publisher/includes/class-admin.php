@@ -489,7 +489,11 @@ final class Admin
             $requested_tab = 'deploy';
             $requested_deploy_tab = 'github';
         } elseif ($requested_tab === 'settings' && $requested_settings_tab === 'languages') {
-            $requested_tab = 'seo';
+            $requested_tab = 'deploy';
+            $requested_deploy_tab = 'multilingual';
+        } elseif ($requested_tab === 'seo' && $requested_seo_tab === 'language') {
+            $requested_tab = 'deploy';
+            $requested_deploy_tab = 'multilingual';
         } elseif ($requested_tab === 'files') {
             $requested_tab = 'deploy';
             $requested_deploy_tab = 'zip';
@@ -777,6 +781,7 @@ final class Admin
             'cloudflare' => [__('Cloudflare', 'ragnus-static-publisher'), 'cloudflare'],
             'sftp' => [__('SFTP', 'ragnus-static-publisher'), 'dashicons-upload'],
             'auto-deploy' => [__('Auto Deploy', 'ragnus-static-publisher'), 'dashicons-update'],
+            'multilingual' => [__('Multilingual', 'ragnus-static-publisher'), 'dashicons-translation'],
         ];
         $current_deploy_tab = isset($deploy_tabs[$requested_deploy_tab]) ? $requested_deploy_tab : 'zip';
         ?>
@@ -859,8 +864,10 @@ final class Admin
                         </div>
                     </section>
                     <?php self::render_sftp_settings($settings, $has_archive); ?>
-                <?php else : ?>
+                <?php elseif ($current_deploy_tab === 'auto-deploy') : ?>
                     <?php self::render_automation_settings($settings); ?>
+                <?php else : ?>
+                    <?php self::render_language_settings(Plugin::language_settings()); ?>
                 <?php endif; ?>
             </div>
         </div>
@@ -988,7 +995,6 @@ final class Admin
     {
         $seo_tabs = [
             'plugins' => [__('SEO Plugins', 'ragnus-static-publisher'), 'dashicons-admin-plugins'],
-            'language' => [__('Multilingual', 'ragnus-static-publisher'), 'dashicons-translation'],
         ];
         $current_seo_tab = isset($seo_tabs[$requested_seo_tab]) ? $requested_seo_tab : 'plugins';
         ?>
@@ -1006,11 +1012,7 @@ final class Admin
                 <?php endforeach; ?>
             </nav>
             <div class="ragstat-seo-panel">
-                <?php if ($current_seo_tab === 'plugins') : ?>
-                    <?php self::render_seo_plugins(Plugin::seo_plugin_settings()); ?>
-                <?php else : ?>
-                    <?php self::render_language_settings(Plugin::language_settings()); ?>
-                <?php endif; ?>
+                <?php self::render_seo_plugins(Plugin::seo_plugin_settings()); ?>
             </div>
         </div>
         <?php

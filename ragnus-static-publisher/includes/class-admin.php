@@ -517,6 +517,7 @@ final class Admin
                     <p><?php esc_html_e('Generate a static copy of your WordPress site. Cloudflare credentials are not kept in this plugin.', 'ragnus-static-publisher'); ?></p>
                 </div>
             </header>
+            <hr class="wp-header-end">
             <nav class="nav-tab-wrapper wp-clearfix" aria-label="<?php echo esc_attr__('Static Publisher sections', 'ragnus-static-publisher'); ?>">
                 <?php foreach ($tabs as $tab_id => $tab_label) : ?>
                     <a class="nav-tab <?php echo $current_tab === $tab_id ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url(self::admin_page_url($tab_id)); ?>" <?php echo $current_tab === $tab_id ? 'aria-current="page"' : ''; ?>><?php echo esc_html($tab_label); ?></a>

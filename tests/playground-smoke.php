@@ -317,6 +317,10 @@ foreach (['About', 'Version Number', RAGSTAT_VERSION, 'mailto:info@ragnus.co', '
         exit(1);
     }
 }
+if (! str_contains($about_html, '<hr class="wp-header-end">')) {
+    fwrite(STDERR, "Global WordPress bildirimleri için wp-header-end sınırı bulunamadı.\n");
+    exit(1);
+}
 
 $_GET['tab'] = 'files';
 $_GET['archive_notice'] = 'deleted';

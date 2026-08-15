@@ -173,7 +173,9 @@ final class Admin
     public static function sanitize_hide_settings(array $value): array
     {
         $defaults = Plugin::hide_defaults();
-        $sanitized = [];
+        $current = Plugin::hide_settings();
+        $section = sanitize_key((string) ($value['_section'] ?? 'all'));
+        $sanitized = array_intersect_key($current, $defaults);
         $path_keys = [
             'wp_content_directory',
             'wp_includes_directory',
@@ -183,17 +185,35 @@ final class Admin
             'theme_style_name',
             'author_url',
         ];
-        foreach ($path_keys as $key) {
-            $default = $defaults[$key];
-            $candidate = strtolower(trim((string) ($value[$key] ?? '')));
-            if ($key === 'theme_style_name') {
-                $candidate = preg_replace('/\.css$/i', '', $candidate) ?? $candidate;
+        if (in_array($section, ['directory', 'all'], true)) {
+            foreach ($path_keys as $key) {
+                $default = $defaults[$key];
+                $candidate = strtolower(trim((string) ($value[$key] ?? '')));
+                if ($key === 'theme_style_name') {
+                    $candidate = preg_replace('/\.css$/i', '', $candidate) ?? $candidate;
+                }
+                $candidate = sanitize_key(str_replace(' ', '-', $candidate));
+                $sanitized[$key] = $candidate !== '' ? $candidate : $default;
             }
-            $candidate = sanitize_key(str_replace(' ', '-', $candidate));
-            $sanitized[$key] = $candidate !== '' ? $candidate : $default;
         }
-        foreach (array_diff(array_keys($defaults), $path_keys) as $key) {
-            $sanitized[$key] = isset($value[$key]) ? '1' : '0';
+
+        $trace_keys = [
+            'hide_wordpress_version',
+            'hide_generator_meta',
+            'hide_wordpress_dns_prefetch',
+            'hide_rsd_header',
+        ];
+        if (in_array($section, ['traces', 'all'], true)) {
+            foreach ($trace_keys as $key) {
+                $sanitized[$key] = isset($value[$key]) ? '1' : '0';
+            }
+        }
+
+        $static_output_keys = array_diff(array_keys($defaults), $path_keys, $trace_keys);
+        if (in_array($section, ['static-outputs', 'all'], true)) {
+            foreach ($static_output_keys as $key) {
+                $sanitized[$key] = isset($value[$key]) ? '1' : '0';
+            }
         }
         return $sanitized;
     }
@@ -494,6 +514,7 @@ final class Admin
         $requested_deploy_tab = isset($_GET['deploy_tab']) ? sanitize_key(wp_unslash((string) $_GET['deploy_tab'])) : 'zip';
         $requested_seo_tab = isset($_GET['seo_tab']) ? sanitize_key(wp_unslash((string) $_GET['seo_tab'])) : 'plugins';
         $requested_search_tab = isset($_GET['search_tab']) ? sanitize_key(wp_unslash((string) $_GET['search_tab'])) : 'static';
+        $requested_hide_tab = isset($_GET['hide_tab']) ? sanitize_key(wp_unslash((string) $_GET['hide_tab'])) : 'directory';
         if ($requested_tab === 'settings' && $requested_settings_tab === 'automation') {
             $requested_tab = 'deploy';
             $requested_deploy_tab = 'auto-deploy';
@@ -556,7 +577,7 @@ final class Admin
             <?php elseif ($current_tab === 'search') : ?>
                 <?php self::render_search_tab(Plugin::search_settings(), $requested_search_tab); ?>
             <?php elseif ($current_tab === 'hide') : ?>
-                <?php self::render_hide_tab(Plugin::hide_settings()); ?>
+                <?php self::render_hide_tab(Plugin::hide_settings(), $requested_hide_tab); ?>
             <?php elseif ($current_tab === 'diagnostics') : ?>
                 <?php self::render_diagnostics_tab(); ?>
             <?php else : ?>
@@ -612,6 +633,11 @@ final class Admin
     private static function search_page_url(string $search_tab): string
     {
         return add_query_arg('search_tab', $search_tab, self::admin_page_url('search'));
+    }
+
+    private static function hide_page_url(string $hide_tab): string
+    {
+        return add_query_arg('hide_tab', $hide_tab, self::admin_page_url('hide'));
     }
 
     private static function render_main_tab(array $status, array $archives): void
@@ -1554,15 +1580,33 @@ final class Admin
         <?php
     }
 
-    private static function render_hide_tab(array $settings): void
+    private static function render_hide_tab(array $settings, string $requested_hide_tab): void
     {
         $option_name = Plugin::HIDE_SETTINGS_KEY;
+        $hide_tabs = [
+            'directory' => [__('Directory', 'ragnus-static-publisher'), 'dashicons-portfolio'],
+            'traces' => [__('Traces', 'ragnus-static-publisher'), 'dashicons-hidden'],
+            'static-outputs' => [__('Static Outputs', 'ragnus-static-publisher'), 'dashicons-shield'],
+        ];
+        $current_hide_tab = isset($hide_tabs[$requested_hide_tab]) ? $requested_hide_tab : 'directory';
         ?>
         <h2><?php esc_html_e('Hide', 'ragnus-static-publisher'); ?></h2>
         <p class="ragstat-hide-intro"><?php esc_html_e('Specify which WordPress-specific directory and path names will be used in static output. Source WordPress files are not modified.', 'ragnus-static-publisher'); ?></p>
-        <form class="ragstat-hide-form" method="post" action="options.php">
-            <?php settings_fields('ragnus_static_hide'); ?>
+        <div class="ragstat-hide-layout">
+            <nav class="ragstat-hide-tabs" aria-label="<?php echo esc_attr__('Hide', 'ragnus-static-publisher'); ?>">
+                <?php foreach ($hide_tabs as $hide_tab => [$hide_tab_label, $hide_tab_icon]) : ?>
+                    <a class="ragstat-hide-tab <?php echo $current_hide_tab === $hide_tab ? 'is-active' : ''; ?>" href="<?php echo esc_url(self::hide_page_url($hide_tab)); ?>" <?php echo $current_hide_tab === $hide_tab ? 'aria-current="page"' : ''; ?>>
+                        <span class="dashicons <?php echo esc_attr($hide_tab_icon); ?>" aria-hidden="true"></span>
+                        <span><?php echo esc_html($hide_tab_label); ?></span>
+                    </a>
+                <?php endforeach; ?>
+            </nav>
+            <div class="ragstat-hide-panel">
+                <form class="ragstat-hide-form" method="post" action="options.php">
+                    <?php settings_fields('ragnus_static_hide'); ?>
+                    <input type="hidden" name="<?php echo esc_attr($option_name); ?>[_section]" value="<?php echo esc_attr($current_hide_tab); ?>">
 
+            <?php if ($current_hide_tab === 'directory') : ?>
             <div class="ragstat-hide-field">
                 <label for="ragstat-hide-wp-content"><?php esc_html_e('WP-Content Directory', 'ragnus-static-publisher'); ?></label>
                 <input id="ragstat-hide-wp-content" type="text" name="<?php echo esc_attr($option_name); ?>[wp_content_directory]" value="<?php echo esc_attr((string) $settings['wp_content_directory']); ?>" required>
@@ -1604,12 +1648,14 @@ final class Admin
                 <input id="ragstat-hide-author" type="text" name="<?php echo esc_attr($option_name); ?>[author_url]" value="<?php echo esc_attr((string) $settings['author_url']); ?>" required>
                 <p><?php esc_html_e('In the static output', 'ragnus-static-publisher'); ?> <code>/author/</code> <?php esc_html_e('The path to be used instead of the path.', 'ragnus-static-publisher'); ?></p>
             </div>
+            <?php endif; ?>
 
+            <?php if ($current_hide_tab === 'traces') : ?>
             <section class="ragstat-hide-options" aria-labelledby="ragstat-hide-traces-title">
                 <div class="ragstat-hide-options__header">
                     <span class="dashicons dashicons-hidden" aria-hidden="true"></span>
                     <div>
-                        <h3 id="ragstat-hide-traces-title"><?php esc_html_e('Hide WordPress Traces', 'ragnus-static-publisher'); ?></h3>
+                        <h3 id="ragstat-hide-traces-title"><?php esc_html_e('Traces', 'ragnus-static-publisher'); ?></h3>
                         <p><?php esc_html_e('Removes selected WordPress identifiers from static HTML output.', 'ragnus-static-publisher'); ?></p>
                     </div>
                 </div>
@@ -1635,12 +1681,14 @@ final class Admin
                     </div>
                 <?php endforeach; ?>
             </section>
+            <?php endif; ?>
 
+            <?php if ($current_hide_tab === 'static-outputs') : ?>
             <section class="ragstat-hide-options" aria-labelledby="ragstat-disable-features-title">
                 <div class="ragstat-hide-options__header">
                     <span class="dashicons dashicons-shield" aria-hidden="true"></span>
                     <div>
-                        <h3 id="ragstat-disable-features-title"><?php esc_html_e('Disable on Static Output', 'ragnus-static-publisher'); ?></h3>
+                        <h3 id="ragstat-disable-features-title"><?php esc_html_e('Static Outputs', 'ragnus-static-publisher'); ?></h3>
                         <p><?php esc_html_e('Cleans up unused WordPress links and scripts on the static site.', 'ragnus-static-publisher'); ?></p>
                     </div>
                 </div>
@@ -1667,9 +1715,12 @@ final class Admin
                     </div>
                 <?php endforeach; ?>
             </section>
+            <?php endif; ?>
 
-            <?php submit_button(__('Save Hide Settings', 'ragnus-static-publisher')); ?>
-        </form>
+                    <?php submit_button(__('Save Hide Settings', 'ragnus-static-publisher')); ?>
+                </form>
+            </div>
+        </div>
         <?php
     }
 

@@ -283,6 +283,25 @@ if (($sanitized_hide['wp_content_directory'] ?? '') !== 'my-assets'
     exit(1);
 }
 
+$preserved_hide_settings = array_merge($hide_settings, [
+    'wp_content_directory' => 'assets',
+    'hide_wordpress_version' => '1',
+    'disable_emojis' => '1',
+]);
+update_option(Ragnus\StaticPublisher\Plugin::HIDE_SETTINGS_KEY, $preserved_hide_settings);
+$sanitized_hide_section = Ragnus\StaticPublisher\Admin::sanitize_hide_settings([
+    '_section' => 'traces',
+    'hide_generator_meta' => '1',
+]);
+if (($sanitized_hide_section['wp_content_directory'] ?? '') !== 'assets'
+    || ($sanitized_hide_section['hide_wordpress_version'] ?? '') !== '0'
+    || ($sanitized_hide_section['hide_generator_meta'] ?? '') !== '1'
+    || ($sanitized_hide_section['disable_emojis'] ?? '') !== '1') {
+    fwrite(STDERR, "Hide alt sekmesi kaydı diğer bölümlerin ayarlarını korumadı.\n");
+    exit(1);
+}
+update_option(Ragnus\StaticPublisher\Plugin::HIDE_SETTINGS_KEY, $hide_settings);
+
 $sanitized_search = Ragnus\StaticPublisher\Admin::sanitize_search_settings([
     'enabled' => '1',
     'page_path' => 'Site Search',
@@ -457,6 +476,39 @@ foreach ([
 }
 if (str_contains($admin_source, 'Fuse.js Fields and Weights')) {
     fwrite(STDERR, "Fuse.js alt sekmesinin eski adı kaynakta kaldı.\n");
+    exit(1);
+}
+
+foreach ([
+    'directory' => ['WP-Content Directory', 'value="directory"'],
+    'traces' => ['Hide WordPress Version', 'value="traces"'],
+    'static-outputs' => ['Disable XML-RPC Links', 'value="static-outputs"'],
+] as $hide_tab => $hide_expectations) {
+    $_GET = ['tab' => 'hide', 'hide_tab' => $hide_tab];
+    ob_start();
+    Ragnus\StaticPublisher\Admin::render();
+    $hide_html = (string) ob_get_clean();
+    $_GET = [];
+
+    foreach (['Directory', 'Traces', 'Static Outputs', 'hide_tab=' . $hide_tab, ...$hide_expectations] as $expected) {
+        if (! str_contains($hide_html, $expected)) {
+            fwrite(STDERR, "Hide > {$hide_tab} ekranında beklenen içerik bulunamadı: {$expected}\n");
+            exit(1);
+        }
+    }
+    if (substr_count($hide_html, 'ragstat-hide-tab is-active') !== 1) {
+        fwrite(STDERR, "Hide > {$hide_tab} ekranında tek bir etkin dikey sekme bulunamadı.\n");
+        exit(1);
+    }
+    if (($hide_tab !== 'directory' && str_contains($hide_html, 'id="ragstat-hide-wp-content"'))
+        || ($hide_tab !== 'traces' && str_contains($hide_html, 'id="ragstat-hide-wordpress-version"'))
+        || ($hide_tab !== 'static-outputs' && str_contains($hide_html, 'id="ragstat-disable-xml-rpc"'))) {
+        fwrite(STDERR, "Hide > {$hide_tab} ekranında başka bir alt sekmenin alanları gösteriliyor.\n");
+        exit(1);
+    }
+}
+if (str_contains($admin_source, 'Hide WordPress Traces') || str_contains($admin_source, 'Disable on Static Output')) {
+    fwrite(STDERR, "Hide alt sekmelerinin eski adları kaynakta kaldı.\n");
     exit(1);
 }
 

@@ -1,7 +1,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Ragnus Static Publisher 1.24.12\n"
+"Project-Id-Version: Ragnus Static Publisher 1.24.13\n"
 "Report-Msgid-Bugs-To: info@ragnus.co\n"
 "POT-Creation-Date: 2026-08-13 00:31+0300\n"
 "PO-Revision-Date: 2026-08-12 22:57+0300\n"
@@ -1160,6 +1160,10 @@ msgstr ""
 "modificados."
 
 #: ragnus-static-publisher/includes/class-admin.php:1206
+#: ragnus-static-publisher/includes/class-admin.php
+msgid "Directory"
+msgstr "Diretório"
+
 msgid "WP-Content Directory"
 msgstr "Diretório de conteúdo WP"
 
@@ -1220,8 +1224,8 @@ msgid "The path to be used instead of the path."
 msgstr "O caminho a ser usado em vez do caminho."
 
 #: ragnus-static-publisher/includes/class-admin.php:1251
-msgid "Hide WordPress Traces"
-msgstr "Ocultar rastros do WordPress"
+msgid "Traces"
+msgstr "Rastros"
 
 #: ragnus-static-publisher/includes/class-admin.php:1252
 msgid "Removes selected WordPress identifiers from static HTML output."
@@ -1263,8 +1267,8 @@ msgid "Really Simple Removes the Discovery link from static HTML."
 msgstr "Realmente simples Remove o link Discovery do HTML estático."
 
 #: ragnus-static-publisher/includes/class-admin.php:1282
-msgid "Disable on Static Output"
-msgstr "Desativar na saída estática"
+msgid "Static Outputs"
+msgstr "Saídas estáticas"
 
 #: ragnus-static-publisher/includes/class-admin.php:1283
 msgid "Cleans up unused WordPress links and scripts on the static site."

@@ -1611,8 +1611,65 @@
     line-height: 1.6;
 }
 
+.ragstat-hide-layout {
+    display: grid;
+    grid-template-columns: 210px minmax(0, 1fr);
+    gap: 22px;
+    align-items: start;
+}
+
+.ragstat-hide-tabs {
+    display: flex;
+    position: sticky;
+    top: 46px;
+    flex-direction: column;
+    gap: 7px;
+    padding: 5px;
+    border: 1px solid var(--ragstat-border);
+    border-radius: 11px;
+    background: #e7edf5;
+}
+
+.ragstat-hide-tab {
+    display: inline-flex;
+    min-height: 42px;
+    gap: 10px;
+    align-items: center;
+    padding: 0 14px;
+    border-radius: 7px;
+    color: #475569;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color .16s ease, background-color .16s ease, box-shadow .16s ease;
+}
+
+.ragstat-hide-tab .dashicons {
+    width: 19px;
+    height: 19px;
+    font-size: 19px;
+    line-height: 19px;
+}
+
+.ragstat-hide-tab:hover,
+.ragstat-hide-tab:focus {
+    color: var(--ragstat-primary-dark);
+    background: rgba(255, 255, 255, .72);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, .18);
+}
+
+.ragstat-hide-tab.is-active,
+.ragstat-hide-tab.is-active:hover,
+.ragstat-hide-tab.is-active:focus {
+    color: #fff;
+    background: var(--ragstat-primary);
+    box-shadow: 0 4px 10px rgba(37, 99, 235, .22);
+}
+
+.ragstat-hide-panel { min-width: 0; }
+
 .ragstat-hide-form {
-    max-width: 980px;
+    max-width: 1040px;
     padding: 26px;
     border: 1px solid var(--ragstat-border);
     border-radius: 14px;
@@ -1687,7 +1744,7 @@
 }
 
 .ragstat-hide-options {
-    margin-top: 30px;
+    margin-top: 0;
     overflow: hidden;
     border: 1px solid var(--ragstat-border);
     border-radius: 14px;
@@ -2310,6 +2367,20 @@ body.ragstat-modal-open {
     }
 
     .ragstat-search-tab {
+        min-width: max-content;
+    }
+
+    .ragstat-hide-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .ragstat-hide-tabs {
+        overflow-x: auto;
+        position: static;
+        flex-direction: row;
+    }
+
+    .ragstat-hide-tab {
         min-width: max-content;
     }
 

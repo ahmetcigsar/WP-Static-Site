@@ -437,7 +437,7 @@ ob_start();
 Ragnus\StaticPublisher\Admin::render();
 $settings_html = (string) ob_get_clean();
 $_GET = [];
-if (! str_contains($settings_html, 'Save General Settings') || str_contains($settings_html, 'settings_tab=automation') || str_contains($settings_html, 'Automatic Static Site Creation and Deploy') || str_contains($settings_html, 'Number of ZIPs to Store')) {
+if (! str_contains($settings_html, 'Static Site') || ! str_contains($settings_html, 'Multilingual') || ! str_contains($settings_html, 'Save General Settings') || str_contains($settings_html, 'settings_tab=automation') || str_contains($settings_html, 'Automatic Static Site Creation and Deploy') || str_contains($settings_html, 'Number of ZIPs to Store') || str_contains($settings_html, 'Redirection by Browser Language')) {
     fwrite(STDERR, "Automation veya ZIP saklama ayarı Settings ekranından kaldırılmadı.\n");
     exit(1);
 }
@@ -448,14 +448,13 @@ foreach ([
     'cloudflare' => ['Cloudflare account required', 'Open Cloudflare'],
     'sftp' => ['SFTP Connection', 'Save SFTP Settings', 'Test Connection', 'Upload Latest Static Site'],
     'auto-deploy' => ['Automatic Static Site Creation and Deploy', 'Save Auto Deploy Settings'],
-    'multilingual' => ['Redirection by Browser Language', 'Save Language Settings'],
 ] as $deploy_tab => $panel_expectations) {
     $_GET = ['tab' => 'deploy', 'deploy_tab' => $deploy_tab];
     ob_start();
     Ragnus\StaticPublisher\Admin::render();
     $deploy_html = (string) ob_get_clean();
 
-    foreach (['ZIP File', 'GitHub', 'Cloudflare', 'SFTP', 'Auto Deploy', 'Multilingual', 'ragstat-deploy-tabs', 'deploy_tab=' . $deploy_tab, ...$panel_expectations] as $expected) {
+    foreach (['ZIP File', 'GitHub', 'Cloudflare', 'SFTP', 'Auto Deploy', 'ragstat-deploy-tabs', 'deploy_tab=' . $deploy_tab, ...$panel_expectations] as $expected) {
         if (! str_contains($deploy_html, $expected)) {
             fwrite(STDERR, "Deploy {$deploy_tab} sekmesinde beklenen içerik bulunamadı: {$expected}\n");
             exit(1);
@@ -463,6 +462,10 @@ foreach ([
     }
     if (substr_count($deploy_html, 'ragstat-deploy-tab is-active') !== 1) {
         fwrite(STDERR, "Deploy {$deploy_tab} ekranında tek bir etkin dikey sekme bulunamadı.\n");
+        exit(1);
+    }
+    if (str_contains($deploy_html, 'deploy_tab=multilingual') || str_contains($deploy_html, 'Redirection by Browser Language')) {
+        fwrite(STDERR, "Multilingual ayarları Deploy ekranından kaldırılmadı.\n");
         exit(1);
     }
     if ($deploy_tab === 'zip') {
@@ -484,6 +487,26 @@ foreach ([
         fwrite(STDERR, "Cloudflare sekmesi ve içerik panelinde tek renk Cloudflare SVG ikonu bulunamadı.\n");
         exit(1);
     }
+}
+
+$_GET = ['tab' => 'settings', 'settings_tab' => 'multilingual'];
+ob_start();
+Ragnus\StaticPublisher\Admin::render();
+$settings_multilingual_html = (string) ob_get_clean();
+$_GET = [];
+if (! str_contains($settings_multilingual_html, 'Static Site') || ! str_contains($settings_multilingual_html, 'Multilingual') || ! str_contains($settings_multilingual_html, 'Redirection by Browser Language') || ! str_contains($settings_multilingual_html, 'Save Language Settings') || ! str_contains($settings_multilingual_html, 'settings_tab=multilingual') || substr_count($settings_multilingual_html, 'ragstat-settings-tab is-active') !== 1) {
+    fwrite(STDERR, "Static Site > Multilingual ekranı doğru oluşturulmadı.\n");
+    exit(1);
+}
+
+$_GET = ['tab' => 'deploy', 'deploy_tab' => 'multilingual'];
+ob_start();
+Ragnus\StaticPublisher\Admin::render();
+$legacy_deploy_multilingual_html = (string) ob_get_clean();
+$_GET = [];
+if (! str_contains($legacy_deploy_multilingual_html, 'Redirection by Browser Language') || ! str_contains($legacy_deploy_multilingual_html, 'settings_tab=multilingual') || str_contains($legacy_deploy_multilingual_html, 'deploy_tab=multilingual')) {
+    fwrite(STDERR, "Eski Deploy > Multilingual bağlantısı Static Site > Multilingual ekranına uyarlanmadı.\n");
+    exit(1);
 }
 
 $_GET = ['tab' => 'settings', 'settings_tab' => 'automation'];
@@ -538,8 +561,8 @@ $_GET = ['tab' => 'seo', 'seo_tab' => 'language'];
 ob_start();
 Ragnus\StaticPublisher\Admin::render();
 $seo_language_html = (string) ob_get_clean();
-if (! str_contains($seo_language_html, 'Multilingual') || ! str_contains($seo_language_html, 'Redirection by Browser Language') || ! str_contains($seo_language_html, 'Save Language Settings') || ! str_contains($seo_language_html, 'deploy_tab=multilingual')) {
-    fwrite(STDERR, "Eski SEO > Multilingual bağlantısı Deploy > Multilingual ekranına uyarlanmadı.\n");
+if (! str_contains($seo_language_html, 'Multilingual') || ! str_contains($seo_language_html, 'Redirection by Browser Language') || ! str_contains($seo_language_html, 'Save Language Settings') || ! str_contains($seo_language_html, 'settings_tab=multilingual')) {
+    fwrite(STDERR, "Eski SEO > Multilingual bağlantısı Static Site > Multilingual ekranına uyarlanmadı.\n");
     exit(1);
 }
 
@@ -548,8 +571,8 @@ ob_start();
 Ragnus\StaticPublisher\Admin::render();
 $legacy_languages_html = (string) ob_get_clean();
 $_GET = [];
-if (! str_contains($legacy_languages_html, 'Redirection by Browser Language') || ! str_contains($legacy_languages_html, 'deploy_tab=multilingual')) {
-    fwrite(STDERR, "Eski Settings > Languages bağlantısı Deploy > Multilingual ekranına uyarlanmadı.\n");
+if (! str_contains($legacy_languages_html, 'Redirection by Browser Language') || ! str_contains($legacy_languages_html, 'settings_tab=multilingual')) {
+    fwrite(STDERR, "Eski Settings > Languages bağlantısı Static Site > Multilingual ekranına uyarlanmadı.\n");
     exit(1);
 }
 

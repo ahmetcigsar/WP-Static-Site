@@ -489,11 +489,13 @@ final class Admin
             $requested_tab = 'deploy';
             $requested_deploy_tab = 'github';
         } elseif ($requested_tab === 'settings' && $requested_settings_tab === 'languages') {
-            $requested_tab = 'deploy';
-            $requested_deploy_tab = 'multilingual';
+            $requested_settings_tab = 'multilingual';
         } elseif ($requested_tab === 'seo' && $requested_seo_tab === 'language') {
-            $requested_tab = 'deploy';
-            $requested_deploy_tab = 'multilingual';
+            $requested_tab = 'settings';
+            $requested_settings_tab = 'multilingual';
+        } elseif ($requested_tab === 'deploy' && $requested_deploy_tab === 'multilingual') {
+            $requested_tab = 'settings';
+            $requested_settings_tab = 'multilingual';
         } elseif ($requested_tab === 'files') {
             $requested_tab = 'deploy';
             $requested_deploy_tab = 'zip';
@@ -501,7 +503,7 @@ final class Admin
         $tabs = [
             'main' => __('Main', 'ragnus-static-publisher'),
             'deploy' => __('Deploy', 'ragnus-static-publisher'),
-            'settings' => __('Settings', 'ragnus-static-publisher'),
+            'settings' => __('Static Site', 'ragnus-static-publisher'),
             'seo' => __('SEO', 'ragnus-static-publisher'),
             'search' => __('Search', 'ragnus-static-publisher'),
             'hide' => __('Hide', 'ragnus-static-publisher'),
@@ -781,7 +783,6 @@ final class Admin
             'cloudflare' => [__('Cloudflare', 'ragnus-static-publisher'), 'cloudflare'],
             'sftp' => [__('SFTP', 'ragnus-static-publisher'), 'dashicons-upload'],
             'auto-deploy' => [__('Auto Deploy', 'ragnus-static-publisher'), 'dashicons-update'],
-            'multilingual' => [__('Multilingual', 'ragnus-static-publisher'), 'dashicons-translation'],
         ];
         $current_deploy_tab = isset($deploy_tabs[$requested_deploy_tab]) ? $requested_deploy_tab : 'zip';
         ?>
@@ -864,10 +865,8 @@ final class Admin
                         </div>
                     </section>
                     <?php self::render_sftp_settings($settings, $has_archive); ?>
-                <?php elseif ($current_deploy_tab === 'auto-deploy') : ?>
-                    <?php self::render_automation_settings($settings); ?>
                 <?php else : ?>
-                    <?php self::render_language_settings(Plugin::language_settings()); ?>
+                    <?php self::render_automation_settings($settings); ?>
                 <?php endif; ?>
             </div>
         </div>
@@ -971,21 +970,26 @@ final class Admin
     {
         $settings_tabs = [
             'general' => __('General', 'ragnus-static-publisher'),
+            'multilingual' => __('Multilingual', 'ragnus-static-publisher'),
         ];
         $current_settings_tab = isset($settings_tabs[$requested_settings_tab]) ? $requested_settings_tab : 'general';
         ?>
         <div class="ragstat-settings-header">
-            <h2><?php esc_html_e('Settings', 'ragnus-static-publisher'); ?></h2>
+            <h2><?php esc_html_e('Static Site', 'ragnus-static-publisher'); ?></h2>
             <p><?php esc_html_e('Manage static generation settings.', 'ragnus-static-publisher'); ?></p>
         </div>
         <div class="ragstat-settings-layout">
-            <nav class="ragstat-settings-tabs" aria-label="<?php echo esc_attr__('Settings subsections', 'ragnus-static-publisher'); ?>">
+            <nav class="ragstat-settings-tabs" aria-label="<?php echo esc_attr__('Static Site subsections', 'ragnus-static-publisher'); ?>">
                 <?php foreach ($settings_tabs as $settings_tab => $label) : ?>
                     <a class="ragstat-settings-tab <?php echo $current_settings_tab === $settings_tab ? 'is-active' : ''; ?>" href="<?php echo esc_url(self::settings_page_url($settings_tab)); ?>" <?php echo $current_settings_tab === $settings_tab ? 'aria-current="page"' : ''; ?>><?php echo esc_html($label); ?></a>
                 <?php endforeach; ?>
             </nav>
             <div class="ragstat-settings-panel">
-                <?php self::render_general_settings($settings); ?>
+                <?php if ($current_settings_tab === 'general') : ?>
+                    <?php self::render_general_settings($settings); ?>
+                <?php else : ?>
+                    <?php self::render_language_settings(Plugin::language_settings()); ?>
+                <?php endif; ?>
             </div>
         </div>
         <?php

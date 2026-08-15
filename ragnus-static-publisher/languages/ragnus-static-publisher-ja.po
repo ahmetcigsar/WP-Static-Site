@@ -1,7 +1,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Ragnus Static Publisher 1.24.9\n"
+"Project-Id-Version: Ragnus Static Publisher 1.24.10\n"
 "Report-Msgid-Bugs-To: info@ragnus.co\n"
 "POT-Creation-Date: 2026-08-13 00:31+0300\n"
 "PO-Revision-Date: 2026-08-12 22:57+0300\n"
@@ -135,8 +135,8 @@ msgstr "ファイル"
 
 #: ragnus-static-publisher/includes/class-admin.php:469
 #: ragnus-static-publisher/includes/class-admin.php:896
-msgid "Settings"
-msgstr "設定"
+msgid "Static Site"
+msgstr "静的サイト"
 
 #: ragnus-static-publisher/includes/class-admin.php:472
 msgid "SEO"
@@ -601,8 +601,8 @@ msgid "Manage static generation settings."
 msgstr "静的生成設定を管理します。"
 
 #: ragnus-static-publisher/includes/class-admin.php:900
-msgid "Settings subsections"
-msgstr "設定のサブセクション"
+msgid "Static Site subsections"
+msgstr "静的サイトのサブセクション"
 
 #: ragnus-static-publisher/includes/class-admin.php:925
 msgid "Live Site Address"

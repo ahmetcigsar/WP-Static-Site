@@ -23,15 +23,15 @@ if (is_wp_error($result)) {
 do_action('init');
 
 $expected_translations = [
-    'tr_TR' => 'Ayarlar',
-    'en_US' => 'Settings',
-    'es_ES' => 'Ajustes',
-    'fr_FR' => 'Réglages',
-    'zh_CN' => '设置',
-    'ja' => '設定',
-    'ar' => 'الإعدادات',
-    'pt_BR' => 'Configurações',
-    'pt_PT' => 'Definições',
+    'tr_TR' => 'Statik Site',
+    'en_US' => 'Static Site',
+    'es_ES' => 'Sitio estático',
+    'fr_FR' => 'Site statique',
+    'zh_CN' => '静态站点',
+    'ja' => '静的サイト',
+    'ar' => 'الموقع الثابت',
+    'pt_BR' => 'Site estático',
+    'pt_PT' => 'Site estático',
 ];
 $expected_multilingual_translations = [
     'tr_TR' => 'Çoklu Dil',
@@ -73,7 +73,7 @@ foreach ($expected_translations as $locale => $expected) {
     unload_textdomain('ragnus-static-publisher');
     Ragnus\StaticPublisher\Plugin::load_textdomain();
 
-    $actual = __('Settings', 'ragnus-static-publisher');
+    $actual = __('Static Site', 'ragnus-static-publisher');
     if ($actual !== $expected) {
         $mofile = RAGSTAT_DIR . 'languages/ragnus-static-publisher-' . $locale . '.mo';
         $direct_loaded = load_textdomain('ragnus-static-publisher', $mofile);
@@ -84,7 +84,7 @@ foreach ($expected_translations as $locale => $expected) {
             determine_locale(),
             is_readable($mofile) ? 'readable' : 'missing',
             $direct_loaded ? 'loaded' : 'failed',
-            __('Settings', 'ragnus-static-publisher')
+            __('Static Site', 'ragnus-static-publisher')
         ));
         exit(1);
     }

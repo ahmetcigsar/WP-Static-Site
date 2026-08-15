@@ -6,7 +6,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Ragnus Static Publisher 1.24.9\n"
+"Project-Id-Version: Ragnus Static Publisher 1.24.10\n"
 "Report-Msgid-Bugs-To: info@ragnus.co\n"
 "POT-Creation-Date: 2026-08-13 00:31+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -136,7 +136,7 @@ msgstr ""
 
 #: ragnus-static-publisher/includes/class-admin.php:469
 #: ragnus-static-publisher/includes/class-admin.php:896
-msgid "Settings"
+msgid "Static Site"
 msgstr ""
 
 #: ragnus-static-publisher/includes/class-admin.php:472
@@ -571,7 +571,7 @@ msgid "Manage static generation settings."
 msgstr ""
 
 #: ragnus-static-publisher/includes/class-admin.php:900
-msgid "Settings subsections"
+msgid "Static Site subsections"
 msgstr ""
 
 #: ragnus-static-publisher/includes/class-admin.php:925

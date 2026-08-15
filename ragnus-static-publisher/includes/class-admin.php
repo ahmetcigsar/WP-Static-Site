@@ -201,29 +201,40 @@ final class Admin
     public static function sanitize_search_settings(array $value): array
     {
         $defaults = Plugin::search_defaults();
+        $current = Plugin::search_settings();
+        $section = sanitize_key((string) ($value['_section'] ?? 'all'));
         $fields = ['index_title', 'index_excerpt', 'index_content', 'index_taxonomies'];
-        $sanitized = [
-            'enabled' => isset($value['enabled']) ? '1' : '0',
-            'page_path' => sanitize_title((string) ($value['page_path'] ?? $defaults['page_path'])) ?: $defaults['page_path'],
-            'result_limit' => max(5, min(100, absint($value['result_limit'] ?? $defaults['result_limit']))),
-            'min_chars' => max(1, min(10, absint($value['min_chars'] ?? $defaults['min_chars']))),
-            'content_limit' => max(500, min(20000, absint($value['content_limit'] ?? $defaults['content_limit']))),
-            'threshold' => (string) max(0.1, min(0.8, (float) ($value['threshold'] ?? $defaults['threshold']))),
-            'token_match' => in_array(($value['token_match'] ?? ''), ['all', 'any'], true) ? $value['token_match'] : 'all',
-            'title_selector' => sanitize_text_field((string) ($value['title_selector'] ?? $defaults['title_selector'])),
-            'content_selector' => sanitize_text_field((string) ($value['content_selector'] ?? $defaults['content_selector'])),
-            'excerpt_selector' => sanitize_text_field((string) ($value['excerpt_selector'] ?? $defaults['excerpt_selector'])),
-            'exclude_urls' => sanitize_textarea_field((string) ($value['exclude_urls'] ?? '')),
-        ];
-        foreach ($fields as $field) {
-            $sanitized[$field] = isset($value[$field]) ? '1' : '0';
+        $sanitized = array_intersect_key($current, $defaults);
+
+        if (in_array($section, ['static', 'all'], true)) {
+            $sanitized['enabled'] = isset($value['enabled']) ? '1' : '0';
+            $sanitized['page_path'] = sanitize_title((string) ($value['page_path'] ?? $defaults['page_path'])) ?: $defaults['page_path'];
+            $sanitized['result_limit'] = max(5, min(100, absint($value['result_limit'] ?? $defaults['result_limit'])));
+            $sanitized['min_chars'] = max(1, min(10, absint($value['min_chars'] ?? $defaults['min_chars'])));
+            $sanitized['content_limit'] = max(500, min(20000, absint($value['content_limit'] ?? $defaults['content_limit'])));
+            $sanitized['threshold'] = (string) max(0.1, min(0.8, (float) ($value['threshold'] ?? $defaults['threshold'])));
+            $sanitized['token_match'] = in_array(($value['token_match'] ?? ''), ['all', 'any'], true) ? $value['token_match'] : 'all';
         }
-        if (! in_array('1', array_intersect_key($sanitized, array_flip($fields)), true)) {
-            $sanitized['index_title'] = '1';
+
+        if (in_array($section, ['selectors', 'all'], true)) {
+            $sanitized['title_selector'] = sanitize_text_field((string) ($value['title_selector'] ?? $defaults['title_selector']));
+            $sanitized['content_selector'] = sanitize_text_field((string) ($value['content_selector'] ?? $defaults['content_selector']));
+            $sanitized['excerpt_selector'] = sanitize_text_field((string) ($value['excerpt_selector'] ?? $defaults['excerpt_selector']));
+            $sanitized['exclude_urls'] = sanitize_textarea_field((string) ($value['exclude_urls'] ?? ''));
         }
-        foreach (['title_weight', 'excerpt_weight', 'content_weight', 'taxonomy_weight'] as $weight) {
-            $sanitized[$weight] = (string) max(0.1, min(10, (float) ($value[$weight] ?? $defaults[$weight])));
+
+        if (in_array($section, ['fuse', 'all'], true)) {
+            foreach ($fields as $field) {
+                $sanitized[$field] = isset($value[$field]) ? '1' : '0';
+            }
+            if (! in_array('1', array_intersect_key($sanitized, array_flip($fields)), true)) {
+                $sanitized['index_title'] = '1';
+            }
+            foreach (['title_weight', 'excerpt_weight', 'content_weight', 'taxonomy_weight'] as $weight) {
+                $sanitized[$weight] = (string) max(0.1, min(10, (float) ($value[$weight] ?? $defaults[$weight])));
+            }
         }
+
         return $sanitized;
     }
 
@@ -482,6 +493,7 @@ final class Admin
         $requested_settings_tab = isset($_GET['settings_tab']) ? sanitize_key(wp_unslash((string) $_GET['settings_tab'])) : 'general';
         $requested_deploy_tab = isset($_GET['deploy_tab']) ? sanitize_key(wp_unslash((string) $_GET['deploy_tab'])) : 'zip';
         $requested_seo_tab = isset($_GET['seo_tab']) ? sanitize_key(wp_unslash((string) $_GET['seo_tab'])) : 'plugins';
+        $requested_search_tab = isset($_GET['search_tab']) ? sanitize_key(wp_unslash((string) $_GET['search_tab'])) : 'static';
         if ($requested_tab === 'settings' && $requested_settings_tab === 'automation') {
             $requested_tab = 'deploy';
             $requested_deploy_tab = 'auto-deploy';
@@ -542,7 +554,7 @@ final class Admin
             <?php elseif ($current_tab === 'seo') : ?>
                 <?php self::render_seo_tab($requested_seo_tab); ?>
             <?php elseif ($current_tab === 'search') : ?>
-                <?php self::render_search_tab(Plugin::search_settings()); ?>
+                <?php self::render_search_tab(Plugin::search_settings(), $requested_search_tab); ?>
             <?php elseif ($current_tab === 'hide') : ?>
                 <?php self::render_hide_tab(Plugin::hide_settings()); ?>
             <?php elseif ($current_tab === 'diagnostics') : ?>
@@ -595,6 +607,11 @@ final class Admin
     private static function seo_page_url(string $seo_tab): string
     {
         return add_query_arg('seo_tab', $seo_tab, self::admin_page_url('seo'));
+    }
+
+    private static function search_page_url(string $search_tab): string
+    {
+        return add_query_arg('search_tab', $search_tab, self::admin_page_url('search'));
     }
 
     private static function render_main_tab(array $status, array $archives): void
@@ -1423,7 +1440,7 @@ final class Admin
                     </div>
                     <div>
                         <label for="ragstat-default-language"><?php esc_html_e('Default Language', 'ragnus-static-publisher'); ?></label>
-                        <input id="ragstat-default-language" type="text" maxlength="20" spellcheck="false" name="<?php echo esc_attr(Plugin::LANGUAGE_SETTINGS_KEY); ?>[default_language]" value="<?php echo esc_attr((string) ($settings['default_language'] ?? 'tr')); ?>">
+                        <input id="ragstat-default-language" type="text" maxlength="20" spellcheck="false" name="<?php echo esc_attr(Plugin::LANGUAGE_SETTINGS_KEY); ?>[default_language]" value="<?php echo esc_attr((string) ($settings['default_language'] ?? Language_Routing::site_language())); ?>">
                         <p><?php esc_html_e('If the browser language is not supported, this language is opened.', 'ragnus-static-publisher'); ?></p>
 
                         <label for="ragstat-language-cookie-days"><?php esc_html_e('Language Preference Period', 'ragnus-static-publisher'); ?></label>
@@ -1441,9 +1458,15 @@ final class Admin
         <?php
     }
 
-    private static function render_search_tab(array $settings): void
+    private static function render_search_tab(array $settings, string $requested_search_tab): void
     {
         $option_name = Plugin::SEARCH_SETTINGS_KEY;
+        $search_tabs = [
+            'static' => [__('Static Search', 'ragnus-static-publisher'), 'dashicons-search'],
+            'selectors' => [__('Indexing Selectors', 'ragnus-static-publisher'), 'dashicons-filter'],
+            'fuse' => [__('Fuse.js', 'ragnus-static-publisher'), 'dashicons-chart-bar'],
+        ];
+        $current_search_tab = isset($search_tabs[$requested_search_tab]) ? $requested_search_tab : 'static';
         ?>
         <div class="ragstat-search-header">
             <div>
@@ -1452,67 +1475,82 @@ final class Admin
             </div>
             <span class="ragstat-search-badge">Fuse.js 7.3.0</span>
         </div>
-        <form class="ragstat-search-settings" method="post" action="options.php">
-            <?php settings_fields('ragnus_static_search'); ?>
+        <div class="ragstat-search-layout">
+            <nav class="ragstat-search-tabs" aria-label="<?php echo esc_attr__('Search', 'ragnus-static-publisher'); ?>">
+                <?php foreach ($search_tabs as $search_tab => [$label, $icon]) : ?>
+                    <a class="ragstat-search-tab <?php echo $current_search_tab === $search_tab ? 'is-active' : ''; ?>" href="<?php echo esc_url(self::search_page_url($search_tab)); ?>" <?php echo $current_search_tab === $search_tab ? 'aria-current="page"' : ''; ?>>
+                        <span class="dashicons <?php echo esc_attr($icon); ?>" aria-hidden="true"></span>
+                        <span><?php echo esc_html($label); ?></span>
+                    </a>
+                <?php endforeach; ?>
+            </nav>
+            <div class="ragstat-search-panel">
+                <form class="ragstat-search-settings" method="post" action="options.php">
+                    <?php settings_fields('ragnus_static_search'); ?>
+                    <input type="hidden" name="<?php echo esc_attr($option_name); ?>[_section]" value="<?php echo esc_attr($current_search_tab); ?>">
 
-            <section class="ragstat-search-card">
-                <div class="ragstat-search-card__heading">
-                    <span class="dashicons dashicons-search" aria-hidden="true"></span>
-                    <div><h3><?php esc_html_e('Static Search', 'ragnus-static-publisher'); ?></h3><p><?php esc_html_e('The search page, index and necessary Fuse.js files are added to the export ZIP.', 'ragnus-static-publisher'); ?></p></div>
-                    <label class="ragstat-switch" aria-label="<?php echo esc_attr__('Enable static search', 'ragnus-static-publisher'); ?>">
-                        <input type="checkbox" name="<?php echo esc_attr($option_name); ?>[enabled]" value="1" <?php checked((string) $settings['enabled'], '1'); ?>>
-                        <span aria-hidden="true"></span>
-                    </label>
-                </div>
-                <div class="ragstat-search-grid">
-                    <div><label for="ragstat-search-path"><?php esc_html_e('Search Page Path', 'ragnus-static-publisher'); ?></label><div class="ragstat-input-group is-compact"><span>/</span><input id="ragstat-search-path" type="text" name="<?php echo esc_attr($option_name); ?>[page_path]" value="<?php echo esc_attr((string) $settings['page_path']); ?>" required><span>/</span></div><p><?php esc_html_e('Example:', 'ragnus-static-publisher'); ?> <code>/search/</code></p></div>
-                    <div><label for="ragstat-search-limit"><?php esc_html_e('Number of Results to Show', 'ragnus-static-publisher'); ?></label><input id="ragstat-search-limit" type="number" min="5" max="100" name="<?php echo esc_attr($option_name); ?>[result_limit]" value="<?php echo esc_attr((string) $settings['result_limit']); ?>"></div>
-                    <div><label for="ragstat-search-min-chars"><?php esc_html_e('Minimum Search Characters', 'ragnus-static-publisher'); ?></label><input id="ragstat-search-min-chars" type="number" min="1" max="10" name="<?php echo esc_attr($option_name); ?>[min_chars]" value="<?php echo esc_attr((string) $settings['min_chars']); ?>"></div>
-                    <div><label for="ragstat-search-content-limit"><?php esc_html_e('Content Character Limit', 'ragnus-static-publisher'); ?></label><input id="ragstat-search-content-limit" type="number" min="500" max="20000" step="500" name="<?php echo esc_attr($option_name); ?>[content_limit]" value="<?php echo esc_attr((string) $settings['content_limit']); ?>"><p><?php esc_html_e('Maximum text length to be indexed from each page.', 'ragnus-static-publisher'); ?></p></div>
-                    <div><label for="ragstat-search-threshold"><?php esc_html_e('Blur Threshold', 'ragnus-static-publisher'); ?></label><input id="ragstat-search-threshold" type="number" min="0.1" max="0.8" step="0.05" name="<?php echo esc_attr($option_name); ?>[threshold]" value="<?php echo esc_attr((string) $settings['threshold']); ?>"><p><?php esc_html_e('A lower value gives a more precise result, a higher value gives a more tolerant result.', 'ragnus-static-publisher'); ?></p></div>
-                    <div><label for="ragstat-search-token-match"><?php esc_html_e('Word Matching', 'ragnus-static-publisher'); ?></label><select id="ragstat-search-token-match" name="<?php echo esc_attr($option_name); ?>[token_match]"><option value="all" <?php selected($settings['token_match'], 'all'); ?>><?php esc_html_e('Match all words', 'ragnus-static-publisher'); ?></option><option value="any" <?php selected($settings['token_match'], 'any'); ?>><?php esc_html_e('Match any word', 'ragnus-static-publisher'); ?></option></select></div>
-                </div>
-            </section>
+                    <?php if ($current_search_tab === 'static') : ?>
+                        <section class="ragstat-search-card">
+                            <div class="ragstat-search-card__heading">
+                                <span class="dashicons dashicons-search" aria-hidden="true"></span>
+                                <div><h3><?php esc_html_e('Static Search', 'ragnus-static-publisher'); ?></h3><p><?php esc_html_e('The search page, index and necessary Fuse.js files are added to the export ZIP.', 'ragnus-static-publisher'); ?></p></div>
+                                <label class="ragstat-switch" aria-label="<?php echo esc_attr__('Enable static search', 'ragnus-static-publisher'); ?>">
+                                    <input type="checkbox" name="<?php echo esc_attr($option_name); ?>[enabled]" value="1" <?php checked((string) $settings['enabled'], '1'); ?>>
+                                    <span aria-hidden="true"></span>
+                                </label>
+                            </div>
+                            <div class="ragstat-search-grid">
+                                <div><label for="ragstat-search-path"><?php esc_html_e('Search Page Path', 'ragnus-static-publisher'); ?></label><div class="ragstat-input-group is-compact"><span>/</span><input id="ragstat-search-path" type="text" name="<?php echo esc_attr($option_name); ?>[page_path]" value="<?php echo esc_attr((string) $settings['page_path']); ?>" required><span>/</span></div><p><?php esc_html_e('Example:', 'ragnus-static-publisher'); ?> <code>/search/</code></p></div>
+                                <div><label for="ragstat-search-limit"><?php esc_html_e('Number of Results to Show', 'ragnus-static-publisher'); ?></label><input id="ragstat-search-limit" type="number" min="5" max="100" name="<?php echo esc_attr($option_name); ?>[result_limit]" value="<?php echo esc_attr((string) $settings['result_limit']); ?>"></div>
+                                <div><label for="ragstat-search-min-chars"><?php esc_html_e('Minimum Search Characters', 'ragnus-static-publisher'); ?></label><input id="ragstat-search-min-chars" type="number" min="1" max="10" name="<?php echo esc_attr($option_name); ?>[min_chars]" value="<?php echo esc_attr((string) $settings['min_chars']); ?>"></div>
+                                <div><label for="ragstat-search-content-limit"><?php esc_html_e('Content Character Limit', 'ragnus-static-publisher'); ?></label><input id="ragstat-search-content-limit" type="number" min="500" max="20000" step="500" name="<?php echo esc_attr($option_name); ?>[content_limit]" value="<?php echo esc_attr((string) $settings['content_limit']); ?>"><p><?php esc_html_e('Maximum text length to be indexed from each page.', 'ragnus-static-publisher'); ?></p></div>
+                                <div><label for="ragstat-search-threshold"><?php esc_html_e('Blur Threshold', 'ragnus-static-publisher'); ?></label><input id="ragstat-search-threshold" type="number" min="0.1" max="0.8" step="0.05" name="<?php echo esc_attr($option_name); ?>[threshold]" value="<?php echo esc_attr((string) $settings['threshold']); ?>"><p><?php esc_html_e('A lower value gives a more precise result, a higher value gives a more tolerant result.', 'ragnus-static-publisher'); ?></p></div>
+                                <div><label for="ragstat-search-token-match"><?php esc_html_e('Word Matching', 'ragnus-static-publisher'); ?></label><select id="ragstat-search-token-match" name="<?php echo esc_attr($option_name); ?>[token_match]"><option value="all" <?php selected($settings['token_match'], 'all'); ?>><?php esc_html_e('Match all words', 'ragnus-static-publisher'); ?></option><option value="any" <?php selected($settings['token_match'], 'any'); ?>><?php esc_html_e('Match any word', 'ragnus-static-publisher'); ?></option></select></div>
+                            </div>
+                        </section>
+                    <?php elseif ($current_search_tab === 'selectors') : ?>
+                        <section class="ragstat-search-card">
+                            <div class="ragstat-search-card__heading">
+                                <span class="dashicons dashicons-filter" aria-hidden="true"></span>
+                                <div><h3><?php esc_html_e('Indexing Selectors', 'ragnus-static-publisher'); ?></h3><p><?php esc_html_e('Determine which fields to take from the page and post HTML with the CSS selector.', 'ragnus-static-publisher'); ?></p></div>
+                            </div>
+                            <div class="ragstat-search-selectors">
+                                <div><label for="ragstat-title-selector"><?php esc_html_e('CSS Selector For Title', 'ragnus-static-publisher'); ?></label><input id="ragstat-title-selector" type="text" name="<?php echo esc_attr($option_name); ?>[title_selector]" value="<?php echo esc_attr((string) $settings['title_selector']); ?>" required><p><?php esc_html_e('Example:', 'ragnus-static-publisher'); ?> <code>title</code>, <code>h1.entry-title</code> <?php esc_html_e('or', 'ragnus-static-publisher'); ?> <code>meta[property="og:title"]</code></p></div>
+                                <div><label for="ragstat-content-selector"><?php esc_html_e('CSS Selector for Content', 'ragnus-static-publisher'); ?></label><input id="ragstat-content-selector" type="text" name="<?php echo esc_attr($option_name); ?>[content_selector]" value="<?php echo esc_attr((string) $settings['content_selector']); ?>" required><p><?php esc_html_e('Example:', 'ragnus-static-publisher'); ?> <code>body</code>, <code>.entry-content</code> <?php esc_html_e('or', 'ragnus-static-publisher'); ?> <code>#main</code></p></div>
+                                <div><label for="ragstat-excerpt-selector"><?php esc_html_e('CSS Selector for Summary', 'ragnus-static-publisher'); ?></label><input id="ragstat-excerpt-selector" type="text" name="<?php echo esc_attr($option_name); ?>[excerpt_selector]" value="<?php echo esc_attr((string) $settings['excerpt_selector']); ?>" required><p><?php esc_html_e('If the field is not found, a short summary is automatically generated from the content.', 'ragnus-static-publisher'); ?></p></div>
+                                <div><label for="ragstat-search-excludes"><?php esc_html_e('URLs to Exclude from Indexing', 'ragnus-static-publisher'); ?></label><textarea id="ragstat-search-excludes" rows="6" name="<?php echo esc_attr($option_name); ?>[exclude_urls]"><?php echo esc_textarea((string) $settings['exclude_urls']); ?></textarea><p><?php esc_html_e('You can type the full URL, URL fragment, or word per line.', 'ragnus-static-publisher'); ?></p></div>
+                            </div>
+                        </section>
+                    <?php else : ?>
+                        <section class="ragstat-search-card">
+                            <div class="ragstat-search-card__heading">
+                                <span class="dashicons dashicons-chart-bar" aria-hidden="true"></span>
+                                <div><h3><?php esc_html_e('Fuse.js', 'ragnus-static-publisher'); ?></h3><p><?php esc_html_e('Select the fields to search and determine their impact on the result ranking.', 'ragnus-static-publisher'); ?></p></div>
+                            </div>
+                            <div class="ragstat-search-fields">
+                                <?php
+                                $index_fields = [
+                                    'title' => [__('Title', 'ragnus-static-publisher'), __('Shows title matches at the top.', 'ragnus-static-publisher')],
+                                    'excerpt' => [__('Summary', 'ragnus-static-publisher'), __('Searches in the text of the tagline and summary.', 'ragnus-static-publisher')],
+                                    'content' => [__('Contents', 'ragnus-static-publisher'), __('It searches in the main text of the page and article.', 'ragnus-static-publisher')],
+                                    'taxonomies' => [__('Category and Tags', 'ragnus-static-publisher'), __('WordPress adds category and tag names to the index.', 'ragnus-static-publisher')],
+                                ];
+                                foreach ($index_fields as $field => [$label, $description]) :
+                                    $weight_key = $field === 'taxonomies' ? 'taxonomy_weight' : $field . '_weight';
+                                    ?>
+                                    <div class="ragstat-search-field-row">
+                                        <label class="ragstat-search-field-check"><input type="checkbox" name="<?php echo esc_attr($option_name); ?>[index_<?php echo esc_attr($field); ?>]" value="1" <?php checked((string) $settings['index_' . $field], '1'); ?>><span><strong><?php echo esc_html($label); ?></strong><small><?php echo esc_html($description); ?></small></span></label>
+                                        <label class="ragstat-search-weight"><?php esc_html_e('Weight', 'ragnus-static-publisher'); ?> <input type="number" min="0.1" max="10" step="0.1" name="<?php echo esc_attr($option_name); ?>[<?php echo esc_attr($weight_key); ?>]" value="<?php echo esc_attr((string) $settings[$weight_key]); ?>"></label>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </section>
+                    <?php endif; ?>
 
-            <section class="ragstat-search-card">
-                <div class="ragstat-search-card__heading">
-                    <span class="dashicons dashicons-filter" aria-hidden="true"></span>
-                    <div><h3><?php esc_html_e('Indexing Selectors', 'ragnus-static-publisher'); ?></h3><p><?php esc_html_e('Determine which fields to take from the page and post HTML with the CSS selector.', 'ragnus-static-publisher'); ?></p></div>
-                </div>
-                <div class="ragstat-search-selectors">
-                    <div><label for="ragstat-title-selector"><?php esc_html_e('CSS Selector For Title', 'ragnus-static-publisher'); ?></label><input id="ragstat-title-selector" type="text" name="<?php echo esc_attr($option_name); ?>[title_selector]" value="<?php echo esc_attr((string) $settings['title_selector']); ?>" required><p><?php esc_html_e('Example:', 'ragnus-static-publisher'); ?> <code>title</code>, <code>h1.entry-title</code> <?php esc_html_e('or', 'ragnus-static-publisher'); ?> <code>meta[property="og:title"]</code></p></div>
-                    <div><label for="ragstat-content-selector"><?php esc_html_e('CSS Selector for Content', 'ragnus-static-publisher'); ?></label><input id="ragstat-content-selector" type="text" name="<?php echo esc_attr($option_name); ?>[content_selector]" value="<?php echo esc_attr((string) $settings['content_selector']); ?>" required><p><?php esc_html_e('Example:', 'ragnus-static-publisher'); ?> <code>body</code>, <code>.entry-content</code> <?php esc_html_e('or', 'ragnus-static-publisher'); ?> <code>#main</code></p></div>
-                    <div><label for="ragstat-excerpt-selector"><?php esc_html_e('CSS Selector for Summary', 'ragnus-static-publisher'); ?></label><input id="ragstat-excerpt-selector" type="text" name="<?php echo esc_attr($option_name); ?>[excerpt_selector]" value="<?php echo esc_attr((string) $settings['excerpt_selector']); ?>" required><p><?php esc_html_e('If the field is not found, a short summary is automatically generated from the content.', 'ragnus-static-publisher'); ?></p></div>
-                    <div><label for="ragstat-search-excludes"><?php esc_html_e('URLs to Exclude from Indexing', 'ragnus-static-publisher'); ?></label><textarea id="ragstat-search-excludes" rows="6" name="<?php echo esc_attr($option_name); ?>[exclude_urls]"><?php echo esc_textarea((string) $settings['exclude_urls']); ?></textarea><p><?php esc_html_e('You can type the full URL, URL fragment, or word per line.', 'ragnus-static-publisher'); ?></p></div>
-                </div>
-            </section>
-
-            <section class="ragstat-search-card">
-                <div class="ragstat-search-card__heading">
-                    <span class="dashicons dashicons-chart-bar" aria-hidden="true"></span>
-                    <div><h3><?php esc_html_e('Fuse.js Fields and Weights', 'ragnus-static-publisher'); ?></h3><p><?php esc_html_e('Select the fields to search and determine their impact on the result ranking.', 'ragnus-static-publisher'); ?></p></div>
-                </div>
-                <div class="ragstat-search-fields">
-                    <?php
-                    $index_fields = [
-                        'title' => [__('Title', 'ragnus-static-publisher'), __('Shows title matches at the top.', 'ragnus-static-publisher')],
-                        'excerpt' => [__('Summary', 'ragnus-static-publisher'), __('Searches in the text of the tagline and summary.', 'ragnus-static-publisher')],
-                        'content' => [__('Contents', 'ragnus-static-publisher'), __('It searches in the main text of the page and article.', 'ragnus-static-publisher')],
-                        'taxonomies' => [__('Category and Tags', 'ragnus-static-publisher'), __('WordPress adds category and tag names to the index.', 'ragnus-static-publisher')],
-                    ];
-                    foreach ($index_fields as $field => [$label, $description]) :
-                        $weight_key = $field === 'taxonomies' ? 'taxonomy_weight' : $field . '_weight';
-                        ?>
-                        <div class="ragstat-search-field-row">
-                            <label class="ragstat-search-field-check"><input type="checkbox" name="<?php echo esc_attr($option_name); ?>[index_<?php echo esc_attr($field); ?>]" value="1" <?php checked((string) $settings['index_' . $field], '1'); ?>><span><strong><?php echo esc_html($label); ?></strong><small><?php echo esc_html($description); ?></small></span></label>
-                            <label class="ragstat-search-weight"><?php esc_html_e('Weight', 'ragnus-static-publisher'); ?> <input type="number" min="0.1" max="10" step="0.1" name="<?php echo esc_attr($option_name); ?>[<?php echo esc_attr($weight_key); ?>]" value="<?php echo esc_attr((string) $settings[$weight_key]); ?>"></label>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            </section>
-
-            <?php submit_button(__('Save Search Settings', 'ragnus-static-publisher')); ?>
-        </form>
+                    <?php submit_button(__('Save Search Settings', 'ragnus-static-publisher')); ?>
+                </form>
+            </div>
+        </div>
         <?php
     }
 

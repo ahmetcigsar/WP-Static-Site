@@ -1,7 +1,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Ragnus Static Publisher 1.24.10\n"
+"Project-Id-Version: Ragnus Static Publisher 1.24.12\n"
 "Report-Msgid-Bugs-To: info@ragnus.co\n"
 "POT-Creation-Date: 2026-08-13 00:31+0300\n"
 "PO-Revision-Date: 2026-08-12 22:57+0300\n"
@@ -1081,8 +1081,8 @@ msgid "You can type the full URL, URL fragment, or word per line."
 msgstr "يمكنك كتابة عنوان URL الكامل أو جزء عنوان URL أو كلمة في كل سطر."
 
 #: ragnus-static-publisher/includes/class-admin.php:1170
-msgid "Fuse.js Fields and Weights"
-msgstr "الحقول والأوزان Fuse.js"
+msgid "Fuse.js"
+msgstr "Fuse.js"
 
 #: ragnus-static-publisher/includes/class-admin.php:1170
 msgid ""

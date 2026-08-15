@@ -44,11 +44,39 @@ foreach (['sftp_host', 'sftp_username', 'sftp_password', 'sftp_remote_path', 'sf
     }
 }
 $language_defaults = Ragnus\StaticPublisher\Plugin::language_settings();
+$site_language = Ragnus\StaticPublisher\Language_Routing::site_language();
+$default_supported_languages = Ragnus\StaticPublisher\Language_Routing::parse_languages((string) ($language_defaults['supported_languages'] ?? ''));
 if (($language_defaults['enabled'] ?? '') !== '0'
-    || ($language_defaults['default_language'] ?? '') !== 'tr') {
+    || ($language_defaults['default_language'] ?? '') !== $site_language
+    || ($default_supported_languages[0] ?? '') !== $site_language
+    || ! in_array('tr', $default_supported_languages, true)
+    || ! in_array('en', $default_supported_languages, true)) {
     fwrite(STDERR, "Varsayılan dil yönlendirme ayarları doğru değil.\n");
     exit(1);
 }
+$french_site_locale = static fn (): string => 'fr_FR';
+add_filter('pre_option_WPLANG', $french_site_locale);
+$french_language_defaults = Ragnus\StaticPublisher\Language_Routing::defaults();
+remove_filter('pre_option_WPLANG', $french_site_locale);
+if (($french_language_defaults['default_language'] ?? '') !== 'fr'
+    || Ragnus\StaticPublisher\Language_Routing::parse_languages((string) ($french_language_defaults['supported_languages'] ?? '')) !== ['fr', 'tr', 'en']) {
+    fwrite(STDERR, "WordPress site dili varsayılan listenin başına taşınmadı.\n");
+    exit(1);
+}
+$saved_language_settings = [
+    'enabled' => '1',
+    'supported_languages' => "de\nen",
+    'default_language' => 'de',
+    'cookie_days' => 30,
+];
+update_option(Ragnus\StaticPublisher\Plugin::LANGUAGE_SETTINGS_KEY, $saved_language_settings);
+Ragnus\StaticPublisher\Plugin::activate();
+if (get_option(Ragnus\StaticPublisher\Plugin::LANGUAGE_SETTINGS_KEY) !== $saved_language_settings) {
+    fwrite(STDERR, "Aktivasyon mevcut dil ayarlarının üzerine yazdı.\n");
+    exit(1);
+}
+delete_option(Ragnus\StaticPublisher\Plugin::LANGUAGE_SETTINGS_KEY);
+Ragnus\StaticPublisher\Plugin::activate();
 $sanitized_languages = Ragnus\StaticPublisher\Language_Routing::sanitize([
     'enabled' => '1',
     'supported_languages' => "TR\nen-US\ninvalid/path\ntr",
@@ -276,6 +304,27 @@ if (($sanitized_search['page_path'] ?? '') !== 'site-search'
     fwrite(STDERR, "Arama ayarları beklenen sınırlarda temizlenmedi.\n");
     exit(1);
 }
+$saved_search_settings = Ragnus\StaticPublisher\Plugin::search_defaults();
+$saved_search_settings['title_selector'] = '.preserved-title';
+$saved_search_settings['title_weight'] = '8';
+update_option(Ragnus\StaticPublisher\Plugin::SEARCH_SETTINGS_KEY, $saved_search_settings);
+$static_search_update = Ragnus\StaticPublisher\Admin::sanitize_search_settings([
+    '_section' => 'static',
+    'enabled' => '1',
+    'page_path' => 'find',
+    'result_limit' => 25,
+    'min_chars' => 3,
+    'content_limit' => 4000,
+    'threshold' => 0.25,
+    'token_match' => 'any',
+]);
+delete_option(Ragnus\StaticPublisher\Plugin::SEARCH_SETTINGS_KEY);
+if (($static_search_update['page_path'] ?? '') !== 'find'
+    || ($static_search_update['title_selector'] ?? '') !== '.preserved-title'
+    || ($static_search_update['title_weight'] ?? '') !== '8') {
+    fwrite(STDERR, "Search alt sekmesi kaydedilirken diğer bölümlerin ayarları korunmadı.\n");
+    exit(1);
+}
 
 Ragnus\StaticPublisher\Admin::enqueue_assets('toplevel_page_ragnus-static-publisher');
 if (! wp_style_is('ragnus-static-publisher-admin', 'enqueued')) {
@@ -378,11 +427,37 @@ if (! str_contains($zip_page_two_html, 'job-11')
 
 $admin_source = (string) file_get_contents(RAGSTAT_DIR . 'includes/class-admin.php');
 
-foreach (['Search', 'Fuse.js 7.3.0', 'Indexing Selectors', 'Fuse.js Fields and Weights'] as $expected) {
-    if (! str_contains($admin_source, $expected)) {
-        fwrite(STDERR, "Arama sekmesinde beklenen içerik bulunamadı: {$expected}\n");
+foreach ([
+    'static' => ['Search Page Path', 'value="static"'],
+    'selectors' => ['CSS Selector For Title', 'value="selectors"'],
+    'fuse' => ['Category and Tags', 'value="fuse"'],
+] as $search_tab => $search_expectations) {
+    $_GET = ['tab' => 'search', 'search_tab' => $search_tab];
+    ob_start();
+    Ragnus\StaticPublisher\Admin::render();
+    $search_html = (string) ob_get_clean();
+    $_GET = [];
+
+    foreach (['Static Search', 'Indexing Selectors', 'Fuse.js', 'search_tab=' . $search_tab, ...$search_expectations] as $expected) {
+        if (! str_contains($search_html, $expected)) {
+            fwrite(STDERR, "Search > {$search_tab} ekranında beklenen içerik bulunamadı: {$expected}\n");
+            exit(1);
+        }
+    }
+    if (substr_count($search_html, 'ragstat-search-tab is-active') !== 1) {
+        fwrite(STDERR, "Search > {$search_tab} ekranında tek bir etkin dikey sekme bulunamadı.\n");
         exit(1);
     }
+    if (($search_tab !== 'static' && str_contains($search_html, 'id="ragstat-search-path"'))
+        || ($search_tab !== 'selectors' && str_contains($search_html, 'id="ragstat-title-selector"'))
+        || ($search_tab !== 'fuse' && str_contains($search_html, 'class="ragstat-search-field-row"'))) {
+        fwrite(STDERR, "Search > {$search_tab} ekranında başka bir alt sekmenin alanları gösteriliyor.\n");
+        exit(1);
+    }
+}
+if (str_contains($admin_source, 'Fuse.js Fields and Weights')) {
+    fwrite(STDERR, "Fuse.js alt sekmesinin eski adı kaynakta kaldı.\n");
+    exit(1);
 }
 
 foreach (['Create Static Site', "esc_html_e('Download'"] as $expected) {

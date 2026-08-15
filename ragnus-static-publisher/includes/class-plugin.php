@@ -104,6 +104,10 @@ final class Plugin
             $administrator->add_cap(self::EXPORT_CAPABILITY);
         }
 
+        if (get_option(self::LANGUAGE_SETTINGS_KEY, null) === null) {
+            add_option(self::LANGUAGE_SETTINGS_KEY, Language_Routing::defaults(), '', false);
+        }
+
         update_option('ragnus_static_plugin_version', RAGSTAT_VERSION, false);
         Diagnostics::refresh();
     }

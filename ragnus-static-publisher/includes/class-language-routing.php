@@ -15,12 +15,30 @@ final class Language_Routing
 
     public static function defaults(): array
     {
+        $site_language = self::site_language();
+        $supported_languages = array_values(array_unique([$site_language, 'tr', 'en']));
+
         return [
             'enabled' => '0',
-            'supported_languages' => "tr\nen",
-            'default_language' => 'tr',
+            'supported_languages' => implode("\n", $supported_languages),
+            'default_language' => $site_language,
             'cookie_days' => 365,
         ];
+    }
+
+    public static function site_language(): string
+    {
+        $locale = (string) get_option('WPLANG', '');
+        if ($locale === '') {
+            $locale = 'en_US';
+        }
+
+        $language = self::normalise_language($locale);
+        if ($language === '') {
+            return 'en';
+        }
+
+        return explode('-', $language, 2)[0];
     }
 
     public static function sanitize(array $value): array
@@ -28,7 +46,7 @@ final class Language_Routing
         $languages = self::parse_languages((string) ($value['supported_languages'] ?? ''));
         $default_language = self::normalise_language((string) ($value['default_language'] ?? ''));
         if ($default_language === '' || ! in_array($default_language, $languages, true)) {
-            $default_language = $languages[0] ?? 'tr';
+            $default_language = $languages[0] ?? self::site_language();
         }
 
         return [

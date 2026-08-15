@@ -4,7 +4,7 @@ Tags: static site, cloudflare workers, export, sftp
 Requires at least: 6.5
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.24.7
+Stable tag: 1.24.8
 License: GPLv2 or later
 
 WordPress sitelerini statik dosyalara aktarır ve harici yayın akışları için güvenli REST uçları sağlar.

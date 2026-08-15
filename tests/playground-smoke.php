@@ -317,8 +317,8 @@ foreach (['About', 'Version Number', RAGSTAT_VERSION, 'mailto:info@ragnus.co', '
         exit(1);
     }
 }
-if (! str_contains($about_html, '<hr class="wp-header-end">')) {
-    fwrite(STDERR, "Global WordPress bildirimleri için wp-header-end sınırı bulunamadı.\n");
+if (! preg_match('/<div class="wrap ragstat-admin">\s*<hr class="wp-header-end">\s*<header class="ragstat-admin-header">/', $about_html)) {
+    fwrite(STDERR, "Global WordPress bildirim sınırı Statik Publisher başlığının önünde değil.\n");
     exit(1);
 }
 

@@ -73,6 +73,7 @@ final class Admin
             RAGSTAT_VERSION,
             true
         );
+        $cloudflare_configured = (string) (Plugin::settings()['deployment_webhook_url'] ?? '') !== '';
         wp_localize_script('ragnus-static-publisher-admin', 'RagnusStaticPublisherAdmin', [
             'statusUrl' => rest_url('ragnus-static/v1/exports/latest'),
             'nonce' => wp_create_nonce('wp_rest'),
@@ -88,8 +89,12 @@ final class Admin
                 'progressLabel' => __('Static rendering progress', 'ragnus-static-publisher'),
                 'retry' => __('Retry', 'ragnus-static-publisher'),
                 'create' => __('Create Static Site', 'ragnus-static-publisher'),
+                'deployCloudflare' => __('Deploy to Cloudflare', 'ragnus-static-publisher'),
+                'waiting' => __('Waiting', 'ragnus-static-publisher'),
+                'notDeployed' => __('Not deployed yet', 'ragnus-static-publisher'),
                 'pollError' => __('Progress information is unavailable. Check your internet connection or WordPress REST API access.', 'ragnus-static-publisher'),
             ],
+            'cloudflareConfigured' => $cloudflare_configured,
         ]);
     }
 
@@ -329,7 +334,14 @@ final class Admin
                 wp_unschedule_event($scheduled, Plugin::CRON_HOOK, [$old_job_id]);
             }
         }
-        Plugin::schedule_export('admin');
+        $job_id = Plugin::schedule_export('admin');
+        if ((string) (Plugin::settings()['deployment_webhook_url'] ?? '') !== '') {
+            Plugin::record_deployment_status($job_id, 'waiting', [
+                'build_sha256' => '',
+                'deployment_url' => '',
+                'error' => '',
+            ]);
+        }
         wp_safe_redirect(add_query_arg('started', '1', self::admin_page_url('main')));
         exit;
     }
@@ -708,6 +720,16 @@ final class Admin
         $is_active = in_array($state, ['queued', 'running'], true)
             && ! ($state === 'queued' && ! empty($status['stalled']));
         $runtime_notice = (string) ($status['runtime_notice'] ?? '');
+        $cloudflare_configured = (string) (Plugin::settings()['deployment_webhook_url'] ?? '') !== '';
+        $deployment = is_array($status['deployment'] ?? null) ? $status['deployment'] : [];
+        $deployment_state = (string) ($deployment['state'] ?? '');
+        $deployment_labels = [
+            'waiting' => __('Waiting', 'ragnus-static-publisher'),
+            'dispatched' => __('Queued', 'ragnus-static-publisher'),
+            'deploying' => __('Running', 'ragnus-static-publisher'),
+            'completed' => __('Completed', 'ragnus-static-publisher'),
+            'failed' => __('Failed', 'ragnus-static-publisher'),
+        ];
         ?>
         <div data-ragstat-status-root>
         <h2><?php esc_html_e('Publishing Status', 'ragnus-static-publisher'); ?></h2>
@@ -739,10 +761,23 @@ final class Admin
             </tbody>
         </table>
 
+        <?php if ($cloudflare_configured) : ?>
+            <h2><?php esc_html_e('Cloudflare Deploy', 'ragnus-static-publisher'); ?></h2>
+            <table class="widefat striped ragstat-status-table ragstat-deployment-status-table">
+                <tbody>
+                <tr><th><?php esc_html_e('Status', 'ragnus-static-publisher'); ?></th><td id="ragstat-deployment-state"><?php echo esc_html($deployment_labels[$deployment_state] ?? __('Not deployed yet', 'ragnus-static-publisher')); ?></td></tr>
+                <tr><th><?php esc_html_e('Job ID', 'ragnus-static-publisher'); ?></th><td><code id="ragstat-deployment-job-id"><?php echo esc_html((string) ($deployment['job_id'] ?? '—')); ?></code></td></tr>
+                <tr><th><?php esc_html_e('Last Cloudflare Deploy', 'ragnus-static-publisher'); ?></th><td id="ragstat-deployment-updated"><?php echo esc_html((string) ($deployment['updated_display'] ?? '—')); ?></td></tr>
+                <tr id="ragstat-deployment-url-row" <?php echo empty($deployment['deployment_url']) ? 'hidden' : ''; ?>><th><?php esc_html_e('Deployment URL', 'ragnus-static-publisher'); ?></th><td><a id="ragstat-deployment-url" href="<?php echo esc_url((string) ($deployment['deployment_url'] ?? '')); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html((string) ($deployment['deployment_url'] ?? '')); ?></a></td></tr>
+                <tr id="ragstat-deployment-error-row" <?php echo empty($deployment['error']) ? 'hidden' : ''; ?>><th><?php esc_html_e('Error', 'ragnus-static-publisher'); ?></th><td id="ragstat-deployment-error"><?php echo esc_html((string) ($deployment['error'] ?? '')); ?></td></tr>
+                </tbody>
+            </table>
+        <?php endif; ?>
+
         <form class="ragstat-actions" method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
             <input type="hidden" name="action" value="ragnus_static_export">
             <?php wp_nonce_field('ragnus_static_export'); ?>
-            <?php submit_button(__('Create Static Site', 'ragnus-static-publisher'), 'primary', 'submit', false, $is_active ? ['disabled' => 'disabled'] : []); ?>
+            <?php submit_button($cloudflare_configured ? __('Deploy to Cloudflare', 'ragnus-static-publisher') : __('Create Static Site', 'ragnus-static-publisher'), 'primary', 'submit', false, $is_active ? ['disabled' => 'disabled'] : []); ?>
             <a id="ragstat-download" class="button" href="<?php echo esc_url(wp_nonce_url(admin_url('admin-post.php?action=ragnus_static_download'), 'ragnus_static_download')); ?>" <?php echo $archives === [] ? 'hidden' : ''; ?>><?php esc_html_e('Download', 'ragnus-static-publisher'); ?></a>
         </form>
         </div>
@@ -932,6 +967,19 @@ final class Admin
                     </section>
                     <?php self::render_deploy_settings($settings); ?>
                 <?php elseif ($current_deploy_tab === 'cloudflare') : ?>
+                    <?php
+                    $deployment = Plugin::public_deployment_status();
+                    $deployment_state = (string) ($deployment['state'] ?? '');
+                    $deployment_labels = [
+                        'waiting' => __('Waiting', 'ragnus-static-publisher'),
+                        'dispatched' => __('Queued', 'ragnus-static-publisher'),
+                        'deploying' => __('Running', 'ragnus-static-publisher'),
+                        'completed' => __('Completed', 'ragnus-static-publisher'),
+                        'failed' => __('Failed', 'ragnus-static-publisher'),
+                    ];
+                    $export_state = (string) (Plugin::public_status()['state'] ?? '');
+                    $export_active = in_array($export_state, ['queued', 'running'], true);
+                    ?>
                     <section class="ragstat-deploy-card" aria-labelledby="ragstat-deploy-cloudflare-title">
                         <span class="ragstat-deploy-card__icon ragstat-deploy-card__cloudflare-icon" aria-hidden="true">
                             <?php self::render_cloudflare_icon('ragstat-cloudflare-icon'); ?>
@@ -941,8 +989,29 @@ final class Admin
                             <p><?php esc_html_e('Publish static files to Cloudflare Workers Static Assets with a GitHub Actions workflow.', 'ragnus-static-publisher'); ?></p>
                         </div>
                         <div class="ragstat-deploy-card__footer">
-                            <span class="ragstat-deploy-status is-info"><?php esc_html_e('Cloudflare account required', 'ragnus-static-publisher'); ?></span>
+                            <span class="ragstat-deploy-status <?php echo $github_configured ? 'is-ready' : 'is-pending'; ?>"><?php echo $github_configured ? esc_html($deployment_labels[$deployment_state] ?? __('Ready to deploy', 'ragnus-static-publisher')) : esc_html__('Configuration required', 'ragnus-static-publisher'); ?></span>
                             <a class="button button-primary" href="<?php echo esc_url('https://dash.cloudflare.com/'); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Open Cloudflare', 'ragnus-static-publisher'); ?><span class="dashicons dashicons-external" aria-hidden="true"></span></a>
+                        </div>
+                    </section>
+                    <section class="ragstat-deploy-card ragstat-cloudflare-deployment-details" aria-labelledby="ragstat-cloudflare-deployment-title">
+                        <div class="ragstat-deploy-card__content">
+                            <h3 id="ragstat-cloudflare-deployment-title"><?php esc_html_e('Cloudflare Deploy', 'ragnus-static-publisher'); ?></h3>
+                            <table class="widefat striped ragstat-status-table">
+                                <tbody>
+                                <tr><th><?php esc_html_e('Status', 'ragnus-static-publisher'); ?></th><td><?php echo esc_html($deployment_labels[$deployment_state] ?? __('Not deployed yet', 'ragnus-static-publisher')); ?></td></tr>
+                                <tr><th><?php esc_html_e('Job ID', 'ragnus-static-publisher'); ?></th><td><code><?php echo esc_html((string) ($deployment['job_id'] ?? '—')); ?></code></td></tr>
+                                <tr><th><?php esc_html_e('Last Cloudflare Deploy', 'ragnus-static-publisher'); ?></th><td><?php echo esc_html((string) ($deployment['updated_display'] ?? '—')); ?></td></tr>
+                                <?php if (! empty($deployment['deployment_url'])) : ?><tr><th><?php esc_html_e('Deployment URL', 'ragnus-static-publisher'); ?></th><td><a href="<?php echo esc_url((string) $deployment['deployment_url']); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html((string) $deployment['deployment_url']); ?></a></td></tr><?php endif; ?>
+                                <?php if (! empty($deployment['error'])) : ?><tr><th><?php esc_html_e('Error', 'ragnus-static-publisher'); ?></th><td><?php echo esc_html((string) $deployment['error']); ?></td></tr><?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="ragstat-deploy-card__footer">
+                            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                                <input type="hidden" name="action" value="ragnus_static_export">
+                                <?php wp_nonce_field('ragnus_static_export'); ?>
+                                <?php submit_button($deployment_state === '' ? __('Deploy to Cloudflare', 'ragnus-static-publisher') : __('Deploy Again', 'ragnus-static-publisher'), 'primary', 'submit', false, (! $github_configured || $export_active) ? ['disabled' => 'disabled'] : []); ?>
+                            </form>
                         </div>
                     </section>
                 <?php elseif ($current_deploy_tab === 'sftp') : ?>

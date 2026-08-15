@@ -172,6 +172,13 @@
     const errorRow = root.querySelector('#ragstat-error-row');
     const errorElement = root.querySelector('#ragstat-error');
     const noticeElement = root.querySelector('#ragstat-runtime-notice');
+    const deploymentStateElement = root.querySelector('#ragstat-deployment-state');
+    const deploymentJobElement = root.querySelector('#ragstat-deployment-job-id');
+    const deploymentUpdatedElement = root.querySelector('#ragstat-deployment-updated');
+    const deploymentUrlRow = root.querySelector('#ragstat-deployment-url-row');
+    const deploymentUrlElement = root.querySelector('#ragstat-deployment-url');
+    const deploymentErrorRow = root.querySelector('#ragstat-deployment-error-row');
+    const deploymentErrorElement = root.querySelector('#ragstat-deployment-error');
     const submitButton = root.querySelector('.ragstat-actions [type="submit"]');
     const downloadButton = root.querySelector('#ragstat-download');
     let pollTimer = null;
@@ -257,17 +264,46 @@
         showNotice(String(status.runtime_notice || ''));
         if (submitButton) {
             submitButton.disabled = active && !canRetry;
-            submitButton.value = canRetry ? (i18n.retry || 'Retry') : (i18n.create || 'Create Static Site');
+            const primaryAction = config.cloudflareConfigured
+                ? (i18n.deployCloudflare || 'Deploy to Cloudflare')
+                : (i18n.create || 'Create Static Site');
+            submitButton.value = canRetry ? (i18n.retry || 'Retry') : primaryAction;
         }
         if (downloadButton && state === 'completed') {
             downloadButton.hidden = false;
+        }
+
+        const deployment = status.deployment && typeof status.deployment === 'object' ? status.deployment : {};
+        const deploymentState = String(deployment.state || '');
+        const deploymentLabels = {
+            waiting: i18n.waiting || 'Waiting',
+            dispatched: stateLabels.queued,
+            deploying: stateLabels.running,
+            completed: stateLabels.completed,
+            failed: stateLabels.failed
+        };
+        replaceText(deploymentStateElement, deploymentLabels[deploymentState], i18n.notDeployed || 'Not deployed yet');
+        replaceText(deploymentJobElement, deployment.job_id, '—');
+        replaceText(deploymentUpdatedElement, deployment.updated_display, '—');
+        const deploymentUrl = String(deployment.deployment_url || '');
+        if (deploymentUrlElement) {
+            deploymentUrlElement.textContent = deploymentUrl;
+            deploymentUrlElement.href = deploymentUrl;
+        }
+        if (deploymentUrlRow) {
+            deploymentUrlRow.hidden = deploymentUrl === '';
+        }
+        const deploymentError = String(deployment.error || '');
+        replaceText(deploymentErrorElement, deploymentError, '');
+        if (deploymentErrorRow) {
+            deploymentErrorRow.hidden = deploymentError === '';
         }
 
         if (state === 'queued') {
             startPendingJob(String(status.job_id || ''));
         }
 
-        return active;
+        return active || ['waiting', 'dispatched', 'deploying'].includes(deploymentState);
     }
 
     function startPendingJob(jobId) {

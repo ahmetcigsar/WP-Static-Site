@@ -18,5 +18,15 @@ fi
 jq -e '.schema_version == 1 and (.build_sha256 | length == 64)' \
   "$output_directory/ragnus-static-manifest.json" >/dev/null
 
+if [[ -n "${EXPECTED_JOB_ID:-}" ]]; then
+  jq -e --arg job_id "$EXPECTED_JOB_ID" '.job_id == $job_id' \
+    "$output_directory/ragnus-static-manifest.json" >/dev/null
+fi
+
+if [[ -n "${EXPECTED_BUILD_SHA256:-}" ]]; then
+  jq -e --arg checksum "$EXPECTED_BUILD_SHA256" '.build_sha256 == $checksum' \
+    "$output_directory/ragnus-static-manifest.json" >/dev/null
+fi
+
 jq -e '.schema_version == 1 and (.enabled | type == "boolean") and (.supported_languages | type == "array")' \
   "$output_directory/ragnus-language-config.json" >/dev/null

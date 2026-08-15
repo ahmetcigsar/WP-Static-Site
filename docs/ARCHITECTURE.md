@@ -15,9 +15,11 @@
 3. Exporter yayınlanmış içerik URL'lerini seed olarak alır ve aynı origin kaynaklarını tarar.
 4. HTML/CSS içindeki origin adresleri canlı statik domain ile değiştirilir.
 5. Snapshot, `_headers`, `_redirects`, dil yönlendirme yapılandırması, manifest ve ZIP oluşturulur.
-6. Export tamamlanınca isteğe bağlı GitHub `repository_dispatch` webhook'u CI akışını tetikler.
-7. CI ZIP'i indirir, doğrular ve Wrangler ile `wp-statik-deneme` Workers Static Assets deployment'ına yükler.
-8. SFTP otomatik yükleme açıksa aynı başarılı build dizinindeki statik dosyalar uzak hedefe aktarılır; bu durum ve hatalar ZIP exportundan ayrı kaydedilir.
+6. Export tamamlanınca isteğe bağlı GitHub `repository_dispatch` webhook'u job ID ve build SHA-256 ile CI akışını tetikler.
+7. CI yalnızca `/exports/{job_id}/artifact` uç noktasındaki ZIP'i indirir; manifest job ID ve SHA-256 değerlerini webhook verisiyle karşılaştırır.
+8. Doğrulanan snapshot Wrangler ile `wp-statik-deneme` Workers Static Assets deployment'ına yüklenir ve deployment URL için HTTP kontrolü yapılır.
+9. GitHub Actions `deploying`, `completed` veya `failed` sonucunu kimlik doğrulamalı `/deployments/callback` ucuna gönderir. Export ve Cloudflare deploy durumları WordPress'te ayrı saklanır.
+10. SFTP otomatik yükleme açıksa aynı başarılı build dizinindeki statik dosyalar uzak hedefe aktarılır; bu durum ve hatalar ZIP exportundan ayrı kaydedilir.
 
 ## SFTP akışı
 
@@ -48,6 +50,7 @@
 - Bu kullanıcı için yalnızca Application Password üretilmelidir.
 - WordPress yönetim parolası CI içine konmamalıdır.
 - `WP_APP_PASSWORD` ve Cloudflare token aynı sistem dışında paylaşılmamalıdır.
+- Deploy callback'i arşivdeki job ID ve SHA-256 ile eşleşmeyen durum güncellemelerini reddeder.
 - Cloudflare token sadece hedef Pages projesini düzenleyebilecek kapsamda olmalıdır.
 - Otomatik GitHub `repository_dispatch` tetiklemesinde WordPress'te tutulan fine-grained token yalnızca ilgili repository için `Contents: write` yetkisine sahip olmalıdır.
 - SFTP hesabı yalnızca hedef statik dizinde yazma yetkisine sahip olmalı; kabuk, WordPress dizini veya daha geniş sunucu erişimi verilmemelidir.

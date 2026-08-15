@@ -19,6 +19,7 @@ final class Plugin
     public const INDEXNOW_STATUS_KEY = 'ragnus_static_indexnow_status';
     public const INDEXNOW_CRON_HOOK = 'ragnus_static_indexnow_notify';
     public const STATUS_KEY = 'ragnus_static_status';
+    public const DEPLOYMENT_STATUS_KEY = 'ragnus_static_deployment_status';
     public const LOCK_KEY = 'ragnus_static_export_lock';
     public const DIRTY_KEY = 'ragnus_static_export_dirty';
     public const CRON_HOOK = 'ragnus_static_run_export';
@@ -454,7 +455,53 @@ final class Plugin
             }
         }
 
+        $status['deployment'] = self::public_deployment_status();
+
         return $status;
+    }
+
+    public static function deployment_status(): array
+    {
+        $status = get_option(self::DEPLOYMENT_STATUS_KEY, []);
+        return is_array($status) ? $status : [];
+    }
+
+    public static function public_deployment_status(): array
+    {
+        $status = self::deployment_status();
+        $updated_at = strtotime((string) ($status['updated_at'] ?? ''));
+        $status['updated_display'] = $updated_at === false
+            ? '—'
+            : wp_date((string) get_option('date_format') . ' ' . (string) get_option('time_format'), $updated_at);
+        return $status;
+    }
+
+    public static function record_deployment_status(string $job_id, string $state, array $extra = []): void
+    {
+        $current = self::deployment_status();
+        $next = array_merge($current, [
+            'job_id' => sanitize_file_name($job_id),
+            'state' => sanitize_key($state),
+            'updated_at' => gmdate('c'),
+        ], $extra);
+        if ($state === 'completed') {
+            $next['completed_at'] = gmdate('c');
+            $next['error'] = '';
+        }
+        update_option(self::DEPLOYMENT_STATUS_KEY, $next, false);
+
+        if ($state !== 'completed') {
+            return;
+        }
+        $status = self::status();
+        $manifest = ($status['job_id'] ?? '') === $job_id && is_array($status['manifest'] ?? null)
+            ? $status['manifest']
+            : [];
+        $seo_settings = self::seo_settings();
+        if ($manifest !== [] && (string) ($seo_settings['indexnow_enabled'] ?? '0') === '1') {
+            set_transient('ragnus_static_indexnow_pending_' . md5($job_id), $manifest, DAY_IN_SECONDS);
+            wp_schedule_single_event(time() + 120, self::INDEXNOW_CRON_HOOK, [$job_id]);
+        }
     }
 
     public static function maybe_schedule_after_post_transition(string $new_status, string $old_status, \WP_Post $post): void
@@ -577,7 +624,7 @@ final class Plugin
         $source = (string) (self::status()['source'] ?? '');
         $deployment_succeeded = false;
         if ($source !== 'ci-manual') {
-            $deployment_succeeded = self::notify_deployment_webhook($job_id, $manifest);
+            self::notify_deployment_webhook($job_id, $manifest);
         }
 
         $settings = self::settings();
@@ -684,6 +731,12 @@ final class Plugin
             return false;
         }
 
+        self::record_deployment_status($job_id, 'waiting', [
+            'build_sha256' => (string) ($manifest['build_sha256'] ?? ''),
+            'deployment_url' => '',
+            'error' => '',
+        ]);
+
         $headers = [
             'Accept' => 'application/vnd.github+json',
             'Content-Type' => 'application/json',
@@ -708,9 +761,17 @@ final class Plugin
         ]);
 
         if (is_wp_error($response) || wp_remote_retrieve_response_code($response) >= 300) {
+            self::record_deployment_status($job_id, 'failed', [
+                'build_sha256' => (string) ($manifest['build_sha256'] ?? ''),
+                'error' => __('Deployment workflow could not be started.', 'ragnus-static-publisher'),
+            ]);
             error_log(__('[Ragnus Static Publisher] Deployment webhook could not be sent.', 'ragnus-static-publisher'));
             return false;
         }
+        self::record_deployment_status($job_id, 'dispatched', [
+            'build_sha256' => (string) ($manifest['build_sha256'] ?? ''),
+            'error' => '',
+        ]);
         return true;
     }
 

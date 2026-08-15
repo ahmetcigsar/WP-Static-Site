@@ -18,6 +18,18 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - name: Read WordPress deployment event
+        if: github.event_name == 'repository_dispatch'
+        env:
+          EVENT_JOB_ID: ${{ github.event.client_payload.job_id }}
+          EVENT_BUILD_SHA256: ${{ github.event.client_payload.build_sha256 }}
+        run: |
+          test -n "$EVENT_JOB_ID"
+          test -n "$EVENT_BUILD_SHA256"
+          echo "DEPLOY_JOB_ID=$EVENT_JOB_ID" >> "$GITHUB_ENV"
+          echo "EXPECTED_JOB_ID=$EVENT_JOB_ID" >> "$GITHUB_ENV"
+          echo "EXPECTED_BUILD_SHA256=$EVENT_BUILD_SHA256" >> "$GITHUB_ENV"
+
       - name: Start WordPress export
         if: github.event_name == 'workflow_dispatch'
         env:
@@ -25,10 +37,14 @@ jobs:
           WP_USER: ${{ secrets.WP_USER }}
           WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
         run: |
-          curl --fail --silent --show-error \
+          response="$(curl --fail --silent --show-error \
             --user "$WP_USER:$WP_APP_PASSWORD" \
             --request POST \
-            "$WP_ORIGIN/wp-json/ragnus-static/v1/exports" > export-start.json
+            "$WP_ORIGIN/wp-json/ragnus-static/v1/exports")"
+          job_id="$(jq -r '.job_id // ""' <<<"$response")"
+          test -n "$job_id"
+          echo "DEPLOY_JOB_ID=$job_id" >> "$GITHUB_ENV"
+          echo "EXPECTED_JOB_ID=$job_id" >> "$GITHUB_ENV"
 
       - name: Wait for export
         if: github.event_name == 'workflow_dispatch'
@@ -38,6 +54,37 @@ jobs:
           WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
         run: bash scripts/wait-for-export.sh
 
+      - name: Read manual export checksum
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          WP_ORIGIN: ${{ secrets.WP_ORIGIN }}
+          WP_USER: ${{ secrets.WP_USER }}
+          WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
+        run: |
+          response="$(curl --fail --silent --show-error \
+            --user "$WP_USER:$WP_APP_PASSWORD" \
+            "$WP_ORIGIN/wp-json/ragnus-static/v1/exports/latest")"
+          test "$(jq -r '.job_id' <<<"$response")" = "$DEPLOY_JOB_ID"
+          checksum="$(jq -r '.manifest.build_sha256 // ""' <<<"$response")"
+          test -n "$checksum"
+          echo "EXPECTED_BUILD_SHA256=$checksum" >> "$GITHUB_ENV"
+
+      - name: Report deployment started
+        env:
+          WP_ORIGIN: ${{ secrets.WP_ORIGIN }}
+          WP_USER: ${{ secrets.WP_USER }}
+          WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
+        run: |
+          payload="$(jq -n \
+            --arg job_id "$DEPLOY_JOB_ID" \
+            --arg checksum "$EXPECTED_BUILD_SHA256" \
+            '{job_id:$job_id,state:"deploying",build_sha256:$checksum}')"
+          curl --fail --silent --show-error \
+            --user "$WP_USER:$WP_APP_PASSWORD" \
+            --header 'Content-Type: application/json' \
+            --data "$payload" \
+            "$WP_ORIGIN/wp-json/ragnus-static/v1/deployments/callback"
+
       - name: Download and unpack artifact
         env:
           WP_ORIGIN: ${{ secrets.WP_ORIGIN }}
@@ -46,7 +93,7 @@ jobs:
         run: |
           curl --fail --silent --show-error \
             --user "$WP_USER:$WP_APP_PASSWORD" \
-            "$WP_ORIGIN/wp-json/ragnus-static/v1/exports/latest/artifact" \
+            "$WP_ORIGIN/wp-json/ragnus-static/v1/exports/$DEPLOY_JOB_ID/artifact" \
             --output export.zip
           mkdir site-dist
           unzip -q export.zip -d site-dist
@@ -57,8 +104,57 @@ jobs:
         run: bash scripts/validate-export.sh site-dist
 
       - name: Deploy to Cloudflare Workers Static Assets
+        id: cloudflare
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy --config wrangler.jsonc
+
+      - name: Verify live deployment
+        env:
+          WRANGLER_DEPLOYMENT_URL: ${{ steps.cloudflare.outputs.deployment-url }}
+        run: |
+          manifest_target="$(jq -r '.target // ""' site-dist/ragnus-static-manifest.json)"
+          deployment_url="${WRANGLER_DEPLOYMENT_URL:-$manifest_target}"
+          test -n "$deployment_url"
+          curl --fail --silent --show-error \
+            --retry 10 --retry-delay 3 --retry-all-errors \
+            --output /dev/null "$deployment_url"
+          echo "DEPLOYMENT_URL=$deployment_url" >> "$GITHUB_ENV"
+
+      - name: Report successful deployment
+        env:
+          WP_ORIGIN: ${{ secrets.WP_ORIGIN }}
+          WP_USER: ${{ secrets.WP_USER }}
+          WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
+        run: |
+          payload="$(jq -n \
+            --arg job_id "$DEPLOY_JOB_ID" \
+            --arg checksum "$EXPECTED_BUILD_SHA256" \
+            --arg deployment_url "$DEPLOYMENT_URL" \
+            '{job_id:$job_id,state:"completed",build_sha256:$checksum,deployment_url:$deployment_url}')"
+          curl --fail --silent --show-error \
+            --user "$WP_USER:$WP_APP_PASSWORD" \
+            --header 'Content-Type: application/json' \
+            --data "$payload" \
+            "$WP_ORIGIN/wp-json/ragnus-static/v1/deployments/callback"
+
+      - name: Report failed deployment
+        if: ${{ failure() && env.DEPLOY_JOB_ID != '' && env.EXPECTED_BUILD_SHA256 != '' }}
+        env:
+          WP_ORIGIN: ${{ secrets.WP_ORIGIN }}
+          WP_USER: ${{ secrets.WP_USER }}
+          WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          payload="$(jq -n \
+            --arg job_id "$DEPLOY_JOB_ID" \
+            --arg checksum "$EXPECTED_BUILD_SHA256" \
+            --arg error "Cloudflare deployment failed. See $RUN_URL" \
+            '{job_id:$job_id,state:"failed",build_sha256:$checksum,error:$error}')"
+          curl --fail --silent --show-error \
+            --user "$WP_USER:$WP_APP_PASSWORD" \
+            --header 'Content-Type: application/json' \
+            --data "$payload" \
+            "$WP_ORIGIN/wp-json/ragnus-static/v1/deployments/callback"

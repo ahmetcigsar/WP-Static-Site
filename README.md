@@ -20,6 +20,8 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 - SureRank SEO, The SEO Framework ve Yoast SEO için içerik türü bazlı metadata, Schema, XML sitemap ve robots.txt entegrasyonları
 - WordPress yönetici/site dilini otomatik izleyen Türkçe, İngilizce, İspanyolca, Fransızca, Basitleştirilmiş Çince, Japonca, Arapça ve Portekizce arayüz paketleri
 - Deploy sekmesinin sol dikey menüsünde ZIP File, GitHub, Cloudflare, SFTP ve Auto Deploy seçenekleri
+- Cloudflare yapılandırıldığında statik üretimi ve Cloudflare yayınını tek butonda başlatan, export ile deploy durumlarını ayrı gösteren akış
+- GitHub Actions sonucunu WordPress'e geri bildiren; belirli job ID ve SHA-256 doğrulamalı Cloudflare deploy durumu
 - Deploy > ZIP File kartında indirme/silme işlemleri ve 10 kayıtlık sayfalama ile ZIP dosya yönetimi; kartın altında arşiv saklama ayarı
 - Şifreli parola saklama, bağlantı testi, manuel yükleme ve başarılı export sonrası seçilebilir otomatik yükleme sunan SFTP desteği
 - Yerel Fuse.js 7.3.0 paketiyle çalışan, alanları ve ağırlıkları yapılandırılabilen statik site araması
@@ -78,6 +80,10 @@ wp ragnus-static export --format=json
 Örnek workflow `.github/workflows/deploy-example.yml` içindedir. Worker adı ve asset ayarları `wrangler.jsonc` içinde tutulur; Custom Domain dashboard tarafından yönetilmeye devam eder. CI kullanıcısına yönetici rolü vermeyin; eklentinin oluşturduğu `Static Publisher Deploy` rolünü seçin ve bu kullanıcıya ayrı bir Application Password üretin.
 
 Tam otomatik akış için eklenti ayarlarında deployment webhook alanını `https://api.github.com/repos/SAHIP/REPO/dispatches` olarak girin. Fine-grained bearer token yalnızca ilgili repository için `Contents: write` yetkisiyle oluşturulmalıdır. Workflow dosyası repository'nin varsayılan branch'inde bulunmalıdır. Cloudflare token hiçbir zaman WordPress'e girilmez.
+
+Webhook yapılandırıldığında Main ekranındaki **Create Static Site** işlemi **Deploy to Cloudflare** olarak görünür. Buton önce statik snapshot'ı oluşturur; export başarılı olursa GitHub Actions yalnızca o işe ait `/exports/{job_id}/artifact` dosyasını indirir, manifestteki job ID ve SHA-256 değerini doğrular, Wrangler ile Cloudflare'a yükler ve canlı adresi kontrol eder. Workflow sonucu `/deployments/callback` üzerinden WordPress'e bildirilir; Main ve **Deploy > Cloudflare** ekranlarında export ve Cloudflare deploy durumları ayrı gösterilir.
+
+Callback ve job-specific artifact uçları da `Static Publisher Deploy` rolü ile Application Password kimlik doğrulaması ister. GitHub Actions için `WP_USER` olarak yönetici hesabı yerine bu sınırlı rol kullanılmalıdır.
 
 ## SFTP deployment
 

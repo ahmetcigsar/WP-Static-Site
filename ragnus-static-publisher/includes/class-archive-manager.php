@@ -39,6 +39,8 @@ final class Archive_Manager
                 'job_id' => is_string($manifest['job_id'] ?? null) && $manifest['job_id'] !== ''
                     ? $manifest['job_id']
                     : $job_id,
+                'build_sha256' => is_string($manifest['build_sha256'] ?? null) ? $manifest['build_sha256'] : '',
+                'target' => is_string($manifest['target'] ?? null) ? $manifest['target'] : '',
                 'url_count' => isset($manifest['url_count']) ? absint($manifest['url_count']) : null,
                 'created_at' => $created_at,
                 'path' => $path,

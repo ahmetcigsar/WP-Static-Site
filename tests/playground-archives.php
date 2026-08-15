@@ -18,9 +18,9 @@ wp_mkdir_p($base . '/archives');
 wp_mkdir_p($base . '/builds');
 
 $fixtures = [
-    ['job_id' => 'retention-test-1', 'finished_at' => '2026-01-01T10:00:00Z', 'url_count' => 10],
-    ['job_id' => 'retention-test-2', 'finished_at' => '2026-01-02T10:00:00Z', 'url_count' => 20],
-    ['job_id' => 'retention-test-3', 'finished_at' => '2026-01-03T10:00:00Z', 'url_count' => 30],
+    ['job_id' => 'retention-test-1', 'finished_at' => '2026-01-01T10:00:00Z', 'url_count' => 10, 'build_sha256' => str_repeat('1', 64), 'target' => 'https://static.example.com'],
+    ['job_id' => 'retention-test-2', 'finished_at' => '2026-01-02T10:00:00Z', 'url_count' => 20, 'build_sha256' => str_repeat('2', 64), 'target' => 'https://static.example.com'],
+    ['job_id' => 'retention-test-3', 'finished_at' => '2026-01-03T10:00:00Z', 'url_count' => 30, 'build_sha256' => str_repeat('3', 64), 'target' => 'https://static.example.com'],
 ];
 
 foreach ($fixtures as $fixture) {
@@ -46,6 +46,47 @@ if (($archives[0]['url_count'] ?? null) !== 30) {
 }
 if ((Ragnus\StaticPublisher\Archive_Manager::find('retention-test-2')['url_count'] ?? null) !== 20) {
     throw new RuntimeException('Tekil ZIP dosyası iş kimliğiyle bulunamadı.');
+}
+if (($archives[0]['build_sha256'] ?? '') !== str_repeat('3', 64)
+    || ($archives[0]['target'] ?? '') !== 'https://static.example.com') {
+    throw new RuntimeException('Deploy doğrulama bilgileri manifestten okunamadı.');
+}
+
+$artifact_request = new WP_REST_Request('GET');
+$artifact_request->set_param('job_id', 'retention-test-2');
+$artifact_response = Ragnus\StaticPublisher\REST_Controller::job_artifact($artifact_request);
+if (! $artifact_response instanceof Ragnus\StaticPublisher\File_Response
+    || $artifact_response->filename !== 'retention-test-2.zip') {
+    throw new RuntimeException('İş kimliğine sabitlenmiş ZIP artefaktı bulunamadı.');
+}
+
+$bad_callback = new WP_REST_Request('POST');
+$bad_callback->set_body_params([
+    'job_id' => 'retention-test-2',
+    'state' => 'deploying',
+    'build_sha256' => str_repeat('9', 64),
+]);
+if (Ragnus\StaticPublisher\REST_Controller::deployment_callback($bad_callback)->get_status() !== 409) {
+    throw new RuntimeException('Yanlış deploy checksum değeri reddedilmedi.');
+}
+
+foreach (['deploying', 'completed'] as $deployment_state) {
+    $callback = new WP_REST_Request('POST');
+    $callback->set_body_params([
+        'job_id' => 'retention-test-2',
+        'state' => $deployment_state,
+        'build_sha256' => str_repeat('2', 64),
+        'deployment_url' => $deployment_state === 'completed' ? 'https://deployment.example.workers.dev' : '',
+    ]);
+    if (Ragnus\StaticPublisher\REST_Controller::deployment_callback($callback)->get_status() !== 200) {
+        throw new RuntimeException('Cloudflare deploy callback durumu kaydedilemedi: ' . $deployment_state);
+    }
+}
+$deployment_status = Ragnus\StaticPublisher\Plugin::deployment_status();
+if (($deployment_status['state'] ?? '') !== 'completed'
+    || ($deployment_status['job_id'] ?? '') !== 'retention-test-2'
+    || ($deployment_status['deployment_url'] ?? '') !== 'https://deployment.example.workers.dev') {
+    throw new RuntimeException('Cloudflare deploy sonucu ayrı durum kaydına doğru yazılmadı.');
 }
 
 $bundle = Ragnus\StaticPublisher\Archive_Manager::create_bundle(['retention-test-1', 'retention-test-3']);

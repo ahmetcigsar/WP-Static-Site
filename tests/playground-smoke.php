@@ -531,7 +531,7 @@ if (str_contains($admin_source, 'Hide WordPress Traces') || str_contains($admin_
     exit(1);
 }
 
-foreach (['Create Static Site', "esc_html_e('Download'"] as $expected) {
+foreach (['Create Static Site', 'Deploy to Cloudflare', 'Cloudflare Deploy', "esc_html_e('Download'"] as $expected) {
     if (! str_contains($admin_source, $expected)) {
         fwrite(STDERR, "Main sekmesinde beklenen buton metni bulunamadı: {$expected}\n");
         exit(1);
@@ -591,7 +591,7 @@ if (! str_contains($settings_html, 'Static Site') || ! str_contains($settings_ht
 foreach ([
     'zip' => ['ZIP Files', 'Number of ZIPs to Store', 'Save ZIP Settings', 'value="zip"'],
     'github' => ['GitHub Deployment Webhook', 'Save Deploy Settings'],
-    'cloudflare' => ['Cloudflare account required', 'Open Cloudflare'],
+    'cloudflare' => ['Configuration required', 'Open Cloudflare', 'Cloudflare Deploy', 'Deploy to Cloudflare'],
     'sftp' => ['SFTP Connection', 'Save SFTP Settings', 'Test Connection', 'Upload Latest Static Site'],
     'auto-deploy' => ['Automatic Static Site Creation and Deploy', 'Save Auto Deploy Settings'],
 ] as $deploy_tab => $panel_expectations) {

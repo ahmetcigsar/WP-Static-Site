@@ -30,7 +30,7 @@ final class Secret_Store
             }
         }
 
-        throw new RuntimeException(__('The SFTP password could not be encrypted. Enable Sodium or OpenSSL in PHP.', 'ragnus-static-publisher'));
+        throw new RuntimeException(__('The secret could not be encrypted. Enable Sodium or OpenSSL in PHP.', 'ragnus-static-publisher'));
     }
 
     public static function decrypt(string $encrypted): string
@@ -46,24 +46,24 @@ final class Secret_Store
             return self::decrypt_openssl(substr($encrypted, 3));
         }
 
-        throw new RuntimeException(__('The saved SFTP password is invalid. Save the password again.', 'ragnus-static-publisher'));
+        throw new RuntimeException(__('The saved secret is invalid. Save the connection again.', 'ragnus-static-publisher'));
     }
 
     private static function decrypt_sodium(string $payload): string
     {
         if (! function_exists('sodium_crypto_secretbox_open') || ! defined('SODIUM_CRYPTO_SECRETBOX_NONCEBYTES')) {
-            throw new RuntimeException(__('PHP Sodium is required to read the saved SFTP password.', 'ragnus-static-publisher'));
+            throw new RuntimeException(__('PHP Sodium is required to read the saved secret.', 'ragnus-static-publisher'));
         }
 
         $decoded = base64_decode($payload, true);
         if (! is_string($decoded) || strlen($decoded) <= SODIUM_CRYPTO_SECRETBOX_NONCEBYTES) {
-            throw new RuntimeException(__('The saved SFTP password is invalid. Save the password again.', 'ragnus-static-publisher'));
+            throw new RuntimeException(__('The saved secret is invalid. Save the connection again.', 'ragnus-static-publisher'));
         }
 
         $nonce = substr($decoded, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
         $plain_text = sodium_crypto_secretbox_open(substr($decoded, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES), $nonce, self::key());
         if (! is_string($plain_text)) {
-            throw new RuntimeException(__('The saved SFTP password could not be decrypted. Save the password again.', 'ragnus-static-publisher'));
+            throw new RuntimeException(__('The saved secret could not be decrypted. Save the connection again.', 'ragnus-static-publisher'));
         }
         return $plain_text;
     }
@@ -71,12 +71,12 @@ final class Secret_Store
     private static function decrypt_openssl(string $payload): string
     {
         if (! function_exists('openssl_decrypt')) {
-            throw new RuntimeException(__('PHP OpenSSL is required to read the saved SFTP password.', 'ragnus-static-publisher'));
+            throw new RuntimeException(__('PHP OpenSSL is required to read the saved secret.', 'ragnus-static-publisher'));
         }
 
         $decoded = base64_decode($payload, true);
         if (! is_string($decoded) || strlen($decoded) <= 28) {
-            throw new RuntimeException(__('The saved SFTP password is invalid. Save the password again.', 'ragnus-static-publisher'));
+            throw new RuntimeException(__('The saved secret is invalid. Save the connection again.', 'ragnus-static-publisher'));
         }
 
         $plain_text = openssl_decrypt(
@@ -88,7 +88,7 @@ final class Secret_Store
             substr($decoded, 12, 16)
         );
         if (! is_string($plain_text)) {
-            throw new RuntimeException(__('The saved SFTP password could not be decrypted. Save the password again.', 'ragnus-static-publisher'));
+            throw new RuntimeException(__('The saved secret could not be decrypted. Save the connection again.', 'ragnus-static-publisher'));
         }
         return $plain_text;
     }

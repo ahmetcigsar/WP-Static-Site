@@ -73,7 +73,7 @@ final class Admin
             RAGSTAT_VERSION,
             true
         );
-        $cloudflare_configured = (string) (Plugin::settings()['deployment_webhook_url'] ?? '') !== '';
+        $cloudflare_configured = Plugin::cloudflare_deployment_configured();
         wp_localize_script('ragnus-static-publisher-admin', 'RagnusStaticPublisherAdmin', [
             'statusUrl' => rest_url('ragnus-static/v1/exports/latest'),
             'nonce' => wp_create_nonce('wp_rest'),
@@ -121,10 +121,13 @@ final class Admin
             }
         }
 
-        if (in_array($section, ['deploy', 'all'], true)) {
+        $deploy_submitted = $section === 'deploy'
+            || ($section === 'all' && (array_key_exists('deployment_webhook_url', $value) || array_key_exists('deployment_webhook_token', $value)));
+        if ($deploy_submitted) {
             $submitted_token = sanitize_text_field((string) ($value['deployment_webhook_token'] ?? ''));
             $sanitized['deployment_webhook_url'] = esc_url_raw((string) ($value['deployment_webhook_url'] ?? ''));
             $sanitized['deployment_webhook_token'] = $submitted_token !== '' ? $submitted_token : (string) $current['deployment_webhook_token'];
+            $sanitized['deployment_mode'] = 'advanced';
         }
 
         if (in_array($section, ['sftp', 'all'], true)) {
@@ -335,7 +338,7 @@ final class Admin
             }
         }
         $job_id = Plugin::schedule_export('admin');
-        if ((string) (Plugin::settings()['deployment_webhook_url'] ?? '') !== '') {
+        if (Plugin::cloudflare_deployment_configured()) {
             Plugin::record_deployment_status($job_id, 'waiting', [
                 'build_sha256' => '',
                 'deployment_url' => '',
@@ -426,6 +429,56 @@ final class Admin
             SFTP_Deployer::record_failure($error->getMessage());
             self::redirect_sftp('error');
         }
+    }
+
+    public static function start_managed_connection(): void
+    {
+        self::authorize_managed_action('ragnus_static_managed_connect');
+        try {
+            wp_redirect(Managed_Deployer::authorization_url());
+            exit;
+        } catch (\Throwable $error) {
+            wp_safe_redirect(add_query_arg([
+                'managed_notice' => 'error',
+                'managed_message' => $error->getMessage(),
+            ], self::deploy_page_url('easy-setup')));
+            exit;
+        }
+    }
+
+    public static function complete_managed_connection(): void
+    {
+        if (! current_user_can('manage_options')) {
+            wp_die(__('You are not authorized for this operation.', 'ragnus-static-publisher'), 403);
+        }
+        $state = isset($_GET['state']) ? sanitize_text_field(wp_unslash((string) $_GET['state'])) : '';
+        $code = isset($_GET['code']) ? sanitize_text_field(wp_unslash((string) $_GET['code'])) : '';
+        try {
+            Managed_Deployer::complete_connection($state, $code);
+            wp_safe_redirect(add_query_arg('managed_notice', 'connected', self::deploy_page_url('easy-setup')));
+        } catch (\Throwable $error) {
+            wp_safe_redirect(add_query_arg([
+                'managed_notice' => 'error',
+                'managed_message' => $error->getMessage(),
+            ], self::deploy_page_url('easy-setup')));
+        }
+        exit;
+    }
+
+    public static function disconnect_managed_connection(): void
+    {
+        self::authorize_managed_action('ragnus_static_managed_disconnect');
+        Managed_Deployer::disconnect();
+        wp_safe_redirect(add_query_arg('managed_notice', 'disconnected', self::deploy_page_url('easy-setup')));
+        exit;
+    }
+
+    private static function authorize_managed_action(string $nonce_action): void
+    {
+        if (! current_user_can('manage_options')) {
+            wp_die(__('You are not authorized for this operation.', 'ragnus-static-publisher'), 403);
+        }
+        check_admin_referer($nonce_action);
     }
 
     private static function authorize_sftp_action(string $nonce_action): void
@@ -574,7 +627,7 @@ final class Admin
         }
         $requested_tab = isset($_GET['tab']) ? sanitize_key(wp_unslash((string) $_GET['tab'])) : 'main';
         $requested_settings_tab = isset($_GET['settings_tab']) ? sanitize_key(wp_unslash((string) $_GET['settings_tab'])) : 'general';
-        $requested_deploy_tab = isset($_GET['deploy_tab']) ? sanitize_key(wp_unslash((string) $_GET['deploy_tab'])) : 'zip';
+        $requested_deploy_tab = isset($_GET['deploy_tab']) ? sanitize_key(wp_unslash((string) $_GET['deploy_tab'])) : 'easy-setup';
         $requested_seo_tab = isset($_GET['seo_tab']) ? sanitize_key(wp_unslash((string) $_GET['seo_tab'])) : 'plugins';
         $requested_search_tab = isset($_GET['search_tab']) ? sanitize_key(wp_unslash((string) $_GET['search_tab'])) : 'static';
         $requested_hide_tab = isset($_GET['hide_tab']) ? sanitize_key(wp_unslash((string) $_GET['hide_tab'])) : 'directory';
@@ -720,7 +773,7 @@ final class Admin
         $is_active = in_array($state, ['queued', 'running'], true)
             && ! ($state === 'queued' && ! empty($status['stalled']));
         $runtime_notice = (string) ($status['runtime_notice'] ?? '');
-        $cloudflare_configured = (string) (Plugin::settings()['deployment_webhook_url'] ?? '') !== '';
+        $cloudflare_configured = Plugin::cloudflare_deployment_configured();
         $deployment = is_array($status['deployment'] ?? null) ? $status['deployment'] : [];
         $deployment_state = (string) ($deployment['state'] ?? '');
         $deployment_labels = [
@@ -732,6 +785,16 @@ final class Admin
         ];
         ?>
         <div data-ragstat-status-root>
+        <?php if (! $cloudflare_configured) : ?>
+            <section class="ragstat-setup-callout" aria-labelledby="ragstat-main-setup-title">
+                <span class="ragstat-setup-callout__icon dashicons dashicons-cloud" aria-hidden="true"></span>
+                <div>
+                    <h2 id="ragstat-main-setup-title"><?php esc_html_e('Publish your site with Easy Setup', 'ragnus-static-publisher'); ?></h2>
+                    <p><?php esc_html_e('Connect Cloudflare once, then publish changes with one button. GitHub and technical keys stay hidden.', 'ragnus-static-publisher'); ?></p>
+                </div>
+                <a class="button button-primary" href="<?php echo esc_url(self::deploy_page_url('easy-setup')); ?>"><?php esc_html_e('Start Easy Setup', 'ragnus-static-publisher'); ?></a>
+            </section>
+        <?php endif; ?>
         <h2><?php esc_html_e('Publishing Status', 'ragnus-static-publisher'); ?></h2>
         <div id="ragstat-runtime-notice" class="notice notice-warning inline ragstat-runtime-notice" role="status" <?php echo $runtime_notice === '' ? 'hidden' : ''; ?>><p><?php echo esc_html($runtime_notice); ?></p></div>
         <table class="widefat striped ragstat-status-table">
@@ -907,23 +970,25 @@ final class Admin
         $github_configured = (string) ($settings['deployment_webhook_url'] ?? '') !== '';
         $sftp_configured = SFTP_Deployer::configured($settings);
         $deploy_tabs = [
+            'easy-setup' => [__('Easy Setup', 'ragnus-static-publisher'), 'dashicons-cloud'],
             'zip' => [__('ZIP File', 'ragnus-static-publisher'), 'dashicons-media-archive'],
             'github' => [__('GitHub', 'ragnus-static-publisher'), 'github'],
             'cloudflare' => [__('Cloudflare', 'ragnus-static-publisher'), 'cloudflare'],
             'sftp' => [__('SFTP', 'ragnus-static-publisher'), 'dashicons-upload'],
             'auto-deploy' => [__('Auto Deploy', 'ragnus-static-publisher'), 'dashicons-update'],
         ];
-        $current_deploy_tab = isset($deploy_tabs[$requested_deploy_tab]) ? $requested_deploy_tab : 'zip';
+        $current_deploy_tab = isset($deploy_tabs[$requested_deploy_tab]) ? $requested_deploy_tab : 'easy-setup';
         ?>
         <div class="ragstat-deploy-header">
             <div>
                 <h2><?php esc_html_e('Deploy', 'ragnus-static-publisher'); ?></h2>
-                <p><?php esc_html_e('Choose how to publish your static site and configure automatic deploys.', 'ragnus-static-publisher'); ?></p>
+                <p><?php esc_html_e('Use Easy Setup for one-click publishing. Technical deployment methods remain available under advanced options.', 'ragnus-static-publisher'); ?></p>
             </div>
         </div>
         <div class="ragstat-deploy-layout">
             <nav class="ragstat-deploy-tabs" aria-label="<?php echo esc_attr__('Deploy', 'ragnus-static-publisher'); ?>">
                 <?php foreach ($deploy_tabs as $deploy_tab => [$label, $icon]) : ?>
+                    <?php if ($deploy_tab === 'zip') : ?><span class="ragstat-deploy-tabs__label"><?php esc_html_e('Advanced options', 'ragnus-static-publisher'); ?></span><?php endif; ?>
                     <a class="ragstat-deploy-tab <?php echo $current_deploy_tab === $deploy_tab ? 'is-active' : ''; ?>" href="<?php echo esc_url(self::deploy_page_url($deploy_tab)); ?>" <?php echo $current_deploy_tab === $deploy_tab ? 'aria-current="page"' : ''; ?>>
                         <?php if ($icon === 'github') : ?>
                             <?php self::render_github_icon('ragstat-deploy-tab__github-icon'); ?>
@@ -937,7 +1002,9 @@ final class Admin
                 <?php endforeach; ?>
             </nav>
             <div class="ragstat-deploy-panel">
-                <?php if ($current_deploy_tab === 'zip') : ?>
+                <?php if ($current_deploy_tab === 'easy-setup') : ?>
+                    <?php self::render_easy_setup($settings); ?>
+                <?php elseif ($current_deploy_tab === 'zip') : ?>
                     <section class="ragstat-deploy-card" aria-labelledby="ragstat-deploy-zip-title">
                         <span class="ragstat-deploy-card__icon dashicons dashicons-media-archive" aria-hidden="true"></span>
                         <div class="ragstat-deploy-card__content">
@@ -1033,6 +1100,96 @@ final class Admin
                 <?php endif; ?>
             </div>
         </div>
+        <?php
+    }
+
+    private static function render_easy_setup(array $settings): void
+    {
+        $connection = Managed_Deployer::public_connection();
+        $connected = ! empty($connection['connected']);
+        $available = ! empty($connection['available']);
+        $notice = isset($_GET['managed_notice']) ? sanitize_key(wp_unslash((string) $_GET['managed_notice'])) : '';
+        $message = isset($_GET['managed_message']) ? sanitize_text_field(wp_unslash((string) $_GET['managed_message'])) : '';
+        $target_url = (string) ($settings['target_url'] ?? home_url());
+        $status = Plugin::public_status();
+        $export_active = in_array((string) ($status['state'] ?? ''), ['queued', 'running'], true);
+        ?>
+        <?php if ($notice === 'connected') : ?>
+            <div class="notice notice-success inline is-dismissible"><p><?php esc_html_e('Cloudflare is connected. Your site is ready for one-click publishing.', 'ragnus-static-publisher'); ?></p></div>
+        <?php elseif ($notice === 'disconnected') : ?>
+            <div class="notice notice-success inline is-dismissible"><p><?php esc_html_e('Cloudflare connection was removed from this site.', 'ragnus-static-publisher'); ?></p></div>
+        <?php elseif ($notice === 'error') : ?>
+            <div class="notice notice-error inline"><p><?php echo esc_html($message !== '' ? $message : __('Cloudflare could not be connected. Try again.', 'ragnus-static-publisher')); ?></p></div>
+        <?php endif; ?>
+
+        <section class="ragstat-easy-setup <?php echo $connected ? 'is-connected' : ''; ?>" aria-labelledby="ragstat-easy-setup-title">
+            <div class="ragstat-easy-setup__hero">
+                <span class="ragstat-deploy-card__icon ragstat-deploy-card__cloudflare-icon" aria-hidden="true"><?php self::render_cloudflare_icon('ragstat-cloudflare-icon'); ?></span>
+                <div>
+                    <span class="ragstat-easy-setup__eyebrow"><?php esc_html_e('Recommended', 'ragnus-static-publisher'); ?></span>
+                    <h3 id="ragstat-easy-setup-title"><?php echo $connected ? esc_html__('Your site is ready to publish', 'ragnus-static-publisher') : esc_html__('Publish on Cloudflare in three steps', 'ragnus-static-publisher'); ?></h3>
+                    <p><?php echo $connected ? esc_html__('Prepare the site files and publish them without managing GitHub, webhooks, or API keys.', 'ragnus-static-publisher') : esc_html__('You only connect your Cloudflare account and choose the live address. Ragnus handles the technical deployment steps.', 'ragnus-static-publisher'); ?></p>
+                </div>
+            </div>
+
+            <ol class="ragstat-setup-steps">
+                <li class="is-complete">
+                    <span class="ragstat-setup-steps__number" aria-hidden="true">1</span>
+                    <div><strong><?php esc_html_e('Site address', 'ragnus-static-publisher'); ?></strong><span><?php echo esc_html($target_url); ?></span></div>
+                    <a href="<?php echo esc_url(self::settings_page_url('general')); ?>"><?php esc_html_e('Change', 'ragnus-static-publisher'); ?></a>
+                </li>
+                <li class="<?php echo $connected ? 'is-complete' : 'is-current'; ?>">
+                    <span class="ragstat-setup-steps__number" aria-hidden="true">2</span>
+                    <div>
+                        <strong><?php esc_html_e('Cloudflare account', 'ragnus-static-publisher'); ?></strong>
+                        <span><?php echo $connected ? esc_html((string) ($connection['account_label'] ?: __('Connected', 'ragnus-static-publisher'))) : esc_html__('Not connected yet', 'ragnus-static-publisher'); ?></span>
+                    </div>
+                    <?php if (! $connected && $available) : ?>
+                        <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                            <input type="hidden" name="action" value="ragnus_static_managed_connect">
+                            <?php wp_nonce_field('ragnus_static_managed_connect'); ?>
+                            <button class="button button-primary" type="submit"><?php esc_html_e('Connect Cloudflare', 'ragnus-static-publisher'); ?></button>
+                        </form>
+                    <?php endif; ?>
+                </li>
+                <li class="<?php echo $connected ? 'is-current' : ''; ?>">
+                    <span class="ragstat-setup-steps__number" aria-hidden="true">3</span>
+                    <div>
+                        <strong><?php esc_html_e('Publish the site', 'ragnus-static-publisher'); ?></strong>
+                        <span><?php esc_html_e('Site files are prepared, checked, and uploaded automatically.', 'ragnus-static-publisher'); ?></span>
+                    </div>
+                </li>
+            </ol>
+
+            <?php if (! $available) : ?>
+                <div class="ragstat-service-unavailable" role="status">
+                    <span class="dashicons dashicons-info-outline" aria-hidden="true"></span>
+                    <div>
+                        <strong><?php esc_html_e('Easy Setup service is not active in this package yet.', 'ragnus-static-publisher'); ?></strong>
+                        <p><?php esc_html_e('The plugin owner must configure the Ragnus deployment service before customers can connect Cloudflare.', 'ragnus-static-publisher'); ?></p>
+                        <details><summary><?php esc_html_e('Technical setup', 'ragnus-static-publisher'); ?></summary><code>RAGSTAT_DEPLOY_SERVICE_URL</code></details>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <div class="ragstat-easy-setup__actions">
+                <?php if ($connected) : ?>
+                    <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                        <input type="hidden" name="action" value="ragnus_static_export">
+                        <?php wp_nonce_field('ragnus_static_export'); ?>
+                        <?php submit_button(__('Prepare and Publish Site', 'ragnus-static-publisher'), 'primary', 'submit', false, $export_active ? ['disabled' => 'disabled'] : []); ?>
+                    </form>
+                    <?php if (! empty($connection['deployment_url'])) : ?><a class="button" href="<?php echo esc_url((string) $connection['deployment_url']); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('View Live Site', 'ragnus-static-publisher'); ?></a><?php endif; ?>
+                    <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                        <input type="hidden" name="action" value="ragnus_static_managed_disconnect">
+                        <?php wp_nonce_field('ragnus_static_managed_disconnect'); ?>
+                        <button class="button button-link-delete" type="submit" data-ragstat-confirm="<?php echo esc_attr__('Remove the Cloudflare connection from this site?', 'ragnus-static-publisher'); ?>"><?php esc_html_e('Disconnect', 'ragnus-static-publisher'); ?></button>
+                    </form>
+                <?php else : ?>
+                    <a class="button" href="<?php echo esc_url(self::deploy_page_url('github')); ?>"><?php esc_html_e('Use Advanced Setup', 'ragnus-static-publisher'); ?></a>
+                <?php endif; ?>
+            </div>
+        </section>
         <?php
     }
 

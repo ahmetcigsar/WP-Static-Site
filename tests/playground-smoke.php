@@ -43,6 +43,17 @@ foreach (['sftp_host', 'sftp_username', 'sftp_password', 'sftp_remote_path', 'sf
         exit(1);
     }
 }
+if (($settings['deployment_mode'] ?? '') !== 'managed') {
+    fwrite(STDERR, "Yeni kurulum için Kolay Kurulum modu varsayılan değil.\n");
+    exit(1);
+}
+$legacy_settings = ['deployment_webhook_url' => 'https://api.github.com/repos/example/legacy/dispatches'];
+update_option(Ragnus\StaticPublisher\Plugin::SETTINGS_KEY, $legacy_settings);
+if ((Ragnus\StaticPublisher\Plugin::settings()['deployment_mode'] ?? '') !== 'advanced') {
+    fwrite(STDERR, "Mevcut webhook kurulumu otomatik olarak Gelişmiş moda taşınmadı.\n");
+    exit(1);
+}
+delete_option(Ragnus\StaticPublisher\Plugin::SETTINGS_KEY);
 $language_defaults = Ragnus\StaticPublisher\Plugin::language_settings();
 $site_language = Ragnus\StaticPublisher\Language_Routing::site_language();
 $default_supported_languages = Ragnus\StaticPublisher\Language_Routing::parse_languages((string) ($language_defaults['supported_languages'] ?? ''));
@@ -138,6 +149,16 @@ if (($sanitized_zip['archive_retention'] ?? 0) !== 12
     || ($sanitized_zip['target_url'] ?? '') !== ($settings['target_url'] ?? '')
     || ($sanitized_zip['maximum_urls'] ?? 0) !== ($settings['maximum_urls'] ?? 0)) {
     fwrite(STDERR, "ZIP saklama ayarı diğer General ayarları korunarak kaydedilmedi.\n");
+    exit(1);
+}
+
+$sanitized_deploy = Ragnus\StaticPublisher\Admin::sanitize([
+    '_section' => 'deploy',
+    'deployment_webhook_url' => 'https://api.github.com/repos/example/deploy/dispatches',
+    'deployment_webhook_token' => 'test-token',
+]);
+if (($sanitized_deploy['deployment_mode'] ?? '') !== 'advanced') {
+    fwrite(STDERR, "GitHub ayarı kaydedildiğinde Gelişmiş Kurulum modu seçilmedi.\n");
     exit(1);
 }
 
@@ -589,6 +610,7 @@ if (! str_contains($settings_html, 'Static Site') || ! str_contains($settings_ht
 }
 
 foreach ([
+    'easy-setup' => ['Easy Setup', 'Publish on Cloudflare in three steps', 'Site address', 'Use Advanced Setup'],
     'zip' => ['ZIP Files', 'Number of ZIPs to Store', 'Save ZIP Settings', 'value="zip"'],
     'github' => ['GitHub Deployment Webhook', 'Save Deploy Settings'],
     'cloudflare' => ['Configuration required', 'Open Cloudflare', 'Cloudflare Deploy', 'Deploy to Cloudflare'],
@@ -600,7 +622,7 @@ foreach ([
     Ragnus\StaticPublisher\Admin::render();
     $deploy_html = (string) ob_get_clean();
 
-    foreach (['ZIP File', 'GitHub', 'Cloudflare', 'SFTP', 'Auto Deploy', 'ragstat-deploy-tabs', 'deploy_tab=' . $deploy_tab, ...$panel_expectations] as $expected) {
+    foreach (['Easy Setup', 'ZIP File', 'GitHub', 'Cloudflare', 'SFTP', 'Auto Deploy', 'ragstat-deploy-tabs', 'deploy_tab=' . $deploy_tab, ...$panel_expectations] as $expected) {
         if (! str_contains($deploy_html, $expected)) {
             fwrite(STDERR, "Deploy {$deploy_tab} sekmesinde beklenen içerik bulunamadı: {$expected}\n");
             exit(1);

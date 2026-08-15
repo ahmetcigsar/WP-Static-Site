@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Ragnus Static Publisher 1.26.0\n"
+"Project-Id-Version: Ragnus Static Publisher 1.27.0\n"
 "Report-Msgid-Bugs-To: info@ragnus.co\n"
 "POT-Creation-Date: 2026-08-15 21:39+0300\n"
 "PO-Revision-Date: 2026-08-13 00:17+0300\n"
@@ -530,12 +530,6 @@ msgstr "SFTP"
 #: ragnus-static-publisher/includes/class-admin.php:914
 msgid "Auto Deploy"
 msgstr "Otomatik Deploy"
-
-#: ragnus-static-publisher/includes/class-admin.php:921
-msgid "Choose how to publish your static site and configure automatic deploys."
-msgstr ""
-"Statik sitenizi nasıl yayınlayacağınızı seçin ve otomatik deploy ayarlarını "
-"yapılandırın."
 
 #: ragnus-static-publisher/includes/class-admin.php:945
 msgid ""
@@ -2259,33 +2253,6 @@ msgstr "[Ragnus Static Publisher] Deployment webhook gönderilemedi."
 msgid "Export completed: %d URL"
 msgstr "Export tamamlandı: %d URL"
 
-#: ragnus-static-publisher/includes/class-secret-store.php:33
-msgid ""
-"The SFTP password could not be encrypted. Enable Sodium or OpenSSL in PHP."
-msgstr ""
-"SFTP parolası şifrelenemedi. PHP'de Sodium veya OpenSSL'i etkinleştirin."
-
-#: ragnus-static-publisher/includes/class-secret-store.php:49
-#: ragnus-static-publisher/includes/class-secret-store.php:60
-#: ragnus-static-publisher/includes/class-secret-store.php:79
-msgid "The saved SFTP password is invalid. Save the password again."
-msgstr "Kayıtlı SFTP parolası geçersiz. Parolayı yeniden kaydedin."
-
-#: ragnus-static-publisher/includes/class-secret-store.php:55
-msgid "PHP Sodium is required to read the saved SFTP password."
-msgstr "Kayıtlı SFTP parolasını okumak için PHP Sodium gereklidir."
-
-#: ragnus-static-publisher/includes/class-secret-store.php:66
-#: ragnus-static-publisher/includes/class-secret-store.php:91
-msgid ""
-"The saved SFTP password could not be decrypted. Save the password again."
-msgstr ""
-"Kayıtlı SFTP parolasının şifresi çözülemedi. Parolayı yeniden kaydedin."
-
-#: ragnus-static-publisher/includes/class-secret-store.php:74
-msgid "PHP OpenSSL is required to read the saved SFTP password."
-msgstr "Kayıtlı SFTP parolasını okumak için PHP OpenSSL gereklidir."
-
 #: ragnus-static-publisher/includes/class-block-seo-integration.php:158
 #, php-format
 msgid "%s sitemap could not be exported."
@@ -2518,115 +2485,194 @@ msgstr "SEOPress site haritası export edilemedi."
 msgid "SEOPress robots.txt could not be exported."
 msgstr "SEOPress robots.txt export edilemedi."
 
-#~ msgid "Cloudflare account required"
-#~ msgstr "Cloudflare hesabı gerekir"
+#: ragnus-static-publisher/includes/class-admin.php:792
+msgid "Publish your site with Easy Setup"
+msgstr "Kolay Kurulum ile sitenizi yayınlayın"
 
-#~ msgid "Files"
-#~ msgstr "Dosyalar"
+#: ragnus-static-publisher/includes/class-admin.php:793
+msgid ""
+"Connect Cloudflare once, then publish changes with one button. GitHub and "
+"technical keys stay hidden."
+msgstr ""
+"Cloudflare hesabınızı bir kez bağlayın, ardından değişiklikleri tek butonla "
+"yayınlayın. GitHub ve teknik anahtarlar gizli kalır."
 
-#~ msgid ""
-#~ "Keep Rank Math robots, canonical, Open Graph and Twitter Card tags. "
-#~ "Internal URLs are converted to the live static domain."
-#~ msgstr ""
-#~ "Rank Math robots, canonical, Open Graph ve Twitter Card etiketlerini "
-#~ "korur. İç URL'ler canlı statik domaine dönüştürülür."
+#: ragnus-static-publisher/includes/class-admin.php:795
+msgid "Start Easy Setup"
+msgstr "Kolay Kurulumu Başlat"
 
-#~ msgid "Include Rank Math outputs in the static site"
-#~ msgstr "Rank Math çıktılarını statik siteye dahil et"
+#: ragnus-static-publisher/includes/class-admin.php:973
+msgid "Easy Setup"
+msgstr "Kolay Kurulum"
 
-#~ msgid ""
-#~ "When disabled, Rank Math metadata and schema blocks are removed and its "
-#~ "sitemap and robots files are not exported."
-#~ msgstr ""
-#~ "Devre dışı olduğunda Rank Math meta veri ve schema blokları kaldırılır; "
-#~ "site haritası ve robots dosyaları export edilmez."
+#: ragnus-static-publisher/includes/class-admin.php:985
+msgid ""
+"Use Easy Setup for one-click publishing. Technical deployment methods remain "
+"available under advanced options."
+msgstr ""
+"Tek tıkla yayınlama için Kolay Kurulumu kullanın. Teknik yayınlama "
+"yöntemleri gelişmiş seçeneklerde kullanılabilir."
 
-#~ msgid ""
-#~ "These settings are preserved, but no Rank Math output will be exported "
-#~ "until the plugin is active."
-#~ msgstr ""
-#~ "Bu ayarlar korunur ancak eklenti etkin olana kadar hiçbir Rank Math "
-#~ "çıktısı export edilmez."
+#: ragnus-static-publisher/includes/class-admin.php:991
+msgid "Advanced options"
+msgstr "Gelişmiş seçenekler"
 
-#~ msgid "Open ZIP Files"
-#~ msgstr "ZIP Dosyalarını Aç"
+#: ragnus-static-publisher/includes/class-admin.php:1118
+msgid "Cloudflare is connected. Your site is ready for one-click publishing."
+msgstr "Cloudflare bağlandı. Siteniz tek tıkla yayınlanmaya hazır."
 
-#~ msgid "Languages"
-#~ msgstr "Diller"
+#: ragnus-static-publisher/includes/class-admin.php:1120
+msgid "Cloudflare connection was removed from this site."
+msgstr "Cloudflare bağlantısı bu siteden kaldırıldı."
 
-#~ msgid ""
-#~ "Keep All in One SEO robots, canonical, Open Graph and Twitter Card tags. "
-#~ "Internal URLs are converted to the live static domain."
-#~ msgstr ""
-#~ "All in One SEO robots, canonical, Open Graph ve Twitter Card etiketlerini "
-#~ "korur. İç URL'ler canlı statik domaine dönüştürülür."
+#: ragnus-static-publisher/includes/class-admin.php:1122
+msgid "Cloudflare could not be connected. Try again."
+msgstr "Cloudflare bağlanamadı. Tekrar deneyin."
 
-#~ msgid "Include All in One SEO outputs in the static site"
-#~ msgstr "All in One SEO çıktılarını statik siteye dahil et"
+#: ragnus-static-publisher/includes/class-admin.php:1129
+msgid "Recommended"
+msgstr "Önerilen"
 
-#~ msgid ""
-#~ "When disabled, All in One SEO metadata and schema blocks are removed and "
-#~ "its sitemap and robots files are not exported."
-#~ msgstr ""
-#~ "Devre dışı olduğunda All in One SEO meta veri ve schema blokları "
-#~ "kaldırılır; site haritası ve robots dosyaları export edilmez."
+#: ragnus-static-publisher/includes/class-admin.php:1130
+msgid "Publish on Cloudflare in three steps"
+msgstr "Üç adımda Cloudflare'da yayınlayın"
 
-#~ msgid ""
-#~ "These settings are preserved, but no All in One SEO output will be "
-#~ "exported until the plugin is active."
-#~ msgstr ""
-#~ "Bu ayarlar korunur ancak eklenti etkin olana kadar hiçbir All in One SEO "
-#~ "çıktısı export edilmez."
+#: ragnus-static-publisher/includes/class-admin.php:1130
+msgid "Your site is ready to publish"
+msgstr "Siteniz yayınlanmaya hazır"
 
-#~ msgid ""
-#~ "Keep SEOPress robots, description, canonical, Open Graph and Twitter Card "
-#~ "tags. Internal URLs are converted to the live static domain."
-#~ msgstr ""
-#~ "SEOPress robots, açıklama, canonical, Open Graph ve Twitter Card "
-#~ "etiketlerini korur. İç URL'ler canlı statik domaine dönüştürülür."
+#: ragnus-static-publisher/includes/class-admin.php:1131
+msgid ""
+"Prepare the site files and publish them without managing GitHub, webhooks, "
+"or API keys."
+msgstr ""
+"GitHub, webhook veya API anahtarı yönetmeden site dosyalarını hazırlayın ve "
+"yayınlayın."
 
-#~ msgid "Include SEOPress outputs in the static site"
-#~ msgstr "SEOPress çıktılarını statik siteye dahil et"
+#: ragnus-static-publisher/includes/class-admin.php:1131
+msgid ""
+"You only connect your Cloudflare account and choose the live address. Ragnus "
+"handles the technical deployment steps."
+msgstr ""
+"Yalnızca Cloudflare hesabınızı bağlayıp canlı adresi seçin. Teknik yayınlama "
+"adımlarını Ragnus yönetir."
 
-#~ msgid ""
-#~ "When disabled, SEOPress metadata and schema outputs are removed and its "
-#~ "sitemap and robots files are not exported."
-#~ msgstr ""
-#~ "Devre dışı olduğunda SEOPress meta veri ve schema çıktıları kaldırılır; "
-#~ "site haritası ve robots dosyaları export edilmez."
+#: ragnus-static-publisher/includes/class-admin.php:1138
+msgid "Site address"
+msgstr "Site adresi"
 
-#~ msgid ""
-#~ "These settings are preserved, but no SEOPress output will be exported "
-#~ "until the plugin is active."
-#~ msgstr ""
-#~ "Bu ayarlar korunur ancak eklenti etkin olana kadar hiçbir SEOPress "
-#~ "çıktısı export edilmez."
+#: ragnus-static-publisher/includes/class-admin.php:1139
+msgid "Change"
+msgstr "Değiştir"
 
-#~ msgid ""
-#~ "This server's PHP cURL extension does not include SFTP protocol support. "
-#~ "Install libcurl with SFTP support before using this deployment method."
-#~ msgstr ""
-#~ "Bu sunucunun PHP cURL eklentisi SFTP protokol desteği içermiyor. Bu "
-#~ "yayınlama yöntemini kullanmadan önce SFTP destekli libcurl kurun."
+#: ragnus-static-publisher/includes/class-admin.php:1144
+msgid "Cloudflare account"
+msgstr "Cloudflare hesabı"
 
-#~ msgid "cURL SFTP"
-#~ msgstr "cURL SFTP"
+#: ragnus-static-publisher/includes/class-admin.php:1145
+msgid "Connected"
+msgstr "Bağlandı"
 
-#~ msgid "The PHP cURL extension supports the SFTP protocol."
-#~ msgstr "PHP cURL eklentisi SFTP protokolünü destekliyor."
+#: ragnus-static-publisher/includes/class-admin.php:1145
+msgid "Not connected yet"
+msgstr "Henüz bağlanmadı"
 
-#~ msgid ""
-#~ "The PHP cURL extension does not support SFTP. Install libcurl with SFTP "
-#~ "support to use SFTP deploy."
-#~ msgstr ""
-#~ "PHP cURL eklentisi SFTP'yi desteklemiyor. SFTP yayınlama için SFTP "
-#~ "destekli libcurl kurun."
+#: ragnus-static-publisher/includes/class-admin.php:1151
+msgid "Connect Cloudflare"
+msgstr "Cloudflare'ı Bağla"
 
-#~ msgid ""
-#~ "The PHP cURL extension does not support SFTP. Install libcurl with SFTP "
-#~ "support."
-#~ msgstr ""
-#~ "PHP cURL eklentisi SFTP'yi desteklemiyor. SFTP destekli libcurl kurun."
+#: ragnus-static-publisher/includes/class-admin.php:1158
+msgid "Publish the site"
+msgstr "Siteyi yayınla"
 
-#~ msgid "GitHub Settings"
-#~ msgstr "GitHub Ayarları"
+#: ragnus-static-publisher/includes/class-admin.php:1159
+msgid "Site files are prepared, checked, and uploaded automatically."
+msgstr "Site dosyaları otomatik olarak hazırlanır, kontrol edilir ve yüklenir."
+
+#: ragnus-static-publisher/includes/class-admin.php:1168
+msgid "Easy Setup service is not active in this package yet."
+msgstr "Kolay Kurulum servisi bu pakette henüz etkin değil."
+
+#: ragnus-static-publisher/includes/class-admin.php:1169
+msgid ""
+"The plugin owner must configure the Ragnus deployment service before "
+"customers can connect Cloudflare."
+msgstr ""
+"Müşterilerin Cloudflare'ı bağlayabilmesi için eklenti sahibi Ragnus "
+"yayınlama servisini yapılandırmalıdır."
+
+#: ragnus-static-publisher/includes/class-admin.php:1170
+msgid "Technical setup"
+msgstr "Teknik kurulum"
+
+#: ragnus-static-publisher/includes/class-admin.php:1180
+msgid "Prepare and Publish Site"
+msgstr "Siteyi Hazırla ve Yayınla"
+
+#: ragnus-static-publisher/includes/class-admin.php:1182
+msgid "View Live Site"
+msgstr "Canlı Siteyi Görüntüle"
+
+#: ragnus-static-publisher/includes/class-admin.php:1186
+msgid "Disconnect"
+msgstr "Bağlantıyı Kes"
+
+#: ragnus-static-publisher/includes/class-admin.php:1186
+msgid "Remove the Cloudflare connection from this site?"
+msgstr "Cloudflare bağlantısı bu siteden kaldırılsın mı?"
+
+#: ragnus-static-publisher/includes/class-admin.php:1189
+msgid "Use Advanced Setup"
+msgstr "Gelişmiş Kurulumu Kullan"
+
+#: ragnus-static-publisher/includes/class-managed-deployer.php:69
+msgid "Easy Setup service is not configured for this plugin package."
+msgstr "Kolay Kurulum servisi bu eklenti paketi için yapılandırılmamış."
+
+#: ragnus-static-publisher/includes/class-managed-deployer.php:86
+msgid "The Cloudflare connection request has expired. Start Easy Setup again."
+msgstr ""
+"Cloudflare bağlantı isteğinin süresi doldu. Kolay Kurulumu yeniden başlatın."
+
+#: ragnus-static-publisher/includes/class-managed-deployer.php:107
+msgid "Cloudflare connection could not be completed. Try connecting again."
+msgstr "Cloudflare bağlantısı tamamlanamadı. Yeniden bağlanmayı deneyin."
+
+#: ragnus-static-publisher/includes/class-managed-deployer.php:114
+msgid "The deployment service returned an invalid connection response."
+msgstr "Yayınlama servisi geçersiz bir bağlantı yanıtı döndürdü."
+
+#: ragnus-static-publisher/includes/class-managed-deployer.php:161
+msgid "The site package could not be verified before publishing."
+msgstr "Site paketi yayınlamadan önce doğrulanamadı."
+
+#: ragnus-static-publisher/includes/class-managed-deployer.php:198
+msgid ""
+"Cloudflare publishing could not be started. Check the connection and try "
+"again."
+msgstr ""
+"Cloudflare yayını başlatılamadı. Bağlantıyı kontrol edip tekrar deneyin."
+
+#: ragnus-static-publisher/includes/class-secret-store.php:33
+msgid "The secret could not be encrypted. Enable Sodium or OpenSSL in PHP."
+msgstr "Gizli bilgi şifrelenemedi. PHP'de Sodium veya OpenSSL'i etkinleştirin."
+
+#: ragnus-static-publisher/includes/class-secret-store.php:49
+#: ragnus-static-publisher/includes/class-secret-store.php:60
+#: ragnus-static-publisher/includes/class-secret-store.php:79
+msgid "The saved secret is invalid. Save the connection again."
+msgstr "Kaydedilmiş gizli bilgi geçersiz. Bağlantıyı yeniden kaydedin."
+
+#: ragnus-static-publisher/includes/class-secret-store.php:55
+msgid "PHP Sodium is required to read the saved secret."
+msgstr "Kaydedilmiş gizli bilgiyi okumak için PHP Sodium gereklidir."
+
+#: ragnus-static-publisher/includes/class-secret-store.php:66
+#: ragnus-static-publisher/includes/class-secret-store.php:91
+msgid "The saved secret could not be decrypted. Save the connection again."
+msgstr ""
+"Kaydedilmiş gizli bilginin şifresi çözülemedi. Bağlantıyı yeniden kaydedin."
+
+#: ragnus-static-publisher/includes/class-secret-store.php:74
+msgid "PHP OpenSSL is required to read the saved secret."
+msgstr "Kaydedilmiş gizli bilgiyi okumak için PHP OpenSSL gereklidir."

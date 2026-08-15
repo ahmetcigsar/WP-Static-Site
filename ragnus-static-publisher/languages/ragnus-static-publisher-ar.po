@@ -1,7 +1,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Ragnus Static Publisher 1.26.0\n"
+"Project-Id-Version: Ragnus Static Publisher 1.27.0\n"
 "Report-Msgid-Bugs-To: info@ragnus.co\n"
 "POT-Creation-Date: 2026-08-15 21:39+0300\n"
 "PO-Revision-Date: 2026-08-12 22:57+0300\n"
@@ -531,10 +531,6 @@ msgstr ""
 #: ragnus-static-publisher/includes/class-admin.php:914
 msgid "Auto Deploy"
 msgstr "النشر التلقائي"
-
-#: ragnus-static-publisher/includes/class-admin.php:921
-msgid "Choose how to publish your static site and configure automatic deploys."
-msgstr "اختر كيفية نشر موقعك الثابت وإعداد عمليات النشر التلقائي."
 
 #: ragnus-static-publisher/includes/class-admin.php:945
 msgid ""
@@ -2199,32 +2195,6 @@ msgstr "[ناشر Ragnus Static] تعذر إرسال خطاف الويب الخ�
 msgid "Export completed: %d URL"
 msgstr "اكتمل التصدير: عنوان URL لـ %d"
 
-#: ragnus-static-publisher/includes/class-secret-store.php:33
-msgid ""
-"The SFTP password could not be encrypted. Enable Sodium or OpenSSL in PHP."
-msgstr ""
-
-#: ragnus-static-publisher/includes/class-secret-store.php:49
-#: ragnus-static-publisher/includes/class-secret-store.php:60
-#: ragnus-static-publisher/includes/class-secret-store.php:79
-msgid "The saved SFTP password is invalid. Save the password again."
-msgstr ""
-
-#: ragnus-static-publisher/includes/class-secret-store.php:55
-msgid "PHP Sodium is required to read the saved SFTP password."
-msgstr ""
-
-#: ragnus-static-publisher/includes/class-secret-store.php:66
-#: ragnus-static-publisher/includes/class-secret-store.php:91
-#, fuzzy
-msgid ""
-"The saved SFTP password could not be decrypted. Save the password again."
-msgstr "تعذر تحميل فهرس البحث. يرجى المحاولة مرة أخرى في وقت لاحق."
-
-#: ragnus-static-publisher/includes/class-secret-store.php:74
-msgid "PHP OpenSSL is required to read the saved SFTP password."
-msgstr ""
-
 #: ragnus-static-publisher/includes/class-block-seo-integration.php:158
 #, php-format
 msgid "%s sitemap could not be exported."
@@ -2453,21 +2423,181 @@ msgstr ""
 msgid "SEOPress robots.txt could not be exported."
 msgstr ""
 
-#~ msgid "Cloudflare account required"
-#~ msgstr "مطلوب حساب Cloudflare"
+#: ragnus-static-publisher/includes/class-admin.php:792
+msgid "Publish your site with Easy Setup"
+msgstr ""
 
-#~ msgid "Files"
-#~ msgstr "الملفات"
+#: ragnus-static-publisher/includes/class-admin.php:793
+msgid ""
+"Connect Cloudflare once, then publish changes with one button. GitHub and "
+"technical keys stay hidden."
+msgstr ""
 
-#~ msgid "Open ZIP Files"
-#~ msgstr "افتح ملفات ZIP"
+#: ragnus-static-publisher/includes/class-admin.php:795
+msgid "Start Easy Setup"
+msgstr ""
 
-#~ msgid "Languages"
-#~ msgstr "اللغات"
+#: ragnus-static-publisher/includes/class-admin.php:973
+msgid "Easy Setup"
+msgstr ""
 
-#, fuzzy
-#~ msgid "cURL SFTP"
-#~ msgstr "حليقة"
+#: ragnus-static-publisher/includes/class-admin.php:985
+msgid ""
+"Use Easy Setup for one-click publishing. Technical deployment methods remain "
+"available under advanced options."
+msgstr ""
 
-#~ msgid "GitHub Settings"
-#~ msgstr "إعدادات جيثب"
+#: ragnus-static-publisher/includes/class-admin.php:991
+msgid "Advanced options"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1118
+msgid "Cloudflare is connected. Your site is ready for one-click publishing."
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1120
+msgid "Cloudflare connection was removed from this site."
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1122
+msgid "Cloudflare could not be connected. Try again."
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1129
+msgid "Recommended"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1130
+msgid "Publish on Cloudflare in three steps"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1130
+msgid "Your site is ready to publish"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1131
+msgid ""
+"Prepare the site files and publish them without managing GitHub, webhooks, "
+"or API keys."
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1131
+msgid ""
+"You only connect your Cloudflare account and choose the live address. Ragnus "
+"handles the technical deployment steps."
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1138
+msgid "Site address"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1139
+msgid "Change"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1144
+msgid "Cloudflare account"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1145
+msgid "Connected"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1145
+msgid "Not connected yet"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1151
+msgid "Connect Cloudflare"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1158
+msgid "Publish the site"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1159
+msgid "Site files are prepared, checked, and uploaded automatically."
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1168
+msgid "Easy Setup service is not active in this package yet."
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1169
+msgid ""
+"The plugin owner must configure the Ragnus deployment service before "
+"customers can connect Cloudflare."
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1170
+msgid "Technical setup"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1180
+msgid "Prepare and Publish Site"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1182
+msgid "View Live Site"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1186
+msgid "Disconnect"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1186
+msgid "Remove the Cloudflare connection from this site?"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1189
+msgid "Use Advanced Setup"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-managed-deployer.php:69
+msgid "Easy Setup service is not configured for this plugin package."
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-managed-deployer.php:86
+msgid "The Cloudflare connection request has expired. Start Easy Setup again."
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-managed-deployer.php:107
+msgid "Cloudflare connection could not be completed. Try connecting again."
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-managed-deployer.php:114
+msgid "The deployment service returned an invalid connection response."
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-managed-deployer.php:161
+msgid "The site package could not be verified before publishing."
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-managed-deployer.php:198
+msgid ""
+"Cloudflare publishing could not be started. Check the connection and try "
+"again."
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-secret-store.php:33
+msgid "The secret could not be encrypted. Enable Sodium or OpenSSL in PHP."
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-secret-store.php:49
+#: ragnus-static-publisher/includes/class-secret-store.php:60
+#: ragnus-static-publisher/includes/class-secret-store.php:79
+msgid "The saved secret is invalid. Save the connection again."
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-secret-store.php:55
+msgid "PHP Sodium is required to read the saved secret."
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-secret-store.php:66
+#: ragnus-static-publisher/includes/class-secret-store.php:91
+msgid "The saved secret could not be decrypted. Save the connection again."
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-secret-store.php:74
+msgid "PHP OpenSSL is required to read the saved secret."
+msgstr ""

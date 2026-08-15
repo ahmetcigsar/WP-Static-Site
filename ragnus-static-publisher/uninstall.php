@@ -15,6 +15,7 @@ delete_option('ragnus_static_indexnow_status');
 delete_option('ragnus_static_status');
 delete_option('ragnus_static_export_dirty');
 delete_option('ragnus_static_plugin_version');
+delete_option('ragnus_static_managed_connection');
 delete_option('ragnus_static_diagnostics');
 delete_option('ragnus_static_sftp_status');
 delete_transient('ragnus_static_export_lock');

@@ -44,6 +44,9 @@ final class Plugin
         add_action('admin_post_ragnus_static_archive_bulk', [Admin::class, 'archive_bulk_action']);
         add_action('admin_post_ragnus_static_sftp_test', [Admin::class, 'test_sftp_connection']);
         add_action('admin_post_ragnus_static_sftp_deploy', [Admin::class, 'deploy_latest_with_sftp']);
+        add_action('admin_post_ragnus_static_managed_connect', [Admin::class, 'start_managed_connection']);
+        add_action('admin_post_ragnus_static_managed_callback', [Admin::class, 'complete_managed_connection']);
+        add_action('admin_post_ragnus_static_managed_disconnect', [Admin::class, 'disconnect_managed_connection']);
         add_action('update_option_' . self::SETTINGS_KEY, [self::class, 'apply_archive_retention'], 10, 2);
         add_action(self::CRON_HOOK, [self::class, 'run_scheduled'], 10, 1);
         add_action(self::INDEXNOW_CRON_HOOK, [self::class, 'notify_indexnow'], 10, 1);
@@ -136,12 +139,15 @@ final class Plugin
 
     public static function settings(): array
     {
-        return wp_parse_args(get_option(self::SETTINGS_KEY, []), array_merge([
+        $stored = get_option(self::SETTINGS_KEY, []);
+        $stored = is_array($stored) ? $stored : [];
+        return wp_parse_args($stored, array_merge([
             'target_url' => home_url(),
             'maximum_urls' => 2000,
             'excluded_paths' => "/wp-admin/\n/wp-login.php\n/wp-json/\n/feed/",
             'auto_export' => '0',
             'archive_retention' => 5,
+            'deployment_mode' => (string) ($stored['deployment_webhook_url'] ?? '') !== '' ? 'advanced' : 'managed',
             'deployment_webhook_url' => '',
             'deployment_webhook_token' => '',
             'sftp_auto_deploy' => '0',
@@ -170,6 +176,15 @@ final class Plugin
             'auto_export_theme' => '1',
             'auto_export_site_settings' => '1',
         ];
+    }
+
+    public static function cloudflare_deployment_configured(): bool
+    {
+        $settings = self::settings();
+        if ((string) ($settings['deployment_mode'] ?? 'advanced') === 'managed') {
+            return Managed_Deployer::configured();
+        }
+        return (string) ($settings['deployment_webhook_url'] ?? '') !== '';
     }
 
     public static function hide_defaults(): array
@@ -623,11 +638,13 @@ final class Plugin
 
         $source = (string) (self::status()['source'] ?? '');
         $deployment_succeeded = false;
-        if ($source !== 'ci-manual') {
+        $settings = self::settings();
+        if ((string) ($settings['deployment_mode'] ?? 'advanced') === 'managed' && Managed_Deployer::configured()) {
+            Managed_Deployer::notify_export($job_id, $manifest);
+        } elseif ((string) ($settings['deployment_mode'] ?? 'advanced') === 'advanced' && $source !== 'ci-manual') {
             self::notify_deployment_webhook($job_id, $manifest);
         }
 
-        $settings = self::settings();
         if ((string) ($settings['sftp_auto_deploy'] ?? '0') === '1') {
             try {
                 SFTP_Deployer::deploy_job($job_id, $settings);

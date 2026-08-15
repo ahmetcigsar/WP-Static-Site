@@ -44,16 +44,44 @@ final class REST_Controller
             'callback' => [self::class, 'job_artifact'],
             'permission_callback' => [self::class, 'can_export'],
         ]);
+        register_rest_route('ragnus-static/v1', '/exports/(?P<job_id>[A-Za-z0-9-]+)/managed-artifact', [
+            'methods' => 'GET',
+            'callback' => [self::class, 'job_artifact'],
+            'permission_callback' => [self::class, 'can_download_managed_artifact'],
+        ]);
         register_rest_route('ragnus-static/v1', '/deployments/callback', [
             'methods' => 'POST',
             'callback' => [self::class, 'deployment_callback'],
             'permission_callback' => [self::class, 'can_export'],
+        ]);
+        register_rest_route('ragnus-static/v1', '/managed-deployments/callback', [
+            'methods' => 'POST',
+            'callback' => [self::class, 'deployment_callback'],
+            'permission_callback' => [self::class, 'can_receive_managed_callback'],
         ]);
     }
 
     public static function can_export(): bool
     {
         return current_user_can(Plugin::EXPORT_CAPABILITY);
+    }
+
+    public static function can_download_managed_artifact(WP_REST_Request $request): bool
+    {
+        return Managed_Deployer::verify_artifact(
+            sanitize_file_name((string) $request['job_id']),
+            absint($request->get_param('expires')),
+            sanitize_text_field((string) $request->get_param('signature'))
+        );
+    }
+
+    public static function can_receive_managed_callback(WP_REST_Request $request): bool
+    {
+        return Managed_Deployer::verify_callback(
+            sanitize_text_field((string) $request->get_header('x-ragnus-timestamp')),
+            sanitize_text_field((string) $request->get_header('x-ragnus-signature')),
+            (string) $request->get_body()
+        );
     }
 
     public static function create(WP_REST_Request $request): WP_REST_Response

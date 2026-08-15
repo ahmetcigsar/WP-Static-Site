@@ -4,6 +4,7 @@
 
 - WordPress içerik kaynağı ve export motorudur.
 - Cloudflare kimlik bilgileri yalnızca CI secrets içinde tutulur.
+- Kolay Kurulum modunda Cloudflare OAuth erişimi yalnızca yönetilen deployment servisinde tutulur; WordPress yalnızca siteye özel, şifrelenmiş servis erişim ve callback anahtarlarını saklar.
 - REST uçları WordPress Application Password ve eklentiye ait `ragnus_static_export` yetkisi ister.
 - Cloudflare CI deployment'ı tam ve atomik bir statik snapshot'tır; SFTP akışı dosyaları doğrudan hedef dizine yükler.
 - Form, arama, yorum, üyelik ve e-ticaret bu MVP'nin kapsamında değildir.
@@ -50,6 +51,7 @@
 - Bu kullanıcı için yalnızca Application Password üretilmelidir.
 - WordPress yönetim parolası CI içine konmamalıdır.
 - `WP_APP_PASSWORD` ve Cloudflare token aynı sistem dışında paylaşılmamalıdır.
+- Yönetilen akışta artifact indirme URL'si 15 dakika geçerlidir; callback gövdesi siteye özel secret ile HMAC-SHA256 olarak imzalanır ve beş dakikalık zaman penceresinde kabul edilir.
 - Deploy callback'i arşivdeki job ID ve SHA-256 ile eşleşmeyen durum güncellemelerini reddeder.
 - Cloudflare token sadece hedef Pages projesini düzenleyebilecek kapsamda olmalıdır.
 - Otomatik GitHub `repository_dispatch` tetiklemesinde WordPress'te tutulan fine-grained token yalnızca ilgili repository için `Contents: write` yetkisine sahip olmalıdır.

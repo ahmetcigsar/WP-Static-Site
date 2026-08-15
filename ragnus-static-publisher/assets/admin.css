@@ -2283,6 +2283,188 @@ body.ragstat-modal-open {
     to { background-position: 0 0; }
 }
 
+.ragstat-deploy-tabs__label {
+    margin: 12px 10px 2px;
+    color: #64748b;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.ragstat-setup-callout {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 18px;
+    align-items: center;
+    margin-bottom: 24px;
+    padding: 20px 22px;
+    border: 1px solid #bfdbfe;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #eff6ff, #fff);
+}
+
+.ragstat-setup-callout__icon {
+    width: 44px;
+    height: 44px;
+    color: #fff;
+    border-radius: 12px;
+    background: var(--ragstat-primary);
+    font-size: 24px;
+    line-height: 44px;
+    text-align: center;
+}
+
+.ragstat-setup-callout h2,
+.ragstat-easy-setup h3 {
+    margin: 0 0 6px;
+}
+
+.ragstat-setup-callout p,
+.ragstat-easy-setup__hero p {
+    margin: 0;
+    color: var(--ragstat-muted);
+    line-height: 1.55;
+}
+
+.ragstat-easy-setup {
+    padding: 28px;
+    border: 1px solid var(--ragstat-border);
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, .06);
+}
+
+.ragstat-easy-setup.is-connected {
+    border-color: #86efac;
+}
+
+.ragstat-easy-setup__hero {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--ragstat-border);
+}
+
+.ragstat-easy-setup__hero .ragstat-deploy-card__icon {
+    flex: 0 0 48px;
+    margin: 0;
+}
+
+.ragstat-easy-setup__eyebrow {
+    display: inline-block;
+    margin-bottom: 6px;
+    padding: 3px 8px;
+    color: #166534;
+    border-radius: 999px;
+    background: #dcfce7;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.ragstat-setup-steps {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 8px 0;
+    list-style: none;
+}
+
+.ragstat-setup-steps li {
+    display: grid;
+    position: relative;
+    grid-template-columns: 40px minmax(0, 1fr) auto;
+    gap: 14px;
+    align-items: center;
+    min-height: 72px;
+    margin: 0;
+    padding: 12px 0;
+}
+
+.ragstat-setup-steps li:not(:last-child)::after {
+    position: absolute;
+    top: 52px;
+    bottom: -20px;
+    left: 19px;
+    width: 2px;
+    background: #e2e8f0;
+    content: "";
+}
+
+.ragstat-setup-steps__number {
+    display: grid;
+    z-index: 1;
+    width: 38px;
+    height: 38px;
+    place-items: center;
+    color: #64748b;
+    border: 2px solid #cbd5e1;
+    border-radius: 50%;
+    background: #fff;
+    font-weight: 800;
+}
+
+.ragstat-setup-steps .is-complete .ragstat-setup-steps__number {
+    color: #fff;
+    border-color: var(--ragstat-success);
+    background: var(--ragstat-success);
+}
+
+.ragstat-setup-steps .is-current .ragstat-setup-steps__number {
+    color: #fff;
+    border-color: var(--ragstat-primary);
+    background: var(--ragstat-primary);
+    box-shadow: 0 0 0 5px #dbeafe;
+}
+
+.ragstat-setup-steps li > div {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.ragstat-setup-steps li > div span {
+    overflow: hidden;
+    color: var(--ragstat-muted);
+    text-overflow: ellipsis;
+}
+
+.ragstat-service-unavailable {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+    padding: 16px;
+    color: #92400e;
+    border: 1px solid #fde68a;
+    border-radius: 11px;
+    background: #fffbeb;
+}
+
+.ragstat-service-unavailable p {
+    margin: 5px 0;
+}
+
+.ragstat-service-unavailable summary {
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.ragstat-easy-setup__actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 22px;
+}
+
+.ragstat-easy-setup__actions form,
+.ragstat-easy-setup__actions p.submit {
+    margin: 0;
+    padding: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
     .ragstat-admin *,
     .ragstat-admin *::before,
@@ -2295,6 +2477,34 @@ body.ragstat-modal-open {
 }
 
 @media (max-width: 782px) {
+    .ragstat-setup-callout {
+        grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .ragstat-setup-callout .button {
+        grid-column: 1 / -1;
+        width: 100%;
+    }
+
+    .ragstat-setup-steps li {
+        grid-template-columns: 40px minmax(0, 1fr);
+    }
+
+    .ragstat-setup-steps li > a,
+    .ragstat-setup-steps li > form {
+        grid-column: 2;
+        justify-self: start;
+    }
+
+    .ragstat-easy-setup__actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .ragstat-easy-setup__actions form,
+    .ragstat-easy-setup__actions .button {
+        width: 100%;
+    }
     .ragstat-admin {
         margin-right: 12px;
     }

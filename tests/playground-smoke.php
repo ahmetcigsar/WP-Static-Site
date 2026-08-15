@@ -345,6 +345,25 @@ if (($static_search_update['page_path'] ?? '') !== 'find'
     exit(1);
 }
 
+$saved_seo_settings = array_merge(Ragnus\StaticPublisher\Plugin::seo_defaults(), [
+    'redirect_rules' => "/old/ /new/ 301",
+    'indexnow_key' => 'preserved-key',
+]);
+update_option(Ragnus\StaticPublisher\Plugin::SEO_SETTINGS_KEY, $saved_seo_settings);
+$audit_seo_update = Ragnus\StaticPublisher\Admin::sanitize_seo_settings([
+    '_section' => 'audit',
+    'audit_enabled' => '1',
+    'canonical_fallback' => '1',
+]);
+delete_option(Ragnus\StaticPublisher\Plugin::SEO_SETTINGS_KEY);
+if (($audit_seo_update['audit_enabled'] ?? '') !== '1'
+    || ($audit_seo_update['audit_html_report'] ?? '') !== '0'
+    || ($audit_seo_update['redirect_rules'] ?? '') !== "/old/ /new/ 301"
+    || ($audit_seo_update['indexnow_key'] ?? '') !== 'preserved-key') {
+    fwrite(STDERR, "SEO alt sekmesi kaydedilirken diğer bölümlerin ayarları korunmadı.\n");
+    exit(1);
+}
+
 Ragnus\StaticPublisher\Admin::enqueue_assets('toplevel_page_ragnus-static-publisher');
 if (! wp_style_is('ragnus-static-publisher-admin', 'enqueued')) {
     fwrite(STDERR, "Modern yönetim arayüzü stil dosyası yüklenmedi.\n");
@@ -673,12 +692,38 @@ if (str_contains($seo_html, 'seo_tab=language') || str_contains($seo_html, 'Redi
     exit(1);
 }
 
+foreach ([
+    'audit' => ['Create SEO audit report', 'value="audit"'],
+    'sitemaps' => ['Generate Ragnus sitemap', 'value="sitemaps"'],
+    'redirects' => ['Custom Redirect Rules', 'value="redirects"'],
+    'indexing' => ['IndexNow Key', 'value="indexing"'],
+    'performance' => ['Large HTML Threshold (KB)', 'value="performance"'],
+] as $seo_tab => $seo_expectations) {
+    $_GET = ['tab' => 'seo', 'seo_tab' => $seo_tab];
+    ob_start();
+    Ragnus\StaticPublisher\Admin::render();
+    $toolkit_html = (string) ob_get_clean();
+    $_GET = [];
+    foreach (['SEO Plugins', 'SEO Audit', 'Sitemaps', 'Redirects', 'Indexing', 'Performance', 'seo_tab=' . $seo_tab, ...$seo_expectations] as $expected) {
+        if (! str_contains($toolkit_html, $expected)) {
+            fwrite(STDERR, "SEO > {$seo_tab} ekranında beklenen içerik bulunamadı: {$expected}\n");
+            exit(1);
+        }
+    }
+    if (substr_count($toolkit_html, 'ragstat-seo-tab is-active') !== 1) {
+        fwrite(STDERR, "SEO > {$seo_tab} ekranında tek bir etkin dikey sekme bulunamadı.\n");
+        exit(1);
+    }
+}
+
 if (! defined('RANK_MATH_VERSION')) {
     define('RANK_MATH_VERSION', 'test');
 }
+$_GET = ['tab' => 'seo', 'seo_tab' => 'plugins'];
 ob_start();
 Ragnus\StaticPublisher\Admin::render();
 $active_seo_html = (string) ob_get_clean();
+$_GET = [];
 if (! str_contains($active_seo_html, 'Detected SEO plugin:') || ! str_contains($active_seo_html, 'ragstat-seo-plugin-card is-expanded') || ! str_contains($active_seo_html, 'aria-expanded="true"') || ! str_contains($active_seo_html, 'id="ragstat-rank-math-settings" data-ragstat-seo-panel')) {
     fwrite(STDERR, "Etkin SEO eklentisi üste alınmadı veya varsayılan olarak açılmadı.\n");
     exit(1);

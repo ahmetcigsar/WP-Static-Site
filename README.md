@@ -25,6 +25,10 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 - Yerel Fuse.js 7.3.0 paketiyle çalışan, alanları ve ağırlıkları yapılandırılabilen statik site araması
 - Search ekranında Static Search, Indexing Selectors ve Fuse.js dikey alt sekmeleri
 - Hide ekranında Directory, Traces ve Static Outputs dikey alt sekmeleri
+- Export sonrası JSON/HTML SEO audit raporu, canonical ve hreflang doğrulaması, image/Schema denetimi
+- Canonical, lastmod, image ve dil alternatiflerini içeren gelişmiş sitemap; isteğe bağlı video ve Google News sitemap'leri
+- WordPress eski slug, Redirection, Rank Math ve özel yönlendirme kurallarını statik `_redirects` çıktısına aktarma
+- Yol bazlı noindex, dosyalar için X-Robots-Tag, deploy sonrası değişen URL'ler için IndexNow ve performans raporu
 - Hide sekmesinden WordPress yollarını yeniden adlandırma; sürüm, generator, XML-RPC, embed ve emoji izlerini statik çıktıdan temizleme
 - Main sekmesinde son başarılı static oluşturma zamanı ve yeşil ilerleme/tamamlanma göstergesi
 - Main sekmesinde iki saniyede bir yenilenen canlı export durumu, aşamalı ilerleme ve takılan WP-Cron işi uyarısı

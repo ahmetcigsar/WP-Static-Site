@@ -53,6 +53,17 @@ update_option(Ragnus\StaticPublisher\Plugin::SEARCH_SETTINGS_KEY, array_merge(
         'exclude_urls' => "not-found-test\nforbidden-test",
     ]
 ));
+update_option(Ragnus\StaticPublisher\Plugin::SEO_SETTINGS_KEY, array_merge(
+    Ragnus\StaticPublisher\Plugin::seo_defaults(),
+    [
+        'redirect_rules' => "/legacy/ /new-location/ 301\n/chain/ /legacy/ 301",
+        'sitemap_news' => '1',
+        'noindex_paths' => "/en/",
+        'x_robots_rules' => "*.pdf|noindex, nofollow",
+        'indexnow_enabled' => '1',
+        'indexnow_key' => 'test-indexnow-key',
+    ]
+));
 
 $post_id = wp_insert_post([
     'post_title' => 'Export testi',
@@ -206,6 +217,14 @@ $search_index = json_decode((string) $zip->getFromName('ragnus-search-index.json
 $search_config = json_decode((string) $zip->getFromName('ragnus-search-config.json'), true);
 $search_script = (string) $zip->getFromName('ragnus-search-assets/ragnus-search.js');
 $fuse_script = (string) $zip->getFromName('ragnus-search-assets/fuse.min.mjs');
+$seo_report = json_decode((string) $zip->getFromName('ragnus-seo-report.json'), true);
+$seo_report_html = (string) $zip->getFromName('ragnus-seo-report.html');
+$performance_report = json_decode((string) $zip->getFromName('ragnus-performance-report.json'), true);
+$ragnus_sitemap = (string) $zip->getFromName('ragnus-sitemap.xml');
+$news_sitemap = (string) $zip->getFromName('ragnus-news-sitemap.xml');
+$robots_file = (string) $zip->getFromName('robots.txt');
+$redirects_file = (string) $zip->getFromName('_redirects');
+$indexnow_key_file = (string) $zip->getFromName('test-indexnow-key.txt');
 $zip->close();
 if (str_contains($home_html, 'https://static.example.com/wp-content/')) {
     preg_match_all('#https://static\.example\.com/wp-content/[^"\'\s<]+#', $home_html, $remaining_assets);
@@ -219,6 +238,11 @@ if ($hidden_theme_css === '' || ! str_contains($hidden_theme_css, '/assets/media
 }
 if (! str_contains($headers_file, '/assets/media/*')) {
     throw new RuntimeException('_headers uploads yolu Hide ayarına göre dönüştürülmedi.');
+}
+if (! str_contains($headers_file, "/ragnus-seo-report.json\n  X-Robots-Tag: noindex, nofollow")
+    || ! str_contains($headers_file, "/ragnus-seo-report.html\n  X-Robots-Tag: noindex, nofollow")
+    || ! str_contains($headers_file, "/ragnus-performance-report.json\n  X-Robots-Tag: noindex, nofollow")) {
+    throw new RuntimeException('SEO ve performans raporları _headers içinde indekslemeye kapatılmadı.');
 }
 if (($manifest_file['hide_replacements']['author_url'] ?? '') !== 'writers') {
     throw new RuntimeException('Hide ayarları export manifestine yazılmadı.');
@@ -252,6 +276,69 @@ if (! str_contains($home_html, 'ragnus-search-bridge.js')) {
 }
 if (($manifest_file['static_search']['document_count'] ?? 0) !== count($search_index)) {
     throw new RuntimeException('Arama doküman sayısı manifest ile eşleşmiyor.');
+}
+if (! is_array($seo_report)
+    || ($seo_report['summary']['pages'] ?? 0) < 2
+    || $seo_report_html === ''
+    || ! str_contains($seo_report_html, 'noindex,nofollow')
+    || ! is_array($performance_report)
+    || ($performance_report['file_count'] ?? 0) < 1) {
+    throw new RuntimeException('SEO veya performans audit raporu export ZIP içine doğru yazılmadı.');
+}
+if (! str_contains($ragnus_sitemap, '<urlset')
+    || ! str_contains($ragnus_sitemap, 'xmlns:image=')
+    || str_contains($ragnus_sitemap, '<loc>https://static.example.com/en/</loc>')
+    || ! str_contains($robots_file, 'Sitemap: https://static.example.com/ragnus-sitemap.xml')
+    || ! str_contains($news_sitemap, 'xmlns:news=')
+    || ! str_contains($robots_file, 'Sitemap: https://static.example.com/ragnus-news-sitemap.xml')) {
+    throw new RuntimeException('Gelişmiş sitemap veya robots.txt bildirimi doğru üretilmedi: ' . wp_json_encode([
+        'has_urlset' => str_contains($ragnus_sitemap, '<urlset'),
+        'has_image_namespace' => str_contains($ragnus_sitemap, 'xmlns:image='),
+        'has_noindex_en' => str_contains($ragnus_sitemap, '<loc>https://static.example.com/en/</loc>'),
+        'has_robots_sitemap' => str_contains($robots_file, 'Sitemap: https://static.example.com/ragnus-sitemap.xml'),
+        'sitemap' => substr($ragnus_sitemap, 0, 500),
+        'robots' => $robots_file,
+    ], JSON_UNESCAPED_SLASHES));
+}
+if (! str_contains($english_home, 'noindex, nofollow')
+    || ! str_contains($headers_file, 'X-Robots-Tag: noindex, nofollow')
+    || ! str_contains($redirects_file, '/legacy/ /new-location/ 301')
+    || ! str_contains($redirects_file, '/chain/ /legacy/ 301')
+    || $indexnow_key_file !== 'test-indexnow-key') {
+    throw new RuntimeException('Indexing, redirect veya IndexNow doğrulama çıktıları doğru üretilmedi.');
+}
+if (($manifest_file['seo_toolkit']['page_count'] ?? 0) < 2
+    || ! is_array($manifest_file['seo_toolkit']['page_hashes'] ?? null)
+    || isset($manifest_file['seo_toolkit']['page_hashes']['https://static.example.com/en/'])) {
+    throw new RuntimeException('SEO Toolkit özeti ve indexlenebilir sayfa hashleri manifeste doğru yazılmadı.');
+}
+
+update_option(Ragnus\StaticPublisher\Plugin::INDEXNOW_SNAPSHOT_KEY, [
+    'https://static.example.com/deleted/' => 'old-hash',
+]);
+$indexnow_request = [];
+$indexnow_filter = static function ($preempt, array $args, string $url) use (&$indexnow_request) {
+    if ($url !== 'https://api.indexnow.org/indexnow') {
+        return $preempt;
+    }
+    $indexnow_request = json_decode((string) ($args['body'] ?? ''), true);
+    return [
+        'headers' => [],
+        'body' => '',
+        'response' => ['code' => 200, 'message' => 'OK'],
+        'cookies' => [],
+        'filename' => null,
+    ];
+};
+add_filter('pre_http_request', $indexnow_filter, 20, 3);
+Ragnus\StaticPublisher\Plugin::notify_indexnow($job_id);
+remove_filter('pre_http_request', $indexnow_filter, 20);
+$indexnow_status = get_option(Ragnus\StaticPublisher\Plugin::INDEXNOW_STATUS_KEY, []);
+if (($indexnow_request['host'] ?? '') !== 'static.example.com'
+    || ($indexnow_request['key'] ?? '') !== 'test-indexnow-key'
+    || ! in_array('https://static.example.com/deleted/', (array) ($indexnow_request['urlList'] ?? []), true)
+    || ($indexnow_status['state'] ?? '') !== 'submitted') {
+    throw new RuntimeException('IndexNow değişen ve silinen URL farkı doğru gönderilmedi.');
 }
 
 $hide_replacements = new Ragnus\StaticPublisher\Hide_Replacements(Ragnus\StaticPublisher\Plugin::hide_settings());

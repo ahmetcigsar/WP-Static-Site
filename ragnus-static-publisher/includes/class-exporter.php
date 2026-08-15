@@ -30,6 +30,8 @@ final class Exporter
     private Block_SEO_Integration $surerank_integration;
     private Block_SEO_Integration $seo_framework_integration;
     private Block_SEO_Integration $yoast_integration;
+    private SEO_Toolkit $seo_toolkit;
+    private array $seo_toolkit_manifest = [];
     private array $search_documents = [];
 
     public function __construct()
@@ -65,6 +67,7 @@ final class Exporter
             'block_pattern' => '#<!--\s*This site is optimized with the .*?Yoast SEO.*?-->.*?<!--\s*/\s*Yoast SEO.*?-->#is',
             'sitemap_path' => '/sitemap_index.xml',
         ]);
+        $this->seo_toolkit = new SEO_Toolkit($this->origin, $this->target);
         $this->excluded_prefixes = array_values(array_filter(array_map(
             'trim',
             preg_split('/\r\n|\r|\n/', (string) $settings['excluded_paths']) ?: []
@@ -121,6 +124,15 @@ final class Exporter
                 ]);
                 $this->write_search_files();
             }
+            Plugin::set_status($job_id, 'running', 87, [
+                'phase' => 'seo-audit',
+                'status_message' => __('SEO reports and advanced sitemap are being prepared.', 'ragnus-static-publisher'),
+                'current_url' => '',
+            ]);
+            $this->seo_toolkit_manifest = $this->seo_toolkit->write_outputs(
+                fn (string $path, string $contents) => $this->write_file($path, $contents),
+                $this->build_directory
+            );
             Plugin::set_status($job_id, 'running', 88, [
                 'phase' => 'cloudflare-files',
                 'status_message' => __('Cloudflare configuration files are being prepared.', 'ragnus-static-publisher'),
@@ -272,6 +284,7 @@ final class Exporter
             if ($is_html) {
                 $body = $this->language_routing->inject_x_default($body, $this->target);
                 $body = $this->language_routing->inject_preference_script($body);
+                $body = $this->seo_toolkit->process_html($body, $url, $relative_path);
             }
 
             $this->write_file($relative_path, $body);
@@ -658,8 +671,27 @@ final class Exporter
 
     private function write_cloudflare_files(): void
     {
-        $this->write_file('_headers', "/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: SAMEORIGIN\n\n/ragnus-language-config.json\n  Cache-Control: no-store\n\n" . $this->hide_replacements->uploads_public_path() . "*\n  Cache-Control: public, max-age=31536000, immutable\n");
-        $this->write_file('_redirects', "/wp-admin/* {$this->origin}/wp-admin/:splat 302\n/wp-login.php {$this->origin}/wp-login.php 302\n");
+        $headers = "/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: SAMEORIGIN\n\n/ragnus-language-config.json\n  Cache-Control: no-store\n\n/ragnus-seo-report.json\n  X-Robots-Tag: noindex, nofollow\n  Cache-Control: no-store\n\n/ragnus-seo-report.html\n  X-Robots-Tag: noindex, nofollow\n  Cache-Control: no-store\n\n/ragnus-performance-report.json\n  X-Robots-Tag: noindex, nofollow\n  Cache-Control: no-store\n\n" . $this->hide_replacements->uploads_public_path() . "*\n  Cache-Control: public, max-age=31536000, immutable\n";
+        $seo_headers = $this->seo_toolkit->headers_rules();
+        if ($seo_headers !== '') {
+            $headers .= "\n" . $seo_headers . "\n";
+        }
+        $this->write_file('_headers', $headers);
+        $this->write_file('_redirects', implode("\n", $this->seo_toolkit->redirect_rules()) . "\n");
+        $robots_path = $this->build_directory . '/robots.txt';
+        $robots = is_readable($robots_path) ? (string) file_get_contents($robots_path) : "User-agent: *\nAllow: /\n";
+        if ((string) ($this->seo_toolkit->manifest_data()['sitemap'] ?? '') !== ''
+            && ! str_contains($robots, $this->seo_toolkit->sitemap_url())) {
+            $robots = rtrim($robots) . "\nSitemap: " . $this->seo_toolkit->sitemap_url() . "\n";
+        }
+        foreach (['ragnus-video-sitemap.xml', 'ragnus-news-sitemap.xml'] as $optional_sitemap) {
+            $optional_path = $this->build_directory . '/' . $optional_sitemap;
+            $optional_url = $this->target . '/' . $optional_sitemap;
+            if (is_readable($optional_path) && ! str_contains($robots, $optional_url)) {
+                $robots = rtrim($robots) . "\nSitemap: " . $optional_url . "\n";
+            }
+        }
+        $this->write_file('robots.txt', $robots);
         $this->write_file('ragnus-language-config.json', $this->language_routing->config_json());
         if ($this->language_routing->enabled()) {
             $this->write_file('ragnus-language-preference.js', $this->language_routing->preference_script());
@@ -744,6 +776,7 @@ final class Exporter
             'surerank' => $this->surerank_integration->manifest_data(),
             'seo_framework' => $this->seo_framework_integration->manifest_data(),
             'yoast' => $this->yoast_integration->manifest_data(),
+            'seo_toolkit' => $this->seo_toolkit_manifest,
             'build_sha256' => hash('sha256', (string) wp_json_encode($file_hashes, JSON_UNESCAPED_SLASHES)),
         ];
         $this->write_file('ragnus-static-manifest.json', (string) wp_json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));

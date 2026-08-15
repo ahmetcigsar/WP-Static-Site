@@ -14,6 +14,10 @@ final class Plugin
     public const SEARCH_SETTINGS_KEY = 'ragnus_static_search_settings';
     public const LANGUAGE_SETTINGS_KEY = 'ragnus_static_language_settings';
     public const SEO_PLUGIN_SETTINGS_KEY = 'ragnus_static_seo_plugin_settings';
+    public const SEO_SETTINGS_KEY = 'ragnus_static_seo_settings';
+    public const INDEXNOW_SNAPSHOT_KEY = 'ragnus_static_indexnow_snapshot';
+    public const INDEXNOW_STATUS_KEY = 'ragnus_static_indexnow_status';
+    public const INDEXNOW_CRON_HOOK = 'ragnus_static_indexnow_notify';
     public const STATUS_KEY = 'ragnus_static_status';
     public const LOCK_KEY = 'ragnus_static_export_lock';
     public const DIRTY_KEY = 'ragnus_static_export_dirty';
@@ -41,6 +45,7 @@ final class Plugin
         add_action('admin_post_ragnus_static_sftp_deploy', [Admin::class, 'deploy_latest_with_sftp']);
         add_action('update_option_' . self::SETTINGS_KEY, [self::class, 'apply_archive_retention'], 10, 2);
         add_action(self::CRON_HOOK, [self::class, 'run_scheduled'], 10, 1);
+        add_action(self::INDEXNOW_CRON_HOOK, [self::class, 'notify_indexnow'], 10, 1);
         add_action('transition_post_status', [self::class, 'maybe_schedule_after_post_transition'], 20, 3);
         add_action('created_term', [self::class, 'maybe_schedule_after_taxonomy_change'], 20, 3);
         add_action('edited_term', [self::class, 'maybe_schedule_after_taxonomy_change'], 20, 3);
@@ -123,6 +128,7 @@ final class Plugin
     public static function deactivate(): void
     {
         wp_clear_scheduled_hook(self::CRON_HOOK);
+        wp_clear_scheduled_hook(self::INDEXNOW_CRON_HOOK);
         delete_transient(self::LOCK_KEY);
         delete_transient(SFTP_Deployer::LOCK_KEY);
     }
@@ -291,6 +297,40 @@ final class Plugin
             unset($stored[$plugin . '_metadata']);
         }
         return wp_parse_args($stored, self::seo_plugin_defaults());
+    }
+
+    public static function seo_defaults(): array
+    {
+        return [
+            'audit_enabled' => '1',
+            'audit_html_report' => '1',
+            'canonical_fallback' => '1',
+            'schema_validation' => '1',
+            'multilingual_validation' => '1',
+            'image_audit' => '1',
+            'advanced_sitemap' => '1',
+            'sitemap_lastmod' => '1',
+            'sitemap_images' => '1',
+            'sitemap_hreflang' => '1',
+            'sitemap_video' => '0',
+            'sitemap_news' => '0',
+            'redirect_old_slugs' => '1',
+            'redirect_import_plugins' => '1',
+            'redirect_rules' => '',
+            'noindex_paths' => '',
+            'x_robots_rules' => "*.pdf|noindex",
+            'site_noindex' => '0',
+            'indexnow_enabled' => '0',
+            'indexnow_key' => '',
+            'performance_audit' => '1',
+            'large_html_kb' => 200,
+            'large_asset_kb' => 500,
+        ];
+    }
+
+    public static function seo_settings(): array
+    {
+        return wp_parse_args(get_option(self::SEO_SETTINGS_KEY, []), self::seo_defaults());
     }
 
     public static function search_settings(): array
@@ -535,14 +575,16 @@ final class Plugin
         }
 
         $source = (string) (self::status()['source'] ?? '');
+        $deployment_succeeded = false;
         if ($source !== 'ci-manual') {
-            self::notify_deployment_webhook($job_id, $manifest);
+            $deployment_succeeded = self::notify_deployment_webhook($job_id, $manifest);
         }
 
         $settings = self::settings();
         if ((string) ($settings['sftp_auto_deploy'] ?? '0') === '1') {
             try {
                 SFTP_Deployer::deploy_job($job_id, $settings);
+                $deployment_succeeded = true;
             } catch (Throwable $error) {
                 SFTP_Deployer::record_failure($error->getMessage(), $job_id);
                 error_log(sprintf(
@@ -550,6 +592,78 @@ final class Plugin
                     $error->getMessage()
                 ));
             }
+        }
+
+        $seo_settings = self::seo_settings();
+        if ($deployment_succeeded && (string) ($seo_settings['indexnow_enabled'] ?? '0') === '1') {
+            set_transient('ragnus_static_indexnow_pending_' . md5($job_id), $manifest, DAY_IN_SECONDS);
+            wp_schedule_single_event(time() + 120, self::INDEXNOW_CRON_HOOK, [$job_id]);
+        }
+    }
+
+    public static function notify_indexnow(string $job_id): void
+    {
+        $status = self::status();
+        $pending_key = 'ragnus_static_indexnow_pending_' . md5($job_id);
+        $pending_manifest = get_transient($pending_key);
+        $manifest = is_array($pending_manifest) ? $pending_manifest : (array) ($status['manifest'] ?? []);
+        if (! is_array($pending_manifest) && (($status['job_id'] ?? '') !== $job_id || ($status['state'] ?? '') !== 'completed')) {
+            return;
+        }
+
+        $settings = self::seo_settings();
+        $key = (string) ($settings['indexnow_key'] ?? '');
+        $pages = (array) ($manifest['seo_toolkit']['page_hashes'] ?? []);
+        if ((string) ($settings['indexnow_enabled'] ?? '0') !== '1'
+            || preg_match('/^[A-Za-z0-9-]{8,128}$/', $key) !== 1
+            || $pages === []) {
+            return;
+        }
+
+        $previous = get_option(self::INDEXNOW_SNAPSHOT_KEY, []);
+        $previous = is_array($previous) ? $previous : [];
+        $changed = [];
+        foreach ($pages as $url => $hash) {
+            if (! isset($previous[$url]) || ! hash_equals((string) $previous[$url], (string) $hash)) {
+                $changed[] = (string) $url;
+            }
+        }
+        foreach (array_diff_key($previous, $pages) as $url => $hash) {
+            $changed[] = (string) $url;
+        }
+        $changed = array_slice(array_values(array_unique($changed)), 0, 10000);
+        if ($changed === []) {
+            update_option(self::INDEXNOW_STATUS_KEY, ['job_id' => $job_id, 'state' => 'unchanged', 'submitted_at' => gmdate('c')], false);
+            delete_transient($pending_key);
+            return;
+        }
+
+        $target = untrailingslashit((string) ($manifest['target'] ?? ''));
+        $host = (string) wp_parse_url($target, PHP_URL_HOST);
+        if ($host === '') {
+            return;
+        }
+        $response = wp_remote_post('https://api.indexnow.org/indexnow', [
+            'timeout' => 20,
+            'headers' => ['Content-Type' => 'application/json; charset=utf-8'],
+            'body' => wp_json_encode([
+                'host' => $host,
+                'key' => $key,
+                'keyLocation' => $target . '/' . $key . '.txt',
+                'urlList' => $changed,
+            ], JSON_UNESCAPED_SLASHES),
+        ]);
+        $code = is_wp_error($response) ? 0 : (int) wp_remote_retrieve_response_code($response);
+        update_option(self::INDEXNOW_STATUS_KEY, [
+            'job_id' => $job_id,
+            'state' => $code >= 200 && $code < 300 ? 'submitted' : 'failed',
+            'url_count' => count($changed),
+            'http_code' => $code,
+            'submitted_at' => gmdate('c'),
+        ], false);
+        if ($code >= 200 && $code < 300) {
+            update_option(self::INDEXNOW_SNAPSHOT_KEY, $pages, false);
+            delete_transient($pending_key);
         }
     }
 
@@ -562,12 +676,12 @@ final class Plugin
         }
     }
 
-    public static function notify_deployment_webhook(string $job_id, array $manifest): void
+    public static function notify_deployment_webhook(string $job_id, array $manifest): bool
     {
         $settings = self::settings();
         $url = (string) $settings['deployment_webhook_url'];
         if ($url === '') {
-            return;
+            return false;
         }
 
         $headers = [
@@ -595,7 +709,9 @@ final class Plugin
 
         if (is_wp_error($response) || wp_remote_retrieve_response_code($response) >= 300) {
             error_log(__('[Ragnus Static Publisher] Deployment webhook could not be sent.', 'ragnus-static-publisher'));
+            return false;
         }
+        return true;
     }
 
     public static function register_cli(): void

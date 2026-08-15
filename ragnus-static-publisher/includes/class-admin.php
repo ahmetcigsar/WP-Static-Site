@@ -46,6 +46,11 @@ final class Admin
             'sanitize_callback' => [self::class, 'sanitize_seo_plugin_settings'],
             'default' => Plugin::seo_plugin_defaults(),
         ]);
+        register_setting('ragnus_static_seo', Plugin::SEO_SETTINGS_KEY, [
+            'type' => 'array',
+            'sanitize_callback' => [self::class, 'sanitize_seo_settings'],
+            'default' => Plugin::seo_defaults(),
+        ]);
     }
 
     public static function enqueue_assets(string $hook_suffix): void
@@ -166,6 +171,52 @@ final class Admin
         $sanitized = [];
         foreach (array_keys(Plugin::seo_plugin_defaults()) as $key) {
             $sanitized[$key] = isset($value[$key]) ? '1' : '0';
+        }
+        return $sanitized;
+    }
+
+    public static function sanitize_seo_settings(array $value): array
+    {
+        $defaults = Plugin::seo_defaults();
+        $current = Plugin::seo_settings();
+        $section = sanitize_key((string) ($value['_section'] ?? 'all'));
+        $sanitized = array_intersect_key($current, $defaults);
+
+        if (in_array($section, ['audit', 'all'], true)) {
+            foreach (['audit_enabled', 'audit_html_report', 'canonical_fallback', 'schema_validation', 'multilingual_validation', 'image_audit'] as $key) {
+                $sanitized[$key] = isset($value[$key]) ? '1' : '0';
+            }
+        }
+        if (in_array($section, ['sitemaps', 'all'], true)) {
+            foreach (['advanced_sitemap', 'sitemap_lastmod', 'sitemap_images', 'sitemap_hreflang', 'sitemap_video', 'sitemap_news'] as $key) {
+                $sanitized[$key] = isset($value[$key]) ? '1' : '0';
+            }
+        }
+        if (in_array($section, ['redirects', 'all'], true)) {
+            $sanitized['redirect_old_slugs'] = isset($value['redirect_old_slugs']) ? '1' : '0';
+            $sanitized['redirect_import_plugins'] = isset($value['redirect_import_plugins']) ? '1' : '0';
+            $sanitized['redirect_rules'] = sanitize_textarea_field((string) ($value['redirect_rules'] ?? ''));
+        }
+        if (in_array($section, ['indexing', 'all'], true)) {
+            $sanitized['noindex_paths'] = sanitize_textarea_field((string) ($value['noindex_paths'] ?? ''));
+            $sanitized['x_robots_rules'] = sanitize_textarea_field((string) ($value['x_robots_rules'] ?? ''));
+            $sanitized['site_noindex'] = isset($value['site_noindex']) ? '1' : '0';
+            $sanitized['indexnow_enabled'] = isset($value['indexnow_enabled']) ? '1' : '0';
+            $submitted_key = sanitize_text_field((string) ($value['indexnow_key'] ?? ''));
+            if ($submitted_key === '') {
+                $sanitized['indexnow_key'] = (string) ($current['indexnow_key'] ?? '');
+            } elseif (preg_match('/^[A-Za-z0-9-]{8,128}$/', $submitted_key) === 1) {
+                $sanitized['indexnow_key'] = $submitted_key;
+            } else {
+                add_settings_error(Plugin::SEO_SETTINGS_KEY, 'indexnow-key-error', __('IndexNow key must be 8–128 characters and contain only letters, numbers, or hyphens.', 'ragnus-static-publisher'), 'error');
+                $sanitized['indexnow_key'] = (string) ($current['indexnow_key'] ?? '');
+                $sanitized['indexnow_enabled'] = '0';
+            }
+        }
+        if (in_array($section, ['performance', 'all'], true)) {
+            $sanitized['performance_audit'] = isset($value['performance_audit']) ? '1' : '0';
+            $sanitized['large_html_kb'] = max(50, min(5000, absint($value['large_html_kb'] ?? $defaults['large_html_kb'])));
+            $sanitized['large_asset_kb'] = max(100, min(20000, absint($value['large_asset_kb'] ?? $defaults['large_asset_kb'])));
         }
         return $sanitized;
     }
@@ -573,7 +624,7 @@ final class Admin
             <?php elseif ($current_tab === 'settings') : ?>
                 <?php self::render_settings_tab(Plugin::settings(), $requested_settings_tab); ?>
             <?php elseif ($current_tab === 'seo') : ?>
-                <?php self::render_seo_tab($requested_seo_tab); ?>
+                <?php self::render_seo_tab($requested_seo_tab, Plugin::seo_settings()); ?>
             <?php elseif ($current_tab === 'search') : ?>
                 <?php self::render_search_tab(Plugin::search_settings(), $requested_search_tab); ?>
             <?php elseif ($current_tab === 'hide') : ?>
@@ -1038,10 +1089,15 @@ final class Admin
         <?php
     }
 
-    private static function render_seo_tab(string $requested_seo_tab): void
+    private static function render_seo_tab(string $requested_seo_tab, array $settings): void
     {
         $seo_tabs = [
             'plugins' => [__('SEO Plugins', 'ragnus-static-publisher'), 'dashicons-admin-plugins'],
+            'audit' => [__('SEO Audit', 'ragnus-static-publisher'), 'dashicons-yes-alt'],
+            'sitemaps' => [__('Sitemaps', 'ragnus-static-publisher'), 'dashicons-networking'],
+            'redirects' => [__('Redirects', 'ragnus-static-publisher'), 'dashicons-randomize'],
+            'indexing' => [__('Indexing', 'ragnus-static-publisher'), 'dashicons-visibility'],
+            'performance' => [__('Performance', 'ragnus-static-publisher'), 'dashicons-performance'],
         ];
         $current_seo_tab = isset($seo_tabs[$requested_seo_tab]) ? $requested_seo_tab : 'plugins';
         ?>
@@ -1059,8 +1115,79 @@ final class Admin
                 <?php endforeach; ?>
             </nav>
             <div class="ragstat-seo-panel">
-                <?php self::render_seo_plugins(Plugin::seo_plugin_settings()); ?>
+                <?php if ($current_seo_tab === 'plugins') : ?>
+                    <?php self::render_seo_plugins(Plugin::seo_plugin_settings()); ?>
+                <?php else : ?>
+                    <?php self::render_seo_toolkit_settings($current_seo_tab, $settings); ?>
+                <?php endif; ?>
             </div>
+        </div>
+        <?php
+    }
+
+    private static function render_seo_toolkit_settings(string $section, array $settings): void
+    {
+        $option_name = Plugin::SEO_SETTINGS_KEY;
+        $titles = [
+            'audit' => [__('SEO Audit', 'ragnus-static-publisher'), __('Validate metadata, canonical URLs, structured data, images, links, and multilingual signals after every export.', 'ragnus-static-publisher')],
+            'sitemaps' => [__('Advanced Sitemaps', 'ragnus-static-publisher'), __('Generate an indexable canonical sitemap with reliable modification dates, images, and language alternatives.', 'ragnus-static-publisher')],
+            'redirects' => [__('Redirects', 'ragnus-static-publisher'), __('Export custom redirects and WordPress old slugs while reporting redirect chains and loops.', 'ragnus-static-publisher')],
+            'indexing' => [__('Indexing Controls', 'ragnus-static-publisher'), __('Control indexing for HTML and non-HTML files and optionally notify IndexNow after automatic deployment.', 'ragnus-static-publisher')],
+            'performance' => [__('Performance Audit', 'ragnus-static-publisher'), __('Report large files, large HTML documents, and render-blocking resources in the static package.', 'ragnus-static-publisher')],
+        ];
+        [$title, $description] = $titles[$section];
+        ?>
+        <form class="ragstat-settings-form ragstat-seo-toolkit-form" method="post" action="options.php">
+            <?php settings_fields('ragnus_static_seo'); ?>
+            <input type="hidden" name="<?php echo esc_attr($option_name); ?>[_section]" value="<?php echo esc_attr($section); ?>">
+            <section class="ragstat-language-card">
+                <div class="ragstat-language-card__heading"><span class="dashicons dashicons-search" aria-hidden="true"></span><div><h3><?php echo esc_html($title); ?></h3><p><?php echo esc_html($description); ?></p></div></div>
+                <div class="ragstat-seo-toolkit-fields">
+                    <?php if ($section === 'audit') : ?>
+                        <?php self::render_seo_setting_toggle($option_name, $settings, 'audit_enabled', __('Create SEO audit report', 'ragnus-static-publisher'), __('Writes JSON and export diagnostics for every generated page.', 'ragnus-static-publisher')); ?>
+                        <?php self::render_seo_setting_toggle($option_name, $settings, 'audit_html_report', __('Include readable HTML report', 'ragnus-static-publisher'), __('Adds ragnus-seo-report.html to the ZIP with noindex protection.', 'ragnus-static-publisher')); ?>
+                        <?php self::render_seo_setting_toggle($option_name, $settings, 'canonical_fallback', __('Add missing canonical URLs', 'ragnus-static-publisher'), __('Uses the final static URL only when the page has no canonical element.', 'ragnus-static-publisher')); ?>
+                        <?php self::render_seo_setting_toggle($option_name, $settings, 'schema_validation', __('Validate JSON-LD structured data', 'ragnus-static-publisher'), __('Reports invalid JSON-LD without inventing content or schema properties.', 'ragnus-static-publisher')); ?>
+                        <?php self::render_seo_setting_toggle($option_name, $settings, 'multilingual_validation', __('Validate multilingual signals', 'ragnus-static-publisher'), __('Checks missing and non-reciprocal hreflang targets.', 'ragnus-static-publisher')); ?>
+                        <?php self::render_seo_setting_toggle($option_name, $settings, 'image_audit', __('Audit image SEO', 'ragnus-static-publisher'), __('Reports missing alt attributes and explicit image dimensions.', 'ragnus-static-publisher')); ?>
+                    <?php elseif ($section === 'sitemaps') : ?>
+                        <?php self::render_seo_setting_toggle($option_name, $settings, 'advanced_sitemap', __('Generate Ragnus sitemap', 'ragnus-static-publisher'), __('Creates ragnus-sitemap.xml and adds it to robots.txt.', 'ragnus-static-publisher')); ?>
+                        <?php self::render_seo_setting_toggle($option_name, $settings, 'sitemap_lastmod', __('Include accurate last modified dates', 'ragnus-static-publisher'), __('Uses the WordPress content modification time when available.', 'ragnus-static-publisher')); ?>
+                        <?php self::render_seo_setting_toggle($option_name, $settings, 'sitemap_images', __('Include images', 'ragnus-static-publisher'), __('Adds discoverable page images with absolute static URLs.', 'ragnus-static-publisher')); ?>
+                        <?php self::render_seo_setting_toggle($option_name, $settings, 'sitemap_hreflang', __('Include language alternatives', 'ragnus-static-publisher'), __('Adds existing hreflang relationships to sitemap entries.', 'ragnus-static-publisher')); ?>
+                        <?php self::render_seo_setting_toggle($option_name, $settings, 'sitemap_video', __('Generate video sitemap', 'ragnus-static-publisher'), __('Creates a separate sitemap only for videos with complete title, description, thumbnail, and upload date metadata.', 'ragnus-static-publisher')); ?>
+                        <?php self::render_seo_setting_toggle($option_name, $settings, 'sitemap_news', __('Generate Google News sitemap', 'ragnus-static-publisher'), __('Creates a separate sitemap for posts published during the last two days. Enable only for eligible news sites.', 'ragnus-static-publisher')); ?>
+                    <?php elseif ($section === 'redirects') : ?>
+                        <?php self::render_seo_setting_toggle($option_name, $settings, 'redirect_old_slugs', __('Redirect WordPress old slugs', 'ragnus-static-publisher'), __('Creates permanent redirects for published content with saved old slugs.', 'ragnus-static-publisher')); ?>
+                        <?php self::render_seo_setting_toggle($option_name, $settings, 'redirect_import_plugins', __('Import redirect plugin rules', 'ragnus-static-publisher'), __('Imports compatible non-regex redirects from Redirection and Rank Math.', 'ragnus-static-publisher')); ?>
+                        <label class="ragstat-seo-toolkit-field"><strong><?php esc_html_e('Custom Redirect Rules', 'ragnus-static-publisher'); ?></strong><textarea name="<?php echo esc_attr($option_name); ?>[redirect_rules]" rows="10" placeholder="/old-path/ /new-path/ 301"><?php echo esc_textarea((string) $settings['redirect_rules']); ?></textarea><span><?php esc_html_e('Enter one source, target, and optional status code per line. Supported codes: 301, 302, 303, 307, 308.', 'ragnus-static-publisher'); ?></span></label>
+                    <?php elseif ($section === 'indexing') : ?>
+                        <?php self::render_seo_setting_toggle($option_name, $settings, 'site_noindex', __('Noindex the entire static output', 'ragnus-static-publisher'), __('Use only for staging or private static deployments. This blocks indexing through HTML and response headers.', 'ragnus-static-publisher')); ?>
+                        <label class="ragstat-seo-toolkit-field"><strong><?php esc_html_e('Noindex Paths', 'ragnus-static-publisher'); ?></strong><textarea name="<?php echo esc_attr($option_name); ?>[noindex_paths]" rows="7" placeholder="/private/&#10;/landing-draft/*"><?php echo esc_textarea((string) $settings['noindex_paths']); ?></textarea><span><?php esc_html_e('One path prefix or wildcard pattern per line.', 'ragnus-static-publisher'); ?></span></label>
+                        <label class="ragstat-seo-toolkit-field"><strong><?php esc_html_e('X-Robots-Tag Rules', 'ragnus-static-publisher'); ?></strong><textarea name="<?php echo esc_attr($option_name); ?>[x_robots_rules]" rows="7" placeholder="*.pdf|noindex"><?php echo esc_textarea((string) $settings['x_robots_rules']); ?></textarea><span><?php esc_html_e('Use pattern|directives format for non-HTML files.', 'ragnus-static-publisher'); ?></span></label>
+                        <?php self::render_seo_setting_toggle($option_name, $settings, 'indexnow_enabled', __('Notify IndexNow after automatic deployment', 'ragnus-static-publisher'), __('Submits only added, changed, or deleted URLs after webhook or automatic SFTP deployment.', 'ragnus-static-publisher')); ?>
+                        <label class="ragstat-seo-toolkit-field"><strong><?php esc_html_e('IndexNow Key', 'ragnus-static-publisher'); ?></strong><input type="password" autocomplete="new-password" name="<?php echo esc_attr($option_name); ?>[indexnow_key]" value="" placeholder="<?php echo (string) $settings['indexnow_key'] !== '' ? esc_attr__('Configured — leave blank to keep', 'ragnus-static-publisher') : ''; ?>"><span><?php esc_html_e('Use an 8–128 character key containing letters, numbers, or hyphens.', 'ragnus-static-publisher'); ?></span></label>
+                    <?php else : ?>
+                        <?php self::render_seo_setting_toggle($option_name, $settings, 'performance_audit', __('Create performance report', 'ragnus-static-publisher'), __('Adds ragnus-performance-report.json to the static package.', 'ragnus-static-publisher')); ?>
+                        <div class="ragstat-seo-toolkit-grid">
+                            <label class="ragstat-seo-toolkit-field"><strong><?php esc_html_e('Large HTML Threshold (KB)', 'ragnus-static-publisher'); ?></strong><input type="number" min="50" max="5000" name="<?php echo esc_attr($option_name); ?>[large_html_kb]" value="<?php echo esc_attr((string) $settings['large_html_kb']); ?>"></label>
+                            <label class="ragstat-seo-toolkit-field"><strong><?php esc_html_e('Large Asset Threshold (KB)', 'ragnus-static-publisher'); ?></strong><input type="number" min="100" max="20000" name="<?php echo esc_attr($option_name); ?>[large_asset_kb]" value="<?php echo esc_attr((string) $settings['large_asset_kb']); ?>"></label>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </section>
+            <?php submit_button(__('Save SEO Settings', 'ragnus-static-publisher')); ?>
+        </form>
+        <?php
+    }
+
+    private static function render_seo_setting_toggle(string $option_name, array $settings, string $key, string $label, string $description): void
+    {
+        $field_id = 'ragstat-seo-' . str_replace('_', '-', $key);
+        ?>
+        <div class="ragstat-hide-toggle-row">
+            <div><label for="<?php echo esc_attr($field_id); ?>"><?php echo esc_html($label); ?></label><p><?php echo esc_html($description); ?></p></div>
+            <label class="ragstat-switch" aria-label="<?php echo esc_attr($label); ?>"><input id="<?php echo esc_attr($field_id); ?>" type="checkbox" name="<?php echo esc_attr($option_name); ?>[<?php echo esc_attr($key); ?>]" value="1" <?php checked((string) ($settings[$key] ?? '0'), '1'); ?>><span aria-hidden="true"></span></label>
         </div>
         <?php
     }

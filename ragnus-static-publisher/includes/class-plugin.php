@@ -44,9 +44,6 @@ final class Plugin
         add_action('admin_post_ragnus_static_archive_bulk', [Admin::class, 'archive_bulk_action']);
         add_action('admin_post_ragnus_static_sftp_test', [Admin::class, 'test_sftp_connection']);
         add_action('admin_post_ragnus_static_sftp_deploy', [Admin::class, 'deploy_latest_with_sftp']);
-        add_action('admin_post_ragnus_static_managed_connect', [Admin::class, 'start_managed_connection']);
-        add_action('admin_post_ragnus_static_managed_callback', [Admin::class, 'complete_managed_connection']);
-        add_action('admin_post_ragnus_static_managed_disconnect', [Admin::class, 'disconnect_managed_connection']);
         add_action('update_option_' . self::SETTINGS_KEY, [self::class, 'apply_archive_retention'], 10, 2);
         add_action(self::CRON_HOOK, [self::class, 'run_scheduled'], 10, 1);
         add_action(self::INDEXNOW_CRON_HOOK, [self::class, 'notify_indexnow'], 10, 1);
@@ -147,7 +144,7 @@ final class Plugin
             'excluded_paths' => "/wp-admin/\n/wp-login.php\n/wp-json/\n/feed/",
             'auto_export' => '0',
             'archive_retention' => 5,
-            'deployment_mode' => (string) ($stored['deployment_webhook_url'] ?? '') !== '' ? 'advanced' : 'managed',
+            'deployment_mode' => 'advanced',
             'deployment_webhook_url' => '',
             'deployment_webhook_token' => '',
             'sftp_auto_deploy' => '0',
@@ -181,9 +178,6 @@ final class Plugin
     public static function cloudflare_deployment_configured(): bool
     {
         $settings = self::settings();
-        if ((string) ($settings['deployment_mode'] ?? 'advanced') === 'managed') {
-            return Managed_Deployer::configured();
-        }
         return (string) ($settings['deployment_webhook_url'] ?? '') !== '';
     }
 
@@ -639,9 +633,7 @@ final class Plugin
         $source = (string) (self::status()['source'] ?? '');
         $deployment_succeeded = false;
         $settings = self::settings();
-        if ((string) ($settings['deployment_mode'] ?? 'advanced') === 'managed' && Managed_Deployer::configured()) {
-            Managed_Deployer::notify_export($job_id, $manifest);
-        } elseif ((string) ($settings['deployment_mode'] ?? 'advanced') === 'advanced' && $source !== 'ci-manual') {
+        if ($source !== 'ci-manual') {
             self::notify_deployment_webhook($job_id, $manifest);
         }
 

@@ -43,8 +43,8 @@ foreach (['sftp_host', 'sftp_username', 'sftp_password', 'sftp_remote_path', 'sf
         exit(1);
     }
 }
-if (($settings['deployment_mode'] ?? '') !== 'managed') {
-    fwrite(STDERR, "Yeni kurulum için Kolay Kurulum modu varsayılan değil.\n");
+if (($settings['deployment_mode'] ?? '') !== 'advanced') {
+    fwrite(STDERR, "Yeni kurulum için gelişmiş deployment modu varsayılan değil.\n");
     exit(1);
 }
 $legacy_settings = ['deployment_webhook_url' => 'https://api.github.com/repos/example/legacy/dispatches'];
@@ -610,7 +610,6 @@ if (! str_contains($settings_html, 'Static Site') || ! str_contains($settings_ht
 }
 
 foreach ([
-    'easy-setup' => ['Easy Setup', 'Publish on Cloudflare in three steps', 'Site address', 'Use Advanced Setup'],
     'zip' => ['ZIP Files', 'Number of ZIPs to Store', 'Save ZIP Settings', 'value="zip"'],
     'github' => ['GitHub Deployment Webhook', 'Save Deploy Settings'],
     'cloudflare' => ['Configuration required', 'Open Cloudflare', 'Cloudflare Deploy', 'Deploy to Cloudflare'],
@@ -622,7 +621,7 @@ foreach ([
     Ragnus\StaticPublisher\Admin::render();
     $deploy_html = (string) ob_get_clean();
 
-    foreach (['Easy Setup', 'ZIP File', 'GitHub', 'Cloudflare', 'SFTP', 'Auto Deploy', 'ragstat-deploy-tabs', 'deploy_tab=' . $deploy_tab, ...$panel_expectations] as $expected) {
+    foreach (['ZIP File', 'GitHub', 'Cloudflare', 'SFTP', 'Auto Deploy', 'ragstat-deploy-tabs', 'deploy_tab=' . $deploy_tab, ...$panel_expectations] as $expected) {
         if (! str_contains($deploy_html, $expected)) {
             fwrite(STDERR, "Deploy {$deploy_tab} sekmesinde beklenen içerik bulunamadı: {$expected}\n");
             exit(1);
@@ -655,6 +654,16 @@ foreach ([
         fwrite(STDERR, "Cloudflare sekmesi ve içerik panelinde tek renk Cloudflare SVG ikonu bulunamadı.\n");
         exit(1);
     }
+}
+
+$_GET = ['tab' => 'deploy', 'deploy_tab' => 'easy-setup'];
+ob_start();
+Ragnus\StaticPublisher\Admin::render();
+$removed_easy_setup_html = (string) ob_get_clean();
+$_GET = [];
+if (! str_contains($removed_easy_setup_html, 'ZIP Files') || str_contains($removed_easy_setup_html, 'Easy Setup') || str_contains($removed_easy_setup_html, 'Connect Cloudflare')) {
+    fwrite(STDERR, "Kaldırılan Easy Setup rotası ZIP File ekranına düşmüyor.\n");
+    exit(1);
 }
 
 $_GET = ['tab' => 'settings', 'settings_tab' => 'multilingual'];

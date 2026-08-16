@@ -1,6 +1,6 @@
 # Ragnus Managed Deployment Service Contract
 
-Bu sözleşme, WordPress eklentisindeki **Easy Setup** istemcisi ile ayrı çalıştırılan Ragnus deployment servisi arasındaki sınırı tanımlar. Servis canlıya alınmadan eklenti bağlantı kurulmuş gibi görünmez.
+Bu ertelenmiş sözleşme, WordPress eklentisi ile ayrı çalıştırılacak Ragnus deployment servisi arasındaki sınırı tanımlar. Yönetilen bağlantı arayüzü mevcut sürümde etkin değildir.
 
 ## Operator configuration
 

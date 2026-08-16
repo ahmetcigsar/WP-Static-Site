@@ -66,7 +66,7 @@ final class Managed_Deployer
     {
         $service_url = self::service_url();
         if ($service_url === '') {
-            throw new RuntimeException(__('Easy Setup service is not configured for this plugin package.', 'ragnus-static-publisher'));
+            throw new RuntimeException(__('Managed deployment service is not configured for this plugin package.', 'ragnus-static-publisher'));
         }
 
         $state = wp_generate_password(48, false, false);
@@ -83,7 +83,7 @@ final class Managed_Deployer
     {
         $state_key = self::STATE_PREFIX . hash('sha256', $state);
         if ($state === '' || $code === '' || get_transient($state_key) !== '1') {
-            throw new RuntimeException(__('The Cloudflare connection request has expired. Start Easy Setup again.', 'ragnus-static-publisher'));
+            throw new RuntimeException(__('The Cloudflare connection request has expired. Start the connection again.', 'ragnus-static-publisher'));
         }
         delete_transient($state_key);
 

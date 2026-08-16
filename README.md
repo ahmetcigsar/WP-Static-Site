@@ -55,7 +55,6 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 - Seçilen değişiklikleri 60 saniye birleştiren otomatik export ve isteğe bağlı deployment webhook'u
 - `/tr/`, `/en/` gibi dil dizinlerini birlikte export eden ve kök adreste tarayıcı diline göre yönlendiren çoklu dil desteği
 - Cloudflare Workers Static Assets için örnek GitHub Actions workflow'u
-- Teknik bilgisi az kullanıcılar için üç adımlı Kolay Kurulum ekranı ve yönetilen Cloudflare OAuth bağlantısı
 
 ## Kurulum
 
@@ -85,20 +84,6 @@ Tam otomatik akış için eklenti ayarlarında deployment webhook alanını `htt
 Webhook yapılandırıldığında Main ekranındaki **Create Static Site** işlemi **Deploy to Cloudflare** olarak görünür. Buton önce statik snapshot'ı oluşturur; export başarılı olursa GitHub Actions yalnızca o işe ait `/exports/{job_id}/artifact` dosyasını indirir, manifestteki job ID ve SHA-256 değerini doğrular, Wrangler ile Cloudflare'a yükler ve canlı adresi kontrol eder. Workflow sonucu `/deployments/callback` üzerinden WordPress'e bildirilir; Main ve **Deploy > Cloudflare** ekranlarında export ve Cloudflare deploy durumları ayrı gösterilir.
 
 Callback ve job-specific artifact uçları da `Static Publisher Deploy` rolü ile Application Password kimlik doğrulaması ister. GitHub Actions için `WP_USER` olarak yönetici hesabı yerine bu sınırlı rol kullanılmalıdır.
-
-## Kolay Kurulum ve yönetilen deployment
-
-Yeni kurulumlarda **Deploy > Easy Setup** önerilen başlangıç ekranıdır. Kullanıcı canlı site adresini kontrol eder, Cloudflare hesabını bağlar ve **Prepare and Publish Site** butonuna basar. GitHub, webhook, Application Password ve Cloudflare API anahtarı son kullanıcıya gösterilmez. Daha önce webhook yapılandırmış siteler otomatik olarak gelişmiş modda çalışmaya devam eder.
-
-Kolay Kurulum istemcisi eklentiye dahildir; canlı kullanım için ayrı Ragnus Deployment Service adresi WordPress yapılandırmasında tanımlanmalıdır:
-
-```php
-define('RAGSTAT_DEPLOY_SERVICE_URL', 'https://deploy.example.com');
-```
-
-Servis; Cloudflare OAuth Authorization Code akışını tamamlar, WordPress'e tek kullanımlık bağlantı kodu verir ve export sonrasında kendisine iletilen 15 dakikalık imzalı artifact URL'sini indirir. Erişim anahtarı ve callback secret WordPress security salt değerlerinden türetilmiş anahtarla şifreli saklanır. Deployment callback istekleri beş dakikalık zaman penceresinde HMAC-SHA256 ile doğrulanır. Servis sözleşmesi [docs/MANAGED_DEPLOYMENT_SERVICE.md](docs/MANAGED_DEPLOYMENT_SERVICE.md) dosyasındadır.
-
-Yönetilen servis henüz yapılandırılmamışsa eklenti bağlantı kurulmuş gibi davranmaz; Easy Setup ekranı operatör uyarısı gösterir ve mevcut **Advanced Setup** bağlantısıyla GitHub Actions yöntemi kullanılabilir.
 
 ## SFTP deployment
 

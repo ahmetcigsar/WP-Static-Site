@@ -127,13 +127,6 @@ foreach ($expected_translations as $locale => $expected) {
                 exit(1);
             }
         }
-        foreach (['Easy Setup' => 'Kolay Kurulum', 'Connect Cloudflare' => "Cloudflare'ı Bağla", 'Prepare and Publish Site' => 'Siteyi Hazırla ve Yayınla', 'Use Advanced Setup' => 'Gelişmiş Kurulumu Kullan'] as $source => $setup_expected) {
-            $setup_actual = __($source, 'ragnus-static-publisher');
-            if ($setup_actual !== $setup_expected) {
-                fwrite(STDERR, "Türkçe Kolay Kurulum çevirisi beklenen değerde değil: {$source} => {$setup_actual}\n");
-                exit(1);
-            }
-        }
     }
 
 }

@@ -11,7 +11,7 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 - ZIP ve SHA-256 manifest üretimi
 - Sol ana menüde doküman ikonlu Static Publisher yönetim ekranı
 - Main, Deploy, Static Site, SEO, Arama, Hide, Diagnostics, Activity Logs ve About sekmelerine ayrılmış yönetim görünümü
-- Static Site altında General ve Multilingual ayarları
+- Static Site altında General, Headless CMS ve Multilingual ayarları
 - SEO ana sekmesinde SEO Plugins dikey sekmesi
 - SEO Plugins ekranında etkin eklentiyi öne çıkaran, çıktı sayılarını özetleyen ve Metadata/Teknik SEO seçeneklerini açılır kartlarda gruplayan düzen
 - Rank Math metadata çıktılarının sayfa, yazı, özel içerik türü ve arşiv/taksonomi bazında; Schema, XML sitemap ve robots.txt çıktılarının ayrıca yönetilmesi
@@ -32,6 +32,7 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 - WordPress eski slug, Redirection, Rank Math ve özel yönlendirme kurallarını statik `_redirects` çıktısına aktarma
 - Yol bazlı noindex, dosyalar için X-Robots-Tag, deploy sonrası değişen URL'ler için IndexNow ve performans raporu
 - Hide sekmesinden WordPress yollarını yeniden adlandırma; sürüm, generator, XML-RPC, embed ve emoji izlerini statik çıktıdan temizleme
+- Headless + Static Publisher modu ile WordPress tema ön yüzünü ziyaretçilere kapatma; imzalı dahili export istekleriyle ana sayfa ve tasarımı statik çıktıda koruma
 - Main sekmesinde son başarılı static oluşturma zamanı ve yeşil ilerleme/tamamlanma göstergesi
 - Main sekmesinde iki saniyede bir yenilenen canlı export durumu, aşamalı ilerleme ve takılan WP-Cron işi uyarısı
 - Diagnostics sekmesinde PHP, Basic Auth, php-xml, cURL, site URL erişimi, kalıcı bağlantılar, indexlenebilirlik, önbellek ve WP-Cron kontrolleri

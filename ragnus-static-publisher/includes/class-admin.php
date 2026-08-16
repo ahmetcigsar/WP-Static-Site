@@ -110,6 +110,37 @@ final class Admin
             $sanitized['excluded_paths'] = sanitize_textarea_field((string) ($value['excluded_paths'] ?? ''));
         }
 
+        if (in_array($section, ['headless', 'all'], true)) {
+            $behavior = sanitize_key((string) ($value['headless_frontend_behavior'] ?? '404'));
+            $behavior = in_array($behavior, ['404', '410', 'redirect'], true) ? $behavior : '404';
+            $frontend_url = esc_url_raw(untrailingslashit((string) ($value['headless_frontend_url'] ?? '')));
+            if ($frontend_url !== '' && ! self::valid_frontend_url($frontend_url)) {
+                add_settings_error(
+                    Plugin::SETTINGS_KEY,
+                    'headless-frontend-url-error',
+                    __('Enter an HTTP(S) frontend address on a different origin than WordPress.', 'ragnus-static-publisher'),
+                    'error'
+                );
+                $frontend_url = (string) ($current['headless_frontend_url'] ?? '');
+            }
+            if ($behavior === 'redirect' && $frontend_url === '') {
+                add_settings_error(
+                    Plugin::SETTINGS_KEY,
+                    'headless-redirect-url-error',
+                    __('A frontend address is required for redirect behavior. The 404 behavior was selected instead.', 'ragnus-static-publisher'),
+                    'error'
+                );
+                $behavior = '404';
+            }
+
+            $sanitized['headless_enabled'] = isset($value['headless_enabled']) ? '1' : '0';
+            $sanitized['headless_frontend_behavior'] = $behavior;
+            $sanitized['headless_frontend_url'] = $frontend_url;
+            foreach (['headless_preserve_path', 'headless_allow_authenticated_preview', 'headless_allow_graphql', 'headless_noindex', 'headless_disable_xmlrpc', 'headless_disable_comments'] as $key) {
+                $sanitized[$key] = isset($value[$key]) ? '1' : '0';
+            }
+        }
+
         if (in_array($section, ['zip', 'all'], true)) {
             $sanitized['archive_retention'] = max(1, min(100, absint($value['archive_retention'] ?? ($current['archive_retention'] ?? 5))));
         }
@@ -172,6 +203,26 @@ final class Admin
         }
 
         return $sanitized;
+    }
+
+    private static function valid_frontend_url(string $url): bool
+    {
+        $parts = wp_parse_url($url);
+        $home_parts = wp_parse_url(home_url('/'));
+        if (! is_array($parts)
+            || ! is_array($home_parts)
+            || ! in_array(strtolower((string) ($parts['scheme'] ?? '')), ['http', 'https'], true)
+            || (string) ($parts['host'] ?? '') === '') {
+            return false;
+        }
+
+        $scheme = strtolower((string) $parts['scheme']);
+        $home_scheme = strtolower((string) ($home_parts['scheme'] ?? ''));
+        $port = (int) ($parts['port'] ?? ($scheme === 'https' ? 443 : 80));
+        $home_port = (int) ($home_parts['port'] ?? ($home_scheme === 'https' ? 443 : 80));
+        return $scheme !== $home_scheme
+            || strtolower((string) $parts['host']) !== strtolower((string) ($home_parts['host'] ?? ''))
+            || $port !== $home_port;
     }
 
     public static function sanitize_seo_plugin_settings(array $value): array
@@ -1135,6 +1186,7 @@ final class Admin
     {
         $settings_tabs = [
             'general' => __('General', 'ragnus-static-publisher'),
+            'headless' => __('Headless CMS', 'ragnus-static-publisher'),
             'multilingual' => __('Multilingual', 'ragnus-static-publisher'),
         ];
         $current_settings_tab = isset($settings_tabs[$requested_settings_tab]) ? $requested_settings_tab : 'general';
@@ -1152,6 +1204,8 @@ final class Admin
             <div class="ragstat-settings-panel">
                 <?php if ($current_settings_tab === 'general') : ?>
                     <?php self::render_general_settings($settings); ?>
+                <?php elseif ($current_settings_tab === 'headless') : ?>
+                    <?php self::render_headless_settings($settings); ?>
                 <?php else : ?>
                     <?php self::render_language_settings(Plugin::language_settings()); ?>
                 <?php endif; ?>
@@ -1478,6 +1532,64 @@ final class Admin
                 <tr><th><label for="ragstat-excluded"><?php esc_html_e('Excluded Paths', 'ragnus-static-publisher'); ?></label></th><td><textarea class="large-text code" rows="7" id="ragstat-excluded" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[excluded_paths]"><?php echo esc_textarea((string) $settings['excluded_paths']); ?></textarea><p class="description"><?php esc_html_e('One path prefix per line.', 'ragnus-static-publisher'); ?></p></td></tr>
             </table>
             <?php submit_button(__('Save General Settings', 'ragnus-static-publisher')); ?>
+        </form>
+        <?php
+    }
+
+    private static function render_headless_settings(array $settings): void
+    {
+        $option_name = Plugin::SETTINGS_KEY;
+        ?>
+        <form class="ragstat-settings-form" method="post" action="options.php">
+            <?php settings_fields('ragnus_static'); ?>
+            <input type="hidden" name="<?php echo esc_attr($option_name); ?>[_section]" value="headless">
+            <div class="notice notice-info inline">
+                <p><strong><?php esc_html_e('Headless + Static Publisher', 'ragnus-static-publisher'); ?></strong></p>
+                <p><?php esc_html_e('Visitors cannot open the WordPress theme frontend. Signed internal export requests can still render the homepage, pages, design assets, and menus for the static site.', 'ragnus-static-publisher'); ?></p>
+            </div>
+            <table class="form-table" role="presentation">
+                <tr>
+                    <th><?php esc_html_e('Headless CMS Mode', 'ragnus-static-publisher'); ?></th>
+                    <td><label><input type="checkbox" name="<?php echo esc_attr($option_name); ?>[headless_enabled]" value="1" <?php checked((string) ($settings['headless_enabled'] ?? '0'), '1'); ?>> <?php esc_html_e('Protect the WordPress theme frontend', 'ragnus-static-publisher'); ?></label><p class="description"><?php esc_html_e('WordPress Admin, REST API, media files, cron, and signed static export requests remain available.', 'ragnus-static-publisher'); ?></p></td>
+                </tr>
+                <tr>
+                    <th><label for="ragstat-headless-behavior"><?php esc_html_e('Visitor Response', 'ragnus-static-publisher'); ?></label></th>
+                    <td><select id="ragstat-headless-behavior" name="<?php echo esc_attr($option_name); ?>[headless_frontend_behavior]">
+                        <option value="404" <?php selected((string) ($settings['headless_frontend_behavior'] ?? '404'), '404'); ?>><?php esc_html_e('404 Not Found (recommended)', 'ragnus-static-publisher'); ?></option>
+                        <option value="redirect" <?php selected((string) ($settings['headless_frontend_behavior'] ?? '404'), 'redirect'); ?>><?php esc_html_e('307 Redirect to frontend', 'ragnus-static-publisher'); ?></option>
+                        <option value="410" <?php selected((string) ($settings['headless_frontend_behavior'] ?? '404'), '410'); ?>><?php esc_html_e('410 Gone', 'ragnus-static-publisher'); ?></option>
+                    </select></td>
+                </tr>
+                <tr>
+                    <th><label for="ragstat-headless-frontend-url"><?php esc_html_e('Frontend Address', 'ragnus-static-publisher'); ?></label></th>
+                    <td><input class="regular-text" id="ragstat-headless-frontend-url" type="url" name="<?php echo esc_attr($option_name); ?>[headless_frontend_url]" value="<?php echo esc_attr((string) ($settings['headless_frontend_url'] ?? '')); ?>" placeholder="https://www.example.com"><p class="description"><?php esc_html_e('Required only when visitors should be redirected. It must use a different origin than WordPress.', 'ragnus-static-publisher'); ?></p></td>
+                </tr>
+                <tr>
+                    <th><?php esc_html_e('Redirect Paths', 'ragnus-static-publisher'); ?></th>
+                    <td><label><input type="checkbox" name="<?php echo esc_attr($option_name); ?>[headless_preserve_path]" value="1" <?php checked((string) ($settings['headless_preserve_path'] ?? '1'), '1'); ?>> <?php esc_html_e('Preserve the requested path when redirecting', 'ragnus-static-publisher'); ?></label><p class="description"><?php esc_html_e('Example: /about/ redirects to the frontend /about/. Query parameters are not forwarded.', 'ragnus-static-publisher'); ?></p></td>
+                </tr>
+                <tr>
+                    <th><?php esc_html_e('Editor Preview', 'ragnus-static-publisher'); ?></th>
+                    <td><label><input type="checkbox" name="<?php echo esc_attr($option_name); ?>[headless_allow_authenticated_preview]" value="1" <?php checked((string) ($settings['headless_allow_authenticated_preview'] ?? '1'), '1'); ?>> <?php esc_html_e('Allow signed-in editors to view the WordPress theme', 'ragnus-static-publisher'); ?></label></td>
+                </tr>
+                <tr>
+                    <th><?php esc_html_e('GraphQL', 'ragnus-static-publisher'); ?></th>
+                    <td><label><input type="checkbox" name="<?php echo esc_attr($option_name); ?>[headless_allow_graphql]" value="1" <?php checked((string) ($settings['headless_allow_graphql'] ?? '0'), '1'); ?>> <?php esc_html_e('Allow the /graphql endpoint when WPGraphQL is installed', 'ragnus-static-publisher'); ?></label></td>
+                </tr>
+                <tr>
+                    <th><?php esc_html_e('CMS Indexing', 'ragnus-static-publisher'); ?></th>
+                    <td><label><input type="checkbox" name="<?php echo esc_attr($option_name); ?>[headless_noindex]" value="1" <?php checked((string) ($settings['headless_noindex'] ?? '1'), '1'); ?>> <?php esc_html_e('Block indexing on the WordPress CMS origin', 'ragnus-static-publisher'); ?></label><p class="description"><?php esc_html_e('Returns noindex headers, disables the CMS sitemap, and disallows crawling through robots.txt without changing the generated static site.', 'ragnus-static-publisher'); ?></p></td>
+                </tr>
+                <tr>
+                    <th><?php esc_html_e('Legacy Publishing', 'ragnus-static-publisher'); ?></th>
+                    <td><label><input type="checkbox" name="<?php echo esc_attr($option_name); ?>[headless_disable_xmlrpc]" value="1" <?php checked((string) ($settings['headless_disable_xmlrpc'] ?? '1'), '1'); ?>> <?php esc_html_e('Disable XML-RPC requests', 'ragnus-static-publisher'); ?></label></td>
+                </tr>
+                <tr>
+                    <th><?php esc_html_e('Comments and Pingbacks', 'ragnus-static-publisher'); ?></th>
+                    <td><label><input type="checkbox" name="<?php echo esc_attr($option_name); ?>[headless_disable_comments]" value="1" <?php checked((string) ($settings['headless_disable_comments'] ?? '1'), '1'); ?>> <?php esc_html_e('Close comments and pingbacks on the CMS origin', 'ragnus-static-publisher'); ?></label></td>
+                </tr>
+            </table>
+            <?php submit_button(__('Save Headless CMS Settings', 'ragnus-static-publisher')); ?>
         </form>
         <?php
     }

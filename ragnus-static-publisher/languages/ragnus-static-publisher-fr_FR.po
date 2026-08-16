@@ -1,7 +1,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Ragnus Static Publisher 1.27.0\n"
+"Project-Id-Version: Ragnus Static Publisher 1.29.0\n"
 "Report-Msgid-Bugs-To: info@ragnus.co\n"
 "POT-Creation-Date: 2026-08-15 21:39+0300\n"
 "PO-Revision-Date: 2026-08-12 22:57+0300\n"
@@ -2657,4 +2657,161 @@ msgstr ""
 
 #: ragnus-static-publisher/includes/class-secret-store.php:74
 msgid "PHP OpenSSL is required to read the saved secret."
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:121
+msgid "Enter an HTTP(S) frontend address on a different origin than WordPress."
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:130
+msgid ""
+"A frontend address is required for redirect behavior. The 404 behavior was "
+"selected instead."
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1189
+msgid "Headless CMS"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1547
+#, fuzzy
+msgid "Headless + Static Publisher"
+msgstr "Sections de l'éditeur statique"
+
+#: ragnus-static-publisher/includes/class-admin.php:1548
+msgid ""
+"Visitors cannot open the WordPress theme frontend. Signed internal export "
+"requests can still render the homepage, pages, design assets, and menus for "
+"the static site."
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1552
+msgid "Headless CMS Mode"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1553
+msgid "Protect the WordPress theme frontend"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1553
+msgid ""
+"WordPress Admin, REST API, media files, cron, and signed static export "
+"requests remain available."
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1556
+msgid "Visitor Response"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1558
+msgid "404 Not Found (recommended)"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1559
+msgid "307 Redirect to frontend"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1560
+msgid "410 Gone"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1564
+#, fuzzy
+msgid "Frontend Address"
+msgstr "Adresse du site en direct"
+
+#: ragnus-static-publisher/includes/class-admin.php:1565
+msgid ""
+"Required only when visitors should be redirected. It must use a different "
+"origin than WordPress."
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1568
+msgid "Redirect Paths"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1569
+msgid "Preserve the requested path when redirecting"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1569
+msgid ""
+"Example: /about/ redirects to the frontend /about/. Query parameters are not "
+"forwarded."
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1572
+msgid "Editor Preview"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1573
+msgid "Allow signed-in editors to view the WordPress theme"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1576
+msgid "GraphQL"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1577
+msgid "Allow the /graphql endpoint when WPGraphQL is installed"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1580
+#, fuzzy
+msgid "CMS Indexing"
+msgstr "Sélecteurs d'indexation"
+
+#: ragnus-static-publisher/includes/class-admin.php:1581
+msgid "Block indexing on the WordPress CMS origin"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1581
+msgid ""
+"Returns noindex headers, disables the CMS sitemap, and disallows crawling "
+"through robots.txt without changing the generated static site."
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1584
+msgid "Legacy Publishing"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1585
+#, fuzzy
+msgid "Disable XML-RPC requests"
+msgstr "Désactiver les liens XML-RPC"
+
+#: ragnus-static-publisher/includes/class-admin.php:1588
+msgid "Comments and Pingbacks"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1589
+msgid "Close comments and pingbacks on the CMS origin"
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-admin.php:1592
+#, fuzzy
+msgid "Save Headless CMS Settings"
+msgstr "Enregistrer Masquer les paramètres"
+
+#: ragnus-static-publisher/includes/class-headless-mode.php:94
+#, fuzzy
+msgid "This WordPress frontend is no longer available."
+msgstr "WordPress cron est disponible."
+
+#: ragnus-static-publisher/includes/class-headless-mode.php:95
+#, fuzzy
+msgid "This WordPress frontend is not available."
+msgstr "WordPress cron est disponible."
+
+#: ragnus-static-publisher/includes/class-headless-mode.php:169
+msgid "XML-RPC is disabled in Headless CMS mode."
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-managed-deployer.php:69
+msgid "Managed deployment service is not configured for this plugin package."
+msgstr ""
+
+#: ragnus-static-publisher/includes/class-managed-deployer.php:86
+msgid ""
+"The Cloudflare connection request has expired. Start the connection again."
 msgstr ""

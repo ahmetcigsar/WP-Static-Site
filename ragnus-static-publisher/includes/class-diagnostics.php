@@ -39,6 +39,7 @@ final class Diagnostics
                 'timeout' => 10,
                 'redirection' => 3,
                 'user-agent' => 'RagnusStaticPublisher/' . RAGSTAT_VERSION,
+                'headers' => ['X-Ragnus-Static-Export' => '1'],
             ]);
         }
 

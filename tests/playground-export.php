@@ -17,6 +17,8 @@ update_option('ragnus_static_settings', [
     'maximum_urls' => 50,
     'excluded_paths' => "/wp-admin/\n/wp-login.php\n/wp-json/\n/feed/",
     'auto_export' => '0',
+    'headless_enabled' => '1',
+    'headless_frontend_behavior' => '404',
 ]);
 update_option(Ragnus\StaticPublisher\Plugin::LANGUAGE_SETTINGS_KEY, [
     'enabled' => '1',
@@ -85,6 +87,12 @@ add_filter('ragnus_static_seed_urls', static function (array $urls): array {
     return $urls;
 });
 add_filter('pre_http_request', static function ($preempt, array $args, string $url) {
+    if (strtolower((string) wp_parse_url($url, PHP_URL_HOST)) === strtolower((string) wp_parse_url(home_url('/'), PHP_URL_HOST))
+        && ((string) ($args['headers']['X-Ragnus-Static-Export'] ?? '') !== '1'
+            || empty($args['headers']['X-Ragnus-Static-Timestamp'])
+            || empty($args['headers']['X-Ragnus-Static-Signature']))) {
+        throw new RuntimeException('Headless export isteği geçerli imza başlıkları olmadan gönderildi: ' . $url);
+    }
     $path = (string) wp_parse_url($url, PHP_URL_PATH);
     if (! in_array($path, ['/tr/', '/en/', '/redirect-test/', '/not-found-test/', '/forbidden-test/', '/wp-content/themes/test-theme/style.css'], true)) {
         return $preempt;

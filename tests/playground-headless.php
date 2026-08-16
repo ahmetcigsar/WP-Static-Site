@@ -1,0 +1,130 @@
+<?php
+
+declare(strict_types=1);
+
+require '/wordpress/wp-load.php';
+require_once ABSPATH . 'wp-admin/includes/plugin.php';
+require_once ABSPATH . 'wp-admin/includes/template.php';
+
+$plugin = 'ragnus-static-publisher/ragnus-static-publisher.php';
+$activation = activate_plugin($plugin);
+if (is_wp_error($activation)) {
+    throw new RuntimeException($activation->get_error_message());
+}
+do_action('init');
+
+$defaults = Ragnus\StaticPublisher\Plugin::settings();
+foreach ([
+    'headless_enabled' => '0',
+    'headless_frontend_behavior' => '404',
+    'headless_preserve_path' => '1',
+    'headless_allow_authenticated_preview' => '1',
+    'headless_noindex' => '1',
+    'headless_disable_xmlrpc' => '1',
+    'headless_disable_comments' => '1',
+] as $key => $expected) {
+    if (($defaults[$key] ?? null) !== $expected) {
+        throw new RuntimeException("Headless varsayılan ayarı hatalı: {$key}");
+    }
+}
+
+$invalid_redirect = Ragnus\StaticPublisher\Admin::sanitize([
+    '_section' => 'headless',
+    'headless_enabled' => '1',
+    'headless_frontend_behavior' => 'redirect',
+    'headless_frontend_url' => home_url('/'),
+]);
+if (($invalid_redirect['headless_frontend_behavior'] ?? '') !== '404') {
+    throw new RuntimeException('WordPress originine yönlendirme güvenli biçimde 404 davranışına düşürülmedi.');
+}
+
+$settings = Ragnus\StaticPublisher\Admin::sanitize([
+    '_section' => 'headless',
+    'headless_enabled' => '1',
+    'headless_frontend_behavior' => 'redirect',
+    'headless_frontend_url' => 'https://www.example.com/',
+    'headless_preserve_path' => '1',
+    'headless_allow_authenticated_preview' => '1',
+    'headless_allow_graphql' => '1',
+    'headless_noindex' => '1',
+    'headless_disable_xmlrpc' => '1',
+    'headless_disable_comments' => '1',
+]);
+if (($settings['headless_enabled'] ?? '') !== '1'
+    || ($settings['headless_frontend_behavior'] ?? '') !== 'redirect'
+    || ($settings['headless_frontend_url'] ?? '') !== 'https://www.example.com'
+    || ($settings['target_url'] ?? '') !== ($defaults['target_url'] ?? '')) {
+    throw new RuntimeException('Headless ayarları diğer Static Site ayarlarını koruyarak temizlenmedi.');
+}
+update_option(Ragnus\StaticPublisher\Plugin::SETTINGS_KEY, $settings);
+
+$unsigned = [
+    'method' => 'GET',
+    'headers' => ['X-Ragnus-Static-Export' => '1'],
+];
+$signed = apply_filters('http_request_args', $unsigned, home_url('/sample/?page=2'));
+if (empty($signed['headers']['X-Ragnus-Static-Timestamp'])
+    || empty($signed['headers']['X-Ragnus-Static-Signature'])) {
+    throw new RuntimeException('Aynı-origin static export isteği timestamp ve HMAC ile imzalanmadı.');
+}
+$external = apply_filters('http_request_args', $unsigned, 'https://external.example/sample/');
+if (isset($external['headers']['X-Ragnus-Static-Signature'])) {
+    throw new RuntimeException('Harici origin isteğine dahili export imzası eklendi.');
+}
+
+$original_server = $_SERVER;
+$_SERVER['REQUEST_METHOD'] = 'GET';
+$_SERVER['REQUEST_URI'] = '/sample/?page=2';
+$_SERVER['HTTP_X_RAGNUS_STATIC_EXPORT'] = '1';
+$_SERVER['HTTP_X_RAGNUS_STATIC_TIMESTAMP'] = (string) $signed['headers']['X-Ragnus-Static-Timestamp'];
+$_SERVER['HTTP_X_RAGNUS_STATIC_SIGNATURE'] = (string) $signed['headers']['X-Ragnus-Static-Signature'];
+if (! Ragnus\StaticPublisher\Headless_Mode::valid_export_request()
+    || Ragnus\StaticPublisher\Headless_Mode::should_protect_frontend()) {
+    throw new RuntimeException('Geçerli imzalı export isteği WordPress tema render erişimini alamadı.');
+}
+
+$_SERVER['HTTP_X_RAGNUS_STATIC_SIGNATURE'] = str_repeat('0', 64);
+if (Ragnus\StaticPublisher\Headless_Mode::valid_export_request()) {
+    throw new RuntimeException('Sahte export imzası kabul edildi.');
+}
+
+unset(
+    $_SERVER['HTTP_X_RAGNUS_STATIC_EXPORT'],
+    $_SERVER['HTTP_X_RAGNUS_STATIC_TIMESTAMP'],
+    $_SERVER['HTTP_X_RAGNUS_STATIC_SIGNATURE']
+);
+wp_set_current_user(0);
+if (! Ragnus\StaticPublisher\Headless_Mode::should_protect_frontend()) {
+    throw new RuntimeException('Anonim WordPress tema isteği Headless modunda korunmadı.');
+}
+if (apply_filters('wp_sitemaps_enabled', true) !== false
+    || apply_filters('xmlrpc_enabled', true) !== false
+    || apply_filters('comments_open', true, 0) !== false
+    || apply_filters('pings_open', true, 0) !== false
+    || apply_filters('robots_txt', "User-agent: *\nAllow: /\n", true) !== "User-agent: *\nDisallow: /\n") {
+    throw new RuntimeException('Headless CMS sertleştirme filtrelerinden biri uygulanmadı.');
+}
+
+wp_set_current_user(1);
+if (Ragnus\StaticPublisher\Headless_Mode::should_protect_frontend()) {
+    throw new RuntimeException('Giriş yapmış editörün tema önizlemesi engellendi.');
+}
+
+$_GET = ['tab' => 'settings', 'settings_tab' => 'headless'];
+ob_start();
+Ragnus\StaticPublisher\Admin::render();
+$headless_html = (string) ob_get_clean();
+$_GET = [];
+foreach (['Headless CMS', 'Headless + Static Publisher', 'Protect the WordPress theme frontend', 'Save Headless CMS Settings'] as $expected) {
+    if (! str_contains($headless_html, $expected)) {
+        throw new RuntimeException("Headless CMS yönetim ekranı içeriği eksik: {$expected}");
+    }
+}
+if (substr_count($headless_html, 'ragstat-settings-tab is-active') !== 1
+    || ! str_contains($headless_html, 'settings_tab=headless')) {
+    throw new RuntimeException('Headless CMS alt sekmesi etkin durumda render edilmedi.');
+}
+
+$_SERVER = $original_server;
+delete_option(Ragnus\StaticPublisher\Plugin::SETTINGS_KEY);
+echo "Headless CMS mode test passed.\n";

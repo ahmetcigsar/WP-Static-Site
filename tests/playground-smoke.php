@@ -125,6 +125,12 @@ foreach (['auto_export_post_created', 'auto_export_post_updated', 'auto_export_p
         exit(1);
     }
 }
+foreach (['headless_enabled', 'headless_frontend_behavior', 'headless_frontend_url', 'headless_preserve_path', 'headless_allow_authenticated_preview', 'headless_allow_graphql', 'headless_noindex', 'headless_disable_xmlrpc', 'headless_disable_comments'] as $headless_setting) {
+    if (! array_key_exists($headless_setting, $settings)) {
+        fwrite(STDERR, "Varsayılan Headless CMS ayarı eksik: {$headless_setting}\n");
+        exit(1);
+    }
+}
 $sanitized_settings = Ragnus\StaticPublisher\Admin::sanitize([
     'target_url' => home_url(),
     'maximum_urls' => 2000,
@@ -604,7 +610,7 @@ ob_start();
 Ragnus\StaticPublisher\Admin::render();
 $settings_html = (string) ob_get_clean();
 $_GET = [];
-if (! str_contains($settings_html, 'Static Site') || ! str_contains($settings_html, 'Multilingual') || ! str_contains($settings_html, 'Save General Settings') || str_contains($settings_html, 'settings_tab=automation') || str_contains($settings_html, 'Automatic Static Site Creation and Deploy') || str_contains($settings_html, 'Number of ZIPs to Store') || str_contains($settings_html, 'Redirection by Browser Language')) {
+if (! str_contains($settings_html, 'Static Site') || ! str_contains($settings_html, 'Headless CMS') || ! str_contains($settings_html, 'Multilingual') || ! str_contains($settings_html, 'Save General Settings') || str_contains($settings_html, 'settings_tab=automation') || str_contains($settings_html, 'Automatic Static Site Creation and Deploy') || str_contains($settings_html, 'Number of ZIPs to Store') || str_contains($settings_html, 'Redirection by Browser Language')) {
     fwrite(STDERR, "Automation veya ZIP saklama ayarı Settings ekranından kaldırılmadı.\n");
     exit(1);
 }

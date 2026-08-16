@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Ragnus Static Publisher 1.27.0\n"
+"Project-Id-Version: Ragnus Static Publisher 1.29.0\n"
 "Report-Msgid-Bugs-To: info@ragnus.co\n"
 "POT-Creation-Date: 2026-08-15 21:39+0300\n"
 "PO-Revision-Date: 2026-08-13 00:17+0300\n"
@@ -2676,3 +2676,170 @@ msgstr ""
 #: ragnus-static-publisher/includes/class-secret-store.php:74
 msgid "PHP OpenSSL is required to read the saved secret."
 msgstr "Kaydedilmiş gizli bilgiyi okumak için PHP OpenSSL gereklidir."
+
+#: ragnus-static-publisher/includes/class-admin.php:121
+msgid "Enter an HTTP(S) frontend address on a different origin than WordPress."
+msgstr ""
+"WordPress'ten farklı bir origin üzerinde HTTP(S) frontend adresi girin."
+
+#: ragnus-static-publisher/includes/class-admin.php:130
+msgid ""
+"A frontend address is required for redirect behavior. The 404 behavior was "
+"selected instead."
+msgstr ""
+"Yönlendirme davranışı için bir frontend adresi gereklidir. Bunun yerine 404 "
+"davranışı seçildi."
+
+#: ragnus-static-publisher/includes/class-admin.php:1189
+msgid "Headless CMS"
+msgstr "Headless CMS"
+
+#: ragnus-static-publisher/includes/class-admin.php:1547
+msgid "Headless + Static Publisher"
+msgstr "Headless + Static Publisher"
+
+#: ragnus-static-publisher/includes/class-admin.php:1548
+msgid ""
+"Visitors cannot open the WordPress theme frontend. Signed internal export "
+"requests can still render the homepage, pages, design assets, and menus for "
+"the static site."
+msgstr ""
+"Ziyaretçiler WordPress tema ön yüzünü açamaz. İmzalı dahili export istekleri "
+"statik site için ana sayfayı, sayfaları, tasarım varlıklarını ve menüleri "
+"oluşturmaya devam edebilir."
+
+#: ragnus-static-publisher/includes/class-admin.php:1552
+msgid "Headless CMS Mode"
+msgstr "Headless CMS Modu"
+
+#: ragnus-static-publisher/includes/class-admin.php:1553
+msgid "Protect the WordPress theme frontend"
+msgstr "WordPress tema ön yüzünü korumaya al"
+
+#: ragnus-static-publisher/includes/class-admin.php:1553
+msgid ""
+"WordPress Admin, REST API, media files, cron, and signed static export "
+"requests remain available."
+msgstr ""
+"WordPress Yönetimi, REST API, medya dosyaları, cron ve imzalı statik export "
+"istekleri kullanılabilir kalır."
+
+#: ragnus-static-publisher/includes/class-admin.php:1556
+msgid "Visitor Response"
+msgstr "Ziyaretçi Yanıtı"
+
+#: ragnus-static-publisher/includes/class-admin.php:1558
+msgid "404 Not Found (recommended)"
+msgstr "404 Bulunamadı (önerilen)"
+
+#: ragnus-static-publisher/includes/class-admin.php:1559
+msgid "307 Redirect to frontend"
+msgstr "Frontend'e 307 yönlendirmesi"
+
+#: ragnus-static-publisher/includes/class-admin.php:1560
+msgid "410 Gone"
+msgstr "410 Artık Yok"
+
+#: ragnus-static-publisher/includes/class-admin.php:1564
+msgid "Frontend Address"
+msgstr "Frontend Adresi"
+
+#: ragnus-static-publisher/includes/class-admin.php:1565
+msgid ""
+"Required only when visitors should be redirected. It must use a different "
+"origin than WordPress."
+msgstr ""
+"Yalnızca ziyaretçiler yönlendirilecekse gereklidir. WordPress'ten farklı bir "
+"origin kullanmalıdır."
+
+#: ragnus-static-publisher/includes/class-admin.php:1568
+msgid "Redirect Paths"
+msgstr "Yönlendirme Yolları"
+
+#: ragnus-static-publisher/includes/class-admin.php:1569
+msgid "Preserve the requested path when redirecting"
+msgstr "Yönlendirirken istenen yolu koru"
+
+#: ragnus-static-publisher/includes/class-admin.php:1569
+msgid ""
+"Example: /about/ redirects to the frontend /about/. Query parameters are not "
+"forwarded."
+msgstr ""
+"Örnek: /hakkimizda/ frontend üzerindeki /hakkimizda/ yoluna yönlendirilir. "
+"Sorgu parametreleri aktarılmaz."
+
+#: ragnus-static-publisher/includes/class-admin.php:1572
+msgid "Editor Preview"
+msgstr "Editör Önizlemesi"
+
+#: ragnus-static-publisher/includes/class-admin.php:1573
+msgid "Allow signed-in editors to view the WordPress theme"
+msgstr "Giriş yapmış editörlerin WordPress temasını görmesine izin ver"
+
+#: ragnus-static-publisher/includes/class-admin.php:1576
+msgid "GraphQL"
+msgstr "GraphQL"
+
+#: ragnus-static-publisher/includes/class-admin.php:1577
+msgid "Allow the /graphql endpoint when WPGraphQL is installed"
+msgstr "WPGraphQL kurulu olduğunda /graphql uç noktasına izin ver"
+
+#: ragnus-static-publisher/includes/class-admin.php:1580
+msgid "CMS Indexing"
+msgstr "CMS İndeksleme"
+
+#: ragnus-static-publisher/includes/class-admin.php:1581
+msgid "Block indexing on the WordPress CMS origin"
+msgstr "WordPress CMS origininde indekslemeyi engelle"
+
+#: ragnus-static-publisher/includes/class-admin.php:1581
+msgid ""
+"Returns noindex headers, disables the CMS sitemap, and disallows crawling "
+"through robots.txt without changing the generated static site."
+msgstr ""
+"Oluşturulan statik siteyi değiştirmeden noindex başlıkları döndürür, CMS "
+"site haritasını kapatır ve robots.txt üzerinden taramayı engeller."
+
+#: ragnus-static-publisher/includes/class-admin.php:1584
+msgid "Legacy Publishing"
+msgstr "Eski Yayınlama Yöntemleri"
+
+#: ragnus-static-publisher/includes/class-admin.php:1585
+msgid "Disable XML-RPC requests"
+msgstr "XML-RPC isteklerini devre dışı bırak"
+
+#: ragnus-static-publisher/includes/class-admin.php:1588
+msgid "Comments and Pingbacks"
+msgstr "Yorumlar ve Pingback'ler"
+
+#: ragnus-static-publisher/includes/class-admin.php:1589
+msgid "Close comments and pingbacks on the CMS origin"
+msgstr "CMS origininde yorumları ve pingback'leri kapat"
+
+#: ragnus-static-publisher/includes/class-admin.php:1592
+msgid "Save Headless CMS Settings"
+msgstr "Headless CMS Ayarlarını Kaydet"
+
+#: ragnus-static-publisher/includes/class-headless-mode.php:94
+msgid "This WordPress frontend is no longer available."
+msgstr "Bu WordPress ön yüzü artık kullanılamıyor."
+
+#: ragnus-static-publisher/includes/class-headless-mode.php:95
+msgid "This WordPress frontend is not available."
+msgstr "Bu WordPress ön yüzü kullanılamıyor."
+
+#: ragnus-static-publisher/includes/class-headless-mode.php:169
+msgid "XML-RPC is disabled in Headless CMS mode."
+msgstr "XML-RPC, Headless CMS modunda devre dışıdır."
+
+#: ragnus-static-publisher/includes/class-managed-deployer.php:69
+#, fuzzy
+msgid "Managed deployment service is not configured for this plugin package."
+msgstr "Kolay Kurulum servisi bu eklenti paketi için yapılandırılmamış."
+
+#: ragnus-static-publisher/includes/class-managed-deployer.php:86
+#, fuzzy
+msgid ""
+"The Cloudflare connection request has expired. Start the connection again."
+msgstr ""
+"Cloudflare bağlantı isteğinin süresi doldu. Kolay Kurulumu yeniden başlatın."

@@ -6,6 +6,7 @@
 - Cloudflare kimlik bilgileri yalnızca CI secrets içinde tutulur.
 - Kolay Kurulum modunda Cloudflare OAuth erişimi yalnızca yönetilen deployment servisinde tutulur; WordPress yalnızca siteye özel, şifrelenmiş servis erişim ve callback anahtarlarını saklar.
 - REST uçları WordPress Application Password ve eklentiye ait `ragnus_static_export` yetkisi ister.
+- Headless + Static Publisher modu tema ön yüzünü ziyaretçilere kapatır; aynı-origin export istekleri WordPress salt değerinden türetilen, beş dakika geçerli timestamp + HMAC başlıklarıyla tema HTML'ine erişir.
 - Cloudflare CI deployment'ı tam ve atomik bir statik snapshot'tır; SFTP akışı dosyaları doğrudan hedef dizine yükler.
 - Form, arama, yorum, üyelik ve e-ticaret bu MVP'nin kapsamında değildir.
 
@@ -14,6 +15,7 @@
 1. Manuel akışta CI `POST /wp-json/ragnus-static/v1/exports` çağrısı yapar. Otomatik akışta WordPress, Settings ekranında seçilen içerik, medya, menü, tema veya site ayarı değişikliklerini 60 saniye biriktirir.
 2. WordPress işi WP-Cron kuyruğuna ekler.
 3. Exporter yayınlanmış içerik URL'lerini seed olarak alır ve aynı origin kaynaklarını tarar.
+   Headless modu açıksa bu istekler imzalanır; CMS originindeki normal ziyaretçiler aynı sayfalarda yapılandırılan 404, 410 veya 307 davranışını alır.
 4. HTML/CSS içindeki origin adresleri canlı statik domain ile değiştirilir.
 5. Snapshot, `_headers`, `_redirects`, dil yönlendirme yapılandırması, manifest ve ZIP oluşturulur.
 6. Export tamamlanınca isteğe bağlı GitHub `repository_dispatch` webhook'u job ID ve build SHA-256 ile CI akışını tetikler.

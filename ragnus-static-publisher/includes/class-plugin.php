@@ -26,6 +26,7 @@ final class Plugin
 
     public static function boot(): void
     {
+        Headless_Mode::boot();
         add_action('init', [self::class, 'load_textdomain'], 0);
         add_action('init', [self::class, 'apply_export_privacy'], 0);
         add_action('init', [self::class, 'maybe_upgrade'], 1);
@@ -155,6 +156,15 @@ final class Plugin
             'sftp_remote_path' => '/public_html',
             'sftp_host_fingerprint' => '',
             'sftp_timeout' => 60,
+            'headless_enabled' => '0',
+            'headless_frontend_behavior' => '404',
+            'headless_frontend_url' => '',
+            'headless_preserve_path' => '1',
+            'headless_allow_authenticated_preview' => '1',
+            'headless_allow_graphql' => '0',
+            'headless_noindex' => '1',
+            'headless_disable_xmlrpc' => '1',
+            'headless_disable_comments' => '1',
         ], self::auto_export_trigger_defaults()));
     }
 
@@ -350,7 +360,7 @@ final class Plugin
 
     public static function apply_export_privacy(): void
     {
-        if (($_SERVER['HTTP_X_RAGNUS_STATIC_EXPORT'] ?? '') !== '1') {
+        if (! Headless_Mode::valid_export_request()) {
             return;
         }
 

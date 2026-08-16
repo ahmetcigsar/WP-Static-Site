@@ -21,6 +21,7 @@ Ragnus\StaticPublisher\Plugin::load_textdomain();
 $screens = [
     'main' => ['tab' => 'main'],
     'settings-general' => ['tab' => 'settings', 'settings_tab' => 'general'],
+    'settings-headless' => ['tab' => 'settings', 'settings_tab' => 'headless'],
     'settings-multilingual' => ['tab' => 'settings', 'settings_tab' => 'multilingual'],
     'seo-plugins' => ['tab' => 'seo', 'seo_tab' => 'plugins'],
     'seo-audit' => ['tab' => 'seo', 'seo_tab' => 'audit'],
@@ -46,7 +47,8 @@ $screens = [
 
 $expected = [
     'main' => ['Publishing Status', 'Status', 'Create Static Site'],
-    'settings-general' => ['Static Site', 'General', 'Multilingual', 'Save General Settings'],
+    'settings-general' => ['Static Site', 'General', 'Headless CMS', 'Multilingual', 'Save General Settings'],
+    'settings-headless' => ['Headless CMS', 'Headless + Static Publisher', 'Visitor Response', 'Save Headless CMS Settings'],
     'settings-multilingual' => ['Static Site', 'Multilingual', 'Redirection by Browser Language', 'Save Language Settings'],
     'seo-plugins' => ['SEO Plugins', 'Rank Math SEO', 'Metadata', 'Technical SEO', 'Save SEO Plugin Settings'],
     'seo-audit' => ['SEO Audit', 'Create SEO audit report', 'Validate JSON-LD structured data', 'Save SEO Settings'],

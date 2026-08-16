@@ -14,7 +14,7 @@ if (! defined('ABSPATH')) {
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
 require_once ABSPATH . 'wp-admin/includes/template.php';
 
-$plugin = 'ragnus-static-publisher/ragnus-static-publisher.php';
+$plugin = 'wext-static-publisher/wext-static-publisher.php';
 $result = activate_plugin($plugin);
 if (is_wp_error($result)) {
     fwrite(STDERR, $result->get_error_message() . "\n");
@@ -23,12 +23,12 @@ if (is_wp_error($result)) {
 
 do_action('init');
 
-if (! class_exists('Ragnus\\StaticPublisher\\Exporter')) {
+if (! class_exists('Wext\\StaticPublisher\\Exporter')) {
     fwrite(STDERR, "Exporter sınıfı yüklenmedi.\n");
     exit(1);
 }
 
-$settings = Ragnus\StaticPublisher\Plugin::settings();
+$settings = Wext\StaticPublisher\Plugin::settings();
 if (($settings['maximum_urls'] ?? null) !== 2000) {
     fwrite(STDERR, "Varsayılan ayarlar beklenen değerde değil.\n");
     exit(1);
@@ -48,15 +48,15 @@ if (($settings['deployment_mode'] ?? '') !== 'advanced') {
     exit(1);
 }
 $legacy_settings = ['deployment_webhook_url' => 'https://api.github.com/repos/example/legacy/dispatches'];
-update_option(Ragnus\StaticPublisher\Plugin::SETTINGS_KEY, $legacy_settings);
-if ((Ragnus\StaticPublisher\Plugin::settings()['deployment_mode'] ?? '') !== 'advanced') {
+update_option(Wext\StaticPublisher\Plugin::SETTINGS_KEY, $legacy_settings);
+if ((Wext\StaticPublisher\Plugin::settings()['deployment_mode'] ?? '') !== 'advanced') {
     fwrite(STDERR, "Mevcut webhook kurulumu otomatik olarak Gelişmiş moda taşınmadı.\n");
     exit(1);
 }
-delete_option(Ragnus\StaticPublisher\Plugin::SETTINGS_KEY);
-$language_defaults = Ragnus\StaticPublisher\Plugin::language_settings();
-$site_language = Ragnus\StaticPublisher\Language_Routing::site_language();
-$default_supported_languages = Ragnus\StaticPublisher\Language_Routing::parse_languages((string) ($language_defaults['supported_languages'] ?? ''));
+delete_option(Wext\StaticPublisher\Plugin::SETTINGS_KEY);
+$language_defaults = Wext\StaticPublisher\Plugin::language_settings();
+$site_language = Wext\StaticPublisher\Language_Routing::site_language();
+$default_supported_languages = Wext\StaticPublisher\Language_Routing::parse_languages((string) ($language_defaults['supported_languages'] ?? ''));
 if (($language_defaults['enabled'] ?? '') !== '0'
     || ($language_defaults['default_language'] ?? '') !== $site_language
     || ($default_supported_languages[0] ?? '') !== $site_language
@@ -67,10 +67,10 @@ if (($language_defaults['enabled'] ?? '') !== '0'
 }
 $french_site_locale = static fn (): string => 'fr_FR';
 add_filter('pre_option_WPLANG', $french_site_locale);
-$french_language_defaults = Ragnus\StaticPublisher\Language_Routing::defaults();
+$french_language_defaults = Wext\StaticPublisher\Language_Routing::defaults();
 remove_filter('pre_option_WPLANG', $french_site_locale);
 if (($french_language_defaults['default_language'] ?? '') !== 'fr'
-    || Ragnus\StaticPublisher\Language_Routing::parse_languages((string) ($french_language_defaults['supported_languages'] ?? '')) !== ['fr', 'tr', 'en']) {
+    || Wext\StaticPublisher\Language_Routing::parse_languages((string) ($french_language_defaults['supported_languages'] ?? '')) !== ['fr', 'tr', 'en']) {
     fwrite(STDERR, "WordPress site dili varsayılan listenin başına taşınmadı.\n");
     exit(1);
 }
@@ -80,15 +80,15 @@ $saved_language_settings = [
     'default_language' => 'de',
     'cookie_days' => 30,
 ];
-update_option(Ragnus\StaticPublisher\Plugin::LANGUAGE_SETTINGS_KEY, $saved_language_settings);
-Ragnus\StaticPublisher\Plugin::activate();
-if (get_option(Ragnus\StaticPublisher\Plugin::LANGUAGE_SETTINGS_KEY) !== $saved_language_settings) {
+update_option(Wext\StaticPublisher\Plugin::LANGUAGE_SETTINGS_KEY, $saved_language_settings);
+Wext\StaticPublisher\Plugin::activate();
+if (get_option(Wext\StaticPublisher\Plugin::LANGUAGE_SETTINGS_KEY) !== $saved_language_settings) {
     fwrite(STDERR, "Aktivasyon mevcut dil ayarlarının üzerine yazdı.\n");
     exit(1);
 }
-delete_option(Ragnus\StaticPublisher\Plugin::LANGUAGE_SETTINGS_KEY);
-Ragnus\StaticPublisher\Plugin::activate();
-$sanitized_languages = Ragnus\StaticPublisher\Language_Routing::sanitize([
+delete_option(Wext\StaticPublisher\Plugin::LANGUAGE_SETTINGS_KEY);
+Wext\StaticPublisher\Plugin::activate();
+$sanitized_languages = Wext\StaticPublisher\Language_Routing::sanitize([
     'enabled' => '1',
     'supported_languages' => "TR\nen-US\ninvalid/path\ntr",
     'default_language' => 'en_US',
@@ -101,7 +101,7 @@ if (($sanitized_languages['enabled'] ?? '') !== '1'
     fwrite(STDERR, "Dil yönlendirme ayarları doğru temizlenmedi.\n");
     exit(1);
 }
-$language_routing = new Ragnus\StaticPublisher\Language_Routing($sanitized_languages);
+$language_routing = new Wext\StaticPublisher\Language_Routing($sanitized_languages);
 if ($language_routing->seed_urls('https://cms.example.com') !== [
     'https://cms.example.com/tr/',
     'https://cms.example.com/en-us/',
@@ -113,7 +113,7 @@ $language_html = $language_routing->inject_x_default(
     $language_routing->inject_preference_script('<html><head></head><body></body></html>'),
     'https://static.example.com'
 );
-if (! str_contains($language_html, 'ragnus-language-preference.js')
+if (! str_contains($language_html, 'wext-language-preference.js')
     || ! str_contains($language_html, 'hreflang="x-default"')
     || ! str_contains($language_html, 'https://static.example.com/')) {
     fwrite(STDERR, "Dil tercihi veya x-default işaretlemesi HTML içine eklenmedi.\n");
@@ -131,7 +131,7 @@ foreach (['headless_enabled', 'headless_frontend_behavior', 'headless_frontend_u
         exit(1);
     }
 }
-$sanitized_settings = Ragnus\StaticPublisher\Admin::sanitize([
+$sanitized_settings = Wext\StaticPublisher\Admin::sanitize([
     'target_url' => home_url(),
     'maximum_urls' => 2000,
     'archive_retention' => 5,
@@ -147,7 +147,7 @@ if (($sanitized_settings['auto_export'] ?? '') !== '1'
     exit(1);
 }
 
-$sanitized_zip = Ragnus\StaticPublisher\Admin::sanitize([
+$sanitized_zip = Wext\StaticPublisher\Admin::sanitize([
     '_section' => 'zip',
     'archive_retention' => 12,
 ]);
@@ -158,7 +158,7 @@ if (($sanitized_zip['archive_retention'] ?? 0) !== 12
     exit(1);
 }
 
-$sanitized_deploy = Ragnus\StaticPublisher\Admin::sanitize([
+$sanitized_deploy = Wext\StaticPublisher\Admin::sanitize([
     '_section' => 'deploy',
     'deployment_webhook_url' => 'https://api.github.com/repos/example/deploy/dispatches',
     'deployment_webhook_token' => 'test-token',
@@ -173,7 +173,7 @@ if (! class_exists('phpseclib3\\Net\\SFTP')) {
     fwrite(STDERR, "Paketlenmiş phpseclib SFTP istemcisi yüklenemedi.\n");
     exit(1);
 }
-$sanitized_sftp = Ragnus\StaticPublisher\Admin::sanitize([
+$sanitized_sftp = Wext\StaticPublisher\Admin::sanitize([
     '_section' => 'sftp',
     'sftp_auto_deploy' => '1',
     'sftp_host' => 'sftp://Files.Example.com/upload',
@@ -190,15 +190,15 @@ if (($sanitized_sftp['sftp_auto_deploy'] ?? '') !== '1'
     || ($sanitized_sftp['sftp_remote_path'] ?? '') !== '/var/www/static'
     || ($sanitized_sftp['sftp_host_fingerprint'] ?? '') !== '0123456789abcdef0123456789abcdef'
     || ($sanitized_sftp['sftp_password'] ?? '') === $sftp_password
-    || Ragnus\StaticPublisher\Secret_Store::decrypt((string) $sanitized_sftp['sftp_password']) !== $sftp_password) {
+    || Wext\StaticPublisher\Secret_Store::decrypt((string) $sanitized_sftp['sftp_password']) !== $sftp_password) {
     fwrite(STDERR, "SFTP ayarları veya şifreli parola saklama doğru çalışmıyor.\n");
     exit(1);
 }
-if (Ragnus\StaticPublisher\SFTP_Deployer::sanitize_remote_path('/var/../secret') !== '') {
+if (Wext\StaticPublisher\SFTP_Deployer::sanitize_remote_path('/var/../secret') !== '') {
     fwrite(STDERR, "Güvensiz SFTP uzak yolu reddedilmedi.\n");
     exit(1);
 }
-$incomplete_sftp = Ragnus\StaticPublisher\Admin::sanitize([
+$incomplete_sftp = Wext\StaticPublisher\Admin::sanitize([
     '_section' => 'sftp',
     'sftp_auto_deploy' => '1',
     'sftp_host' => 'files.example.com',
@@ -210,14 +210,14 @@ if (($incomplete_sftp['sftp_auto_deploy'] ?? '') !== '0') {
 }
 
 $sftp_job_id = 'sftp-smoke-test';
-$sftp_build_directory = Ragnus\StaticPublisher\Plugin::storage_directory() . '/builds/' . $sftp_job_id;
+$sftp_build_directory = Wext\StaticPublisher\Plugin::storage_directory() . '/builds/' . $sftp_job_id;
 wp_mkdir_p($sftp_build_directory . '/assets');
 file_put_contents($sftp_build_directory . '/index.html', '<h1>SFTP</h1>');
 file_put_contents($sftp_build_directory . '/assets/app.css', 'body{}');
 $sftp_deploy_calls = 0;
-add_filter('ragnus_static_sftp_available', '__return_true');
-add_filter('ragnus_static_sftp_test_result', static fn (): array => ['success' => true]);
-add_filter('ragnus_static_sftp_deploy_result', static function ($result, $directory, $public_settings, $job_id, $files) use (&$sftp_deploy_calls, $sftp_build_directory, $sftp_job_id): array {
+add_filter('wext_static_sftp_available', '__return_true');
+add_filter('wext_static_sftp_test_result', static fn (): array => ['success' => true]);
+add_filter('wext_static_sftp_deploy_result', static function ($result, $directory, $public_settings, $job_id, $files) use (&$sftp_deploy_calls, $sftp_build_directory, $sftp_job_id): array {
     ++$sftp_deploy_calls;
     if ($directory !== $sftp_build_directory
         || $job_id !== $sftp_job_id
@@ -227,42 +227,42 @@ add_filter('ragnus_static_sftp_deploy_result', static function ($result, $direct
     }
     return ['success' => true, 'file_count' => count($files)];
 }, 10, 5);
-$sftp_connection_result = Ragnus\StaticPublisher\SFTP_Deployer::test_connection($sanitized_sftp);
+$sftp_connection_result = Wext\StaticPublisher\SFTP_Deployer::test_connection($sanitized_sftp);
 if (empty($sftp_connection_result['success'])
-    || (Ragnus\StaticPublisher\SFTP_Deployer::status()['state'] ?? '') !== 'connected') {
+    || (Wext\StaticPublisher\SFTP_Deployer::status()['state'] ?? '') !== 'connected') {
     fwrite(STDERR, "SFTP bağlantı testi sonucu kaydedilmedi.\n");
     exit(1);
 }
-$sftp_result = Ragnus\StaticPublisher\SFTP_Deployer::deploy_job($sftp_job_id, $sanitized_sftp);
+$sftp_result = Wext\StaticPublisher\SFTP_Deployer::deploy_job($sftp_job_id, $sanitized_sftp);
 if (($sftp_result['file_count'] ?? 0) !== 2
-    || (Ragnus\StaticPublisher\SFTP_Deployer::status()['state'] ?? '') !== 'completed') {
+    || (Wext\StaticPublisher\SFTP_Deployer::status()['state'] ?? '') !== 'completed') {
     fwrite(STDERR, "SFTP statik dosya aktarımı ve durum kaydı doğrulanamadı.\n");
     exit(1);
 }
-update_option(Ragnus\StaticPublisher\Plugin::SETTINGS_KEY, $sanitized_sftp);
-delete_option(Ragnus\StaticPublisher\Plugin::DIRTY_KEY);
-Ragnus\StaticPublisher\Plugin::handle_completed_export($sftp_job_id, '', []);
+update_option(Wext\StaticPublisher\Plugin::SETTINGS_KEY, $sanitized_sftp);
+delete_option(Wext\StaticPublisher\Plugin::DIRTY_KEY);
+Wext\StaticPublisher\Plugin::handle_completed_export($sftp_job_id, '', []);
 if ($sftp_deploy_calls !== 2) {
     fwrite(STDERR, "Başarılı export sonrası otomatik SFTP aktarımı tetiklenmedi.\n");
     exit(1);
 }
-remove_all_filters('ragnus_static_sftp_deploy_result');
-remove_all_filters('ragnus_static_sftp_test_result');
-remove_all_filters('ragnus_static_sftp_available');
+remove_all_filters('wext_static_sftp_deploy_result');
+remove_all_filters('wext_static_sftp_test_result');
+remove_all_filters('wext_static_sftp_available');
 unlink($sftp_build_directory . '/assets/app.css');
 unlink($sftp_build_directory . '/index.html');
 rmdir($sftp_build_directory . '/assets');
 rmdir($sftp_build_directory);
-update_option(Ragnus\StaticPublisher\Plugin::SETTINGS_KEY, $settings);
+update_option(Wext\StaticPublisher\Plugin::SETTINGS_KEY, $settings);
 $automatic_settings = array_merge(
     $settings,
-    array_fill_keys(array_keys(Ragnus\StaticPublisher\Plugin::auto_export_trigger_defaults()), '0'),
+    array_fill_keys(array_keys(Wext\StaticPublisher\Plugin::auto_export_trigger_defaults()), '0'),
     [
         'auto_export' => '1',
         'auto_export_post_created' => '1',
     ]
 );
-update_option(Ragnus\StaticPublisher\Plugin::SETTINGS_KEY, $automatic_settings);
+update_option(Wext\StaticPublisher\Plugin::SETTINGS_KEY, $automatic_settings);
 $automatic_post_id = wp_insert_post([
     'post_title' => 'Otomatik export tetikleyici testi',
     'post_status' => 'draft',
@@ -273,31 +273,31 @@ if (is_wp_error($automatic_post_id)) {
     exit(1);
 }
 $automatic_post = get_post($automatic_post_id);
-Ragnus\StaticPublisher\Plugin::maybe_schedule_after_post_transition('publish', 'draft', $automatic_post);
-$automatic_status = Ragnus\StaticPublisher\Plugin::status();
+Wext\StaticPublisher\Plugin::maybe_schedule_after_post_transition('publish', 'draft', $automatic_post);
+$automatic_status = Wext\StaticPublisher\Plugin::status();
 $automatic_job_id = (string) ($automatic_status['job_id'] ?? '');
 if ($automatic_job_id === ''
     || ($automatic_status['source'] ?? '') !== 'post-created'
-    || wp_next_scheduled(Ragnus\StaticPublisher\Plugin::CRON_HOOK, [$automatic_job_id]) === false) {
+    || wp_next_scheduled(Wext\StaticPublisher\Plugin::CRON_HOOK, [$automatic_job_id]) === false) {
     fwrite(STDERR, "Seçili yeni yazı tetikleyicisi otomatik export kuyruğu oluşturmadı.\n");
     exit(1);
 }
-Ragnus\StaticPublisher\Plugin::maybe_schedule_after_post_transition('publish', 'publish', $automatic_post);
-if ((string) (Ragnus\StaticPublisher\Plugin::status()['job_id'] ?? '') !== $automatic_job_id) {
+Wext\StaticPublisher\Plugin::maybe_schedule_after_post_transition('publish', 'publish', $automatic_post);
+if ((string) (Wext\StaticPublisher\Plugin::status()['job_id'] ?? '') !== $automatic_job_id) {
     fwrite(STDERR, "Kapalı yazı güncelleme tetikleyicisi yeni export kuyruğu oluşturdu.\n");
     exit(1);
 }
-wp_clear_scheduled_hook(Ragnus\StaticPublisher\Plugin::CRON_HOOK, [$automatic_job_id]);
-update_option(Ragnus\StaticPublisher\Plugin::SETTINGS_KEY, $settings);
+wp_clear_scheduled_hook(Wext\StaticPublisher\Plugin::CRON_HOOK, [$automatic_job_id]);
+update_option(Wext\StaticPublisher\Plugin::SETTINGS_KEY, $settings);
 wp_delete_post($automatic_post_id, true);
-$hide_settings = Ragnus\StaticPublisher\Plugin::hide_settings();
+$hide_settings = Wext\StaticPublisher\Plugin::hide_settings();
 if (($hide_settings['wp_content_directory'] ?? '') !== 'wp-content'
     || ($hide_settings['theme_style_name'] ?? '') !== 'style'
     || ($hide_settings['author_url'] ?? '') !== 'author') {
     fwrite(STDERR, "Varsayılan Hide ayarları doğru değil.\n");
     exit(1);
 }
-$sanitized_hide = Ragnus\StaticPublisher\Admin::sanitize_hide_settings([
+$sanitized_hide = Wext\StaticPublisher\Admin::sanitize_hide_settings([
     'wp_content_directory' => '../My Assets',
     'theme_style_name' => 'custom.css',
     'disable_emojis' => '1',
@@ -315,8 +315,8 @@ $preserved_hide_settings = array_merge($hide_settings, [
     'hide_wordpress_version' => '1',
     'disable_emojis' => '1',
 ]);
-update_option(Ragnus\StaticPublisher\Plugin::HIDE_SETTINGS_KEY, $preserved_hide_settings);
-$sanitized_hide_section = Ragnus\StaticPublisher\Admin::sanitize_hide_settings([
+update_option(Wext\StaticPublisher\Plugin::HIDE_SETTINGS_KEY, $preserved_hide_settings);
+$sanitized_hide_section = Wext\StaticPublisher\Admin::sanitize_hide_settings([
     '_section' => 'traces',
     'hide_generator_meta' => '1',
 ]);
@@ -327,9 +327,9 @@ if (($sanitized_hide_section['wp_content_directory'] ?? '') !== 'assets'
     fwrite(STDERR, "Hide alt sekmesi kaydı diğer bölümlerin ayarlarını korumadı.\n");
     exit(1);
 }
-update_option(Ragnus\StaticPublisher\Plugin::HIDE_SETTINGS_KEY, $hide_settings);
+update_option(Wext\StaticPublisher\Plugin::HIDE_SETTINGS_KEY, $hide_settings);
 
-$sanitized_search = Ragnus\StaticPublisher\Admin::sanitize_search_settings([
+$sanitized_search = Wext\StaticPublisher\Admin::sanitize_search_settings([
     'enabled' => '1',
     'page_path' => 'Site Search',
     'result_limit' => 250,
@@ -350,11 +350,11 @@ if (($sanitized_search['page_path'] ?? '') !== 'site-search'
     fwrite(STDERR, "Arama ayarları beklenen sınırlarda temizlenmedi.\n");
     exit(1);
 }
-$saved_search_settings = Ragnus\StaticPublisher\Plugin::search_defaults();
+$saved_search_settings = Wext\StaticPublisher\Plugin::search_defaults();
 $saved_search_settings['title_selector'] = '.preserved-title';
 $saved_search_settings['title_weight'] = '8';
-update_option(Ragnus\StaticPublisher\Plugin::SEARCH_SETTINGS_KEY, $saved_search_settings);
-$static_search_update = Ragnus\StaticPublisher\Admin::sanitize_search_settings([
+update_option(Wext\StaticPublisher\Plugin::SEARCH_SETTINGS_KEY, $saved_search_settings);
+$static_search_update = Wext\StaticPublisher\Admin::sanitize_search_settings([
     '_section' => 'static',
     'enabled' => '1',
     'page_path' => 'find',
@@ -364,7 +364,7 @@ $static_search_update = Ragnus\StaticPublisher\Admin::sanitize_search_settings([
     'threshold' => 0.25,
     'token_match' => 'any',
 ]);
-delete_option(Ragnus\StaticPublisher\Plugin::SEARCH_SETTINGS_KEY);
+delete_option(Wext\StaticPublisher\Plugin::SEARCH_SETTINGS_KEY);
 if (($static_search_update['page_path'] ?? '') !== 'find'
     || ($static_search_update['title_selector'] ?? '') !== '.preserved-title'
     || ($static_search_update['title_weight'] ?? '') !== '8') {
@@ -372,17 +372,17 @@ if (($static_search_update['page_path'] ?? '') !== 'find'
     exit(1);
 }
 
-$saved_seo_settings = array_merge(Ragnus\StaticPublisher\Plugin::seo_defaults(), [
+$saved_seo_settings = array_merge(Wext\StaticPublisher\Plugin::seo_defaults(), [
     'redirect_rules' => "/old/ /new/ 301",
     'indexnow_key' => 'preserved-key',
 ]);
-update_option(Ragnus\StaticPublisher\Plugin::SEO_SETTINGS_KEY, $saved_seo_settings);
-$audit_seo_update = Ragnus\StaticPublisher\Admin::sanitize_seo_settings([
+update_option(Wext\StaticPublisher\Plugin::SEO_SETTINGS_KEY, $saved_seo_settings);
+$audit_seo_update = Wext\StaticPublisher\Admin::sanitize_seo_settings([
     '_section' => 'audit',
     'audit_enabled' => '1',
     'canonical_fallback' => '1',
 ]);
-delete_option(Ragnus\StaticPublisher\Plugin::SEO_SETTINGS_KEY);
+delete_option(Wext\StaticPublisher\Plugin::SEO_SETTINGS_KEY);
 if (($audit_seo_update['audit_enabled'] ?? '') !== '1'
     || ($audit_seo_update['audit_html_report'] ?? '') !== '0'
     || ($audit_seo_update['redirect_rules'] ?? '') !== "/old/ /new/ 301"
@@ -391,28 +391,28 @@ if (($audit_seo_update['audit_enabled'] ?? '') !== '1'
     exit(1);
 }
 
-Ragnus\StaticPublisher\Admin::enqueue_assets('toplevel_page_ragnus-static-publisher');
-if (! wp_style_is('ragnus-static-publisher-admin', 'enqueued')) {
+Wext\StaticPublisher\Admin::enqueue_assets('toplevel_page_wext-static-publisher');
+if (! wp_style_is('wext-static-publisher-admin', 'enqueued')) {
     fwrite(STDERR, "Modern yönetim arayüzü stil dosyası yüklenmedi.\n");
     exit(1);
 }
-if (! wp_script_is('ragnus-static-publisher-admin', 'enqueued')) {
+if (! wp_script_is('wext-static-publisher-admin', 'enqueued')) {
     fwrite(STDERR, "Canlı durum takip betiği yüklenmedi.\n");
     exit(1);
 }
-$script_data = (string) wp_scripts()->get_data('ragnus-static-publisher-admin', 'data');
-if (! str_contains($script_data, 'ragnus-static/v1/exports/latest')
+$script_data = (string) wp_scripts()->get_data('wext-static-publisher-admin', 'data');
+if (! str_contains($script_data, 'wext-static/v1/exports/latest')
     || ! str_contains($script_data, 'pollInterval')
     || ! str_contains($script_data, 'runnerUrl')) {
     fwrite(STDERR, "Canlı durum takip betiğinin REST yapılandırması eksik.\n");
     exit(1);
 }
-if (! has_action('wp_ajax_ragnus_static_run_pending', [Ragnus\StaticPublisher\Admin::class, 'run_pending_export'])) {
+if (! has_action('wp_ajax_wext_static_run_pending', [Wext\StaticPublisher\Admin::class, 'run_pending_export'])) {
     fwrite(STDERR, "Bekleyen export için yönetim ekranı çalıştırıcısı kayıtlı değil.\n");
     exit(1);
 }
-foreach (['admin_post_ragnus_static_sftp_test' => 'test_sftp_connection', 'admin_post_ragnus_static_sftp_deploy' => 'deploy_latest_with_sftp'] as $hook => $method) {
-    if (! has_action($hook, [Ragnus\StaticPublisher\Admin::class, $method])) {
+foreach (['admin_post_wext_static_sftp_test' => 'test_sftp_connection', 'admin_post_wext_static_sftp_deploy' => 'deploy_latest_with_sftp'] as $hook => $method) {
+    if (! has_action($hook, [Wext\StaticPublisher\Admin::class, $method])) {
         fwrite(STDERR, "SFTP yönetim işlemi kaydı bulunamadı: {$hook}\n");
         exit(1);
     }
@@ -421,17 +421,17 @@ foreach (['admin_post_ragnus_static_sftp_test' => 'test_sftp_connection', 'admin
 wp_set_current_user(1);
 $_GET['tab'] = 'about';
 ob_start();
-Ragnus\StaticPublisher\Admin::render();
+Wext\StaticPublisher\Admin::render();
 $about_html = (string) ob_get_clean();
 unset($_GET['tab']);
 
-foreach (['About', 'Version Number', RAGSTAT_VERSION, 'mailto:info@ragnus.co', 'https://ragnus.co/'] as $expected) {
+foreach (['About', 'Version Number', WEXTSTAT_VERSION, 'mailto:info@wext.co', 'https://wext.co/'] as $expected) {
     if (! str_contains($about_html, $expected)) {
-        fwrite(STDERR, "About sekmesinde beklenen içerik bulunamadı: {$expected} (locale=" . determine_locale() . ', direct=' . __('About', 'ragnus-static-publisher') . ")\n");
+        fwrite(STDERR, "About sekmesinde beklenen içerik bulunamadı: {$expected} (locale=" . determine_locale() . ', direct=' . __('About', 'wext-static-publisher') . ")\n");
         exit(1);
     }
 }
-if (! preg_match('/<div class="wrap ragstat-admin">\s*<hr class="wp-header-end">\s*<header class="ragstat-admin-header">/', $about_html)) {
+if (! preg_match('/<div class="wrap wextstat-admin">\s*<hr class="wp-header-end">\s*<header class="wextstat-admin-header">/', $about_html)) {
     fwrite(STDERR, "Global WordPress bildirim sınırı Statik Publisher başlığının önünde değil.\n");
     exit(1);
 }
@@ -440,16 +440,16 @@ $_GET['tab'] = 'files';
 $_GET['archive_notice'] = 'deleted';
 $_GET['deleted'] = '1';
 ob_start();
-Ragnus\StaticPublisher\Admin::render();
+Wext\StaticPublisher\Admin::render();
 $files_notice_html = (string) ob_get_clean();
 unset($_GET['tab'], $_GET['archive_notice'], $_GET['deleted']);
-if (! str_contains($files_notice_html, 'notice-success inline is-dismissible ragstat-files-notice')
+if (! str_contains($files_notice_html, 'notice-success inline is-dismissible wextstat-files-notice')
     || ! str_contains($files_notice_html, '1 ZIP file has been deleted.')) {
     fwrite(STDERR, "Eski Files bağlantısı Deploy > ZIP File ekranına yönlenmiyor veya silme bildirimi inline gösterilmiyor.\n");
     exit(1);
 }
 if (! str_contains($files_notice_html, 'deploy_tab=zip')
-    || ! str_contains($files_notice_html, 'ragstat-deploy-tab is-active')
+    || ! str_contains($files_notice_html, 'wextstat-deploy-tab is-active')
     || str_contains($files_notice_html, 'tab=files')) {
     fwrite(STDERR, "Files ana sekmesi kaldırılmadı veya eski bağlantı Deploy > ZIP File ekranına taşınmadı.\n");
     exit(1);
@@ -464,7 +464,7 @@ for ($archive_number = 1; $archive_number <= 11; $archive_number++) {
         'created_at' => time() - $archive_number,
     ];
 }
-$zip_files_renderer = new ReflectionMethod(Ragnus\StaticPublisher\Admin::class, 'render_zip_files');
+$zip_files_renderer = new ReflectionMethod(Wext\StaticPublisher\Admin::class, 'render_zip_files');
 $zip_files_renderer->setAccessible(true);
 $_GET = [];
 ob_start();
@@ -474,7 +474,7 @@ if (! str_contains($zip_page_one_html, 'job-1')
     || ! str_contains($zip_page_one_html, 'job-10')
     || str_contains($zip_page_one_html, 'job-11')
     || ! str_contains($zip_page_one_html, 'zip_page=2')
-    || ! str_contains($zip_page_one_html, 'ragstat-zip-pagination')) {
+    || ! str_contains($zip_page_one_html, 'wextstat-zip-pagination')) {
     fwrite(STDERR, "ZIP dosyaları ilk sayfada 10 kayıtla sınırlandırılmadı.\n");
     exit(1);
 }
@@ -485,12 +485,12 @@ $zip_page_two_html = (string) ob_get_clean();
 $_GET = [];
 if (! str_contains($zip_page_two_html, 'job-11')
     || str_contains($zip_page_two_html, 'job-10')
-    || ! preg_match('/ragstat-number-column[^>]*>11<\/td>/', $zip_page_two_html)) {
+    || ! preg_match('/wextstat-number-column[^>]*>11<\/td>/', $zip_page_two_html)) {
     fwrite(STDERR, "ZIP dosyaları ikinci sayfada doğru kayıt ve sıra numarasıyla gösterilmiyor.\n");
     exit(1);
 }
 
-$admin_source = (string) file_get_contents(RAGSTAT_DIR . 'includes/class-admin.php');
+$admin_source = (string) file_get_contents(WEXTSTAT_DIR . 'includes/class-admin.php');
 
 foreach ([
     'static' => ['Search Page Path', 'value="static"'],
@@ -499,7 +499,7 @@ foreach ([
 ] as $search_tab => $search_expectations) {
     $_GET = ['tab' => 'search', 'search_tab' => $search_tab];
     ob_start();
-    Ragnus\StaticPublisher\Admin::render();
+    Wext\StaticPublisher\Admin::render();
     $search_html = (string) ob_get_clean();
     $_GET = [];
 
@@ -509,13 +509,13 @@ foreach ([
             exit(1);
         }
     }
-    if (substr_count($search_html, 'ragstat-search-tab is-active') !== 1) {
+    if (substr_count($search_html, 'wextstat-search-tab is-active') !== 1) {
         fwrite(STDERR, "Search > {$search_tab} ekranında tek bir etkin dikey sekme bulunamadı.\n");
         exit(1);
     }
-    if (($search_tab !== 'static' && str_contains($search_html, 'id="ragstat-search-path"'))
-        || ($search_tab !== 'selectors' && str_contains($search_html, 'id="ragstat-title-selector"'))
-        || ($search_tab !== 'fuse' && str_contains($search_html, 'class="ragstat-search-field-row"'))) {
+    if (($search_tab !== 'static' && str_contains($search_html, 'id="wextstat-search-path"'))
+        || ($search_tab !== 'selectors' && str_contains($search_html, 'id="wextstat-title-selector"'))
+        || ($search_tab !== 'fuse' && str_contains($search_html, 'class="wextstat-search-field-row"'))) {
         fwrite(STDERR, "Search > {$search_tab} ekranında başka bir alt sekmenin alanları gösteriliyor.\n");
         exit(1);
     }
@@ -532,7 +532,7 @@ foreach ([
 ] as $hide_tab => $hide_expectations) {
     $_GET = ['tab' => 'hide', 'hide_tab' => $hide_tab];
     ob_start();
-    Ragnus\StaticPublisher\Admin::render();
+    Wext\StaticPublisher\Admin::render();
     $hide_html = (string) ob_get_clean();
     $_GET = [];
 
@@ -542,13 +542,13 @@ foreach ([
             exit(1);
         }
     }
-    if (substr_count($hide_html, 'ragstat-hide-tab is-active') !== 1) {
+    if (substr_count($hide_html, 'wextstat-hide-tab is-active') !== 1) {
         fwrite(STDERR, "Hide > {$hide_tab} ekranında tek bir etkin dikey sekme bulunamadı.\n");
         exit(1);
     }
-    if (($hide_tab !== 'directory' && str_contains($hide_html, 'id="ragstat-hide-wp-content"'))
-        || ($hide_tab !== 'traces' && str_contains($hide_html, 'id="ragstat-hide-wordpress-version"'))
-        || ($hide_tab !== 'static-outputs' && str_contains($hide_html, 'id="ragstat-disable-xml-rpc"'))) {
+    if (($hide_tab !== 'directory' && str_contains($hide_html, 'id="wextstat-hide-wp-content"'))
+        || ($hide_tab !== 'traces' && str_contains($hide_html, 'id="wextstat-hide-wordpress-version"'))
+        || ($hide_tab !== 'static-outputs' && str_contains($hide_html, 'id="wextstat-disable-xml-rpc"'))) {
         fwrite(STDERR, "Hide > {$hide_tab} ekranında başka bir alt sekmenin alanları gösteriliyor.\n");
         exit(1);
     }
@@ -564,7 +564,7 @@ foreach (['Create Static Site', 'Deploy to Cloudflare', 'Cloudflare Deploy', "es
         exit(1);
     }
 }
-if (str_contains($admin_source, '<th>Kod</th>') || str_contains($admin_source, 'ragstat-http-code')) {
+if (str_contains($admin_source, '<th>Kod</th>') || str_contains($admin_source, 'wextstat-http-code')) {
     fwrite(STDERR, "Activity Log Kod sütunu arayüzden kaldırılmadı.\n");
     exit(1);
 }
@@ -576,11 +576,11 @@ if (! str_contains($admin_source, "esc_html_e('Order'") || ! str_contains($admin
     fwrite(STDERR, "Files tablosunun sıra sütunu bulunamadı.\n");
     exit(1);
 }
-if (substr_count($admin_source, 'class="ragstat-time-column"') < 2) {
+if (substr_count($admin_source, 'class="wextstat-time-column"') < 2) {
     fwrite(STDERR, "Activity Log saat sütunu sınıfı eksik.\n");
     exit(1);
 }
-foreach (['Check Again', 'ragnus_static_refresh_diagnostics', 'Diagnostics::report()'] as $expected) {
+foreach (['Check Again', 'wext_static_refresh_diagnostics', 'Diagnostics::report()'] as $expected) {
     if (! str_contains($admin_source, $expected)) {
         fwrite(STDERR, "Diagnostics yeniden kontrol arayüzü eksik: {$expected}\n");
         exit(1);
@@ -607,7 +607,7 @@ foreach (['transition_post_status', 'created_term', 'wp_update_nav_menu', 'upgra
 
 $_GET = ['tab' => 'settings', 'settings_tab' => 'general'];
 ob_start();
-Ragnus\StaticPublisher\Admin::render();
+Wext\StaticPublisher\Admin::render();
 $settings_html = (string) ob_get_clean();
 $_GET = [];
 if (! str_contains($settings_html, 'Static Site') || ! str_contains($settings_html, 'Headless CMS') || ! str_contains($settings_html, 'Multilingual') || ! str_contains($settings_html, 'Save General Settings') || str_contains($settings_html, 'settings_tab=automation') || str_contains($settings_html, 'Automatic Static Site Creation and Deploy') || str_contains($settings_html, 'Number of ZIPs to Store') || str_contains($settings_html, 'Redirection by Browser Language')) {
@@ -624,16 +624,16 @@ foreach ([
 ] as $deploy_tab => $panel_expectations) {
     $_GET = ['tab' => 'deploy', 'deploy_tab' => $deploy_tab];
     ob_start();
-    Ragnus\StaticPublisher\Admin::render();
+    Wext\StaticPublisher\Admin::render();
     $deploy_html = (string) ob_get_clean();
 
-    foreach (['ZIP File', 'GitHub', 'Cloudflare', 'SFTP', 'Auto Deploy', 'ragstat-deploy-tabs', 'deploy_tab=' . $deploy_tab, ...$panel_expectations] as $expected) {
+    foreach (['ZIP File', 'GitHub', 'Cloudflare', 'SFTP', 'Auto Deploy', 'wextstat-deploy-tabs', 'deploy_tab=' . $deploy_tab, ...$panel_expectations] as $expected) {
         if (! str_contains($deploy_html, $expected)) {
             fwrite(STDERR, "Deploy {$deploy_tab} sekmesinde beklenen içerik bulunamadı: {$expected}\n");
             exit(1);
         }
     }
-    if (substr_count($deploy_html, 'ragstat-deploy-tab is-active') !== 1) {
+    if (substr_count($deploy_html, 'wextstat-deploy-tab is-active') !== 1) {
         fwrite(STDERR, "Deploy {$deploy_tab} ekranında tek bir etkin dikey sekme bulunamadı.\n");
         exit(1);
     }
@@ -642,21 +642,21 @@ foreach ([
         exit(1);
     }
     if ($deploy_tab === 'zip') {
-        $zip_card_start = strpos($deploy_html, '<section class="ragstat-deploy-card" aria-labelledby="ragstat-deploy-zip-title">');
-        $zip_files_start = strpos($deploy_html, 'class="ragstat-deploy-card__files"');
+        $zip_card_start = strpos($deploy_html, '<section class="wextstat-deploy-card" aria-labelledby="wextstat-deploy-zip-title">');
+        $zip_files_start = strpos($deploy_html, 'class="wextstat-deploy-card__files"');
         $zip_card_end = $zip_card_start === false ? false : strpos($deploy_html, '</section>', $zip_card_start);
-        $zip_settings_start = strpos($deploy_html, 'class="ragstat-settings-form ragstat-zip-settings-form"');
+        $zip_settings_start = strpos($deploy_html, 'class="wextstat-settings-form wextstat-zip-settings-form"');
         if ($zip_card_start === false || $zip_files_start === false || $zip_card_end === false || $zip_settings_start === false
             || ! ($zip_card_start < $zip_files_start && $zip_files_start < $zip_card_end && $zip_card_end < $zip_settings_start)) {
             fwrite(STDERR, "ZIP Files listesi ZIP File kartının içine taşınmadı.\n");
             exit(1);
         }
     }
-    if ($deploy_tab === 'github' && substr_count($deploy_html, 'data-ragstat-github-icon') < 2) {
+    if ($deploy_tab === 'github' && substr_count($deploy_html, 'data-wextstat-github-icon') < 2) {
         fwrite(STDERR, "GitHub sekmesi ve içerik panelinde GitHub ikonu bulunamadı.\n");
         exit(1);
     }
-    if ($deploy_tab === 'cloudflare' && (substr_count($deploy_html, 'data-ragstat-cloudflare-icon') < 2 || substr_count($deploy_html, 'fill="currentColor"') < 4)) {
+    if ($deploy_tab === 'cloudflare' && (substr_count($deploy_html, 'data-wextstat-cloudflare-icon') < 2 || substr_count($deploy_html, 'fill="currentColor"') < 4)) {
         fwrite(STDERR, "Cloudflare sekmesi ve içerik panelinde tek renk Cloudflare SVG ikonu bulunamadı.\n");
         exit(1);
     }
@@ -664,7 +664,7 @@ foreach ([
 
 $_GET = ['tab' => 'deploy', 'deploy_tab' => 'easy-setup'];
 ob_start();
-Ragnus\StaticPublisher\Admin::render();
+Wext\StaticPublisher\Admin::render();
 $removed_easy_setup_html = (string) ob_get_clean();
 $_GET = [];
 if (! str_contains($removed_easy_setup_html, 'ZIP Files') || str_contains($removed_easy_setup_html, 'Easy Setup') || str_contains($removed_easy_setup_html, 'Connect Cloudflare')) {
@@ -674,17 +674,17 @@ if (! str_contains($removed_easy_setup_html, 'ZIP Files') || str_contains($remov
 
 $_GET = ['tab' => 'settings', 'settings_tab' => 'multilingual'];
 ob_start();
-Ragnus\StaticPublisher\Admin::render();
+Wext\StaticPublisher\Admin::render();
 $settings_multilingual_html = (string) ob_get_clean();
 $_GET = [];
-if (! str_contains($settings_multilingual_html, 'Static Site') || ! str_contains($settings_multilingual_html, 'Multilingual') || ! str_contains($settings_multilingual_html, 'Redirection by Browser Language') || ! str_contains($settings_multilingual_html, 'Save Language Settings') || ! str_contains($settings_multilingual_html, 'settings_tab=multilingual') || substr_count($settings_multilingual_html, 'ragstat-settings-tab is-active') !== 1) {
+if (! str_contains($settings_multilingual_html, 'Static Site') || ! str_contains($settings_multilingual_html, 'Multilingual') || ! str_contains($settings_multilingual_html, 'Redirection by Browser Language') || ! str_contains($settings_multilingual_html, 'Save Language Settings') || ! str_contains($settings_multilingual_html, 'settings_tab=multilingual') || substr_count($settings_multilingual_html, 'wextstat-settings-tab is-active') !== 1) {
     fwrite(STDERR, "Static Site > Multilingual ekranı doğru oluşturulmadı.\n");
     exit(1);
 }
 
 $_GET = ['tab' => 'deploy', 'deploy_tab' => 'multilingual'];
 ob_start();
-Ragnus\StaticPublisher\Admin::render();
+Wext\StaticPublisher\Admin::render();
 $legacy_deploy_multilingual_html = (string) ob_get_clean();
 $_GET = [];
 if (! str_contains($legacy_deploy_multilingual_html, 'Redirection by Browser Language') || ! str_contains($legacy_deploy_multilingual_html, 'settings_tab=multilingual') || str_contains($legacy_deploy_multilingual_html, 'deploy_tab=multilingual')) {
@@ -694,7 +694,7 @@ if (! str_contains($legacy_deploy_multilingual_html, 'Redirection by Browser Lan
 
 $_GET = ['tab' => 'settings', 'settings_tab' => 'automation'];
 ob_start();
-Ragnus\StaticPublisher\Admin::render();
+Wext\StaticPublisher\Admin::render();
 $legacy_automation_html = (string) ob_get_clean();
 $_GET = [];
 if (! str_contains($legacy_automation_html, 'Automatic Static Site Creation and Deploy') || ! str_contains($legacy_automation_html, 'deploy_tab=auto-deploy') || str_contains($legacy_automation_html, 'settings_tab=automation')) {
@@ -704,7 +704,7 @@ if (! str_contains($legacy_automation_html, 'Automatic Static Site Creation and 
 
 $_GET = ['tab' => 'settings', 'settings_tab' => 'deploy'];
 ob_start();
-Ragnus\StaticPublisher\Admin::render();
+Wext\StaticPublisher\Admin::render();
 $legacy_deploy_html = (string) ob_get_clean();
 $_GET = [];
 if (! str_contains($legacy_deploy_html, 'GitHub Deployment Webhook') || ! str_contains($legacy_deploy_html, 'deploy_tab=github')) {
@@ -714,9 +714,9 @@ if (! str_contains($legacy_deploy_html, 'GitHub Deployment Webhook') || ! str_co
 
 $_GET = ['tab' => 'seo', 'seo_tab' => 'plugins'];
 ob_start();
-Ragnus\StaticPublisher\Admin::render();
+Wext\StaticPublisher\Admin::render();
 $seo_html = (string) ob_get_clean();
-if (! str_contains($seo_html, 'SEO Plugins') || ! str_contains($seo_html, 'Rank Math SEO') || ! str_contains($seo_html, 'All in One SEO') || ! str_contains($seo_html, 'aioseo_enabled') || ! str_contains($seo_html, 'SEOPress') || ! str_contains($seo_html, 'seopress_enabled') || ! str_contains($seo_html, 'SureRank SEO') || ! str_contains($seo_html, 'surerank_enabled') || ! str_contains($seo_html, 'The SEO Framework') || ! str_contains($seo_html, 'seo_framework_enabled') || ! str_contains($seo_html, 'Yoast SEO') || ! str_contains($seo_html, 'yoast_enabled') || ! str_contains($seo_html, 'Post Metadata') || ! str_contains($seo_html, 'Custom Post Type Metadata') || ! str_contains($seo_html, 'Archive &amp; Taxonomy Metadata') || ! str_contains($seo_html, 'data-ragstat-seo-toggle') || ! str_contains($seo_html, 'data-ragstat-output-count') || ! str_contains($seo_html, '>Metadata<') || ! str_contains($seo_html, '>Technical SEO<') || ! str_contains($seo_html, 'ragstat-seo-save-bar') || ! str_contains($seo_html, 'Save SEO Plugin Settings')) {
+if (! str_contains($seo_html, 'SEO Plugins') || ! str_contains($seo_html, 'Rank Math SEO') || ! str_contains($seo_html, 'All in One SEO') || ! str_contains($seo_html, 'aioseo_enabled') || ! str_contains($seo_html, 'SEOPress') || ! str_contains($seo_html, 'seopress_enabled') || ! str_contains($seo_html, 'SureRank SEO') || ! str_contains($seo_html, 'surerank_enabled') || ! str_contains($seo_html, 'The SEO Framework') || ! str_contains($seo_html, 'seo_framework_enabled') || ! str_contains($seo_html, 'Yoast SEO') || ! str_contains($seo_html, 'yoast_enabled') || ! str_contains($seo_html, 'Post Metadata') || ! str_contains($seo_html, 'Custom Post Type Metadata') || ! str_contains($seo_html, 'Archive &amp; Taxonomy Metadata') || ! str_contains($seo_html, 'data-wextstat-seo-toggle') || ! str_contains($seo_html, 'data-wextstat-output-count') || ! str_contains($seo_html, '>Metadata<') || ! str_contains($seo_html, '>Technical SEO<') || ! str_contains($seo_html, 'wextstat-seo-save-bar') || ! str_contains($seo_html, 'Save SEO Plugin Settings')) {
     fwrite(STDERR, "SEO Plugins dikey sekmesi, Rank Math, All in One SEO veya SEOPress ayarları bulunamadı.\n");
     exit(1);
 }
@@ -731,14 +731,14 @@ if (str_contains($seo_html, 'seo_tab=language') || str_contains($seo_html, 'Redi
 
 foreach ([
     'audit' => ['Create SEO audit report', 'value="audit"'],
-    'sitemaps' => ['Generate Ragnus sitemap', 'value="sitemaps"'],
+    'sitemaps' => ['Generate Wext sitemap', 'value="sitemaps"'],
     'redirects' => ['Custom Redirect Rules', 'value="redirects"'],
     'indexing' => ['IndexNow Key', 'value="indexing"'],
     'performance' => ['Large HTML Threshold (KB)', 'value="performance"'],
 ] as $seo_tab => $seo_expectations) {
     $_GET = ['tab' => 'seo', 'seo_tab' => $seo_tab];
     ob_start();
-    Ragnus\StaticPublisher\Admin::render();
+    Wext\StaticPublisher\Admin::render();
     $toolkit_html = (string) ob_get_clean();
     $_GET = [];
     foreach (['SEO Plugins', 'SEO Audit', 'Sitemaps', 'Redirects', 'Indexing', 'Performance', 'seo_tab=' . $seo_tab, ...$seo_expectations] as $expected) {
@@ -747,7 +747,7 @@ foreach ([
             exit(1);
         }
     }
-    if (substr_count($toolkit_html, 'ragstat-seo-tab is-active') !== 1) {
+    if (substr_count($toolkit_html, 'wextstat-seo-tab is-active') !== 1) {
         fwrite(STDERR, "SEO > {$seo_tab} ekranında tek bir etkin dikey sekme bulunamadı.\n");
         exit(1);
     }
@@ -758,17 +758,17 @@ if (! defined('RANK_MATH_VERSION')) {
 }
 $_GET = ['tab' => 'seo', 'seo_tab' => 'plugins'];
 ob_start();
-Ragnus\StaticPublisher\Admin::render();
+Wext\StaticPublisher\Admin::render();
 $active_seo_html = (string) ob_get_clean();
 $_GET = [];
-if (! str_contains($active_seo_html, 'Detected SEO plugin:') || ! str_contains($active_seo_html, 'ragstat-seo-plugin-card is-expanded') || ! str_contains($active_seo_html, 'aria-expanded="true"') || ! str_contains($active_seo_html, 'id="ragstat-rank-math-settings" data-ragstat-seo-panel')) {
+if (! str_contains($active_seo_html, 'Detected SEO plugin:') || ! str_contains($active_seo_html, 'wextstat-seo-plugin-card is-expanded') || ! str_contains($active_seo_html, 'aria-expanded="true"') || ! str_contains($active_seo_html, 'id="wextstat-rank-math-settings" data-wextstat-seo-panel')) {
     fwrite(STDERR, "Etkin SEO eklentisi üste alınmadı veya varsayılan olarak açılmadı.\n");
     exit(1);
 }
 
 $_GET = ['tab' => 'seo', 'seo_tab' => 'language'];
 ob_start();
-Ragnus\StaticPublisher\Admin::render();
+Wext\StaticPublisher\Admin::render();
 $seo_language_html = (string) ob_get_clean();
 if (! str_contains($seo_language_html, 'Multilingual') || ! str_contains($seo_language_html, 'Redirection by Browser Language') || ! str_contains($seo_language_html, 'Save Language Settings') || ! str_contains($seo_language_html, 'settings_tab=multilingual')) {
     fwrite(STDERR, "Eski SEO > Multilingual bağlantısı Static Site > Multilingual ekranına uyarlanmadı.\n");
@@ -777,7 +777,7 @@ if (! str_contains($seo_language_html, 'Multilingual') || ! str_contains($seo_la
 
 $_GET = ['tab' => 'settings', 'settings_tab' => 'languages'];
 ob_start();
-Ragnus\StaticPublisher\Admin::render();
+Wext\StaticPublisher\Admin::render();
 $legacy_languages_html = (string) ob_get_clean();
 $_GET = [];
 if (! str_contains($legacy_languages_html, 'Redirection by Browser Language') || ! str_contains($legacy_languages_html, 'settings_tab=multilingual')) {
@@ -785,14 +785,14 @@ if (! str_contains($legacy_languages_html, 'Redirection by Browser Language') ||
     exit(1);
 }
 
-Ragnus\StaticPublisher\Plugin::set_status('stalled-test', 'queued', 0, [
+Wext\StaticPublisher\Plugin::set_status('stalled-test', 'queued', 0, [
     'queued_at' => gmdate('c', time() - 120),
     'status_message' => 'Export işi sıraya alındı.',
 ]);
-$stalled_status = Ragnus\StaticPublisher\Plugin::public_status();
+$stalled_status = Wext\StaticPublisher\Plugin::public_status();
 if (empty($stalled_status['stalled']) || ! str_contains((string) ($stalled_status['runtime_notice'] ?? ''), 'WP-Cron')) {
     fwrite(STDERR, "Kuyrukta takılan export işi algılanmadı.\n");
     exit(1);
 }
 
-echo "Ragnus Static Publisher smoke test passed.\n";
+echo "Wext Static Publisher smoke test passed.\n";

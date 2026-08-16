@@ -7,7 +7,7 @@ define('SEOPRESS_VERSION', 'test-version');
 require '/wordpress/wp-load.php';
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
-$activation = activate_plugin('ragnus-static-publisher/ragnus-static-publisher.php');
+$activation = activate_plugin('wext-static-publisher/wext-static-publisher.php');
 if (is_wp_error($activation)) {
     throw new RuntimeException($activation->get_error_message());
 }
@@ -22,7 +22,7 @@ $settings = [
     'seopress_sitemaps' => '1',
     'seopress_robots' => '1',
 ];
-update_option(Ragnus\StaticPublisher\Plugin::SEO_PLUGIN_SETTINGS_KEY, $settings);
+update_option(Wext\StaticPublisher\Plugin::SEO_PLUGIN_SETTINGS_KEY, $settings);
 
 $origin = home_url();
 $target = 'https://static.example.com';
@@ -44,7 +44,7 @@ $html = '<html><head>'
     . '<script id="website-schema" type="application/ld+json">' . wp_json_encode($schema) . '</script>'
     . '</head></html>';
 
-$integration = new Ragnus\StaticPublisher\SEOPress_Integration($origin, $target);
+$integration = new Wext\StaticPublisher\SEOPress_Integration($origin, $target);
 $processed = $integration->process_html($html, true, 'arama');
 if (! str_contains($processed, $target) || ! str_contains($processed, '/arama/?q={search_term_string}')) {
     throw new RuntimeException('SEOPress Schema veya SearchAction hedefi statik domaine dönüştürülemedi.');
@@ -53,7 +53,7 @@ if (str_contains($integration->process_html($html, false, 'arama'), 'SearchActio
     throw new RuntimeException('Statik arama kapalıyken SEOPress SearchAction kaldırılmadı.');
 }
 
-$metadata_disabled = new Ragnus\StaticPublisher\SEOPress_Integration($origin, $target, array_merge($settings, ['seopress_metadata_posts' => '0']));
+$metadata_disabled = new Wext\StaticPublisher\SEOPress_Integration($origin, $target, array_merge($settings, ['seopress_metadata_posts' => '0']));
 $metadata_html = $metadata_disabled->process_html($html, true, 'arama', 'posts');
 if (str_contains($metadata_html, 'rel="canonical"') || str_contains($metadata_html, 'property="og:url"') || ! str_contains($metadata_html, 'website-schema')) {
     throw new RuntimeException('SEOPress metadata seçimi Schema çıktısından bağımsız çalışmadı.');
@@ -62,7 +62,7 @@ if (! str_contains($metadata_disabled->process_html($html, true, 'arama', 'pages
     throw new RuntimeException('SEOPress post metadata seçimi sayfa metadata çıktısını etkilememeliydi.');
 }
 
-$schema_disabled = new Ragnus\StaticPublisher\SEOPress_Integration($origin, $target, array_merge($settings, ['seopress_schema' => '0']));
+$schema_disabled = new Wext\StaticPublisher\SEOPress_Integration($origin, $target, array_merge($settings, ['seopress_schema' => '0']));
 $schema_html = $schema_disabled->process_html($html, true, 'arama');
 if (str_contains($schema_html, 'application/ld+json') || ! str_contains($schema_html, 'rel="canonical"')) {
     throw new RuntimeException('SEOPress Schema seçimi metadata çıktısından bağımsız çalışmadı.');
@@ -100,7 +100,7 @@ if (isset($files['evil-sitemap.xml'])) {
     throw new RuntimeException('Harici SEOPress sitemap adresi export edilmemeliydi.');
 }
 
-$disabled = new Ragnus\StaticPublisher\SEOPress_Integration($origin, $target, ['seopress_enabled' => '0']);
+$disabled = new Wext\StaticPublisher\SEOPress_Integration($origin, $target, ['seopress_enabled' => '0']);
 $disabled_html = $disabled->process_html($html, true, 'arama');
 if (str_contains($disabled_html, 'rel="canonical"') || str_contains($disabled_html, 'application/ld+json')) {
     throw new RuntimeException('Kapalı SEOPress entegrasyonu metadata ve Schema çıktılarını kaldırmadı.');
@@ -111,4 +111,4 @@ if (empty($manifest['active']) || ($manifest['version'] ?? '') !== 'test-version
     throw new RuntimeException('SEOPress manifest bilgisi eksik.');
 }
 
-echo "Ragnus Static Publisher SEOPress integration test passed.\n";
+echo "Wext Static Publisher SEOPress integration test passed.\n";

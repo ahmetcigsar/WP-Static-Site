@@ -5,7 +5,7 @@ declare(strict_types=1);
 require '/wordpress/wp-load.php';
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
-$plugin = 'ragnus-static-publisher/ragnus-static-publisher.php';
+$plugin = 'wext-static-publisher/wext-static-publisher.php';
 $activation = activate_plugin($plugin);
 if (is_wp_error($activation)) {
     throw new RuntimeException($activation->get_error_message());
@@ -13,20 +13,20 @@ if (is_wp_error($activation)) {
 
 do_action('init');
 
-update_option(Ragnus\StaticPublisher\Plugin::STATUS_KEY, [
+update_option(Wext\StaticPublisher\Plugin::STATUS_KEY, [
     'job_id' => 'legacy-job',
     'state' => 'completed',
     'log' => [['message' => 'Veritabanında kalmamalı']],
 ], false);
-Ragnus\StaticPublisher\Plugin::remove_legacy_activity_log();
-$database_status = get_option(Ragnus\StaticPublisher\Plugin::STATUS_KEY, []);
+Wext\StaticPublisher\Plugin::remove_legacy_activity_log();
+$database_status = get_option(Wext\StaticPublisher\Plugin::STATUS_KEY, []);
 if (isset($database_status['log'])) {
     throw new RuntimeException('Eski activity log verisi veritabanından temizlenmedi.');
 }
 
-Ragnus\StaticPublisher\Activity_Log::reset('activity-job-1');
+Wext\StaticPublisher\Activity_Log::reset('activity-job-1');
 for ($index = 1; $index <= 120; ++$index) {
-    Ragnus\StaticPublisher\Activity_Log::append(
+    Wext\StaticPublisher\Activity_Log::append(
         'activity-job-1',
         'info',
         'Kayıt ' . $index,
@@ -36,9 +36,9 @@ for ($index = 1; $index <= 120; ++$index) {
     );
 }
 
-$first_page = Ragnus\StaticPublisher\Activity_Log::page(1);
-$second_page = Ragnus\StaticPublisher\Activity_Log::page(2);
-$third_page = Ragnus\StaticPublisher\Activity_Log::page(3);
+$first_page = Wext\StaticPublisher\Activity_Log::page(1);
+$second_page = Wext\StaticPublisher\Activity_Log::page(2);
+$third_page = Wext\StaticPublisher\Activity_Log::page(3);
 if (count($first_page['entries']) !== 50 || count($second_page['entries']) !== 50 || count($third_page['entries']) !== 20) {
     throw new RuntimeException('Activity Log sayfaları 50/50/20 kayıt olarak bölünmedi.');
 }
@@ -54,7 +54,7 @@ if (($first_page['entries'][0]['source_url'] ?? '') !== 'https://cms.example.com
     throw new RuntimeException('Kaynak ve statik adres alanları Activity Log dosyasından okunamadı.');
 }
 
-$searched_page = Ragnus\StaticPublisher\Activity_Log::page(1, 'SOURCE/57/');
+$searched_page = Wext\StaticPublisher\Activity_Log::page(1, 'SOURCE/57/');
 if ($searched_page['total'] !== 1
     || $searched_page['job_total'] !== 120
     || $searched_page['total_pages'] !== 1
@@ -62,17 +62,17 @@ if ($searched_page['total'] !== 1
     || ($searched_page['entries'][0]['status_code'] ?? null) !== 404) {
     throw new RuntimeException('Activity Log kaynak adres araması doğru sonucu döndürmedi.');
 }
-$searched_all_pages = Ragnus\StaticPublisher\Activity_Log::page(2, 'cms.example.com/source/');
+$searched_all_pages = Wext\StaticPublisher\Activity_Log::page(2, 'cms.example.com/source/');
 if ($searched_all_pages['total'] !== 120
     || $searched_all_pages['total_pages'] !== 3
     || count($searched_all_pages['entries']) !== 50) {
     throw new RuntimeException('Activity Log arama sonuçları 50 kayıtlık sayfalara bölünmedi.');
 }
-$code_search = Ragnus\StaticPublisher\Activity_Log::page(1, '404');
+$code_search = Wext\StaticPublisher\Activity_Log::page(1, '404');
 if ($code_search['total'] !== 1 || ($code_search['entries'][0]['status_code'] ?? null) !== 404) {
     throw new RuntimeException('Activity Log HTTP kodu araması doğru sonucu döndürmedi.');
 }
-$missing_search = Ragnus\StaticPublisher\Activity_Log::page(1, 'bulunmayan-kayit');
+$missing_search = Wext\StaticPublisher\Activity_Log::page(1, 'bulunmayan-kayit');
 if ($missing_search['total'] !== 0 || $missing_search['entries'] !== []) {
     throw new RuntimeException('Activity Log sonuçsuz arama durumunu doğru döndürmedi.');
 }
@@ -80,8 +80,8 @@ if ($missing_search['job_total'] !== 120) {
     throw new RuntimeException('Activity Log toplam işlem kayıt sayısını aramadan bağımsız korumadı.');
 }
 
-Ragnus\StaticPublisher\Activity_Log::reset('activity-job-2');
-Ragnus\StaticPublisher\Activity_Log::append(
+Wext\StaticPublisher\Activity_Log::reset('activity-job-2');
+Wext\StaticPublisher\Activity_Log::append(
     'activity-job-2',
     'warning',
     'Yeni işlem kaydı',
@@ -89,7 +89,7 @@ Ragnus\StaticPublisher\Activity_Log::append(
     '',
     403
 );
-$new_job_page = Ragnus\StaticPublisher\Activity_Log::page(1);
+$new_job_page = Wext\StaticPublisher\Activity_Log::page(1);
 if ($new_job_page['total'] !== 1
     || $new_job_page['job_id'] !== 'activity-job-2'
     || ($new_job_page['entries'][0]['message'] ?? '') !== 'Yeni işlem kaydı'

@@ -38,7 +38,7 @@ function preferredLanguage(header, supportedLanguages) {
 
 async function languageConfig(request, env) {
   try {
-    const configUrl = new URL('/ragnus-language-config.json', request.url);
+    const configUrl = new URL('/wext-language-config.json', request.url);
     const response = await env.ASSETS.fetch(new Request(configUrl, {method: 'GET'}));
     if (!response.ok) return null;
     return await response.json();
@@ -62,7 +62,7 @@ export default {
       return env.ASSETS.fetch(request);
     }
 
-    const cookieName = String(config.cookie_name || 'ragnus_language');
+    const cookieName = String(config.cookie_name || 'wext_language');
     const savedLanguage = normaliseLanguage(readCookie(request, cookieName));
     const browserLanguage = preferredLanguage(request.headers.get('Accept-Language'), supportedLanguages);
     const configuredDefault = normaliseLanguage(config.default_language);

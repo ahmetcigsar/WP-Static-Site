@@ -1,13 +1,13 @@
-# Ragnus Managed Deployment Service Contract
+# Wext Managed Deployment Service Contract
 
-Bu ertelenmiş sözleşme, WordPress eklentisi ile ayrı çalıştırılacak Ragnus deployment servisi arasındaki sınırı tanımlar. Yönetilen bağlantı arayüzü mevcut sürümde etkin değildir.
+Bu ertelenmiş sözleşme, WordPress eklentisi ile ayrı çalıştırılacak Wext deployment servisi arasındaki sınırı tanımlar. Yönetilen bağlantı arayüzü mevcut sürümde etkin değildir.
 
 ## Operator configuration
 
 WordPress paketinde servis adresi sabit veya `wp-config.php` üzerinden tanımlanır:
 
 ```php
-define('RAGSTAT_DEPLOY_SERVICE_URL', 'https://deploy.example.com');
+define('WEXTSTAT_DEPLOY_SERVICE_URL', 'https://deploy.example.com');
 ```
 
 Servis tarafında Cloudflare OAuth istemcisinin Client ID, Client Secret ve sabit redirect URL değeri secret olarak tutulur. Cloudflare Authorization Code akışı kullanılmalı; public kullanım öncesinde istemci domaini doğrulanmalı ve OAuth client görünürlüğü uygun hale getirilmelidir.
@@ -19,7 +19,7 @@ WordPress yönlendirmesi:
 ```http
 GET /connect/cloudflare
   ?site_url=https%3A%2F%2Fcms.example.com
-  &callback_url=https%3A%2F%2Fcms.example.com%2Fwp-admin%2Fadmin-post.php%3Faction%3Dragnus_static_managed_callback
+  &callback_url=https%3A%2F%2Fcms.example.com%2Fwp-admin%2Fadmin-post.php%3Faction%3Dwext_static_managed_callback
   &state=...
   &locale=tr_TR
 ```
@@ -35,7 +35,7 @@ Content-Type: application/json
 {
   "code": "one-time-code",
   "site_url": "https://cms.example.com",
-  "callback_url": "https://cms.example.com/wp-admin/admin-post.php?action=ragnus_static_managed_callback"
+  "callback_url": "https://cms.example.com/wp-admin/admin-post.php?action=wext_static_managed_callback"
 }
 ```
 
@@ -63,8 +63,8 @@ Content-Type: application/json
 {
   "job_id": "20260815-120000-AbCd1234",
   "build_sha256": "64-character-sha256",
-  "artifact_url": "https://cms.example.com/wp-json/ragnus-static/v1/exports/.../managed-artifact?expires=...&signature=...",
-  "callback_url": "https://cms.example.com/wp-json/ragnus-static/v1/managed-deployments/callback",
+  "artifact_url": "https://cms.example.com/wp-json/wext-static/v1/exports/.../managed-artifact?expires=...&signature=...",
+  "callback_url": "https://cms.example.com/wp-json/wext-static/v1/managed-deployments/callback",
   "target_url": "https://www.example.com"
 }
 ```
@@ -80,9 +80,9 @@ signature = hex(hmac_sha256(callback_secret, timestamp + "." + raw_request_body)
 ```
 
 ```http
-POST /wp-json/ragnus-static/v1/managed-deployments/callback
-X-Ragnus-Timestamp: 1786785600
-X-Ragnus-Signature: hex-signature
+POST /wp-json/wext-static/v1/managed-deployments/callback
+X-Wext-Timestamp: 1786785600
+X-Wext-Signature: hex-signature
 Content-Type: application/json
 
 {

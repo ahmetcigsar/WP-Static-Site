@@ -6,13 +6,13 @@ require '/wordpress/wp-load.php';
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
 require_once ABSPATH . 'wp-admin/includes/template.php';
 
-$plugin = 'ragnus-static-publisher/ragnus-static-publisher.php';
+$plugin = 'wext-static-publisher/wext-static-publisher.php';
 $activation = activate_plugin($plugin);
 if (is_wp_error($activation)) {
     throw new RuntimeException($activation->get_error_message());
 }
 
-$initial_report = get_option(Ragnus\StaticPublisher\Diagnostics::OPTION_KEY, []);
+$initial_report = get_option(Wext\StaticPublisher\Diagnostics::OPTION_KEY, []);
 if (! is_array($initial_report['groups'] ?? null) || ! is_string($initial_report['checked_at'] ?? null)) {
     throw new RuntimeException('Diagnostics kontrolleri ilk kurulumda kaydedilmedi.');
 }
@@ -28,7 +28,7 @@ $response = [
     'filename' => null,
 ];
 $grants = ['GRANT ALL PRIVILEGES ON `wordpress`.* TO `wordpress`@`%`'];
-$groups = Ragnus\StaticPublisher\Diagnostics::checks($response, $grants, []);
+$groups = Wext\StaticPublisher\Diagnostics::checks($response, $grants, []);
 
 if (array_keys($groups) !== ['Server', 'WordPress', 'Plugins', 'File System', 'MySQL']) {
     throw new RuntimeException('Diagnostics grupları beklenen sırada değil.');
@@ -65,7 +65,7 @@ foreach ($groups['MySQL'] as $mysql_check) {
     }
 }
 
-$incompatible_groups = Ragnus\StaticPublisher\Diagnostics::checks(
+$incompatible_groups = Wext\StaticPublisher\Diagnostics::checks(
     $response,
     $grants,
     ['password-protected/password-protected.php']
@@ -78,7 +78,7 @@ if ($incompatible_groups['Plugins'][0]['passed']
 $unauthorized_response = $response;
 $unauthorized_response['headers'] = ['www-authenticate' => 'Basic realm="Restricted"'];
 $unauthorized_response['response']['code'] = 401;
-$unauthorized_groups = Ragnus\StaticPublisher\Diagnostics::checks($unauthorized_response, $grants, []);
+$unauthorized_groups = Wext\StaticPublisher\Diagnostics::checks($unauthorized_response, $grants, []);
 $unauthorized_checks = [];
 foreach ($unauthorized_groups['Server'] as $check) {
     $unauthorized_checks[$check['id']] = $check;
@@ -87,7 +87,7 @@ if ($unauthorized_checks['basic-auth']['passed'] || $unauthorized_checks['docker
     throw new RuntimeException('Basic Auth veya erişilemeyen site durumu doğru algılanmadı.');
 }
 
-update_option(Ragnus\StaticPublisher\Diagnostics::OPTION_KEY, [
+update_option(Wext\StaticPublisher\Diagnostics::OPTION_KEY, [
     'checked_at' => gmdate('c'),
     'locale' => determine_locale(),
     'groups' => ['Test' => [[
@@ -100,7 +100,7 @@ update_option(Ragnus\StaticPublisher\Diagnostics::OPTION_KEY, [
 wp_set_current_user(1);
 $_GET['tab'] = 'diagnostics';
 ob_start();
-Ragnus\StaticPublisher\Admin::render();
+Wext\StaticPublisher\Admin::render();
 $diagnostics_html = (string) ob_get_clean();
 unset($_GET['tab']);
 foreach (['Check Again', 'is-failed', 'dashicons-no-alt', 'aria-label="Failed"'] as $expected) {

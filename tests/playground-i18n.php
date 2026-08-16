@@ -13,7 +13,7 @@ if (! defined('ABSPATH')) {
 
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
-$plugin = 'ragnus-static-publisher/ragnus-static-publisher.php';
+$plugin = 'wext-static-publisher/wext-static-publisher.php';
 $result = activate_plugin($plugin);
 if (is_wp_error($result)) {
     fwrite(STDERR, $result->get_error_message() . "\n");
@@ -70,13 +70,13 @@ $expected_save_zip_translations = [
 foreach ($expected_translations as $locale => $expected) {
     restore_current_locale();
     switch_to_locale($locale);
-    unload_textdomain('ragnus-static-publisher');
-    Ragnus\StaticPublisher\Plugin::load_textdomain();
+    unload_textdomain('wext-static-publisher');
+    Wext\StaticPublisher\Plugin::load_textdomain();
 
-    $actual = __('Static Site', 'ragnus-static-publisher');
+    $actual = __('Static Site', 'wext-static-publisher');
     if ($actual !== $expected) {
-        $mofile = RAGSTAT_DIR . 'languages/ragnus-static-publisher-' . $locale . '.mo';
-        $direct_loaded = load_textdomain('ragnus-static-publisher', $mofile);
+        $mofile = WEXTSTAT_DIR . 'languages/wext-static-publisher-' . $locale . '.mo';
+        $direct_loaded = load_textdomain('wext-static-publisher', $mofile);
         fwrite(STDERR, sprintf(
             "%s çevirisi beklenen değerde değil: %s (determine_locale=%s, file=%s, direct=%s, after=%s)\n",
             $locale,
@@ -84,12 +84,12 @@ foreach ($expected_translations as $locale => $expected) {
             determine_locale(),
             is_readable($mofile) ? 'readable' : 'missing',
             $direct_loaded ? 'loaded' : 'failed',
-            __('Static Site', 'ragnus-static-publisher')
+            __('Static Site', 'wext-static-publisher')
         ));
         exit(1);
     }
 
-    $multilingual_actual = __('Multilingual', 'ragnus-static-publisher');
+    $multilingual_actual = __('Multilingual', 'wext-static-publisher');
     if ($multilingual_actual !== $expected_multilingual_translations[$locale]) {
         fwrite(STDERR, sprintf(
             "%s Çoklu Dil çevirisi beklenen değerde değil: %s\n",
@@ -99,7 +99,7 @@ foreach ($expected_translations as $locale => $expected) {
         exit(1);
     }
 
-    $auto_deploy_actual = __('Auto Deploy', 'ragnus-static-publisher');
+    $auto_deploy_actual = __('Auto Deploy', 'wext-static-publisher');
     if ($auto_deploy_actual !== $expected_auto_deploy_translations[$locale]) {
         fwrite(STDERR, sprintf(
             "%s Auto Deploy çevirisi beklenen değerde değil: %s\n",
@@ -109,7 +109,7 @@ foreach ($expected_translations as $locale => $expected) {
         exit(1);
     }
 
-    $save_zip_actual = __('Save ZIP Settings', 'ragnus-static-publisher');
+    $save_zip_actual = __('Save ZIP Settings', 'wext-static-publisher');
     if ($save_zip_actual !== $expected_save_zip_translations[$locale]) {
         fwrite(STDERR, sprintf(
             "%s ZIP ayarları kaydet çevirisi beklenen değerde değil: %s\n",
@@ -121,7 +121,7 @@ foreach ($expected_translations as $locale => $expected) {
 
     if ($locale === 'tr_TR') {
         foreach (['SFTP Connection' => 'SFTP Bağlantısı', 'Save SFTP Settings' => 'SFTP Ayarlarını Kaydet', 'Test Connection' => 'Bağlantıyı Test Et'] as $source => $sftp_expected) {
-            $sftp_actual = __($source, 'ragnus-static-publisher');
+            $sftp_actual = __($source, 'wext-static-publisher');
             if ($sftp_actual !== $sftp_expected) {
                 fwrite(STDERR, "Türkçe SFTP çevirisi beklenen değerde değil: {$source} => {$sftp_actual}\n");
                 exit(1);
@@ -135,12 +135,12 @@ restore_current_locale();
 
 $unsupported_locale = static fn (): string => 'de_DE';
 add_filter('locale', $unsupported_locale);
-unload_textdomain('ragnus-static-publisher');
-Ragnus\StaticPublisher\Plugin::load_textdomain();
-if (__('Settings', 'ragnus-static-publisher') !== 'Settings') {
+unload_textdomain('wext-static-publisher');
+Wext\StaticPublisher\Plugin::load_textdomain();
+if (__('Settings', 'wext-static-publisher') !== 'Settings') {
     fwrite(STDERR, "Desteklenmeyen WordPress dili İngilizce arayüze dönmedi.\n");
     exit(1);
 }
 remove_filter('locale', $unsupported_locale);
 
-echo "Ragnus Static Publisher i18n test passed.\n";
+echo "Wext Static Publisher i18n test passed.\n";

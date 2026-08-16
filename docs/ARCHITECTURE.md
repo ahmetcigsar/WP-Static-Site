@@ -1,18 +1,18 @@
-# Ragnus Static Publisher mimarisi
+# Wext Static Publisher mimarisi
 
 ## Sınırlar
 
 - WordPress içerik kaynağı ve export motorudur.
 - Cloudflare kimlik bilgileri yalnızca CI secrets içinde tutulur.
 - Kolay Kurulum modunda Cloudflare OAuth erişimi yalnızca yönetilen deployment servisinde tutulur; WordPress yalnızca siteye özel, şifrelenmiş servis erişim ve callback anahtarlarını saklar.
-- REST uçları WordPress Application Password ve eklentiye ait `ragnus_static_export` yetkisi ister.
+- REST uçları WordPress Application Password ve eklentiye ait `wext_static_export` yetkisi ister.
 - Headless + Static Publisher modu tema ön yüzünü ziyaretçilere kapatır; aynı-origin export istekleri WordPress salt değerinden türetilen, beş dakika geçerli timestamp + HMAC başlıklarıyla tema HTML'ine erişir.
 - Cloudflare CI deployment'ı tam ve atomik bir statik snapshot'tır; SFTP akışı dosyaları doğrudan hedef dizine yükler.
 - Form, arama, yorum, üyelik ve e-ticaret bu MVP'nin kapsamında değildir.
 
 ## Akış
 
-1. Manuel akışta CI `POST /wp-json/ragnus-static/v1/exports` çağrısı yapar. Otomatik akışta WordPress, Settings ekranında seçilen içerik, medya, menü, tema veya site ayarı değişikliklerini 60 saniye biriktirir.
+1. Manuel akışta CI `POST /wp-json/wext-static/v1/exports` çağrısı yapar. Otomatik akışta WordPress, Settings ekranında seçilen içerik, medya, menü, tema veya site ayarı değişikliklerini 60 saniye biriktirir.
 2. WordPress işi WP-Cron kuyruğuna ekler.
 3. Exporter yayınlanmış içerik URL'lerini seed olarak alır ve aynı origin kaynaklarını tarar.
    Headless modu açıksa bu istekler imzalanır; CMS originindeki normal ziyaretçiler aynı sayfalarda yapılandırılan 404, 410 veya 307 davranışını alır.
@@ -37,7 +37,7 @@
 
 - Çoklu dil özelliği yalnızca `/tr/`, `/en/` gibi dizin tabanlı WordPress çeviri URL'leriyle çalışır.
 - Etkin dillerin kök adresleri normal içerik seed'lerine ek olarak crawl kuyruğuna alınır; her dil için `/<dil>/index.html` üretilmesi zorunludur.
-- Export `ragnus-language-config.json` ve tercih kaydı için `ragnus-language-preference.js` üretir.
+- Export `wext-language-config.json` ve tercih kaydı için `wext-language-preference.js` üretir.
 - Çoklu dil yönlendirme ayarları yönetim arayüzündeki üst seviye `SEO` sekmesinde tutulur; option anahtarı geriye dönük uyumluluk için değişmez.
 - `SEO > SEO Plugins`, Rank Math sayfa metadata, JSON-LD, sitemap ve robots çıktılarının statik pakete dahil edilmesini ayrı seçeneklerle yönetir.
 - Rank Math sitemap ağacı yalnızca aynı origin içindeki güvenli `*.xml`/`*.xsl` sitemap yollarından takip edilir; en fazla 100 dosya alınır ve bütün origin adresleri canlı hedef domaine dönüştürülür.
@@ -67,15 +67,15 @@
 - JavaScript'in çalışma anında istediği WordPress AJAX/REST uçları statik değildir.
 - Karmaşık CSS URL sözdizimleri ve JavaScript içine gömülü asset adresleri ayrıca test edilmelidir.
 - Çoklu dilde çeviri içeriklerini ve karşılıklı `hreflang` etiketlerini üretmek WordPress çoklu dil eklentisinin sorumluluğundadır.
-- Eklenti Apache/IIS için storage klasörüne erişim engeli yazar. Nginx'te ayrıca `wp-content/uploads/ragnus-static` yolu engellenmelidir; artifact yalnızca kimlik doğrulamalı REST üzerinden indirilir.
-- Origin Cloudflare Access veya HTTP Basic arkasındaysa siteye özel bir MU-plugin ile `ragnus_static_request_args` filtresinden gerekli servis başlıkları eklenmelidir.
+- Eklenti Apache/IIS için storage klasörüne erişim engeli yazar. Nginx'te ayrıca `wp-content/uploads/wext-static` yolu engellenmelidir; artifact yalnızca kimlik doğrulamalı REST üzerinden indirilir.
+- Origin Cloudflare Access veya HTTP Basic arkasındaysa siteye özel bir MU-plugin ile `wext_static_request_args` filtresinden gerekli servis başlıkları eklenmelidir.
 - SFTP deployment parola tabanlıdır; özel anahtar kimlik doğrulaması bu sürümün kapsamında değildir.
 - SFTP doğrudan yükleme atomik değildir ve uzak hedeften eski dosyaları temizlemez.
 
 Örnek Access filtresi:
 
 ```php
-add_filter('ragnus_static_request_args', function (array $args): array {
+add_filter('wext_static_request_args', function (array $args): array {
     $args['headers']['CF-Access-Client-Id'] = getenv('CF_ACCESS_CLIENT_ID');
     $args['headers']['CF-Access-Client-Secret'] = getenv('CF_ACCESS_CLIENT_SECRET');
     return $args;

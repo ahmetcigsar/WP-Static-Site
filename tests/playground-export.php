@@ -5,14 +5,14 @@ declare(strict_types=1);
 require '/wordpress/wp-load.php';
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
-$plugin = 'ragnus-static-publisher/ragnus-static-publisher.php';
+$plugin = 'wext-static-publisher/wext-static-publisher.php';
 $activation = activate_plugin($plugin);
 if (is_wp_error($activation)) {
     throw new RuntimeException($activation->get_error_message());
 }
 
 do_action('init');
-update_option('ragnus_static_settings', [
+update_option('wext_static_settings', [
     'target_url' => 'https://static.example.com',
     'maximum_urls' => 50,
     'excluded_paths' => "/wp-admin/\n/wp-login.php\n/wp-json/\n/feed/",
@@ -20,13 +20,13 @@ update_option('ragnus_static_settings', [
     'headless_enabled' => '1',
     'headless_frontend_behavior' => '404',
 ]);
-update_option(Ragnus\StaticPublisher\Plugin::LANGUAGE_SETTINGS_KEY, [
+update_option(Wext\StaticPublisher\Plugin::LANGUAGE_SETTINGS_KEY, [
     'enabled' => '1',
     'supported_languages' => "tr\nen",
     'default_language' => 'tr',
     'cookie_days' => 365,
 ]);
-update_option(Ragnus\StaticPublisher\Plugin::HIDE_SETTINGS_KEY, [
+update_option(Wext\StaticPublisher\Plugin::HIDE_SETTINGS_KEY, [
     'wp_content_directory' => 'assets',
     'wp_includes_directory' => 'core',
     'uploads_directory' => 'media',
@@ -44,8 +44,8 @@ update_option(Ragnus\StaticPublisher\Plugin::HIDE_SETTINGS_KEY, [
     'disable_wlw_manifest' => '1',
     'disable_emojis' => '1',
 ]);
-update_option(Ragnus\StaticPublisher\Plugin::SEARCH_SETTINGS_KEY, array_merge(
-    Ragnus\StaticPublisher\Plugin::search_defaults(),
+update_option(Wext\StaticPublisher\Plugin::SEARCH_SETTINGS_KEY, array_merge(
+    Wext\StaticPublisher\Plugin::search_defaults(),
     [
         'enabled' => '1',
         'page_path' => 'arama',
@@ -55,8 +55,8 @@ update_option(Ragnus\StaticPublisher\Plugin::SEARCH_SETTINGS_KEY, array_merge(
         'exclude_urls' => "not-found-test\nforbidden-test",
     ]
 ));
-update_option(Ragnus\StaticPublisher\Plugin::SEO_SETTINGS_KEY, array_merge(
-    Ragnus\StaticPublisher\Plugin::seo_defaults(),
+update_option(Wext\StaticPublisher\Plugin::SEO_SETTINGS_KEY, array_merge(
+    Wext\StaticPublisher\Plugin::seo_defaults(),
     [
         'redirect_rules' => "/legacy/ /new-location/ 301\n/chain/ /legacy/ 301",
         'sitemap_news' => '1',
@@ -79,7 +79,7 @@ if (is_wp_error($post_id)) {
 }
 
 $job_id = 'integration-test';
-add_filter('ragnus_static_seed_urls', static function (array $urls): array {
+add_filter('wext_static_seed_urls', static function (array $urls): array {
     $urls[] = home_url('/redirect-test/');
     $urls[] = home_url('/not-found-test/');
     $urls[] = home_url('/forbidden-test/');
@@ -88,9 +88,9 @@ add_filter('ragnus_static_seed_urls', static function (array $urls): array {
 });
 add_filter('pre_http_request', static function ($preempt, array $args, string $url) {
     if (strtolower((string) wp_parse_url($url, PHP_URL_HOST)) === strtolower((string) wp_parse_url(home_url('/'), PHP_URL_HOST))
-        && ((string) ($args['headers']['X-Ragnus-Static-Export'] ?? '') !== '1'
-            || empty($args['headers']['X-Ragnus-Static-Timestamp'])
-            || empty($args['headers']['X-Ragnus-Static-Signature']))) {
+        && ((string) ($args['headers']['X-Wext-Static-Export'] ?? '') !== '1'
+            || empty($args['headers']['X-Wext-Static-Timestamp'])
+            || empty($args['headers']['X-Wext-Static-Signature']))) {
         throw new RuntimeException('Headless export isteği geçerli imza başlıkları olmadan gönderildi: ' . $url);
     }
     $path = (string) wp_parse_url($url, PHP_URL_PATH);
@@ -148,13 +148,13 @@ add_filter('pre_http_request', static function ($preempt, array $args, string $u
     ];
 }, 10, 3);
 $reported_progress = [];
-add_action('update_option_' . Ragnus\StaticPublisher\Plugin::STATUS_KEY, static function ($old_value, $new_value) use (&$reported_progress): void {
+add_action('update_option_' . Wext\StaticPublisher\Plugin::STATUS_KEY, static function ($old_value, $new_value) use (&$reported_progress): void {
     if (($new_value['job_id'] ?? '') === 'integration-test' && ($new_value['state'] ?? '') !== '') {
         $reported_progress[] = (int) ($new_value['progress'] ?? 0);
     }
 }, 10, 2);
-Ragnus\StaticPublisher\Plugin::set_status($job_id, 'running', 0, ['source' => 'test']);
-$status = (new Ragnus\StaticPublisher\Exporter())->run($job_id);
+Wext\StaticPublisher\Plugin::set_status($job_id, 'running', 0, ['source' => 'test']);
+$status = (new Wext\StaticPublisher\Exporter())->run($job_id);
 
 if (($status['state'] ?? '') !== 'completed') {
     throw new RuntimeException('Export tamamlanmadı.');
@@ -178,10 +178,10 @@ $last_completed_at = (string) ($status['last_completed_at'] ?? '');
 if ($last_completed_at === '' || strtotime($last_completed_at) === false) {
     throw new RuntimeException('Son statik oluşturma zamanı kaydedilmedi.');
 }
-if (array_key_exists('log', get_option(Ragnus\StaticPublisher\Plugin::STATUS_KEY, []))) {
+if (array_key_exists('log', get_option(Wext\StaticPublisher\Plugin::STATUS_KEY, []))) {
     throw new RuntimeException('Activity Log veritabanındaki export durumuna yazıldı.');
 }
-$activity = Ragnus\StaticPublisher\Activity_Log::page(1);
+$activity = Wext\StaticPublisher\Activity_Log::page(1);
 if (($activity['job_id'] ?? '') !== $job_id || ($activity['total'] ?? 0) < 2) {
     throw new RuntimeException('Son export Activity Log dosyasına yazılmadı.');
 }
@@ -215,21 +215,21 @@ if ($zip->open((string) $status['archive']) !== true) {
 $home_html = (string) $zip->getFromName('index.html');
 $hidden_theme_css = (string) $zip->getFromName('assets/skins/test-theme/design.css');
 $headers_file = (string) $zip->getFromName('_headers');
-$manifest_file = json_decode((string) $zip->getFromName('ragnus-static-manifest.json'), true);
+$manifest_file = json_decode((string) $zip->getFromName('wext-static-manifest.json'), true);
 $search_page = (string) $zip->getFromName('arama/index.html');
-$language_config = json_decode((string) $zip->getFromName('ragnus-language-config.json'), true);
-$language_script = (string) $zip->getFromName('ragnus-language-preference.js');
+$language_config = json_decode((string) $zip->getFromName('wext-language-config.json'), true);
+$language_script = (string) $zip->getFromName('wext-language-preference.js');
 $turkish_home = (string) $zip->getFromName('tr/index.html');
 $english_home = (string) $zip->getFromName('en/index.html');
-$search_index = json_decode((string) $zip->getFromName('ragnus-search-index.json'), true);
-$search_config = json_decode((string) $zip->getFromName('ragnus-search-config.json'), true);
-$search_script = (string) $zip->getFromName('ragnus-search-assets/ragnus-search.js');
-$fuse_script = (string) $zip->getFromName('ragnus-search-assets/fuse.min.mjs');
-$seo_report = json_decode((string) $zip->getFromName('ragnus-seo-report.json'), true);
-$seo_report_html = (string) $zip->getFromName('ragnus-seo-report.html');
-$performance_report = json_decode((string) $zip->getFromName('ragnus-performance-report.json'), true);
-$ragnus_sitemap = (string) $zip->getFromName('ragnus-sitemap.xml');
-$news_sitemap = (string) $zip->getFromName('ragnus-news-sitemap.xml');
+$search_index = json_decode((string) $zip->getFromName('wext-search-index.json'), true);
+$search_config = json_decode((string) $zip->getFromName('wext-search-config.json'), true);
+$search_script = (string) $zip->getFromName('wext-search-assets/wext-search.js');
+$fuse_script = (string) $zip->getFromName('wext-search-assets/fuse.min.mjs');
+$seo_report = json_decode((string) $zip->getFromName('wext-seo-report.json'), true);
+$seo_report_html = (string) $zip->getFromName('wext-seo-report.html');
+$performance_report = json_decode((string) $zip->getFromName('wext-performance-report.json'), true);
+$wext_sitemap = (string) $zip->getFromName('wext-sitemap.xml');
+$news_sitemap = (string) $zip->getFromName('wext-news-sitemap.xml');
 $robots_file = (string) $zip->getFromName('robots.txt');
 $redirects_file = (string) $zip->getFromName('_redirects');
 $indexnow_key_file = (string) $zip->getFromName('test-indexnow-key.txt');
@@ -247,9 +247,9 @@ if ($hidden_theme_css === '' || ! str_contains($hidden_theme_css, '/assets/media
 if (! str_contains($headers_file, '/assets/media/*')) {
     throw new RuntimeException('_headers uploads yolu Hide ayarına göre dönüştürülmedi.');
 }
-if (! str_contains($headers_file, "/ragnus-seo-report.json\n  X-Robots-Tag: noindex, nofollow")
-    || ! str_contains($headers_file, "/ragnus-seo-report.html\n  X-Robots-Tag: noindex, nofollow")
-    || ! str_contains($headers_file, "/ragnus-performance-report.json\n  X-Robots-Tag: noindex, nofollow")) {
+if (! str_contains($headers_file, "/wext-seo-report.json\n  X-Robots-Tag: noindex, nofollow")
+    || ! str_contains($headers_file, "/wext-seo-report.html\n  X-Robots-Tag: noindex, nofollow")
+    || ! str_contains($headers_file, "/wext-performance-report.json\n  X-Robots-Tag: noindex, nofollow")) {
     throw new RuntimeException('SEO ve performans raporları _headers içinde indekslemeye kapatılmadı.');
 }
 if (($manifest_file['hide_replacements']['author_url'] ?? '') !== 'writers') {
@@ -265,7 +265,7 @@ if (! is_array($language_config)
 if ($language_script === ''
     || ! str_contains($turkish_home, 'lang="tr"')
     || ! str_contains($english_home, 'lang="en"')
-    || ! str_contains($turkish_home, 'ragnus-language-preference.js')
+    || ! str_contains($turkish_home, 'wext-language-preference.js')
     || ! str_contains($english_home, 'hreflang="x-default"')
     || ! str_contains($english_home, 'https://static.example.com/tr/')) {
     throw new RuntimeException('Çoklu dil kökleri, tercih betiği veya hreflang işaretleri doğru export edilmedi.');
@@ -279,7 +279,7 @@ if ($search_page === '' || ! str_contains($search_page, 'Search This Site')
     || $fuse_script === '') {
     throw new RuntimeException('Fuse.js statik arama dosyaları export ZIP içine doğru üretilmedi.');
 }
-if (! str_contains($home_html, 'ragnus-search-bridge.js')) {
+if (! str_contains($home_html, 'wext-search-bridge.js')) {
     throw new RuntimeException('WordPress arama formlarını yönlendiren statik arama köprüsü HTML içine eklenmedi.');
 }
 if (($manifest_file['static_search']['document_count'] ?? 0) !== count($search_index)) {
@@ -293,18 +293,18 @@ if (! is_array($seo_report)
     || ($performance_report['file_count'] ?? 0) < 1) {
     throw new RuntimeException('SEO veya performans audit raporu export ZIP içine doğru yazılmadı.');
 }
-if (! str_contains($ragnus_sitemap, '<urlset')
-    || ! str_contains($ragnus_sitemap, 'xmlns:image=')
-    || str_contains($ragnus_sitemap, '<loc>https://static.example.com/en/</loc>')
-    || ! str_contains($robots_file, 'Sitemap: https://static.example.com/ragnus-sitemap.xml')
+if (! str_contains($wext_sitemap, '<urlset')
+    || ! str_contains($wext_sitemap, 'xmlns:image=')
+    || str_contains($wext_sitemap, '<loc>https://static.example.com/en/</loc>')
+    || ! str_contains($robots_file, 'Sitemap: https://static.example.com/wext-sitemap.xml')
     || ! str_contains($news_sitemap, 'xmlns:news=')
-    || ! str_contains($robots_file, 'Sitemap: https://static.example.com/ragnus-news-sitemap.xml')) {
+    || ! str_contains($robots_file, 'Sitemap: https://static.example.com/wext-news-sitemap.xml')) {
     throw new RuntimeException('Gelişmiş sitemap veya robots.txt bildirimi doğru üretilmedi: ' . wp_json_encode([
-        'has_urlset' => str_contains($ragnus_sitemap, '<urlset'),
-        'has_image_namespace' => str_contains($ragnus_sitemap, 'xmlns:image='),
-        'has_noindex_en' => str_contains($ragnus_sitemap, '<loc>https://static.example.com/en/</loc>'),
-        'has_robots_sitemap' => str_contains($robots_file, 'Sitemap: https://static.example.com/ragnus-sitemap.xml'),
-        'sitemap' => substr($ragnus_sitemap, 0, 500),
+        'has_urlset' => str_contains($wext_sitemap, '<urlset'),
+        'has_image_namespace' => str_contains($wext_sitemap, 'xmlns:image='),
+        'has_noindex_en' => str_contains($wext_sitemap, '<loc>https://static.example.com/en/</loc>'),
+        'has_robots_sitemap' => str_contains($robots_file, 'Sitemap: https://static.example.com/wext-sitemap.xml'),
+        'sitemap' => substr($wext_sitemap, 0, 500),
         'robots' => $robots_file,
     ], JSON_UNESCAPED_SLASHES));
 }
@@ -321,7 +321,7 @@ if (($manifest_file['seo_toolkit']['page_count'] ?? 0) < 2
     throw new RuntimeException('SEO Toolkit özeti ve indexlenebilir sayfa hashleri manifeste doğru yazılmadı.');
 }
 
-update_option(Ragnus\StaticPublisher\Plugin::INDEXNOW_SNAPSHOT_KEY, [
+update_option(Wext\StaticPublisher\Plugin::INDEXNOW_SNAPSHOT_KEY, [
     'https://static.example.com/deleted/' => 'old-hash',
 ]);
 $indexnow_request = [];
@@ -339,9 +339,9 @@ $indexnow_filter = static function ($preempt, array $args, string $url) use (&$i
     ];
 };
 add_filter('pre_http_request', $indexnow_filter, 20, 3);
-Ragnus\StaticPublisher\Plugin::notify_indexnow($job_id);
+Wext\StaticPublisher\Plugin::notify_indexnow($job_id);
 remove_filter('pre_http_request', $indexnow_filter, 20);
-$indexnow_status = get_option(Ragnus\StaticPublisher\Plugin::INDEXNOW_STATUS_KEY, []);
+$indexnow_status = get_option(Wext\StaticPublisher\Plugin::INDEXNOW_STATUS_KEY, []);
 if (($indexnow_request['host'] ?? '') !== 'static.example.com'
     || ($indexnow_request['key'] ?? '') !== 'test-indexnow-key'
     || ! in_array('https://static.example.com/deleted/', (array) ($indexnow_request['urlList'] ?? []), true)
@@ -349,7 +349,7 @@ if (($indexnow_request['host'] ?? '') !== 'static.example.com'
     throw new RuntimeException('IndexNow değişen ve silinen URL farkı doğru gönderilmedi.');
 }
 
-$hide_replacements = new Ragnus\StaticPublisher\Hide_Replacements(Ragnus\StaticPublisher\Plugin::hide_settings());
+$hide_replacements = new Wext\StaticPublisher\Hide_Replacements(Wext\StaticPublisher\Plugin::hide_settings());
 if ($hide_replacements->map_relative_path('wp-includes/js/test.js') !== 'core/js/test.js'
     || $hide_replacements->map_relative_path('author/example/index.html') !== 'writers/example/index.html') {
     throw new RuntimeException('WP-Includes veya yazar yolu Hide ayarına göre eşlenmedi.');
@@ -382,8 +382,8 @@ if (! str_contains($privacy_output, 'Korunacak içerik')) {
     throw new RuntimeException('Hide gizlilik temizliği normal sayfa içeriğini kaldırdı.');
 }
 
-Ragnus\StaticPublisher\Plugin::set_status('next-job', 'queued', 0, ['source' => 'test']);
-$queued_status = Ragnus\StaticPublisher\Plugin::status();
+Wext\StaticPublisher\Plugin::set_status('next-job', 'queued', 0, ['source' => 'test']);
+$queued_status = Wext\StaticPublisher\Plugin::status();
 if (($queued_status['last_completed_at'] ?? '') !== $last_completed_at) {
     throw new RuntimeException('Son başarılı statik oluşturma zamanı yeni iş kuyruğunda korunmadı.');
 }

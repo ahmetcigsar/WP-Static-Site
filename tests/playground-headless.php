@@ -6,14 +6,14 @@ require '/wordpress/wp-load.php';
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
 require_once ABSPATH . 'wp-admin/includes/template.php';
 
-$plugin = 'ragnus-static-publisher/ragnus-static-publisher.php';
+$plugin = 'wext-static-publisher/wext-static-publisher.php';
 $activation = activate_plugin($plugin);
 if (is_wp_error($activation)) {
     throw new RuntimeException($activation->get_error_message());
 }
 do_action('init');
 
-$defaults = Ragnus\StaticPublisher\Plugin::settings();
+$defaults = Wext\StaticPublisher\Plugin::settings();
 foreach ([
     'headless_enabled' => '0',
     'headless_frontend_behavior' => '404',
@@ -28,7 +28,7 @@ foreach ([
     }
 }
 
-$invalid_redirect = Ragnus\StaticPublisher\Admin::sanitize([
+$invalid_redirect = Wext\StaticPublisher\Admin::sanitize([
     '_section' => 'headless',
     'headless_enabled' => '1',
     'headless_frontend_behavior' => 'redirect',
@@ -38,7 +38,7 @@ if (($invalid_redirect['headless_frontend_behavior'] ?? '') !== '404') {
     throw new RuntimeException('WordPress originine yönlendirme güvenli biçimde 404 davranışına düşürülmedi.');
 }
 
-$settings = Ragnus\StaticPublisher\Admin::sanitize([
+$settings = Wext\StaticPublisher\Admin::sanitize([
     '_section' => 'headless',
     'headless_enabled' => '1',
     'headless_frontend_behavior' => 'redirect',
@@ -56,45 +56,45 @@ if (($settings['headless_enabled'] ?? '') !== '1'
     || ($settings['target_url'] ?? '') !== ($defaults['target_url'] ?? '')) {
     throw new RuntimeException('Headless ayarları diğer Static Site ayarlarını koruyarak temizlenmedi.');
 }
-update_option(Ragnus\StaticPublisher\Plugin::SETTINGS_KEY, $settings);
+update_option(Wext\StaticPublisher\Plugin::SETTINGS_KEY, $settings);
 
 $unsigned = [
     'method' => 'GET',
-    'headers' => ['X-Ragnus-Static-Export' => '1'],
+    'headers' => ['X-Wext-Static-Export' => '1'],
 ];
 $signed = apply_filters('http_request_args', $unsigned, home_url('/sample/?page=2'));
-if (empty($signed['headers']['X-Ragnus-Static-Timestamp'])
-    || empty($signed['headers']['X-Ragnus-Static-Signature'])) {
+if (empty($signed['headers']['X-Wext-Static-Timestamp'])
+    || empty($signed['headers']['X-Wext-Static-Signature'])) {
     throw new RuntimeException('Aynı-origin static export isteği timestamp ve HMAC ile imzalanmadı.');
 }
 $external = apply_filters('http_request_args', $unsigned, 'https://external.example/sample/');
-if (isset($external['headers']['X-Ragnus-Static-Signature'])) {
+if (isset($external['headers']['X-Wext-Static-Signature'])) {
     throw new RuntimeException('Harici origin isteğine dahili export imzası eklendi.');
 }
 
 $original_server = $_SERVER;
 $_SERVER['REQUEST_METHOD'] = 'GET';
 $_SERVER['REQUEST_URI'] = '/sample/?page=2';
-$_SERVER['HTTP_X_RAGNUS_STATIC_EXPORT'] = '1';
-$_SERVER['HTTP_X_RAGNUS_STATIC_TIMESTAMP'] = (string) $signed['headers']['X-Ragnus-Static-Timestamp'];
-$_SERVER['HTTP_X_RAGNUS_STATIC_SIGNATURE'] = (string) $signed['headers']['X-Ragnus-Static-Signature'];
-if (! Ragnus\StaticPublisher\Headless_Mode::valid_export_request()
-    || Ragnus\StaticPublisher\Headless_Mode::should_protect_frontend()) {
+$_SERVER['HTTP_X_WEXT_STATIC_EXPORT'] = '1';
+$_SERVER['HTTP_X_WEXT_STATIC_TIMESTAMP'] = (string) $signed['headers']['X-Wext-Static-Timestamp'];
+$_SERVER['HTTP_X_WEXT_STATIC_SIGNATURE'] = (string) $signed['headers']['X-Wext-Static-Signature'];
+if (! Wext\StaticPublisher\Headless_Mode::valid_export_request()
+    || Wext\StaticPublisher\Headless_Mode::should_protect_frontend()) {
     throw new RuntimeException('Geçerli imzalı export isteği WordPress tema render erişimini alamadı.');
 }
 
-$_SERVER['HTTP_X_RAGNUS_STATIC_SIGNATURE'] = str_repeat('0', 64);
-if (Ragnus\StaticPublisher\Headless_Mode::valid_export_request()) {
+$_SERVER['HTTP_X_WEXT_STATIC_SIGNATURE'] = str_repeat('0', 64);
+if (Wext\StaticPublisher\Headless_Mode::valid_export_request()) {
     throw new RuntimeException('Sahte export imzası kabul edildi.');
 }
 
 unset(
-    $_SERVER['HTTP_X_RAGNUS_STATIC_EXPORT'],
-    $_SERVER['HTTP_X_RAGNUS_STATIC_TIMESTAMP'],
-    $_SERVER['HTTP_X_RAGNUS_STATIC_SIGNATURE']
+    $_SERVER['HTTP_X_WEXT_STATIC_EXPORT'],
+    $_SERVER['HTTP_X_WEXT_STATIC_TIMESTAMP'],
+    $_SERVER['HTTP_X_WEXT_STATIC_SIGNATURE']
 );
 wp_set_current_user(0);
-if (! Ragnus\StaticPublisher\Headless_Mode::should_protect_frontend()) {
+if (! Wext\StaticPublisher\Headless_Mode::should_protect_frontend()) {
     throw new RuntimeException('Anonim WordPress tema isteği Headless modunda korunmadı.');
 }
 if (apply_filters('wp_sitemaps_enabled', true) !== false
@@ -106,13 +106,13 @@ if (apply_filters('wp_sitemaps_enabled', true) !== false
 }
 
 wp_set_current_user(1);
-if (Ragnus\StaticPublisher\Headless_Mode::should_protect_frontend()) {
+if (Wext\StaticPublisher\Headless_Mode::should_protect_frontend()) {
     throw new RuntimeException('Giriş yapmış editörün tema önizlemesi engellendi.');
 }
 
 $_GET = ['tab' => 'settings', 'settings_tab' => 'headless'];
 ob_start();
-Ragnus\StaticPublisher\Admin::render();
+Wext\StaticPublisher\Admin::render();
 $headless_html = (string) ob_get_clean();
 $_GET = [];
 foreach (['Headless CMS', 'Headless + Static Publisher', 'Protect the WordPress theme frontend', 'Save Headless CMS Settings'] as $expected) {
@@ -120,17 +120,17 @@ foreach (['Headless CMS', 'Headless + Static Publisher', 'Protect the WordPress 
         throw new RuntimeException("Headless CMS yönetim ekranı içeriği eksik: {$expected}");
     }
 }
-if (! str_contains($headless_html, 'notice notice-info inline ragstat-headless-notice')
-    || substr_count($headless_html, 'ragstat-settings-tab is-active') !== 1
+if (! str_contains($headless_html, 'notice notice-info inline wextstat-headless-notice')
+    || substr_count($headless_html, 'wextstat-settings-tab is-active') !== 1
     || ! str_contains($headless_html, 'settings_tab=headless')) {
     throw new RuntimeException('Headless CMS alt sekmesi etkin durumda render edilmedi.');
 }
 
-$admin_css = (string) file_get_contents(RAGSTAT_DIR . 'assets/admin.css');
-if (! preg_match('/\.ragstat-headless-notice\s*\{[^}]*border:\s*1px solid var\(--ragstat-primary\);/s', $admin_css)) {
+$admin_css = (string) file_get_contents(WEXTSTAT_DIR . 'assets/admin.css');
+if (! preg_match('/\.wextstat-headless-notice\s*\{[^}]*border:\s*1px solid var\(--wextstat-primary\);/s', $admin_css)) {
     throw new RuntimeException('Headless CMS bilgi mesajının dört taraflı solid çerçevesi bulunamadı.');
 }
 
 $_SERVER = $original_server;
-delete_option(Ragnus\StaticPublisher\Plugin::SETTINGS_KEY);
+delete_option(Wext\StaticPublisher\Plugin::SETTINGS_KEY);
 echo "Headless CMS mode test passed.\n";

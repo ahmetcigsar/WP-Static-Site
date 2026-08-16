@@ -6,7 +6,7 @@ require '/wordpress/wp-load.php';
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
 require_once ABSPATH . 'wp-admin/includes/template.php';
 
-$plugin = 'ragnus-static-publisher/ragnus-static-publisher.php';
+$plugin = 'wext-static-publisher/wext-static-publisher.php';
 $activation = activate_plugin($plugin);
 if (is_wp_error($activation)) {
     throw new RuntimeException($activation->get_error_message());
@@ -15,8 +15,8 @@ if (is_wp_error($activation)) {
 do_action('init');
 wp_set_current_user(1);
 switch_to_locale('en_US');
-unload_textdomain('ragnus-static-publisher');
-Ragnus\StaticPublisher\Plugin::load_textdomain();
+unload_textdomain('wext-static-publisher');
+Wext\StaticPublisher\Plugin::load_textdomain();
 
 $screens = [
     'main' => ['tab' => 'main'],
@@ -52,7 +52,7 @@ $expected = [
     'settings-multilingual' => ['Static Site', 'Multilingual', 'Redirection by Browser Language', 'Save Language Settings'],
     'seo-plugins' => ['SEO Plugins', 'Rank Math SEO', 'Metadata', 'Technical SEO', 'Save SEO Plugin Settings'],
     'seo-audit' => ['SEO Audit', 'Create SEO audit report', 'Validate JSON-LD structured data', 'Save SEO Settings'],
-    'seo-sitemaps' => ['Sitemaps', 'Generate Ragnus sitemap', 'Include images', 'Save SEO Settings'],
+    'seo-sitemaps' => ['Sitemaps', 'Generate Wext sitemap', 'Include images', 'Save SEO Settings'],
     'seo-redirects' => ['Redirects', 'Custom Redirect Rules', 'Redirect WordPress old slugs', 'Save SEO Settings'],
     'seo-indexing' => ['Indexing', 'X-Robots-Tag Rules', 'IndexNow Key', 'Save SEO Settings'],
     'seo-performance' => ['Performance', 'Large HTML Threshold (KB)', 'Large Asset Threshold (KB)', 'Save SEO Settings'],
@@ -81,7 +81,7 @@ $forbidden_fragments = [
 foreach ($screens as $screen => $query) {
     $_GET = $query;
     ob_start();
-    Ragnus\StaticPublisher\Admin::render();
+    Wext\StaticPublisher\Admin::render();
     $html = (string) ob_get_clean();
     foreach ($expected[$screen] as $needle) {
         if (! str_contains(html_entity_decode($html, ENT_QUOTES | ENT_HTML5, 'UTF-8'), $needle)) {
@@ -103,4 +103,4 @@ foreach ($screens as $screen => $query) {
 
 $_GET = [];
 restore_current_locale();
-echo "Ragnus Static Publisher English UI audit passed.\n";
+echo "Wext Static Publisher English UI audit passed.\n";

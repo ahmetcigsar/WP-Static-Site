@@ -5,7 +5,7 @@ declare(strict_types=1);
 require '/wordpress/wp-load.php';
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
-$activation = activate_plugin('ragnus-static-publisher/ragnus-static-publisher.php');
+$activation = activate_plugin('wext-static-publisher/wext-static-publisher.php');
 if (is_wp_error($activation)) {
     throw new RuntimeException($activation->get_error_message());
 }
@@ -76,7 +76,7 @@ foreach ($cases as $prefix => $case) {
         $prefix . '_sitemaps' => '1',
         $prefix . '_robots' => '1',
     ];
-    $integration = new Ragnus\StaticPublisher\Block_SEO_Integration($origin, $target, array_merge($case, ['prefix' => $prefix]), $settings);
+    $integration = new Wext\StaticPublisher\Block_SEO_Integration($origin, $target, array_merge($case, ['prefix' => $prefix]), $settings);
     $post_html = $integration->process_html($case['html'], true, 'arama', 'posts');
     if (str_contains($post_html, 'rel="canonical"') || ! str_contains($post_html, '/arama/?q={search_term_string}')) {
         throw new RuntimeException($case['label'] . ' post metadata veya Schema ayrımı çalışmadı.');
@@ -88,7 +88,7 @@ foreach ($cases as $prefix => $case) {
         throw new RuntimeException($case['label'] . ' SearchAction çıktısı kaldırılamadı.');
     }
 
-    $schema_off = new Ragnus\StaticPublisher\Block_SEO_Integration($origin, $target, array_merge($case, ['prefix' => $prefix]), array_merge($settings, [$prefix . '_schema' => '0']));
+    $schema_off = new Wext\StaticPublisher\Block_SEO_Integration($origin, $target, array_merge($case, ['prefix' => $prefix]), array_merge($settings, [$prefix . '_schema' => '0']));
     if (str_contains($schema_off->process_html($case['html'], true, 'arama', 'pages'), 'application/ld+json')) {
         throw new RuntimeException($case['label'] . ' Schema çıktısı kaldırılamadı.');
     }
@@ -111,4 +111,4 @@ foreach ($cases as $prefix => $case) {
     }
 }
 
-echo "Ragnus Static Publisher SureRank, The SEO Framework and Yoast integration test passed.\n";
+echo "Wext Static Publisher SureRank, The SEO Framework and Yoast integration test passed.\n";

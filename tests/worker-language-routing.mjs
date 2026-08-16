@@ -7,7 +7,7 @@ const config = {
   enabled: true,
   supported_languages: ['tr', 'en', 'de'],
   default_language: 'tr',
-  cookie_name: 'ragnus_language'
+  cookie_name: 'wext_language'
 };
 
 function environment(overrides = {}) {
@@ -15,7 +15,7 @@ function environment(overrides = {}) {
     ASSETS: {
       async fetch(request) {
         const path = new URL(request.url).pathname;
-        if (path === '/ragnus-language-config.json') {
+        if (path === '/wext-language-config.json') {
           return Response.json({...config, ...overrides});
         }
         return new Response(`asset:${path}`, {status: 200});
@@ -30,8 +30,8 @@ test('Accept-Language kalite sırasına ve temel dile göre eşleşir', () => {
 });
 
 test('kayıtlı dil tercihi güvenli şekilde okunur', () => {
-  const request = new Request('https://example.com/', {headers: {Cookie: 'x=1; ragnus_language=en'}});
-  assert.equal(readCookie(request, 'ragnus_language'), 'en');
+  const request = new Request('https://example.com/', {headers: {Cookie: 'x=1; wext_language=en'}});
+  assert.equal(readCookie(request, 'wext_language'), 'en');
 });
 
 test('kök adres tarayıcı diline yönlendirilir ve sorgu korunur', async () => {
@@ -46,7 +46,7 @@ test('kök adres tarayıcı diline yönlendirilir ve sorgu korunur', async () =>
 
 test('çerez tarayıcı dilinden üstündür', async () => {
   const request = new Request('https://example.com/', {
-    headers: {Cookie: 'ragnus_language=en', 'Accept-Language': 'de'}
+    headers: {Cookie: 'wext_language=en', 'Accept-Language': 'de'}
   });
   const response = await worker.fetch(request, environment());
   assert.equal(response.headers.get('Location'), 'https://example.com/en/');

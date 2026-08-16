@@ -7,13 +7,13 @@ define('RANK_MATH_VERSION', 'test-version');
 require '/wordpress/wp-load.php';
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
-$plugin = 'ragnus-static-publisher/ragnus-static-publisher.php';
+$plugin = 'wext-static-publisher/wext-static-publisher.php';
 $activation = activate_plugin($plugin);
 if (is_wp_error($activation)) {
     throw new RuntimeException($activation->get_error_message());
 }
 
-update_option(Ragnus\StaticPublisher\Plugin::SEO_PLUGIN_SETTINGS_KEY, [
+update_option(Wext\StaticPublisher\Plugin::SEO_PLUGIN_SETTINGS_KEY, [
     'rank_math_enabled' => '1',
     'rank_math_metadata_pages' => '1',
     'rank_math_metadata_posts' => '1',
@@ -26,7 +26,7 @@ update_option(Ragnus\StaticPublisher\Plugin::SEO_PLUGIN_SETTINGS_KEY, [
 
 $origin = home_url();
 $target = 'https://static.example.com';
-$integration = new Ragnus\StaticPublisher\Rank_Math_Integration($origin, $target);
+$integration = new Wext\StaticPublisher\Rank_Math_Integration($origin, $target);
 $html = '<html><head><!-- Search Engine Optimization by Rank Math - https://rankmath.com/ -->'
     . '<meta name="robots" content="index, follow"><link rel="canonical" href="' . $origin . '/sample/">'
     . '<script type="application/ld+json" class="rank-math-schema">'
@@ -41,7 +41,7 @@ if (str_contains($without_static_search, 'SearchAction') || str_contains($withou
     throw new RuntimeException('Statik arama kapalıyken dinamik Rank Math SearchAction kaldırılmadı.');
 }
 
-$post_metadata_disabled = new Ragnus\StaticPublisher\Rank_Math_Integration($origin, $target, [
+$post_metadata_disabled = new Wext\StaticPublisher\Rank_Math_Integration($origin, $target, [
     'rank_math_enabled' => '1',
     'rank_math_metadata_pages' => '1',
     'rank_math_metadata_posts' => '0',
@@ -94,11 +94,11 @@ foreach (['sitemap_index.xml', 'post-sitemap.xml', 'robots.txt'] as $path) {
     }
 }
 
-$disabled = new Ragnus\StaticPublisher\Rank_Math_Integration($origin, $target, [
+$disabled = new Wext\StaticPublisher\Rank_Math_Integration($origin, $target, [
     'rank_math_enabled' => '0',
 ]);
 if (str_contains($disabled->process_html($html, true, 'arama'), 'Rank Math')) {
     throw new RuntimeException('Kapalı Rank Math entegrasyonu metadata bloğunu kaldırmadı.');
 }
 
-echo "Ragnus Static Publisher Rank Math integration test passed.\n";
+echo "Wext Static Publisher Rank Math integration test passed.\n";

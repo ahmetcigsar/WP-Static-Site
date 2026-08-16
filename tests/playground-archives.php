@@ -5,7 +5,7 @@ declare(strict_types=1);
 require '/wordpress/wp-load.php';
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
-$plugin = 'ragnus-static-publisher/ragnus-static-publisher.php';
+$plugin = 'wext-static-publisher/wext-static-publisher.php';
 $activation = activate_plugin($plugin);
 if (is_wp_error($activation)) {
     throw new RuntimeException($activation->get_error_message());
@@ -13,7 +13,7 @@ if (is_wp_error($activation)) {
 
 do_action('init');
 
-$base = Ragnus\StaticPublisher\Plugin::storage_directory();
+$base = Wext\StaticPublisher\Plugin::storage_directory();
 wp_mkdir_p($base . '/archives');
 wp_mkdir_p($base . '/builds');
 
@@ -29,7 +29,7 @@ foreach ($fixtures as $fixture) {
     if ($zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
         throw new RuntimeException('Test ZIP dosyası oluşturulamadı.');
     }
-    $zip->addFromString('ragnus-static-manifest.json', (string) wp_json_encode($fixture));
+    $zip->addFromString('wext-static-manifest.json', (string) wp_json_encode($fixture));
     $zip->close();
 
     $build = $base . '/builds/' . $fixture['job_id'];
@@ -37,14 +37,14 @@ foreach ($fixtures as $fixture) {
     file_put_contents($build . '/index.html', $fixture['job_id']);
 }
 
-$archives = Ragnus\StaticPublisher\Archive_Manager::archives();
+$archives = Wext\StaticPublisher\Archive_Manager::archives();
 if (array_column($archives, 'job_id') !== ['retention-test-3', 'retention-test-2', 'retention-test-1']) {
     throw new RuntimeException('ZIP dosyaları oluşturma zamanına göre sıralanmadı.');
 }
 if (($archives[0]['url_count'] ?? null) !== 30) {
     throw new RuntimeException('URL sayısı manifestten okunamadı.');
 }
-if ((Ragnus\StaticPublisher\Archive_Manager::find('retention-test-2')['url_count'] ?? null) !== 20) {
+if ((Wext\StaticPublisher\Archive_Manager::find('retention-test-2')['url_count'] ?? null) !== 20) {
     throw new RuntimeException('Tekil ZIP dosyası iş kimliğiyle bulunamadı.');
 }
 if (($archives[0]['build_sha256'] ?? '') !== str_repeat('3', 64)
@@ -54,8 +54,8 @@ if (($archives[0]['build_sha256'] ?? '') !== str_repeat('3', 64)
 
 $artifact_request = new WP_REST_Request('GET');
 $artifact_request->set_param('job_id', 'retention-test-2');
-$artifact_response = Ragnus\StaticPublisher\REST_Controller::job_artifact($artifact_request);
-if (! $artifact_response instanceof Ragnus\StaticPublisher\File_Response
+$artifact_response = Wext\StaticPublisher\REST_Controller::job_artifact($artifact_request);
+if (! $artifact_response instanceof Wext\StaticPublisher\File_Response
     || $artifact_response->filename !== 'retention-test-2.zip') {
     throw new RuntimeException('İş kimliğine sabitlenmiş ZIP artefaktı bulunamadı.');
 }
@@ -66,7 +66,7 @@ $bad_callback->set_body_params([
     'state' => 'deploying',
     'build_sha256' => str_repeat('9', 64),
 ]);
-if (Ragnus\StaticPublisher\REST_Controller::deployment_callback($bad_callback)->get_status() !== 409) {
+if (Wext\StaticPublisher\REST_Controller::deployment_callback($bad_callback)->get_status() !== 409) {
     throw new RuntimeException('Yanlış deploy checksum değeri reddedilmedi.');
 }
 
@@ -78,18 +78,18 @@ foreach (['deploying', 'completed'] as $deployment_state) {
         'build_sha256' => str_repeat('2', 64),
         'deployment_url' => $deployment_state === 'completed' ? 'https://deployment.example.workers.dev' : '',
     ]);
-    if (Ragnus\StaticPublisher\REST_Controller::deployment_callback($callback)->get_status() !== 200) {
+    if (Wext\StaticPublisher\REST_Controller::deployment_callback($callback)->get_status() !== 200) {
         throw new RuntimeException('Cloudflare deploy callback durumu kaydedilemedi: ' . $deployment_state);
     }
 }
-$deployment_status = Ragnus\StaticPublisher\Plugin::deployment_status();
+$deployment_status = Wext\StaticPublisher\Plugin::deployment_status();
 if (($deployment_status['state'] ?? '') !== 'completed'
     || ($deployment_status['job_id'] ?? '') !== 'retention-test-2'
     || ($deployment_status['deployment_url'] ?? '') !== 'https://deployment.example.workers.dev') {
     throw new RuntimeException('Cloudflare deploy sonucu ayrı durum kaydına doğru yazılmadı.');
 }
 
-$bundle = Ragnus\StaticPublisher\Archive_Manager::create_bundle(['retention-test-1', 'retention-test-3']);
+$bundle = Wext\StaticPublisher\Archive_Manager::create_bundle(['retention-test-1', 'retention-test-3']);
 $bundle_zip = new ZipArchive();
 if ($bundle_zip->open($bundle) !== true
     || $bundle_zip->locateName('retention-test-1.zip') === false
@@ -100,7 +100,7 @@ if ($bundle_zip->open($bundle) !== true
 $bundle_zip->close();
 unlink($bundle);
 
-$result = Ragnus\StaticPublisher\Archive_Manager::delete(['retention-test-1']);
+$result = Wext\StaticPublisher\Archive_Manager::delete(['retention-test-1']);
 if ($result !== ['deleted' => 1, 'failed' => 0]) {
     throw new RuntimeException('Tekil ZIP silme işlemi beklenen sonucu vermedi.');
 }
@@ -108,10 +108,10 @@ if (file_exists($base . '/archives/retention-test-1.zip') || is_dir($base . '/bu
     throw new RuntimeException('Tekil silme ZIP veya ilişkili build klasörünü kaldırmadı.');
 }
 
-$settings = Ragnus\StaticPublisher\Plugin::settings();
-update_option(Ragnus\StaticPublisher\Plugin::SETTINGS_KEY, $settings, false);
+$settings = Wext\StaticPublisher\Plugin::settings();
+update_option(Wext\StaticPublisher\Plugin::SETTINGS_KEY, $settings, false);
 $settings['archive_retention'] = 1;
-update_option(Ragnus\StaticPublisher\Plugin::SETTINGS_KEY, $settings, false);
+update_option(Wext\StaticPublisher\Plugin::SETTINGS_KEY, $settings, false);
 if (file_exists($base . '/archives/retention-test-2.zip') || is_dir($base . '/builds/retention-test-2')) {
     throw new RuntimeException('Ayar değişikliği eski ZIP veya ilişkili build klasörünü silmedi.');
 }
@@ -119,8 +119,8 @@ if (! file_exists($base . '/archives/retention-test-3.zip')) {
     throw new RuntimeException('En son ZIP dosyası yanlışlıkla silindi.');
 }
 
-$result = Ragnus\StaticPublisher\Archive_Manager::delete(['retention-test-3']);
-if ($result !== ['deleted' => 1, 'failed' => 0] || Ragnus\StaticPublisher\Archive_Manager::latest() !== null) {
+$result = Wext\StaticPublisher\Archive_Manager::delete(['retention-test-3']);
+if ($result !== ['deleted' => 1, 'failed' => 0] || Wext\StaticPublisher\Archive_Manager::latest() !== null) {
     throw new RuntimeException('En son ZIP dosyası tekil işlemle silinemedi.');
 }
 

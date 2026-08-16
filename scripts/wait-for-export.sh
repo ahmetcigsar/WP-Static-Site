@@ -9,7 +9,7 @@ set -euo pipefail
 for attempt in $(seq 1 120); do
   response="$(curl --fail --silent --show-error \
     --user "$WP_USER:$WP_APP_PASSWORD" \
-    "$WP_ORIGIN/wp-json/ragnus-static/v1/exports/latest")"
+    "$WP_ORIGIN/wp-json/wext-static/v1/exports/latest")"
   state="$(jq -r '.state // "unknown"' <<<"$response")"
   job_id="$(jq -r '.job_id // ""' <<<"$response")"
 

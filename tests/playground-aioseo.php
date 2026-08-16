@@ -7,7 +7,7 @@ define('AIOSEO_VERSION', 'test-version');
 require '/wordpress/wp-load.php';
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
-$plugin = 'ragnus-static-publisher/ragnus-static-publisher.php';
+$plugin = 'wext-static-publisher/wext-static-publisher.php';
 $activation = activate_plugin($plugin);
 if (is_wp_error($activation)) {
     throw new RuntimeException($activation->get_error_message());
@@ -23,7 +23,7 @@ $enabled_settings = [
     'aioseo_sitemaps' => '1',
     'aioseo_robots' => '1',
 ];
-update_option(Ragnus\StaticPublisher\Plugin::SEO_PLUGIN_SETTINGS_KEY, $enabled_settings);
+update_option(Wext\StaticPublisher\Plugin::SEO_PLUGIN_SETTINGS_KEY, $enabled_settings);
 
 $origin = home_url();
 $target = 'https://static.example.com';
@@ -47,7 +47,7 @@ $html = '<html><head><!-- All in One SEO 5.0.0.1 - aioseo.com -->'
     . '<script type="application/ld+json" class="aioseo-schema">' . wp_json_encode($schema) . '</script>'
     . '<!-- All in One SEO --></head></html>';
 
-$integration = new Ragnus\StaticPublisher\AIOSEO_Integration($origin, $target);
+$integration = new Wext\StaticPublisher\AIOSEO_Integration($origin, $target);
 $processed = $integration->process_html($html, true, 'arama');
 if (! str_contains($processed, 'https://static.example.com') || ! str_contains($processed, '/arama/?q={search_term_string}')) {
     throw new RuntimeException('AIOSEO Schema veya SearchAction hedefi statik domaine dönüştürülemedi.');
@@ -57,7 +57,7 @@ if (str_contains($without_static_search, 'SearchAction') || str_contains($withou
     throw new RuntimeException('Statik arama kapalıyken dinamik AIOSEO SearchAction kaldırılmadı.');
 }
 
-$metadata_disabled = new Ragnus\StaticPublisher\AIOSEO_Integration($origin, $target, array_merge($enabled_settings, [
+$metadata_disabled = new Wext\StaticPublisher\AIOSEO_Integration($origin, $target, array_merge($enabled_settings, [
     'aioseo_metadata_posts' => '0',
 ]));
 $metadata_disabled_html = $metadata_disabled->process_html($html, true, 'arama', 'posts');
@@ -68,7 +68,7 @@ if (! str_contains($metadata_disabled->process_html($html, true, 'arama', 'pages
     throw new RuntimeException('AIOSEO post metadata seçimi sayfa metadata çıktısını etkilememeliydi.');
 }
 
-$schema_disabled = new Ragnus\StaticPublisher\AIOSEO_Integration($origin, $target, array_merge($enabled_settings, [
+$schema_disabled = new Wext\StaticPublisher\AIOSEO_Integration($origin, $target, array_merge($enabled_settings, [
     'aioseo_schema' => '0',
 ]));
 if (str_contains($schema_disabled->process_html($html, true, 'arama'), 'aioseo-schema')) {
@@ -117,7 +117,7 @@ if (isset($files['evil-sitemap.xml'])) {
     throw new RuntimeException('Harici AIOSEO sitemap adresi export edilmemeliydi.');
 }
 
-$disabled = new Ragnus\StaticPublisher\AIOSEO_Integration($origin, $target, [
+$disabled = new Wext\StaticPublisher\AIOSEO_Integration($origin, $target, [
     'aioseo_enabled' => '0',
 ]);
 if (str_contains($disabled->process_html($html, true, 'arama'), 'All in One SEO')) {
@@ -129,4 +129,4 @@ if (empty($manifest['active']) || ($manifest['version'] ?? '') !== 'test-version
     throw new RuntimeException('AIOSEO manifest bilgisi eksik.');
 }
 
-echo "Ragnus Static Publisher All in One SEO integration test passed.\n";
+echo "Wext Static Publisher All in One SEO integration test passed.\n";

@@ -1,4 +1,4 @@
-# Ragnus Static Publisher
+# Wext Static Publisher
 
 Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Workers Static Assets odaklı statik export eklentisi.
 
@@ -49,7 +49,7 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 - ZIP arşiv tablosunda gösterim sırasını belirten bilgi amaçlı Sıra sütunu
 - En son ZIP'i koruyarak eski arşivleri elle temizleme
 - ZIP arşivlerini tek tek veya toplu olarak indirme ve silme
-- `wp ragnus-static export` WP-CLI komutu
+- `wp wext-static export` WP-CLI komutu
 - Application Password korumalı export/status/artifact REST uçları
 - CI için yönetici yetkisi gerektirmeyen `Static Publisher Deploy` kullanıcı rolü
 - Yazı, sayfa, özel içerik, kategori/etiket, medya, menü, bileşen, tema ve site ayarı değişiklikleri için ayrı ayrı seçilebilen otomatik export tetikleyicileri
@@ -59,15 +59,15 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 
 ## Kurulum
 
-`ragnus-static-publisher` klasörünü WordPress'in `wp-content/plugins/` dizinine kopyalayın ve eklentiyi etkinleştirin. Ardından sol ana menüdeki **Static Publisher** sayfasından canlı domaini ve URL sınırını yapılandırın.
+`wext-static-publisher` klasörünü WordPress'in `wp-content/plugins/` dizinine kopyalayın ve eklentiyi etkinleştirin. Ardından sol ana menüdeki **Static Publisher** sayfasından canlı domaini ve URL sınırını yapılandırın.
 
 Sunucuda PHP DOM ve Zip eklentileri bulunmalıdır. SFTP istemcisi eklenti paketine dahildir; PHP cURL/libcurl derlemesinde ayrıca `sftp` protokolü bulunması gerekmez. Uzun export ve SFTP işleri için gerçek sistem cron'u ile `wp-cron.php` çalıştırılması önerilir.
 
 ## WP-CLI
 
 ```bash
-wp ragnus-static export
-wp ragnus-static export --format=json
+wp wext-static export
+wp wext-static export --format=json
 ```
 
 ## CI secrets
@@ -98,7 +98,7 @@ WordPress çoklu dil eklentisi çevirileri dizin tabanlı adreslerde yayınlamal
 
 İlk kurulumda WordPress site dili varsayılan dil olarak seçilir ve **Supported Language Codes** listesinin ilk satırına yerleştirilir. Daha önce kaydedilmiş dil ayarları eklenti güncellemelerinde korunur.
 
-Exporter her dil kökünü ayrıca tarar ve eksik bir dil kökü varsa export işlemini başarısız sayar. Statik paketteki `ragnus-language-config.json` Cloudflare Worker tarafından okunur. Worker sadece `/` isteğinde önce `ragnus_language` çerezini, sonra `Accept-Language` başlığını, son olarak varsayılan dili kullanır. `/en/about/` gibi açık dil adresleri yeniden yönlendirilmez. Dil dizinindeki bir sayfa ziyaret edildiğinde tercih çerezi güncellenir.
+Exporter her dil kökünü ayrıca tarar ve eksik bir dil kökü varsa export işlemini başarısız sayar. Statik paketteki `wext-language-config.json` Cloudflare Worker tarafından okunur. Worker sadece `/` isteğinde önce `wext_language` çerezini, sonra `Accept-Language` başlığını, son olarak varsayılan dili kullanır. `/en/about/` gibi açık dil adresleri yeniden yönlendirilmez. Dil dizinindeki bir sayfa ziyaret edildiğinde tercih çerezi güncellenir.
 
 Her çeviri sayfası WordPress tarafında doğru `lang`, canonical ve karşılıklı `hreflang` etiketlerini üretmelidir. Exporter `hreflang` adreslerini canlı statik domaine taşır ve kök yönlendirici için eksikse `x-default` ekler. Query-string tabanlı `?lang=en` yapısı desteklenmez.
 
@@ -121,19 +121,20 @@ Her çeviri sayfası WordPress tarafında doğru `lang`, canonical ve karşılı
 ## Geliştirme doğrulaması
 
 ```bash
-find ragnus-static-publisher -name '*.php' -print0 | xargs -0 -n1 php -l
+find wext-static-publisher -name '*.php' -print0 | xargs -0 -n1 php -l
 bash -n scripts/*.sh
 node --test tests/worker-language-routing.mjs
 npx --yes wrangler@latest deploy --dry-run
 ./scripts/package-plugin.sh
-npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=ragnus-static-publisher --mount=.:/workspace -- /workspace/tests/playground-smoke.php
-npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=ragnus-static-publisher --mount=.:/workspace -- /workspace/tests/playground-activity-log.php
-npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=ragnus-static-publisher --mount=.:/workspace -- /workspace/tests/playground-archives.php
-npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=ragnus-static-publisher --mount=.:/workspace -- /workspace/tests/playground-export.php
-npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=ragnus-static-publisher --mount=.:/workspace -- /workspace/tests/playground-aioseo.php
-npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=ragnus-static-publisher --mount=.:/workspace -- /workspace/tests/playground-seopress.php
-npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=ragnus-static-publisher --mount=.:/workspace -- /workspace/tests/playground-seo-metadata-groups.php
-npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=ragnus-static-publisher --mount=.:/workspace -- /workspace/tests/playground-additional-seo.php
+npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-smoke.php
+npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-brand-migration.php
+npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-activity-log.php
+npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-archives.php
+npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-export.php
+npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-aioseo.php
+npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-seopress.php
+npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-seo-metadata-groups.php
+npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-additional-seo.php
 ```
 
 Mimari ve sınırlar için `docs/ARCHITECTURE.md` dosyasına bakın.

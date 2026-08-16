@@ -1543,7 +1543,7 @@ final class Admin
         <form class="ragstat-settings-form" method="post" action="options.php">
             <?php settings_fields('ragnus_static'); ?>
             <input type="hidden" name="<?php echo esc_attr($option_name); ?>[_section]" value="headless">
-            <div class="notice notice-info inline">
+            <div class="notice notice-info inline ragstat-headless-notice">
                 <p><strong><?php esc_html_e('Headless + Static Publisher', 'ragnus-static-publisher'); ?></strong></p>
                 <p><?php esc_html_e('Visitors cannot open the WordPress theme frontend. Signed internal export requests can still render the homepage, pages, design assets, and menus for the static site.', 'ragnus-static-publisher'); ?></p>
             </div>

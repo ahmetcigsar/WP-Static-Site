@@ -1956,6 +1956,11 @@
     box-shadow: none;
 }
 
+.ragstat-headless-notice {
+    border: 1px solid var(--ragstat-primary);
+    background: #f8faff;
+}
+
 .ragstat-files-notice {
     max-width: 1160px;
     padding: 2px 42px 2px 12px;

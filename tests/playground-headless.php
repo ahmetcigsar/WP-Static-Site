@@ -120,9 +120,15 @@ foreach (['Headless CMS', 'Headless + Static Publisher', 'Protect the WordPress 
         throw new RuntimeException("Headless CMS yönetim ekranı içeriği eksik: {$expected}");
     }
 }
-if (substr_count($headless_html, 'ragstat-settings-tab is-active') !== 1
+if (! str_contains($headless_html, 'notice notice-info inline ragstat-headless-notice')
+    || substr_count($headless_html, 'ragstat-settings-tab is-active') !== 1
     || ! str_contains($headless_html, 'settings_tab=headless')) {
     throw new RuntimeException('Headless CMS alt sekmesi etkin durumda render edilmedi.');
+}
+
+$admin_css = (string) file_get_contents(RAGSTAT_DIR . 'assets/admin.css');
+if (! preg_match('/\.ragstat-headless-notice\s*\{[^}]*border:\s*1px solid var\(--ragstat-primary\);/s', $admin_css)) {
+    throw new RuntimeException('Headless CMS bilgi mesajının dört taraflı solid çerçevesi bulunamadı.');
 }
 
 $_SERVER = $original_server;

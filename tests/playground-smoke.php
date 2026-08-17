@@ -618,7 +618,7 @@ if (! str_contains($settings_html, 'Static Site') || ! str_contains($settings_ht
 foreach ([
     'zip' => ['ZIP Files', 'Number of ZIPs to Store', 'Save ZIP Settings', 'value="zip"'],
     'github' => ['GitHub Deployment Webhook', 'Save Deploy Settings'],
-    'cloudflare' => ['Configuration required', 'Open Cloudflare', 'Cloudflare Deploy', 'Deploy to Cloudflare'],
+    'cloudflare' => ['License and connection required', 'Wext License', 'Activate License', 'Cloudflare Connection', 'Cloudflare Deploy', 'Deploy to Cloudflare'],
     'sftp' => ['SFTP Connection', 'Save SFTP Settings', 'Test Connection', 'Upload Latest Static Site'],
     'auto-deploy' => ['Automatic Static Site Creation and Deploy', 'Save Auto Deploy Settings'],
 ] as $deploy_tab => $panel_expectations) {

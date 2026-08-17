@@ -45,6 +45,11 @@ final class Plugin
         add_action('admin_post_wext_static_archive_bulk', [Admin::class, 'archive_bulk_action']);
         add_action('admin_post_wext_static_sftp_test', [Admin::class, 'test_sftp_connection']);
         add_action('admin_post_wext_static_sftp_deploy', [Admin::class, 'deploy_latest_with_sftp']);
+        add_action('admin_post_wext_static_license_activate', [Admin::class, 'activate_managed_license']);
+        add_action('admin_post_wext_static_license_deactivate', [Admin::class, 'deactivate_managed_license']);
+        add_action('admin_post_wext_static_managed_connect', [Admin::class, 'connect_managed_cloudflare']);
+        add_action('admin_post_wext_static_managed_callback', [Admin::class, 'complete_managed_cloudflare']);
+        add_action('admin_post_wext_static_managed_disconnect', [Admin::class, 'disconnect_managed_cloudflare']);
         add_action('update_option_' . self::SETTINGS_KEY, [self::class, 'apply_archive_retention'], 10, 2);
         add_action(self::CRON_HOOK, [self::class, 'run_scheduled'], 10, 1);
         add_action(self::INDEXNOW_CRON_HOOK, [self::class, 'notify_indexnow'], 10, 1);
@@ -305,7 +310,8 @@ final class Plugin
     public static function cloudflare_deployment_configured(): bool
     {
         $settings = self::settings();
-        return (string) ($settings['deployment_webhook_url'] ?? '') !== '';
+        return Managed_Deployer::configured()
+            || (string) ($settings['deployment_webhook_url'] ?? '') !== '';
     }
 
     public static function hide_defaults(): array
@@ -760,7 +766,10 @@ final class Plugin
         $source = (string) (self::status()['source'] ?? '');
         $deployment_succeeded = false;
         $settings = self::settings();
-        if ($source !== 'ci-manual') {
+        if ($source !== 'ci-manual' && Managed_Deployer::configured()
+            && (string) ($settings['deployment_mode'] ?? '') === 'managed') {
+            $deployment_succeeded = Managed_Deployer::notify_export($job_id, $manifest);
+        } elseif ($source !== 'ci-manual') {
             self::notify_deployment_webhook($job_id, $manifest);
         }
 

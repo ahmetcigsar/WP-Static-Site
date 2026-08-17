@@ -13,18 +13,42 @@ if (is_wp_error($activation)) {
 do_action('init');
 wp_set_current_user(1);
 
-add_filter('wext_static_deploy_service_url', static fn (): string => 'https://deploy.example.com');
-$authorization_url = Wext\StaticPublisher\Managed_Deployer::authorization_url();
-parse_str((string) parse_url($authorization_url, PHP_URL_QUERY), $authorization_query);
-$state = (string) ($authorization_query['state'] ?? '');
-if ($state === '' || ! str_starts_with($authorization_url, 'https://deploy.example.com/connect/cloudflare?')) {
-    throw new RuntimeException('Yönetilen servis bağlantı URL ve state üretimi başarısız.');
-}
-
 $access_token = 'managed-access-token';
 $callback_secret = str_repeat('c', 48);
 $deployment_request = [];
-add_filter('pre_http_request', static function ($preempt, $args, $url) use ($access_token, $callback_secret, &$deployment_request) {
+$activation_request = [];
+$ticket_request = [];
+add_filter('wext_static_deploy_service_url', static fn (): string => 'https://deploy.example.com');
+add_filter('pre_http_request', static function ($preempt, $args, $url) use ($access_token, $callback_secret, &$deployment_request, &$activation_request, &$ticket_request) {
+    if ($url === 'https://deploy.example.com/v1/wordpress/license-activations') {
+        $activation_request = $args;
+        return [
+            'headers' => [],
+            'body' => wp_json_encode([
+                'activation_id' => '11111111-1111-4111-8111-111111111111',
+                'site_id' => '22222222-2222-4222-8222-222222222222',
+                'plan' => ['code' => 'pro', 'site_limit' => 3],
+                'activation_credential' => 'wext_act_' . str_repeat('a', 48),
+                'expires_at' => gmdate('c', time() + 900),
+            ]),
+            'response' => ['code' => 201, 'message' => 'Created'],
+            'cookies' => [],
+            'filename' => null,
+        ];
+    }
+    if ($url === 'https://deploy.example.com/v1/wordpress/connections/tickets') {
+        $ticket_request = $args;
+        return [
+            'headers' => [],
+            'body' => wp_json_encode([
+                'connect_ticket' => 'wext_ct_' . str_repeat('t', 48),
+                'expires_at' => gmdate('c', time() + 300),
+            ]),
+            'response' => ['code' => 200, 'message' => 'OK'],
+            'cookies' => [],
+            'filename' => null,
+        ];
+    }
     if ($url === 'https://deploy.example.com/v1/wordpress/connections/exchange') {
         return [
             'headers' => [],
@@ -53,6 +77,28 @@ add_filter('pre_http_request', static function ($preempt, $args, $url) use ($acc
     return $preempt;
 }, 10, 3);
 
+$license = Wext\StaticPublisher\Managed_Deployer::activate_license('wext-license-key-1234567890');
+$stored_license = get_option(Wext\StaticPublisher\Managed_Deployer::LICENSE_KEY, []);
+$activation_payload = json_decode((string) ($activation_request['body'] ?? ''), true);
+if (empty($license['active'])
+    || ($license['plan_code'] ?? '') !== 'pro'
+    || ($activation_payload['license_key'] ?? '') !== 'wext-license-key-1234567890'
+    || ! str_starts_with((string) ($activation_payload['installation_id'] ?? ''), 'wext_')
+    || str_contains(wp_json_encode($stored_license), 'wext-license-key-1234567890')
+    || str_contains((string) ($stored_license['activation_credential'] ?? ''), 'wext_act_')) {
+    throw new RuntimeException('Lisans aktivasyonu güvenli biçimde kaydedilmedi.');
+}
+
+$authorization_url = Wext\StaticPublisher\Managed_Deployer::authorization_url();
+parse_str((string) parse_url($authorization_url, PHP_URL_QUERY), $authorization_query);
+$state = (string) ($authorization_query['state'] ?? '');
+if ($state === ''
+    || ! str_starts_with($authorization_url, 'https://deploy.example.com/connect/cloudflare?')
+    || ! str_starts_with((string) ($authorization_query['connect_ticket'] ?? ''), 'wext_ct_')
+    || ! str_starts_with((string) ($ticket_request['headers']['Authorization'] ?? ''), 'Bearer wext_act_')) {
+    throw new RuntimeException('Yönetilen servis connect-ticket, URL ve state üretimi başarısız.');
+}
+
 $public = Wext\StaticPublisher\Managed_Deployer::complete_connection($state, 'one-time-code');
 $stored = get_option(Wext\StaticPublisher\Managed_Deployer::CONNECTION_KEY, []);
 if (empty($public['connected'])
@@ -60,7 +106,8 @@ if (empty($public['connected'])
     || ($stored['access_token'] ?? '') === $access_token
     || ($stored['callback_secret'] ?? '') === $callback_secret
     || Wext\StaticPublisher\Secret_Store::decrypt((string) $stored['access_token']) !== $access_token
-    || (Wext\StaticPublisher\Plugin::settings()['deployment_mode'] ?? '') !== 'managed') {
+    || (Wext\StaticPublisher\Plugin::settings()['deployment_mode'] ?? '') !== 'managed'
+    || (Wext\StaticPublisher\Plugin::settings()['target_url'] ?? '') !== 'https://static.example.com') {
     throw new RuntimeException('Yönetilen servis bağlantısı güvenli biçimde kaydedilmedi.');
 }
 
@@ -97,6 +144,11 @@ if (($deployment_request['headers']['Authorization'] ?? '') !== 'Bearer ' . $acc
     || ! str_contains((string) ($deployment_payload['artifact_url'] ?? ''), '/managed-artifact')
     || str_contains((string) ($deployment_payload['artifact_url'] ?? ''), $callback_secret)) {
     throw new RuntimeException('Yönetilen deployment isteği beklenen güvenlik sözleşmesine uymuyor.');
+}
+
+if (! Wext\StaticPublisher\Managed_Deployer::claim_callback_delivery('delivery-1')
+    || Wext\StaticPublisher\Managed_Deployer::claim_callback_delivery('delivery-1')) {
+    throw new RuntimeException('Yönetilen callback replay kontrolü başarısız.');
 }
 
 echo "Wext Static Publisher managed deploy test passed.\n";

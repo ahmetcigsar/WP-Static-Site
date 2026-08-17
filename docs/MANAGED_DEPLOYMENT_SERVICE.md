@@ -1,10 +1,10 @@
 # Wext Managed Deployment Service Contract
 
-Bu ertelenmiş sözleşme, WordPress eklentisi ile ayrı çalıştırılacak Wext deployment servisi arasındaki sınırı tanımlar. Yönetilen bağlantı arayüzü mevcut sürümde etkin değildir.
+Bu sözleşme, WordPress eklentisi ile ayrı çalışan Wext deployment servisi arasındaki etkin istemci sınırını tanımlar. Lisans ve Cloudflare bağlantı akışı etkindir; deployment servisinin `POST /v1/deployments` ucunu `202 Accepted` sözleşmesiyle sunması gerekir.
 
 ## Operator configuration
 
-WordPress paketinde servis adresi sabit veya `wp-config.php` üzerinden tanımlanır:
+Varsayılan servis adresi `https://deploy.wext.io` değeridir. Staging veya self-hosted kurulumda `wp-config.php` üzerinden değiştirilebilir:
 
 ```php
 define('WEXTSTAT_DEPLOY_SERVICE_URL', 'https://deploy.example.com');
@@ -12,7 +12,20 @@ define('WEXTSTAT_DEPLOY_SERVICE_URL', 'https://deploy.example.com');
 
 Servis tarafında Cloudflare OAuth istemcisinin Client ID, Client Secret ve sabit redirect URL değeri secret olarak tutulur. Cloudflare Authorization Code akışı kullanılmalı; public kullanım öncesinde istemci domaini doğrulanmalı ve OAuth client görünürlüğü uygun hale getirilmelidir.
 
-## 1. Start Cloudflare authorization
+## 1. Lisans aktivasyonu ve connect ticket
+
+WordPress kalıcı, korumalı bir `installation_id` üretir ve kullanıcıdan aldığı lisans anahtarını kaydetmeden aktivasyon ister:
+
+```http
+POST /v1/wordpress/license-activations
+Content-Type: application/json
+
+{"license_key":"...","installation_id":"wext_...","site_url":"https://cms.example.com"}
+```
+
+Kısa ömürlü activation credential ile site ve callback adresine bağlı tek kullanımlık `connect_ticket` alınır. Lisans anahtarı, activation credential veya servis tokenı loglanmaz.
+
+## 2. Start Cloudflare authorization
 
 WordPress yönlendirmesi:
 
@@ -22,11 +35,12 @@ GET /connect/cloudflare
   &callback_url=https%3A%2F%2Fcms.example.com%2Fwp-admin%2Fadmin-post.php%3Faction%3Dwext_static_managed_callback
   &state=...
   &locale=tr_TR
+  &connect_ticket=...
 ```
 
 Servis, `site_url`, `callback_url` ve `state` değerlerini sunucu tarafında kısa ömürlü ve tek kullanımlık saklar; ardından kullanıcıyı Cloudflare OAuth izin ekranına yönlendirir. Cloudflare dönüşünde servis kendi tek kullanımlık bağlantı kodunu üretip WordPress callback URL'sine `code` ve özgün `state` ile döner.
 
-## 2. Exchange one-time code
+## 3. Exchange one-time code
 
 ```http
 POST /v1/wordpress/connections/exchange
@@ -53,7 +67,7 @@ Başarılı yanıt:
 
 Kod tek kullanımlık olmalı; `site_url` ve `callback_url` başlangıç isteğiyle birebir eşleşmelidir. Servis tokenı yalnızca bu WordPress sitesi ve seçilen Cloudflare hedefi için işlem yapabilmelidir.
 
-## 3. Create deployment
+## 4. Create deployment
 
 ```http
 POST /v1/deployments
@@ -71,7 +85,7 @@ Content-Type: application/json
 
 Servis paketi süresi dolmadan indirir, ZIP içeriğini güvenli bir geçici dizinde açar, manifestteki `job_id` ve `build_sha256` değerlerini istekle karşılaştırır, Cloudflare Workers Static Assets'e atomik deployment yapar ve canlı URL'yi kontrol eder. ZIP path traversal girdileri reddedilmelidir.
 
-## 4. Signed status callback
+## 5. Signed status callback
 
 Callback JSON gövdesi değiştirilmeden aşağıdaki imza üretilir:
 
@@ -95,7 +109,7 @@ Content-Type: application/json
 
 `state` yalnızca `deploying`, `completed` veya `failed` olabilir. WordPress beş dakikadan eski/yeni timestamp değerlerini, hatalı imzayı, bilinmeyen job ID'yi ve eşleşmeyen checksum değerini reddeder.
 
-## 5. Disconnect
+## 6. Disconnect ve lisans deaktivasyonu
 
 ```http
 DELETE /v1/wordpress/connections/current
@@ -103,3 +117,5 @@ Authorization: Bearer site-scoped-service-token
 ```
 
 Servis bağlantıyı ve Cloudflare refresh/access tokenlarını iptal eder. WordPress, servis yanıt veremese bile yerel şifrelenmiş bağlantıyı siler; kullanıcı daha sonra yeniden bağlanabilir.
+
+Lisans deaktivasyonu bağlantıdan ayrı olarak `DELETE /v1/wordpress/license-activations/current` ile siteye bağlı servis tokenı kullanılarak yapılır. Başarılı deaktivasyonda yerel bağlantı ve lisans durumu temizlenir; installation ID yeniden kurulum bağını korumak için saklanır.

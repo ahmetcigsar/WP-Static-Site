@@ -20,6 +20,8 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 - SureRank SEO, The SEO Framework ve Yoast SEO için içerik türü bazlı metadata, Schema, XML sitemap ve robots.txt entegrasyonları
 - WordPress yönetici/site dilini otomatik izleyen Türkçe, İngilizce, İspanyolca, Fransızca, Basitleştirilmiş Çince, Japonca, Arapça ve Portekizce arayüz paketleri
 - Deploy sekmesinin sol dikey menüsünde ZIP File, GitHub, Cloudflare, SFTP ve Auto Deploy seçenekleri
+- Wext lisans aktivasyonu, kısa ömürlü bağlantı bileti ve siteye bağlı Cloudflare OAuth hesabı seçimi
+- Servis tokenı ile export sonrasında yönetilen Cloudflare Workers Static Assets deployment isteği
 - Cloudflare yapılandırıldığında statik üretimi ve Cloudflare yayınını tek butonda başlatan, export ile deploy durumlarını ayrı gösteren akış
 - GitHub Actions sonucunu WordPress'e geri bildiren; belirli job ID ve SHA-256 doğrulamalı Cloudflare deploy durumu
 - Deploy > ZIP File kartında indirme/silme işlemleri ve 10 kayıtlık sayfalama ile ZIP dosya yönetimi; kartın altında arşiv saklama ayarı
@@ -85,6 +87,12 @@ Tam otomatik akış için eklenti ayarlarında deployment webhook alanını `htt
 Webhook yapılandırıldığında Main ekranındaki **Create Static Site** işlemi **Deploy to Cloudflare** olarak görünür. Buton önce statik snapshot'ı oluşturur; export başarılı olursa GitHub Actions yalnızca o işe ait `/exports/{job_id}/artifact` dosyasını indirir, manifestteki job ID ve SHA-256 değerini doğrular, Wrangler ile Cloudflare'a yükler ve canlı adresi kontrol eder. Workflow sonucu `/deployments/callback` üzerinden WordPress'e bildirilir; Main ve **Deploy > Cloudflare** ekranlarında export ve Cloudflare deploy durumları ayrı gösterilir.
 
 Callback ve job-specific artifact uçları da `Static Publisher Deploy` rolü ile Application Password kimlik doğrulaması ister. GitHub Actions için `WP_USER` olarak yönetici hesabı yerine bu sınırlı rol kullanılmalıdır.
+
+## Yönetilen Cloudflare deployment
+
+**Deploy > Cloudflare** ekranında Wext lisansı etkinleştirilir ve ardından Cloudflare hesabı bağlanır. Varsayılan servis adresi `https://deploy.wext.io` değeridir; self-hosted veya staging servis için `WEXTSTAT_DEPLOY_SERVICE_URL` sabiti ya da `wext_static_deploy_service_url` filtresi kullanılabilir. Üretim servis adresi HTTPS olmalıdır.
+
+Lisans anahtarı kaydedilmez. Kalıcı installation ID, kısa ömürlü aktivasyon credential'ı, siteye bağlı servis tokenı ve callback secret WordPress güvenlik anahtarlarıyla şifrelenir. Cloudflare provider tokenları WordPress'e dönmez. Bağlantı tamamlandıktan sonra **Deploy to Cloudflare** önce statik ZIP'i üretir, ardından servise imzalı ve 15 dakika geçerli artifact adresiyle `POST /v1/deployments` isteği gönderir. Yalnız `202 Accepted` yanıtı işi kuyruğa alınmış sayar; export ve deployment durumları ayrı gösterilir.
 
 ## SFTP deployment
 

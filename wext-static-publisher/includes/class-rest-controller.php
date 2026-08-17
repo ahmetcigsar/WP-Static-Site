@@ -125,6 +125,7 @@ final class REST_Controller
         $job_id = sanitize_file_name((string) $request->get_param('job_id'));
         $state = sanitize_key((string) $request->get_param('state'));
         $build_sha256 = strtolower(sanitize_text_field((string) $request->get_param('build_sha256')));
+        $delivery_id = sanitize_text_field((string) $request->get_param('delivery_id'));
         $archive = $job_id === '' ? null : Archive_Manager::find($job_id);
 
         if ($archive === null) {
@@ -136,6 +137,10 @@ final class REST_Controller
         if (preg_match('/^[a-f0-9]{64}$/', $build_sha256) !== 1
             || ! hash_equals((string) $archive['build_sha256'], $build_sha256)) {
             return new WP_REST_Response(['message' => __('The deployment build checksum does not match the export.', 'wext-static-publisher')], 409);
+        }
+        if (str_contains($request->get_route(), '/managed-deployments/')
+            && ! Managed_Deployer::claim_callback_delivery($delivery_id)) {
+            return new WP_REST_Response(['message' => __('The deployment callback was already processed.', 'wext-static-publisher')], 409);
         }
 
         $deployment_url = esc_url_raw((string) $request->get_param('deployment_url'));

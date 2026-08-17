@@ -282,31 +282,29 @@ final class Managed_Deployer
             'deployment_url' => '',
             'error' => '',
         ]);
-        $response = wp_remote_post(self::service_url() . '/v1/deployments', [
-            'timeout' => 20,
-            'headers' => [
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json',
-                'Authorization' => 'Bearer ' . $token,
-                'User-Agent' => 'WextStaticPublisher/' . WEXTSTAT_VERSION,
-            ],
-            'body' => wp_json_encode([
+        try {
+            $payload = self::remote_json('POST', '/v1/deployments', [
                 'job_id' => $job_id,
                 'build_sha256' => $checksum,
                 'artifact_url' => $artifact_url,
                 'callback_url' => rest_url('wext-static/v1/managed-deployments/callback'),
                 'target_url' => (string) (Plugin::settings()['target_url'] ?? ''),
-            ]),
-        ]);
-        if ($response instanceof WP_Error || wp_remote_retrieve_response_code($response) !== 202) {
+            ], $token, [202]);
+        } catch (\Throwable $error) {
             Plugin::record_deployment_status($job_id, 'failed', [
                 'build_sha256' => $checksum,
-                'error' => __('Cloudflare publishing could not be started. Check the connection and try again.', 'wext-static-publisher'),
+                'error' => $error->getMessage(),
             ]);
             return false;
         }
-        $payload = json_decode((string) wp_remote_retrieve_body($response), true);
-        if (is_array($payload) && isset($payload['job_id']) && ! hash_equals($job_id, (string) $payload['job_id'])) {
+        $deployment_id = sanitize_text_field((string) ($payload['deployment_id'] ?? ''));
+        $response_job_id = (string) ($payload['job_id'] ?? '');
+        $service_status = sanitize_key((string) ($payload['status'] ?? ''));
+        $created_at = sanitize_text_field((string) ($payload['created_at'] ?? ''));
+        if (preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i', $deployment_id) !== 1
+            || ! hash_equals($job_id, $response_job_id)
+            || $service_status === ''
+            || strtotime($created_at) === false) {
             Plugin::record_deployment_status($job_id, 'failed', [
                 'build_sha256' => $checksum,
                 'error' => __('The deployment service returned an invalid job response.', 'wext-static-publisher'),
@@ -315,7 +313,9 @@ final class Managed_Deployer
         }
         Plugin::record_deployment_status($job_id, 'dispatched', [
             'build_sha256' => $checksum,
-            'service_deployment_id' => sanitize_text_field((string) ($payload['deployment_id'] ?? '')),
+            'service_deployment_id' => $deployment_id,
+            'service_state' => $service_status,
+            'service_created_at' => $created_at,
             'error' => '',
         ]);
         return true;
@@ -458,6 +458,8 @@ final class Managed_Deployer
             'activation_inactive' => __('The site license activation is no longer active.', 'wext-static-publisher'),
             'connect_ticket_invalid' => __('The Cloudflare connection request expired. Activate the license and try again.', 'wext-static-publisher'),
             'service_token_required' => __('The saved Wext service credential is missing.', 'wext-static-publisher'),
+            'deployment_target_not_allowed' => __('The connected Cloudflare target is no longer authorized for this site.', 'wext-static-publisher'),
+            'idempotency_conflict' => __('This deployment job is already bound to different export data.', 'wext-static-publisher'),
             'route_not_found' => __('This operation is not available on the Wext deployment service yet.', 'wext-static-publisher'),
         ];
         return $messages[$code] ?? __('The Wext deployment service could not complete the operation. Try again.', 'wext-static-publisher');

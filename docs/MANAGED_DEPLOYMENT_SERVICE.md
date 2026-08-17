@@ -1,6 +1,16 @@
 # Wext Managed Deployment Service Contract
 
-Bu sözleşme, WordPress eklentisi ile ayrı çalışan Wext deployment servisi arasındaki etkin istemci sınırını tanımlar. Lisans ve Cloudflare bağlantı akışı etkindir; deployment servisinin `POST /v1/deployments` ucunu `202 Accepted` sözleşmesiyle sunması gerekir.
+Bu sözleşme, WordPress eklentisi ile ayrı çalışan Wext deployment servisi arasındaki etkin istemci sınırını tanımlar. Lisans, Cloudflare bağlantısı ve deployment kuyruğu etkindir. Faz 4 canlı kabulü 17 Ağustos 2026 tarihinde gerçek OAuth, WordPress artifact, Workers Static Assets yayını ve imzalı callback zinciriyle tamamlanmıştır.
+
+## Canlı kabul durumu
+
+- Production ve staging readiness uçları PostgreSQL/Redis bağımlılıklarıyla HTTP 200 döndürdü.
+- Gerçek Cloudflare OAuth bağlantı ve revoke akışı tamamlandı.
+- Gerçek WordPress export paketi indirildi, doğrulandı ve Workers Static Assets'e yayınlandı.
+- `deploying`, `completed` ve kontrollü hata callback'leri; retry, dead-letter ve queue recovery davranışları doğrulandı.
+- Backup/restore, tenant izolasyonu ve kabul sonrası credential rotasyonu tamamlandı.
+
+Bu kabul servis altyapısına aittir. Her müşteri sitesi yine kendi lisans aktivasyonu, Cloudflare hesap izni, target seçimi ve ilk deployment sonucu üzerinden ayrı doğrulanır.
 
 ## Operator configuration
 
@@ -85,6 +95,8 @@ Content-Type: application/json
 
 Servis paketi süresi dolmadan indirir, ZIP içeriğini güvenli bir geçici dizinde açar, manifestteki `job_id` ve `build_sha256` değerlerini istekle karşılaştırır, Cloudflare Workers Static Assets'e atomik deployment yapar ve canlı URL'yi kontrol eder. ZIP path traversal girdileri reddedilmelidir.
 
+`202 Accepted` yanıtında `deployment_id`, aynı `job_id`, `status` ve `created_at` zorunludur. WordPress bu alanları doğrular ve servis deployment kimliğini ayrı saklar.
+
 ## 5. Signed status callback
 
 Callback JSON gövdesi değiştirilmeden aşağıdaki imza üretilir:
@@ -100,14 +112,15 @@ X-Wext-Signature: hex-signature
 Content-Type: application/json
 
 {
+  "delivery_id": "uuid",
   "job_id": "20260815-120000-AbCd1234",
-  "state": "completed",
+  "status": "completed",
   "build_sha256": "64-character-sha256",
   "deployment_url": "https://www.example.com"
 }
 ```
 
-`state` yalnızca `deploying`, `completed` veya `failed` olabilir. WordPress beş dakikadan eski/yeni timestamp değerlerini, hatalı imzayı, bilinmeyen job ID'yi ve eşleşmeyen checksum değerini reddeder.
+`status` yalnızca `deploying`, `completed` veya `failed` olabilir. WordPress beş dakikadan eski/yeni timestamp değerlerini, hatalı imzayı, yinelenen `delivery_id` değerini, bilinmeyen job ID'yi ve eşleşmeyen checksum değerini reddeder. Eski `state`/`error` alanları yalnız geriye uyumluluk için okunur; Faz 3 servisinin kanonik alanları `status`/`error_code` değerleridir.
 
 ## 6. Disconnect ve lisans deaktivasyonu
 

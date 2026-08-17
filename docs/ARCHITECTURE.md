@@ -24,7 +24,9 @@
 9. GitHub Actions `deploying`, `completed` veya `failed` sonucunu kimlik doğrulamalı `/deployments/callback` ucuna gönderir. Export ve Cloudflare deploy durumları WordPress'te ayrı saklanır.
 10. SFTP otomatik yükleme açıksa aynı başarılı build dizinindeki statik dosyalar uzak hedefe aktarılır; bu durum ve hatalar ZIP exportundan ayrı kaydedilir.
 
-Yönetilen Cloudflare akışında GitHub adımları yerine lisans aktivasyonu, tek kullanımlık connect ticket ve Cloudflare OAuth hesap seçimi çalışır. Başarılı export sonrasında WordPress 15 dakika geçerli HMAC imzalı artifact URL'siyle `POST /v1/deployments` çağrısı yapar. Yalnız `202` yanıtı dispatch olarak kaydedilir; servis imzalı callback ile `deploying`, `completed` veya `failed` sonucunu bildirir.
+Yönetilen Cloudflare akışında GitHub adımları yerine lisans aktivasyonu, tek kullanımlık connect ticket ve Cloudflare OAuth hesap seçimi çalışır. Başarılı export sonrasında WordPress 15 dakika geçerli HMAC imzalı artifact URL'siyle `POST /v1/deployments` çağrısı yapar. Yalnız zorunlu `deployment_id`, eşleşen `job_id`, `status` ve `created_at` alanlarını taşıyan `202` yanıtı dispatch olarak kaydedilir; servis imzalı callback ile `deploying`, `completed` veya `failed` sonucunu bildirir.
+
+Bu yönetilen zincirin gerçek OAuth, artifact indirme, Workers Static Assets yayını, callback retry/dead-letter ve queue recovery kabulü 17 Ağustos 2026 tarihinde tamamlanmıştır. Bu servis kabulü, yeni bağlanan her WordPress sitesinin ilk yayın sonucunu otomatik olarak kanıtlamaz; site bazlı durum WordPress'te ayrı izlenir.
 
 ## SFTP akışı
 

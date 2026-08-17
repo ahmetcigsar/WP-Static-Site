@@ -63,24 +63,38 @@ if (! $artifact_response instanceof Wext\StaticPublisher\File_Response
 $bad_callback = new WP_REST_Request('POST');
 $bad_callback->set_body_params([
     'job_id' => 'retention-test-2',
-    'state' => 'deploying',
+    'status' => 'deploying',
     'build_sha256' => str_repeat('9', 64),
 ]);
 if (Wext\StaticPublisher\REST_Controller::deployment_callback($bad_callback)->get_status() !== 409) {
     throw new RuntimeException('Yanlış deploy checksum değeri reddedilmedi.');
 }
 
-foreach (['deploying', 'completed'] as $deployment_state) {
+foreach (['deploying', 'completed'] as $callback_index => $deployment_state) {
     $callback = new WP_REST_Request('POST');
+    $callback->set_route('/wext-static/v1/managed-deployments/callback');
     $callback->set_body_params([
+        'delivery_id' => 'phase3-delivery-' . ($callback_index + 1),
         'job_id' => 'retention-test-2',
-        'state' => $deployment_state,
+        'status' => $deployment_state,
         'build_sha256' => str_repeat('2', 64),
         'deployment_url' => $deployment_state === 'completed' ? 'https://deployment.example.workers.dev' : '',
     ]);
     if (Wext\StaticPublisher\REST_Controller::deployment_callback($callback)->get_status() !== 200) {
         throw new RuntimeException('Cloudflare deploy callback durumu kaydedilemedi: ' . $deployment_state);
     }
+}
+$replayed_callback = new WP_REST_Request('POST');
+$replayed_callback->set_route('/wext-static/v1/managed-deployments/callback');
+$replayed_callback->set_body_params([
+    'delivery_id' => 'phase3-delivery-2',
+    'job_id' => 'retention-test-2',
+    'status' => 'completed',
+    'build_sha256' => str_repeat('2', 64),
+    'deployment_url' => 'https://deployment.example.workers.dev',
+]);
+if (Wext\StaticPublisher\REST_Controller::deployment_callback($replayed_callback)->get_status() !== 409) {
+    throw new RuntimeException('Tekrarlanan Faz 3 callback delivery ID değeri reddedilmedi.');
 }
 $deployment_status = Wext\StaticPublisher\Plugin::deployment_status();
 if (($deployment_status['state'] ?? '') !== 'completed'

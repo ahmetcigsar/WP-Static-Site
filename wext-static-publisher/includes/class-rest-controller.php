@@ -123,7 +123,7 @@ final class REST_Controller
     public static function deployment_callback(WP_REST_Request $request): WP_REST_Response
     {
         $job_id = sanitize_file_name((string) $request->get_param('job_id'));
-        $state = sanitize_key((string) $request->get_param('state'));
+        $state = sanitize_key((string) ($request->get_param('status') ?: $request->get_param('state')));
         $build_sha256 = strtolower(sanitize_text_field((string) $request->get_param('build_sha256')));
         $delivery_id = sanitize_text_field((string) $request->get_param('delivery_id'));
         $archive = $job_id === '' ? null : Archive_Manager::find($job_id);
@@ -144,14 +144,14 @@ final class REST_Controller
         }
 
         $deployment_url = esc_url_raw((string) $request->get_param('deployment_url'));
-        $error = sanitize_text_field((string) $request->get_param('error'));
+        $error = sanitize_text_field((string) ($request->get_param('error_code') ?: $request->get_param('error')));
         Plugin::record_deployment_status($job_id, $state, [
             'build_sha256' => $build_sha256,
             'deployment_url' => $deployment_url,
             'error' => $state === 'failed' ? $error : '',
         ]);
 
-        return new WP_REST_Response(['job_id' => $job_id, 'state' => $state], 200);
+        return new WP_REST_Response(['job_id' => $job_id, 'status' => $state], 200);
     }
 
     public static function serve_file(bool $served, $result): bool

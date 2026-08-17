@@ -68,7 +68,12 @@ add_filter('pre_http_request', static function ($preempt, $args, $url) use ($acc
         $deployment_request = $args;
         return [
             'headers' => [],
-            'body' => '{"accepted":true}',
+            'body' => wp_json_encode([
+                'deployment_id' => '33333333-3333-4333-8333-333333333333',
+                'job_id' => 'managed-test-job',
+                'status' => 'queued',
+                'created_at' => gmdate('c'),
+            ]),
             'response' => ['code' => 202, 'message' => 'Accepted'],
             'cookies' => [],
             'filename' => null,
@@ -125,7 +130,13 @@ if (Wext\StaticPublisher\Managed_Deployer::verify_artifact($job_id, time() - 1, 
     throw new RuntimeException('Süresi dolmuş paket bağlantısı kabul edildi.');
 }
 
-$callback_body = wp_json_encode(['job_id' => $job_id, 'state' => 'completed']);
+$callback_body = wp_json_encode([
+    'delivery_id' => '44444444-4444-4444-8444-444444444444',
+    'job_id' => $job_id,
+    'build_sha256' => str_repeat('a', 64),
+    'status' => 'completed',
+    'deployment_url' => 'https://static.example.com',
+]);
 $timestamp = (string) time();
 $callback_signature = hash_hmac('sha256', $timestamp . '.' . $callback_body, $callback_secret);
 if (! Wext\StaticPublisher\Managed_Deployer::verify_callback($timestamp, $callback_signature, $callback_body)
@@ -138,11 +149,15 @@ if (! Wext\StaticPublisher\Managed_Deployer::notify_export($job_id, ['build_sha2
     throw new RuntimeException('Yönetilen deployment isteği başlatılamadı.');
 }
 $deployment_payload = json_decode((string) ($deployment_request['body'] ?? ''), true);
+$deployment_status = Wext\StaticPublisher\Plugin::deployment_status();
 if (($deployment_request['headers']['Authorization'] ?? '') !== 'Bearer ' . $access_token
     || ($deployment_payload['job_id'] ?? '') !== $job_id
     || ($deployment_payload['build_sha256'] ?? '') !== $checksum
     || ! str_contains((string) ($deployment_payload['artifact_url'] ?? ''), '/managed-artifact')
-    || str_contains((string) ($deployment_payload['artifact_url'] ?? ''), $callback_secret)) {
+    || str_contains((string) ($deployment_payload['artifact_url'] ?? ''), $callback_secret)
+    || ($deployment_status['service_deployment_id'] ?? '') !== '33333333-3333-4333-8333-333333333333'
+    || ($deployment_status['service_state'] ?? '') !== 'queued'
+    || empty($deployment_status['service_created_at'])) {
     throw new RuntimeException('Yönetilen deployment isteği beklenen güvenlik sözleşmesine uymuyor.');
 }
 

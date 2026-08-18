@@ -146,19 +146,27 @@ final class Admin
         }
 
         if (in_array($section, ['automation', 'all'], true)) {
-            $sanitized['auto_export'] = isset($value['auto_export']) ? '1' : '0';
-            foreach (array_keys(Plugin::auto_export_trigger_defaults()) as $trigger) {
-                $sanitized[$trigger] = isset($value[$trigger]) ? '1' : '0';
+            if (Plugin::license_active()) {
+                $sanitized['auto_export'] = isset($value['auto_export']) ? '1' : '0';
+                foreach (array_keys(Plugin::auto_export_trigger_defaults()) as $trigger) {
+                    $sanitized[$trigger] = isset($value[$trigger]) ? '1' : '0';
+                }
+            } else {
+                add_settings_error(Plugin::SETTINGS_KEY, 'license-required-automation', __('An active Wext license is required to use Auto Deploy.', 'wext-static-publisher'), 'error');
             }
         }
 
         $deploy_submitted = $section === 'deploy'
             || ($section === 'all' && (array_key_exists('deployment_webhook_url', $value) || array_key_exists('deployment_webhook_token', $value)));
         if ($deploy_submitted) {
-            $submitted_token = sanitize_text_field((string) ($value['deployment_webhook_token'] ?? ''));
-            $sanitized['deployment_webhook_url'] = esc_url_raw((string) ($value['deployment_webhook_url'] ?? ''));
-            $sanitized['deployment_webhook_token'] = $submitted_token !== '' ? $submitted_token : (string) $current['deployment_webhook_token'];
-            $sanitized['deployment_mode'] = 'advanced';
+            if (Plugin::license_active()) {
+                $submitted_token = sanitize_text_field((string) ($value['deployment_webhook_token'] ?? ''));
+                $sanitized['deployment_webhook_url'] = esc_url_raw((string) ($value['deployment_webhook_url'] ?? ''));
+                $sanitized['deployment_webhook_token'] = $submitted_token !== '' ? $submitted_token : (string) $current['deployment_webhook_token'];
+                $sanitized['deployment_mode'] = 'advanced';
+            } else {
+                add_settings_error(Plugin::SETTINGS_KEY, 'license-required-github', __('An active Wext license is required to use GitHub deployment.', 'wext-static-publisher'), 'error');
+            }
         }
 
         if (in_array($section, ['sftp', 'all'], true)) {
@@ -227,6 +235,10 @@ final class Admin
 
     public static function sanitize_seo_plugin_settings(array $value): array
     {
+        if (! Plugin::license_active()) {
+            add_settings_error(Plugin::SEO_PLUGIN_SETTINGS_KEY, 'license-required-seo', __('An active Wext license is required to use SEO features.', 'wext-static-publisher'), 'error');
+            return Plugin::seo_plugin_settings();
+        }
         $sanitized = [];
         foreach (array_keys(Plugin::seo_plugin_defaults()) as $key) {
             $sanitized[$key] = isset($value[$key]) ? '1' : '0';
@@ -236,6 +248,10 @@ final class Admin
 
     public static function sanitize_seo_settings(array $value): array
     {
+        if (! Plugin::license_active()) {
+            add_settings_error(Plugin::SEO_SETTINGS_KEY, 'license-required-seo', __('An active Wext license is required to use SEO features.', 'wext-static-publisher'), 'error');
+            return Plugin::seo_settings();
+        }
         $defaults = Plugin::seo_defaults();
         $current = Plugin::seo_settings();
         $section = sanitize_key((string) ($value['_section'] ?? 'all'));
@@ -490,9 +506,9 @@ final class Admin
             : '';
         try {
             Managed_Deployer::activate_license($license_key);
-            self::redirect_managed('license-activated', 'success');
+            self::redirect_managed('license-activated', 'success', 'about');
         } catch (\Throwable $error) {
-            self::redirect_managed($error->getMessage(), 'error');
+            self::redirect_managed($error->getMessage(), 'error', 'about');
         }
     }
 
@@ -501,15 +517,18 @@ final class Admin
         self::authorize_managed_action('wext_static_license_deactivate');
         try {
             Managed_Deployer::deactivate_license();
-            self::redirect_managed('license-deactivated', 'success');
+            self::redirect_managed('license-deactivated', 'success', 'about');
         } catch (\Throwable $error) {
-            self::redirect_managed($error->getMessage(), 'error');
+            self::redirect_managed($error->getMessage(), 'error', 'about');
         }
     }
 
     public static function connect_managed_cloudflare(): void
     {
         self::authorize_managed_action('wext_static_managed_connect');
+        if (! Plugin::license_active()) {
+            self::redirect_managed('license-required-cloudflare', 'error', 'about');
+        }
         try {
             $url = Managed_Deployer::authorization_url();
             wp_redirect($url, 302, 'Wext Static Publisher');
@@ -526,6 +545,9 @@ final class Admin
         }
         $state = isset($_GET['state']) ? sanitize_text_field(wp_unslash((string) $_GET['state'])) : '';
         $code = isset($_GET['code']) ? sanitize_text_field(wp_unslash((string) $_GET['code'])) : '';
+        if (! Plugin::license_active()) {
+            self::redirect_managed('license-required-cloudflare', 'error', 'about');
+        }
         try {
             Managed_Deployer::complete_connection($state, $code);
             self::redirect_managed('cloudflare-connected', 'success');
@@ -552,14 +574,14 @@ final class Admin
         check_admin_referer($nonce_action);
     }
 
-    private static function redirect_managed(string $message, string $type): void
+    private static function redirect_managed(string $message, string $type, string $tab = 'cloudflare'): void
     {
         $notice_key = 'wext_static_managed_notice_' . get_current_user_id();
         set_transient($notice_key, [
             'message' => sanitize_text_field($message),
             'type' => in_array($type, ['success', 'warning', 'error'], true) ? $type : 'error',
         ], MINUTE_IN_SECONDS);
-        wp_safe_redirect(self::deploy_page_url('cloudflare'));
+        wp_safe_redirect($tab === 'about' ? self::admin_page_url('about') : self::deploy_page_url('cloudflare'));
         exit;
     }
 
@@ -577,6 +599,7 @@ final class Admin
             'cloudflare-connected' => __('Cloudflare is connected to the Wext deployment service.', 'wext-static-publisher'),
             'cloudflare-disconnected' => __('Cloudflare was disconnected.', 'wext-static-publisher'),
             'cloudflare-disconnected-pending' => __('The local connection was removed. Cloudflare token revocation is pending in the service.', 'wext-static-publisher'),
+            'license-required-cloudflare' => __('An active Wext license is required to use Cloudflare deployment.', 'wext-static-publisher'),
         ];
         $message = (string) ($notice['message'] ?? '');
         return [
@@ -765,6 +788,7 @@ final class Admin
             'about' => __('About', 'wext-static-publisher'),
         ];
         $current_tab = isset($tabs[$requested_tab]) ? $requested_tab : 'main';
+        $license_active = Plugin::license_active();
         $status = Plugin::public_status();
         $archives = Archive_Manager::archives();
         ?>
@@ -779,7 +803,7 @@ final class Admin
             </header>
             <nav class="nav-tab-wrapper wp-clearfix" aria-label="<?php echo esc_attr__('Static Publisher sections', 'wext-static-publisher'); ?>">
                 <?php foreach ($tabs as $tab_id => $tab_label) : ?>
-                    <a class="nav-tab <?php echo $current_tab === $tab_id ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url(self::admin_page_url($tab_id)); ?>" <?php echo $current_tab === $tab_id ? 'aria-current="page"' : ''; ?>><?php echo esc_html($tab_label); ?></a>
+                    <a class="nav-tab <?php echo $current_tab === $tab_id ? 'nav-tab-active' : ''; ?> <?php echo $tab_id === 'seo' && ! $license_active ? 'is-locked' : ''; ?>" href="<?php echo esc_url(self::admin_page_url($tab_id)); ?>" <?php echo $current_tab === $tab_id ? 'aria-current="page"' : ''; ?>><?php echo esc_html($tab_label); ?><?php if ($tab_id === 'seo' && ! $license_active) : ?><span class="dashicons dashicons-lock" aria-hidden="true"></span><?php endif; ?></a>
                 <?php endforeach; ?>
             </nav>
 
@@ -1061,6 +1085,8 @@ final class Admin
     private static function render_deploy_tab(array $archives, array $settings, string $requested_deploy_tab): void
     {
         $has_archive = $archives !== [];
+        $license_active = Plugin::license_active();
+        $licensed_tabs = ['github', 'cloudflare', 'auto-deploy'];
         $github_configured = (string) ($settings['deployment_webhook_url'] ?? '') !== '';
         $sftp_configured = SFTP_Deployer::configured($settings);
         $deploy_tabs = [
@@ -1080,7 +1106,8 @@ final class Admin
         <div class="wextstat-deploy-layout">
             <nav class="wextstat-deploy-tabs" aria-label="<?php echo esc_attr__('Deploy', 'wext-static-publisher'); ?>">
                 <?php foreach ($deploy_tabs as $deploy_tab => [$label, $icon]) : ?>
-                    <a class="wextstat-deploy-tab <?php echo $current_deploy_tab === $deploy_tab ? 'is-active' : ''; ?>" href="<?php echo esc_url(self::deploy_page_url($deploy_tab)); ?>" <?php echo $current_deploy_tab === $deploy_tab ? 'aria-current="page"' : ''; ?>>
+                    <?php $deploy_tab_locked = ! $license_active && in_array($deploy_tab, $licensed_tabs, true); ?>
+                    <a class="wextstat-deploy-tab <?php echo $current_deploy_tab === $deploy_tab ? 'is-active' : ''; ?> <?php echo $deploy_tab_locked ? 'is-locked' : ''; ?>" href="<?php echo esc_url(self::deploy_page_url($deploy_tab)); ?>" <?php echo $current_deploy_tab === $deploy_tab ? 'aria-current="page"' : ''; ?>>
                         <?php if ($icon === 'github') : ?>
                             <?php self::render_github_icon('wextstat-deploy-tab__github-icon'); ?>
                         <?php elseif ($icon === 'cloudflare') : ?>
@@ -1089,11 +1116,14 @@ final class Admin
                             <span class="dashicons <?php echo esc_attr($icon); ?>" aria-hidden="true"></span>
                         <?php endif; ?>
                         <span><?php echo esc_html($label); ?></span>
+                        <?php if ($deploy_tab_locked) : ?><span class="dashicons dashicons-lock" aria-hidden="true"></span><?php endif; ?>
                     </a>
                 <?php endforeach; ?>
             </nav>
             <div class="wextstat-deploy-panel">
-                <?php if ($current_deploy_tab === 'zip') : ?>
+                <?php if (! $license_active && in_array($current_deploy_tab, $licensed_tabs, true)) : ?>
+                    <?php self::render_license_required_card($deploy_tabs[$current_deploy_tab][0]); ?>
+                <?php elseif ($current_deploy_tab === 'zip') : ?>
                     <section class="wextstat-deploy-card" aria-labelledby="wextstat-deploy-zip-title">
                         <span class="wextstat-deploy-card__icon dashicons dashicons-media-archive" aria-hidden="true"></span>
                         <div class="wextstat-deploy-card__content">
@@ -1152,36 +1182,6 @@ final class Admin
                         </div>
                         <div class="wextstat-deploy-card__footer">
                             <span class="wextstat-deploy-status <?php echo ! empty($managed_connection['connected']) ? 'is-ready' : 'is-pending'; ?>"><?php echo ! empty($managed_connection['connected']) ? esc_html($deployment_labels[$deployment_state] ?? __('Ready to deploy', 'wext-static-publisher')) : esc_html__('License and connection required', 'wext-static-publisher'); ?></span>
-                        </div>
-                    </section>
-                    <section class="wextstat-deploy-card" aria-labelledby="wextstat-license-title">
-                        <div class="wextstat-deploy-card__content">
-                            <h3 id="wextstat-license-title"><?php esc_html_e('Wext License', 'wext-static-publisher'); ?></h3>
-                            <?php if (empty($managed_license['active'])) : ?>
-                                <p><?php esc_html_e('Activate this WordPress installation before connecting a Cloudflare account.', 'wext-static-publisher'); ?></p>
-                                <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
-                                    <input type="hidden" name="action" value="wext_static_license_activate">
-                                    <?php wp_nonce_field('wext_static_license_activate'); ?>
-                                    <label for="wextstat-license-key"><?php esc_html_e('License key', 'wext-static-publisher'); ?></label>
-                                    <input id="wextstat-license-key" class="regular-text" type="password" name="license_key" required minlength="16" autocomplete="off">
-                                    <?php submit_button(__('Activate License', 'wext-static-publisher'), 'primary', 'submit', false, empty($managed_license['available']) ? ['disabled' => 'disabled'] : []); ?>
-                                </form>
-                            <?php else : ?>
-                                <table class="widefat striped wextstat-status-table">
-                                    <tbody>
-                                    <tr><th><?php esc_html_e('Status', 'wext-static-publisher'); ?></th><td><?php esc_html_e('Active', 'wext-static-publisher'); ?></td></tr>
-                                    <tr><th><?php esc_html_e('Plan', 'wext-static-publisher'); ?></th><td><code><?php echo esc_html((string) ($managed_license['plan_code'] ?: '—')); ?></code></td></tr>
-                                    <tr><th><?php esc_html_e('Site limit', 'wext-static-publisher'); ?></th><td><?php echo esc_html((string) ($managed_license['site_limit'] ?: '—')); ?></td></tr>
-                                    </tbody>
-                                </table>
-                                <?php if (! empty($managed_connection['connected'])) : ?>
-                                    <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
-                                        <input type="hidden" name="action" value="wext_static_license_deactivate">
-                                        <?php wp_nonce_field('wext_static_license_deactivate'); ?>
-                                        <?php submit_button(__('Deactivate License', 'wext-static-publisher'), 'secondary', 'submit', false, ['data-wextstat-confirm' => __('Cloudflare publishing will stop for this site. Continue?', 'wext-static-publisher')]); ?>
-                                    </form>
-                                <?php endif; ?>
-                            <?php endif; ?>
                         </div>
                     </section>
                     <section class="wextstat-deploy-card" aria-labelledby="wextstat-cloudflare-connection-title">
@@ -1390,6 +1390,7 @@ final class Admin
 
     private static function render_seo_tab(string $requested_seo_tab, array $settings): void
     {
+        $license_active = Plugin::license_active();
         $seo_tabs = [
             'plugins' => [__('SEO Plugins', 'wext-static-publisher'), 'dashicons-admin-plugins'],
             'audit' => [__('SEO Audit', 'wext-static-publisher'), 'dashicons-yes-alt'],
@@ -1407,20 +1408,39 @@ final class Admin
         <div class="wextstat-seo-layout">
             <nav class="wextstat-seo-tabs" aria-label="<?php echo esc_attr__('SEO', 'wext-static-publisher'); ?>">
                 <?php foreach ($seo_tabs as $seo_tab => [$label, $icon]) : ?>
-                    <a class="wextstat-seo-tab <?php echo $current_seo_tab === $seo_tab ? 'is-active' : ''; ?>" href="<?php echo esc_url(self::seo_page_url($seo_tab)); ?>" <?php echo $current_seo_tab === $seo_tab ? 'aria-current="page"' : ''; ?>>
+                    <a class="wextstat-seo-tab <?php echo $current_seo_tab === $seo_tab ? 'is-active' : ''; ?> <?php echo ! $license_active ? 'is-locked' : ''; ?>" href="<?php echo esc_url(self::seo_page_url($seo_tab)); ?>" <?php echo $current_seo_tab === $seo_tab ? 'aria-current="page"' : ''; ?>>
                         <span class="dashicons <?php echo esc_attr($icon); ?>" aria-hidden="true"></span>
                         <span><?php echo esc_html($label); ?></span>
+                        <?php if (! $license_active) : ?><span class="dashicons dashicons-lock" aria-hidden="true"></span><?php endif; ?>
                     </a>
                 <?php endforeach; ?>
             </nav>
             <div class="wextstat-seo-panel">
-                <?php if ($current_seo_tab === 'plugins') : ?>
+                <?php if (! $license_active) : ?>
+                    <?php self::render_license_required_card(__('SEO features', 'wext-static-publisher')); ?>
+                <?php elseif ($current_seo_tab === 'plugins') : ?>
                     <?php self::render_seo_plugins(Plugin::seo_plugin_settings()); ?>
                 <?php else : ?>
                     <?php self::render_seo_toolkit_settings($current_seo_tab, $settings); ?>
                 <?php endif; ?>
             </div>
         </div>
+        <?php
+    }
+
+    private static function render_license_required_card(string $feature): void
+    {
+        ?>
+        <section class="wextstat-deploy-card wextstat-license-required-card" aria-labelledby="wextstat-license-required-title">
+            <span class="wextstat-deploy-card__icon dashicons dashicons-lock" aria-hidden="true"></span>
+            <div class="wextstat-deploy-card__content">
+                <h3 id="wextstat-license-required-title"><?php esc_html_e('Active license required', 'wext-static-publisher'); ?></h3>
+                <p><?php echo esc_html(sprintf(__('An active Wext license is required to use %s.', 'wext-static-publisher'), $feature)); ?></p>
+            </div>
+            <div class="wextstat-deploy-card__footer">
+                <a class="button button-primary" href="<?php echo esc_url(self::admin_page_url('about')); ?>"><?php esc_html_e('Open License Settings', 'wext-static-publisher'); ?></a>
+            </div>
+        </section>
         <?php
     }
 
@@ -2266,6 +2286,9 @@ final class Admin
 
     private static function render_about_tab(): void
     {
+        $managed_license = Managed_Deployer::public_license();
+        $managed_connection = Managed_Deployer::public_connection();
+        $managed_notice = self::managed_notice();
         ?>
         <h2><?php esc_html_e('About', 'wext-static-publisher'); ?></h2>
         <section class="wextstat-about-card" aria-labelledby="wextstat-about-title">
@@ -2295,6 +2318,47 @@ final class Admin
                     </dd>
                 </div>
             </dl>
+        </section>
+        <h2><?php esc_html_e('License', 'wext-static-publisher'); ?></h2>
+        <?php if ($managed_notice !== [] && (string) ($managed_notice['message'] ?? '') !== '') : ?>
+            <div class="notice notice-<?php echo esc_attr((string) ($managed_notice['type'] ?? 'error')); ?> inline is-dismissible" role="status"><p><?php echo esc_html((string) $managed_notice['message']); ?></p></div>
+        <?php endif; ?>
+        <?php self::render_managed_license_card($managed_license, $managed_connection); ?>
+        <?php
+    }
+
+    private static function render_managed_license_card(array $managed_license, array $managed_connection): void
+    {
+        ?>
+        <section class="wextstat-deploy-card wextstat-about-license-card" aria-labelledby="wextstat-license-title">
+            <div class="wextstat-deploy-card__content">
+                <h3 id="wextstat-license-title"><?php esc_html_e('Wext License', 'wext-static-publisher'); ?></h3>
+                <?php if (empty($managed_license['active'])) : ?>
+                    <p><?php esc_html_e('Activate this WordPress installation before connecting a Cloudflare account.', 'wext-static-publisher'); ?></p>
+                    <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                        <input type="hidden" name="action" value="wext_static_license_activate">
+                        <?php wp_nonce_field('wext_static_license_activate'); ?>
+                        <label for="wextstat-license-key"><?php esc_html_e('License key', 'wext-static-publisher'); ?></label>
+                        <input id="wextstat-license-key" class="regular-text" type="password" name="license_key" required minlength="16" autocomplete="off">
+                        <?php submit_button(__('Activate License', 'wext-static-publisher'), 'primary', 'submit', false, empty($managed_license['available']) ? ['disabled' => 'disabled'] : []); ?>
+                    </form>
+                <?php else : ?>
+                    <table class="widefat striped wextstat-status-table">
+                        <tbody>
+                        <tr><th><?php esc_html_e('Status', 'wext-static-publisher'); ?></th><td><?php esc_html_e('Active', 'wext-static-publisher'); ?></td></tr>
+                        <tr><th><?php esc_html_e('Plan', 'wext-static-publisher'); ?></th><td><code><?php echo esc_html((string) ($managed_license['plan_code'] ?: '—')); ?></code></td></tr>
+                        <tr><th><?php esc_html_e('Site limit', 'wext-static-publisher'); ?></th><td><?php echo esc_html((string) ($managed_license['site_limit'] ?: '—')); ?></td></tr>
+                        </tbody>
+                    </table>
+                    <?php if (! empty($managed_connection['connected'])) : ?>
+                        <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                            <input type="hidden" name="action" value="wext_static_license_deactivate">
+                            <?php wp_nonce_field('wext_static_license_deactivate'); ?>
+                            <?php submit_button(__('Deactivate License', 'wext-static-publisher'), 'secondary', 'submit', false, ['data-wextstat-confirm' => __('Cloudflare publishing will stop for this site. Continue?', 'wext-static-publisher')]); ?>
+                        </form>
+                    <?php endif; ?>
+                <?php endif; ?>
+            </div>
         </section>
         <?php
     }

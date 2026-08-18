@@ -31,6 +31,7 @@ final class Exporter
     private Block_SEO_Integration $seo_framework_integration;
     private Block_SEO_Integration $yoast_integration;
     private SEO_Toolkit $seo_toolkit;
+    private bool $licensed_features;
     private array $seo_toolkit_manifest = [];
     private array $search_documents = [];
 
@@ -40,34 +41,41 @@ final class Exporter
         $this->origin = untrailingslashit(home_url());
         $this->target = untrailingslashit((string) ($settings['target_url'] ?: home_url()));
         $this->maximum_urls = max(10, min(20000, (int) $settings['maximum_urls']));
+        $this->licensed_features = Plugin::license_active();
+        $seo_plugin_settings = $this->licensed_features
+            ? Plugin::seo_plugin_settings()
+            : Plugin::disabled_seo_plugin_settings();
+        $seo_settings = $this->licensed_features
+            ? Plugin::seo_settings()
+            : Plugin::disabled_seo_settings();
         $this->hide_replacements = new Hide_Replacements(Plugin::hide_settings());
         $this->static_search = new Static_Search(Plugin::search_settings());
         $this->language_routing = new Language_Routing();
-        $this->rank_math_integration = new Rank_Math_Integration($this->origin, $this->target);
-        $this->aioseo_integration = new AIOSEO_Integration($this->origin, $this->target);
-        $this->seopress_integration = new SEOPress_Integration($this->origin, $this->target);
+        $this->rank_math_integration = new Rank_Math_Integration($this->origin, $this->target, $seo_plugin_settings);
+        $this->aioseo_integration = new AIOSEO_Integration($this->origin, $this->target, $seo_plugin_settings);
+        $this->seopress_integration = new SEOPress_Integration($this->origin, $this->target, $seo_plugin_settings);
         $this->surerank_integration = new Block_SEO_Integration($this->origin, $this->target, [
             'prefix' => 'surerank',
             'constant' => 'SURERANK_VERSION',
             'label' => 'SureRank SEO',
             'block_pattern' => '#<!--\s*SureRank Meta Data\s*-->.*?<!--\s*/SureRank Meta Data\s*-->#is',
             'sitemap_path' => '/sitemap_index.xml',
-        ]);
+        ], $seo_plugin_settings);
         $this->seo_framework_integration = new Block_SEO_Integration($this->origin, $this->target, [
             'prefix' => 'seo_framework',
             'constant' => 'THE_SEO_FRAMEWORK_VERSION',
             'label' => 'The SEO Framework',
             'block_pattern' => '#<!--\s*The SEO Framework\b.*?-->.*?<!--\s*/\s*The SEO Framework\b.*?-->#is',
             'sitemap_path' => '/sitemap.xml',
-        ]);
+        ], $seo_plugin_settings);
         $this->yoast_integration = new Block_SEO_Integration($this->origin, $this->target, [
             'prefix' => 'yoast',
             'constant' => 'WPSEO_VERSION',
             'label' => 'Yoast SEO',
             'block_pattern' => '#<!--\s*This site is optimized with the .*?Yoast SEO.*?-->.*?<!--\s*/\s*Yoast SEO.*?-->#is',
             'sitemap_path' => '/sitemap_index.xml',
-        ]);
-        $this->seo_toolkit = new SEO_Toolkit($this->origin, $this->target);
+        ], $seo_plugin_settings);
+        $this->seo_toolkit = new SEO_Toolkit($this->origin, $this->target, $seo_settings);
         $this->excluded_prefixes = array_values(array_filter(array_map(
             'trim',
             preg_split('/\r\n|\r|\n/', (string) $settings['excluded_paths']) ?: []
@@ -97,23 +105,25 @@ final class Exporter
             ]);
             $this->reported_progress = 2;
             $this->crawl();
-            $this->rank_math_integration->export_root_files(
-                fn (string $path, string $contents) => $this->write_file($path, $contents),
-                fn (string $level, string $message, string $url = '') => $this->add_log($level, $message, $url)
-            );
-            $this->aioseo_integration->export_root_files(
-                fn (string $path, string $contents) => $this->write_file($path, $contents),
-                fn (string $level, string $message, string $url = '') => $this->add_log($level, $message, $url)
-            );
-            $this->seopress_integration->export_root_files(
-                fn (string $path, string $contents) => $this->write_file($path, $contents),
-                fn (string $level, string $message, string $url = '') => $this->add_log($level, $message, $url)
-            );
-            foreach ([$this->surerank_integration, $this->seo_framework_integration, $this->yoast_integration] as $integration) {
-                $integration->export_root_files(
+            if ($this->licensed_features) {
+                $this->rank_math_integration->export_root_files(
                     fn (string $path, string $contents) => $this->write_file($path, $contents),
                     fn (string $level, string $message, string $url = '') => $this->add_log($level, $message, $url)
                 );
+                $this->aioseo_integration->export_root_files(
+                    fn (string $path, string $contents) => $this->write_file($path, $contents),
+                    fn (string $level, string $message, string $url = '') => $this->add_log($level, $message, $url)
+                );
+                $this->seopress_integration->export_root_files(
+                    fn (string $path, string $contents) => $this->write_file($path, $contents),
+                    fn (string $level, string $message, string $url = '') => $this->add_log($level, $message, $url)
+                );
+                foreach ([$this->surerank_integration, $this->seo_framework_integration, $this->yoast_integration] as $integration) {
+                    $integration->export_root_files(
+                        fn (string $path, string $contents) => $this->write_file($path, $contents),
+                        fn (string $level, string $message, string $url = '') => $this->add_log($level, $message, $url)
+                    );
+                }
             }
             $this->validate_language_outputs();
             if ($this->static_search->enabled()) {
@@ -124,15 +134,17 @@ final class Exporter
                 ]);
                 $this->write_search_files();
             }
-            Plugin::set_status($job_id, 'running', 87, [
-                'phase' => 'seo-audit',
-                'status_message' => __('SEO reports and advanced sitemap are being prepared.', 'wext-static-publisher'),
-                'current_url' => '',
-            ]);
-            $this->seo_toolkit_manifest = $this->seo_toolkit->write_outputs(
-                fn (string $path, string $contents) => $this->write_file($path, $contents),
-                $this->build_directory
-            );
+            if ($this->licensed_features) {
+                Plugin::set_status($job_id, 'running', 87, [
+                    'phase' => 'seo-audit',
+                    'status_message' => __('SEO reports and advanced sitemap are being prepared.', 'wext-static-publisher'),
+                    'current_url' => '',
+                ]);
+                $this->seo_toolkit_manifest = $this->seo_toolkit->write_outputs(
+                    fn (string $path, string $contents) => $this->write_file($path, $contents),
+                    $this->build_directory
+                );
+            }
             Plugin::set_status($job_id, 'running', 88, [
                 'phase' => 'cloudflare-files',
                 'status_message' => __('Cloudflare configuration files are being prepared.', 'wext-static-publisher'),
@@ -284,7 +296,9 @@ final class Exporter
             if ($is_html) {
                 $body = $this->language_routing->inject_x_default($body, $this->target);
                 $body = $this->language_routing->inject_preference_script($body);
-                $body = $this->seo_toolkit->process_html($body, $url, $relative_path);
+                if ($this->licensed_features) {
+                    $body = $this->seo_toolkit->process_html($body, $url, $relative_path);
+                }
             }
 
             $this->write_file($relative_path, $body);
@@ -355,6 +369,9 @@ final class Exporter
     {
         $search_settings = $this->static_search->settings();
         $metadata_group = $this->metadata_group_for_url($base_url);
+        if (! $this->licensed_features) {
+            return $this->discover_and_rewrite_html($html, $base_url);
+        }
         $html = $this->rank_math_integration->process_html(
             $html,
             $this->static_search->enabled(),
@@ -381,6 +398,11 @@ final class Exporter
                 $metadata_group
             );
         }
+        return $this->discover_and_rewrite_html($html, $base_url);
+    }
+
+    private function discover_and_rewrite_html(string $html, string $base_url): array
+    {
         if (! class_exists(DOMDocument::class)) {
             return [$this->rewrite_html_for_output($html), []];
         }

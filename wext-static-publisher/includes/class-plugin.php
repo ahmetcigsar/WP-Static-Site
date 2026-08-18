@@ -309,9 +309,37 @@ final class Plugin
 
     public static function cloudflare_deployment_configured(): bool
     {
+        if (! self::license_active()) {
+            return false;
+        }
         $settings = self::settings();
         return Managed_Deployer::configured()
             || (string) ($settings['deployment_webhook_url'] ?? '') !== '';
+    }
+
+    public static function license_active(): bool
+    {
+        return ! empty(Managed_Deployer::public_license()['active']);
+    }
+
+    public static function disabled_seo_plugin_settings(): array
+    {
+        return array_fill_keys(array_keys(self::seo_plugin_defaults()), '0');
+    }
+
+    public static function disabled_seo_settings(): array
+    {
+        $settings = self::seo_defaults();
+        foreach ($settings as $key => $value) {
+            if (is_string($value)) {
+                $settings[$key] = str_contains($key, 'large_') ? $value : '0';
+            }
+        }
+        $settings['redirect_rules'] = '';
+        $settings['noindex_paths'] = '';
+        $settings['x_robots_rules'] = '';
+        $settings['indexnow_key'] = '';
+        return $settings;
     }
 
     public static function hide_defaults(): array
@@ -525,6 +553,17 @@ final class Plugin
 
     public static function run_scheduled(string $job_id): void
     {
+        $status = self::status();
+        $source = ($status['job_id'] ?? '') === $job_id ? (string) ($status['source'] ?? '') : '';
+        if (! in_array($source, ['admin', 'ci-manual', 'manual'], true) && ! self::license_active()) {
+            self::set_status($job_id, 'failed', 100, [
+                'finished_at' => gmdate('c'),
+                'phase' => 'failed',
+                'status_message' => __('An active Wext license is required to run Auto Deploy.', 'wext-static-publisher'),
+                'error' => __('An active Wext license is required to use Auto Deploy.', 'wext-static-publisher'),
+            ]);
+            return;
+        }
         try {
             (new Exporter())->run($job_id);
         } catch (Throwable $error) {
@@ -726,6 +765,9 @@ final class Plugin
 
     public static function maybe_schedule_automatic_export(string $trigger, string $source): void
     {
+        if (! self::license_active()) {
+            return;
+        }
         $settings = self::settings();
         if ((string) $settings['auto_export'] !== '1' || (string) ($settings[$trigger] ?? '0') !== '1') {
             return;
@@ -766,10 +808,10 @@ final class Plugin
         $source = (string) (self::status()['source'] ?? '');
         $deployment_succeeded = false;
         $settings = self::settings();
-        if ($source !== 'ci-manual' && Managed_Deployer::configured()
+        if (self::license_active() && $source !== 'ci-manual' && Managed_Deployer::configured()
             && (string) ($settings['deployment_mode'] ?? '') === 'managed') {
             $deployment_succeeded = Managed_Deployer::notify_export($job_id, $manifest);
-        } elseif ($source !== 'ci-manual') {
+        } elseif (self::license_active() && $source !== 'ci-manual') {
             self::notify_deployment_webhook($job_id, $manifest);
         }
 
@@ -795,6 +837,9 @@ final class Plugin
 
     public static function notify_indexnow(string $job_id): void
     {
+        if (! self::license_active()) {
+            return;
+        }
         $status = self::status();
         $pending_key = 'wext_static_indexnow_pending_' . md5($job_id);
         $pending_manifest = get_transient($pending_key);
@@ -870,6 +915,9 @@ final class Plugin
 
     public static function notify_deployment_webhook(string $job_id, array $manifest): bool
     {
+        if (! self::license_active()) {
+            return false;
+        }
         $settings = self::settings();
         $url = (string) $settings['deployment_webhook_url'];
         if ($url === '') {

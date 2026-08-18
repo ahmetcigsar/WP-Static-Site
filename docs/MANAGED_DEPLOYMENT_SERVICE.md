@@ -12,6 +12,14 @@ Bu sözleşme, WordPress eklentisi ile ayrı çalışan Wext deployment servisi 
 
 Bu kabul servis altyapısına aittir. Her müşteri sitesi yine kendi lisans aktivasyonu, Cloudflare hesap izni, target seçimi ve ilk deployment sonucu üzerinden ayrı doğrulanır.
 
+## Faz 5 ticari lisans sözleşmesi
+
+- Ticari planlar USD olarak yıllık `$39/year` ve tek seferlik `$199 lifetime` şeklindedir; iki plan da bir site aktivasyonu hakkı verir.
+- Satın alma ve müşteri portalı Stripe Checkout/Portal üzerinden deployment servisinin güvenilir sunucu katmanında oluşturulur. `BILLING_API_TOKEN`, Stripe secret/webhook anahtarları ve Price ID değerleri WordPress'e ya da tarayıcıya verilmez.
+- WordPress ödeme veya portal oturumu oluşturmaz. Kullanıcının dış satın alma akışından aldığı lisans anahtarını etkinleştirir ve lisans anahtarını kalıcı olarak saklamaz.
+- Yıllık ödeme `past_due` olduğunda yedi günlük grace süresi servis tarafından uygulanır; süre sonunda lisans askıya alınır, başarılı ödeme yeniden etkinleştirir. Lifetime tam iadesi entitlement ve bağlı lisans erişimini geri alır.
+- Faz 5 Stripe sandbox kabulü tamamlanmıştır. Production live-mode ürün, Price, portal, Tax, webhook ve gerçek ödeme/iade kabulü ayrı ve açık bir canlı operasyon onayı gerektirir.
+
 ## Operator configuration
 
 Varsayılan servis adresi `https://deploy.wext.io` değeridir. Staging veya self-hosted kurulumda `wp-config.php` üzerinden değiştirilebilir:

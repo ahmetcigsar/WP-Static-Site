@@ -10,6 +10,7 @@ $activation = activate_plugin($plugin);
 if (is_wp_error($activation)) {
     throw new RuntimeException($activation->get_error_message());
 }
+update_option(Wext\StaticPublisher\Managed_Deployer::LICENSE_KEY, ['active' => '1'], false);
 
 do_action('init');
 update_option('wext_static_settings', [

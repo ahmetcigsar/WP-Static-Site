@@ -5,6 +5,7 @@
 - WordPress içerik kaynağı ve export motorudur.
 - Gelişmiş GitHub akışında Cloudflare kimlik bilgileri yalnızca CI secrets içinde tutulur.
 - Yönetilen akışta Cloudflare OAuth erişimi yalnızca deployment servisinde tutulur; WordPress lisans anahtarını kaydetmez ve yalnızca korumalı installation ID ile siteye özel, şifrelenmiş servis erişim/callback anahtarlarını saklar.
+- Ticari satın alma, Stripe webhook'u ve entitlement uzlaştırması deployment servisinin sorumluluğundadır. WordPress Stripe veya billing server secret'ı taşımaz; yalnızca dış satın alma akışından alınan lisans anahtarını etkinleştirir.
 - REST uçları WordPress Application Password ve eklentiye ait `wext_static_export` yetkisi ister.
 - Headless + Static Publisher modu tema ön yüzünü ziyaretçilere kapatır; aynı-origin export istekleri WordPress salt değerinden türetilen, beş dakika geçerli timestamp + HMAC başlıklarıyla tema HTML'ine erişir.
 - Cloudflare CI deployment'ı tam ve atomik bir statik snapshot'tır; SFTP akışı dosyaları doğrudan hedef dizine yükler.
@@ -27,6 +28,8 @@
 Yönetilen Cloudflare akışında GitHub adımları yerine lisans aktivasyonu, tek kullanımlık connect ticket ve Cloudflare OAuth hesap seçimi çalışır. Başarılı export sonrasında WordPress 15 dakika geçerli HMAC imzalı artifact URL'siyle `POST /v1/deployments` çağrısı yapar. Yalnız zorunlu `deployment_id`, eşleşen `job_id`, `status` ve `created_at` alanlarını taşıyan `202` yanıtı dispatch olarak kaydedilir; servis imzalı callback ile `deploying`, `completed` veya `failed` sonucunu bildirir.
 
 Bu yönetilen zincirin gerçek OAuth, artifact indirme, Workers Static Assets yayını, callback retry/dead-letter ve queue recovery kabulü 17 Ağustos 2026 tarihinde tamamlanmıştır. Bu servis kabulü, yeni bağlanan her WordPress sitesinin ilk yayın sonucunu otomatik olarak kanıtlamaz; site bazlı durum WordPress'te ayrı izlenir.
+
+Faz 5 ticari modelinde yıllık `$39` ve lifetime `$199` planları birer site hakkı verir. Annual grace/suspension/reactivation ile lifetime refund/revocation kararları servis tarafında entitlement durumundan lisansa uzlaştırılır; eklentinin lisans aktivasyon API sözleşmesi değişmez. Checkout ve portal API'leri güvenilir sunucu kimliği gerektirir ve WordPress tarafından çağrılmaz.
 
 ## SFTP akışı
 

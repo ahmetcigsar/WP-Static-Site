@@ -17,11 +17,11 @@ final class SEO_Toolkit
     private array $performance = [];
     private array $report = [];
 
-    public function __construct(string $origin, string $target)
+    public function __construct(string $origin, string $target, ?array $settings = null)
     {
         $this->origin = untrailingslashit($origin);
         $this->target = untrailingslashit($target);
-        $this->settings = Plugin::seo_settings();
+        $this->settings = wp_parse_args($settings ?? Plugin::seo_settings(), Plugin::seo_defaults());
     }
 
     public function settings(): array

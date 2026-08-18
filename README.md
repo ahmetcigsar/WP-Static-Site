@@ -90,9 +90,13 @@ Callback ve job-specific artifact uçları da `Static Publisher Deploy` rolü il
 
 ## Yönetilen Cloudflare deployment
 
-**Deploy > Cloudflare** ekranında Wext lisansı etkinleştirilir ve ardından Cloudflare hesabı bağlanır. Varsayılan servis adresi `https://deploy.wext.io` değeridir; self-hosted veya staging servis için `WEXTSTAT_DEPLOY_SERVICE_URL` sabiti ya da `wext_static_deploy_service_url` filtresi kullanılabilir. Üretim servis adresi HTTPS olmalıdır.
+Wext lisansı **About > License** alanında etkinleştirilir; ardından **Deploy > Cloudflare** ekranında Cloudflare hesabı bağlanır. Varsayılan servis adresi `https://deploy.wext.io` değeridir; self-hosted veya staging servis için `WEXTSTAT_DEPLOY_SERVICE_URL` sabiti ya da `wext_static_deploy_service_url` filtresi kullanılabilir. Üretim servis adresi HTTPS olmalıdır.
+
+Eklenti Free ve lisanslı kullanım sunar. Lisans etkin değilken manuel statik export, ZIP indirme, SFTP ve temel ayarlar kullanılabilir; GitHub deployment, yönetilen Cloudflare deployment, Auto Deploy ve Wext SEO özellikleri kilitlidir. Mevcut premium ayarlar lisans pasifleştiğinde silinmez, fakat arayüzden değiştirilemez ve çalışma zamanında yürütülmez. Lisans yeniden etkinleştirildiğinde bu ayarlar tekrar kullanılabilir.
 
 Lisans anahtarı kaydedilmez. Kalıcı installation ID, kısa ömürlü aktivasyon credential'ı, siteye bağlı servis tokenı ve callback secret WordPress güvenlik anahtarlarıyla şifrelenir. Cloudflare provider tokenları WordPress'e dönmez. Bağlantı tamamlandıktan sonra **Deploy to Cloudflare** önce statik ZIP'i üretir, ardından servise imzalı ve 15 dakika geçerli artifact adresiyle `POST /v1/deployments` isteği gönderir. Yalnız `202 Accepted` yanıtı işi kuyruğa alınmış sayar; export ve deployment durumları ayrı gösterilir.
+
+Yıllık ve lifetime lisanslar Wext'in dış satın alma akışından edinilir; WordPress yalnızca verilen lisans anahtarını etkinleştirir. Stripe Checkout/Portal çağrıları ile billing, Stripe ve webhook secret'ları deployment servisinde kalır ve eklentiye girilmez.
 
 ## SFTP deployment
 

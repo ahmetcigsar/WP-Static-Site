@@ -9,6 +9,7 @@ $activation = activate_plugin('wext-static-publisher/wext-static-publisher.php')
 if (is_wp_error($activation)) {
     throw new RuntimeException($activation->get_error_message());
 }
+update_option(Wext\StaticPublisher\Managed_Deployer::LICENSE_KEY, ['active' => '1'], false);
 
 define('SURERANK_VERSION', 'test-surerank');
 define('THE_SEO_FRAMEWORK_VERSION', 'test-framework');

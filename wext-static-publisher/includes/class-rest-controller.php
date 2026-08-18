@@ -27,7 +27,7 @@ final class REST_Controller
         register_rest_route('wext-static/v1', '/exports', [
             'methods' => 'POST',
             'callback' => [self::class, 'create'],
-            'permission_callback' => [self::class, 'can_export'],
+            'permission_callback' => [self::class, 'can_use_github'],
         ]);
         register_rest_route('wext-static/v1', '/exports/latest', [
             'methods' => 'GET',
@@ -42,7 +42,7 @@ final class REST_Controller
         register_rest_route('wext-static/v1', '/exports/(?P<job_id>[A-Za-z0-9-]+)/artifact', [
             'methods' => 'GET',
             'callback' => [self::class, 'job_artifact'],
-            'permission_callback' => [self::class, 'can_export'],
+            'permission_callback' => [self::class, 'can_use_github'],
         ]);
         register_rest_route('wext-static/v1', '/exports/(?P<job_id>[A-Za-z0-9-]+)/managed-artifact', [
             'methods' => 'GET',
@@ -52,7 +52,7 @@ final class REST_Controller
         register_rest_route('wext-static/v1', '/deployments/callback', [
             'methods' => 'POST',
             'callback' => [self::class, 'deployment_callback'],
-            'permission_callback' => [self::class, 'can_export'],
+            'permission_callback' => [self::class, 'can_use_github'],
         ]);
         register_rest_route('wext-static/v1', '/managed-deployments/callback', [
             'methods' => 'POST',
@@ -64,6 +64,11 @@ final class REST_Controller
     public static function can_export(): bool
     {
         return current_user_can(Plugin::EXPORT_CAPABILITY);
+    }
+
+    public static function can_use_github(): bool
+    {
+        return Plugin::license_active() && self::can_export();
     }
 
     public static function can_download_managed_artifact(WP_REST_Request $request): bool

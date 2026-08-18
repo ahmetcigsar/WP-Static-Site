@@ -519,6 +519,36 @@
     box-shadow: 0 4px 10px rgba(37, 99, 235, .22);
 }
 
+.wextstat-deploy-tab.is-locked,
+.wextstat-seo-tab.is-locked,
+.wextstat-admin .nav-tab.is-locked {
+    color: var(--wextstat-muted);
+}
+
+.wextstat-deploy-tab.is-locked .dashicons-lock,
+.wextstat-seo-tab.is-locked .dashicons-lock {
+    width: 16px;
+    height: 16px;
+    margin-left: auto;
+    font-size: 16px;
+    line-height: 16px;
+}
+
+.wextstat-admin .nav-tab.is-locked .dashicons-lock {
+    width: 16px;
+    height: 16px;
+    margin: 1px 0 0 6px;
+    font-size: 16px;
+    line-height: 16px;
+}
+
+.wextstat-deploy-tab.is-active.is-locked,
+.wextstat-seo-tab.is-active.is-locked,
+.wextstat-admin .nav-tab-active.is-locked {
+    color: #fff;
+    background: #64748b;
+}
+
 .wextstat-deploy-panel {
     min-width: 0;
 }
@@ -2189,6 +2219,17 @@ body.wextstat-modal-open {
     border-radius: 16px;
     background: var(--wextstat-surface);
     box-shadow: 0 10px 28px rgba(15, 23, 42, .08);
+}
+
+.wextstat-about-license-card {
+    max-width: 900px;
+    min-height: 0;
+    margin: 18px 0;
+}
+
+.wextstat-license-required-card {
+    max-width: 900px;
+    min-height: 270px;
 }
 
 .wextstat-about-card__intro {

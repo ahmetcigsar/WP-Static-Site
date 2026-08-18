@@ -81,6 +81,7 @@ final class Managed_Deployer
     {
         $connection = self::connection();
         return self::available()
+            && (string) (self::license()['active'] ?? '0') === '1'
             && (string) ($connection['connected'] ?? '0') === '1'
             && (string) ($connection['access_token'] ?? '') !== ''
             && (string) ($connection['callback_secret'] ?? '') !== '';
@@ -177,6 +178,9 @@ final class Managed_Deployer
 
     public static function complete_connection(string $state, string $code): array
     {
+        if ((string) (self::license()['active'] ?? '0') !== '1') {
+            throw new RuntimeException(__('An active Wext license is required to use Cloudflare deployment.', 'wext-static-publisher'));
+        }
         $state_key = self::STATE_PREFIX . hash('sha256', $state);
         if ($state === '' || $code === '' || get_transient($state_key) !== '1') {
             throw new RuntimeException(__('The Cloudflare connection request has expired. Start the connection again.', 'wext-static-publisher'));
@@ -439,10 +443,25 @@ final class Managed_Deployer
             $error = is_array($payload['error'] ?? null) ? $payload['error'] : [];
             $code = sanitize_key((string) ($error['code'] ?? 'service_error'));
             $request_id = sanitize_text_field((string) ($error['request_id'] ?? ''));
+            if (in_array($code, ['license_inactive', 'activation_inactive'], true)) {
+                self::mark_license_inactive();
+            }
             error_log(sprintf('[Wext Static Publisher] Deployment service error: %s%s', $code, $request_id === '' ? '' : ' (' . $request_id . ')'));
             throw new RuntimeException(self::safe_error_message($code));
         }
         return $payload;
+    }
+
+    private static function mark_license_inactive(): void
+    {
+        $license = self::license();
+        if ($license === []) {
+            return;
+        }
+        $license['active'] = '0';
+        $license['activation_credential'] = '';
+        $license['credential_expires_at'] = '';
+        update_option(self::LICENSE_KEY, $license, false);
     }
 
     private static function safe_error_message(string $code): string

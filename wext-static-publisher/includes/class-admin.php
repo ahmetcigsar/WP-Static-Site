@@ -581,7 +581,7 @@ final class Admin
             'message' => sanitize_text_field($message),
             'type' => in_array($type, ['success', 'warning', 'error'], true) ? $type : 'error',
         ], MINUTE_IN_SECONDS);
-        wp_safe_redirect($tab === 'about' ? self::admin_page_url('about') : self::deploy_page_url('cloudflare'));
+        wp_safe_redirect($tab === 'about' ? self::about_page_url('license') : self::deploy_page_url('cloudflare'));
         exit;
     }
 
@@ -758,6 +758,7 @@ final class Admin
         $requested_seo_tab = isset($_GET['seo_tab']) ? sanitize_key(wp_unslash((string) $_GET['seo_tab'])) : 'plugins';
         $requested_search_tab = isset($_GET['search_tab']) ? sanitize_key(wp_unslash((string) $_GET['search_tab'])) : 'static';
         $requested_hide_tab = isset($_GET['hide_tab']) ? sanitize_key(wp_unslash((string) $_GET['hide_tab'])) : 'directory';
+        $requested_about_tab = isset($_GET['about_tab']) ? sanitize_key(wp_unslash((string) $_GET['about_tab'])) : 'about';
         if ($requested_tab === 'settings' && $requested_settings_tab === 'automation') {
             $requested_tab = 'deploy';
             $requested_deploy_tab = 'auto-deploy';
@@ -805,6 +806,11 @@ final class Admin
                 <?php foreach ($tabs as $tab_id => $tab_label) : ?>
                     <a class="nav-tab <?php echo $current_tab === $tab_id ? 'nav-tab-active' : ''; ?> <?php echo $tab_id === 'seo' && ! $license_active ? 'is-locked' : ''; ?>" href="<?php echo esc_url(self::admin_page_url($tab_id)); ?>" <?php echo $current_tab === $tab_id ? 'aria-current="page"' : ''; ?>><?php echo esc_html($tab_label); ?><?php if ($tab_id === 'seo' && ! $license_active) : ?><span class="dashicons dashicons-lock" aria-hidden="true"></span><?php endif; ?></a>
                 <?php endforeach; ?>
+                <a class="wextstat-license-badge <?php echo $license_active ? 'is-pro' : 'is-upgrade'; ?>" href="<?php echo esc_url(self::about_page_url('license')); ?>">
+                    <?php echo $license_active
+                        ? esc_html(sprintf(__('Pro v%s', 'wext-static-publisher'), WEXTSTAT_VERSION))
+                        : esc_html__('Upgrade to Pro', 'wext-static-publisher'); ?>
+                </a>
             </nav>
 
             <main class="wextstat-tab-content">
@@ -825,7 +831,7 @@ final class Admin
             <?php elseif ($current_tab === 'diagnostics') : ?>
                 <?php self::render_diagnostics_tab(); ?>
             <?php else : ?>
-                <?php self::render_about_tab(); ?>
+                <?php self::render_about_tab($requested_about_tab); ?>
             <?php endif; ?>
             </main>
             <?php self::render_confirmation_modal(); ?>
@@ -882,6 +888,11 @@ final class Admin
     private static function hide_page_url(string $hide_tab): string
     {
         return add_query_arg('hide_tab', $hide_tab, self::admin_page_url('hide'));
+    }
+
+    private static function about_page_url(string $about_tab): string
+    {
+        return add_query_arg('about_tab', $about_tab, self::admin_page_url('about'));
     }
 
     private static function render_main_tab(array $status, array $archives): void
@@ -2284,46 +2295,86 @@ final class Admin
         <?php
     }
 
-    private static function render_about_tab(): void
+    private static function render_about_tab(string $requested_tab): void
     {
         $managed_license = Managed_Deployer::public_license();
         $managed_connection = Managed_Deployer::public_connection();
         $managed_notice = self::managed_notice();
+        $tabs = [
+            'about' => __('About', 'wext-static-publisher'),
+            'license' => __('License', 'wext-static-publisher'),
+            'support' => __('Support', 'wext-static-publisher'),
+        ];
+        $current_tab = isset($tabs[$requested_tab]) ? $requested_tab : 'about';
         ?>
-        <h2><?php esc_html_e('About', 'wext-static-publisher'); ?></h2>
-        <section class="wextstat-about-card" aria-labelledby="wextstat-about-title">
-            <div class="wextstat-about-card__intro">
-                <span class="wextstat-about-card__icon dashicons dashicons-media-document" aria-hidden="true"></span>
-                <div>
-                    <h3 id="wextstat-about-title">Wext Static Publisher</h3>
-                    <p><?php esc_html_e('It was developed to convert your WordPress site into static files and prepare them for publication processes.', 'wext-static-publisher'); ?></p>
-                </div>
+        <div class="wextstat-about-layout">
+            <nav class="wextstat-about-tabs" aria-label="<?php echo esc_attr__('About sections', 'wext-static-publisher'); ?>">
+                <?php foreach ($tabs as $tab_id => $tab_label) : ?>
+                    <a class="wextstat-about-tab <?php echo $current_tab === $tab_id ? 'is-active' : ''; ?>" href="<?php echo esc_url(self::about_page_url($tab_id)); ?>" <?php echo $current_tab === $tab_id ? 'aria-current="page"' : ''; ?>><?php echo esc_html($tab_label); ?></a>
+                <?php endforeach; ?>
+            </nav>
+            <div class="wextstat-about-panel">
+                <?php if ($current_tab === 'about') : ?>
+                    <h2><?php esc_html_e('About', 'wext-static-publisher'); ?></h2>
+                    <section class="wextstat-about-card" aria-labelledby="wextstat-about-title">
+                        <div class="wextstat-about-card__intro">
+                            <span class="wextstat-about-card__icon dashicons dashicons-media-document" aria-hidden="true"></span>
+                            <div>
+                                <h3 id="wextstat-about-title">Wext Static Publisher</h3>
+                                <p><?php esc_html_e('It was developed to convert your WordPress site into static files and prepare them for publication processes.', 'wext-static-publisher'); ?></p>
+                            </div>
+                        </div>
+                        <dl class="wextstat-about-details">
+                            <div>
+                                <dt><?php esc_html_e('Version Number', 'wext-static-publisher'); ?></dt>
+                                <dd><code><?php echo esc_html(WEXTSTAT_VERSION); ?></code></dd>
+                            </div>
+                            <div>
+                                <dt><?php esc_html_e('Plugin Website', 'wext-static-publisher'); ?></dt>
+                                <dd>
+                                    <a href="<?php echo esc_url('https://wext.io/'); ?>" target="_blank" rel="noopener noreferrer">
+                                        wext.io
+                                        <span class="dashicons dashicons-external" aria-hidden="true"></span>
+                                    </a>
+                                </dd>
+                            </div>
+                        </dl>
+                    </section>
+                <?php elseif ($current_tab === 'license') : ?>
+                    <h2><?php esc_html_e('License', 'wext-static-publisher'); ?></h2>
+                    <?php if ($managed_notice !== [] && (string) ($managed_notice['message'] ?? '') !== '') : ?>
+                        <div class="notice notice-<?php echo esc_attr((string) ($managed_notice['type'] ?? 'error')); ?> inline is-dismissible" role="status"><p><?php echo esc_html((string) $managed_notice['message']); ?></p></div>
+                    <?php endif; ?>
+                    <?php self::render_managed_license_card($managed_license, $managed_connection); ?>
+                <?php else : ?>
+                    <h2><?php esc_html_e('Support', 'wext-static-publisher'); ?></h2>
+                    <section class="wextstat-about-card" aria-labelledby="wextstat-support-title">
+                        <div class="wextstat-about-card__intro">
+                            <span class="wextstat-about-card__icon dashicons dashicons-sos" aria-hidden="true"></span>
+                            <div>
+                                <h3 id="wextstat-support-title"><?php esc_html_e('Wext Support', 'wext-static-publisher'); ?></h3>
+                                <p><?php esc_html_e('Get help with licensing, static publishing, and deployment.', 'wext-static-publisher'); ?></p>
+                            </div>
+                        </div>
+                        <dl class="wextstat-about-details">
+                            <div>
+                                <dt><?php esc_html_e('Support Email', 'wext-static-publisher'); ?></dt>
+                                <dd><a href="<?php echo esc_url('mailto:info@wext.co'); ?>">info@wext.co</a></dd>
+                            </div>
+                            <div>
+                                <dt><?php esc_html_e('Plugin Website', 'wext-static-publisher'); ?></dt>
+                                <dd>
+                                    <a href="<?php echo esc_url('https://wext.io/'); ?>" target="_blank" rel="noopener noreferrer">
+                                        wext.io
+                                        <span class="dashicons dashicons-external" aria-hidden="true"></span>
+                                    </a>
+                                </dd>
+                            </div>
+                        </dl>
+                    </section>
+                <?php endif; ?>
             </div>
-            <dl class="wextstat-about-details">
-                <div>
-                    <dt><?php esc_html_e('Version Number', 'wext-static-publisher'); ?></dt>
-                    <dd><code><?php echo esc_html(WEXTSTAT_VERSION); ?></code></dd>
-                </div>
-                <div>
-                    <dt><?php esc_html_e('Support Email', 'wext-static-publisher'); ?></dt>
-                    <dd><a href="<?php echo esc_url('mailto:info@wext.co'); ?>">info@wext.co</a></dd>
-                </div>
-                <div>
-                    <dt><?php esc_html_e('Plugin Website', 'wext-static-publisher'); ?></dt>
-                    <dd>
-                        <a href="<?php echo esc_url('https://wext.co/'); ?>" target="_blank" rel="noopener noreferrer">
-                            wext.co
-                            <span class="dashicons dashicons-external" aria-hidden="true"></span>
-                        </a>
-                    </dd>
-                </div>
-            </dl>
-        </section>
-        <h2><?php esc_html_e('License', 'wext-static-publisher'); ?></h2>
-        <?php if ($managed_notice !== [] && (string) ($managed_notice['message'] ?? '') !== '') : ?>
-            <div class="notice notice-<?php echo esc_attr((string) ($managed_notice['type'] ?? 'error')); ?> inline is-dismissible" role="status"><p><?php echo esc_html((string) $managed_notice['message']); ?></p></div>
-        <?php endif; ?>
-        <?php self::render_managed_license_card($managed_license, $managed_connection); ?>
+        </div>
         <?php
     }
 

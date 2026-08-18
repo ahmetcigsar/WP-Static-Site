@@ -97,6 +97,40 @@
     box-shadow: 0 5px 12px rgba(37, 99, 235, .24);
 }
 
+.wextstat-license-badge {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    margin-inline-start: auto;
+    padding: 9px 15px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.4;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.wextstat-license-badge.is-upgrade {
+    color: #fff;
+    background: #0f172a;
+}
+
+.wextstat-license-badge.is-pro {
+    color: #075985;
+    border-color: #bae6fd;
+    background: #e0f2fe;
+}
+
+.wextstat-license-badge:hover,
+.wextstat-license-badge:focus {
+    color: #fff;
+    background: var(--wextstat-primary-dark);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, .22);
+}
+
 .wextstat-tab-content {
     margin-top: 18px;
     padding: 24px;
@@ -2221,6 +2255,57 @@ body.wextstat-modal-open {
     box-shadow: 0 10px 28px rgba(15, 23, 42, .08);
 }
 
+.wextstat-about-layout {
+    display: grid;
+    grid-template-columns: 190px minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+}
+
+.wextstat-about-tabs {
+    display: flex;
+    gap: 6px;
+    flex-direction: column;
+    padding: 8px;
+    border: 1px solid var(--wextstat-border);
+    border-radius: 12px;
+    background: #eaf0f7;
+}
+
+.wextstat-about-tab {
+    padding: 11px 13px;
+    border-radius: 8px;
+    color: #475569;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.wextstat-about-tab:hover,
+.wextstat-about-tab:focus {
+    color: var(--wextstat-primary-dark);
+    background: rgba(255, 255, 255, .8);
+    outline: none;
+}
+
+.wextstat-about-tab.is-active,
+.wextstat-about-tab.is-active:hover,
+.wextstat-about-tab.is-active:focus {
+    color: #fff;
+    background: var(--wextstat-primary);
+    box-shadow: 0 5px 12px rgba(37, 99, 235, .2);
+}
+
+.wextstat-about-panel {
+    min-width: 0;
+}
+
+.wextstat-about-panel > h2 {
+    margin: 0 0 18px;
+    color: var(--wextstat-text);
+    font-size: 20px;
+}
+
 .wextstat-about-license-card {
     max-width: 900px;
     min-height: 0;
@@ -2357,6 +2442,10 @@ body.wextstat-modal-open {
     .wextstat-tab-content {
         padding: 16px;
         border-radius: 12px;
+    }
+
+    .wextstat-license-badge {
+        margin-inline-start: 0;
     }
 
     .wextstat-confirm-modal__dialog {
@@ -2630,6 +2719,16 @@ body.wextstat-modal-open {
     .wextstat-about-card__intro {
         align-items: flex-start;
         padding: 22px;
+    }
+
+    .wextstat-about-layout {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .wextstat-about-tabs {
+        flex-direction: row;
+        overflow-x: auto;
     }
 
     .wextstat-about-details > div {

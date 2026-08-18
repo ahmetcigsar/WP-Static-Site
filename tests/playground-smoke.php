@@ -427,14 +427,48 @@ Wext\StaticPublisher\Admin::render();
 $about_html = (string) ob_get_clean();
 unset($_GET['tab']);
 
-foreach (['About', 'Version Number', WEXTSTAT_VERSION, 'mailto:info@wext.co', 'https://wext.co/', 'License', 'Wext License', 'Activate License'] as $expected) {
+foreach (['About', 'Version Number', WEXTSTAT_VERSION, 'https://wext.io/', 'about_tab=about', 'about_tab=license', 'about_tab=support', 'Upgrade to Pro'] as $expected) {
     if (! str_contains($about_html, $expected)) {
         fwrite(STDERR, "About sekmesinde beklenen içerik bulunamadı: {$expected} (locale=" . determine_locale() . ', direct=' . __('About', 'wext-static-publisher') . ")\n");
         exit(1);
     }
 }
+if (str_contains($about_html, 'Support Email') || str_contains($about_html, 'mailto:')) {
+    fwrite(STDERR, "About kartında Support Email satırı hâlâ gösteriliyor.\n");
+    exit(1);
+}
 if (! preg_match('/<div class="wrap wextstat-admin">\s*<hr class="wp-header-end">\s*<header class="wextstat-admin-header">/', $about_html)) {
     fwrite(STDERR, "Global WordPress bildirim sınırı Statik Publisher başlığının önünde değil.\n");
+    exit(1);
+}
+
+$_GET['tab'] = 'about';
+$_GET['about_tab'] = 'license';
+ob_start();
+Wext\StaticPublisher\Admin::render();
+$license_html = (string) ob_get_clean();
+if (! str_contains($license_html, 'Wext License') || ! str_contains($license_html, 'Activate License')) {
+    fwrite(STDERR, "About > License sayfası lisans kartını göstermiyor.\n");
+    exit(1);
+}
+
+$_GET['about_tab'] = 'support';
+ob_start();
+Wext\StaticPublisher\Admin::render();
+$support_html = (string) ob_get_clean();
+if (! str_contains($support_html, 'Wext Support') || ! str_contains($support_html, 'mailto:info@wext.co') || ! str_contains($support_html, 'https://wext.io/')) {
+    fwrite(STDERR, "About > Support sayfası beklenen destek bilgilerini göstermiyor.\n");
+    exit(1);
+}
+
+update_option(Wext\StaticPublisher\Managed_Deployer::LICENSE_KEY, ['active' => '1'], false);
+ob_start();
+Wext\StaticPublisher\Admin::render();
+$pro_html = (string) ob_get_clean();
+delete_option(Wext\StaticPublisher\Managed_Deployer::LICENSE_KEY);
+unset($_GET['tab'], $_GET['about_tab']);
+if (! str_contains($pro_html, 'Pro v' . WEXTSTAT_VERSION) || ! str_contains($pro_html, 'wextstat-license-badge is-pro')) {
+    fwrite(STDERR, "Aktif lisans Pro ve versiyon rozetini göstermiyor.\n");
     exit(1);
 }
 

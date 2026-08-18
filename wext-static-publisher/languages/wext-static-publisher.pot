@@ -2116,8 +2116,7 @@ msgid "[Wext Static Publisher] Automatic SFTP upload failed: %s"
 msgstr ""
 
 #: wext-static-publisher/includes/class-plugin.php:722
-msgid ""
-"[Wext Static Publisher] Some old export archives could not be deleted."
+msgid "[Wext Static Publisher] Some old export archives could not be deleted."
 msgstr ""
 
 #: wext-static-publisher/includes/class-plugin.php:766
@@ -2462,8 +2461,8 @@ msgstr ""
 
 #: wext-static-publisher/includes/class-admin.php:1169
 msgid ""
-"The plugin owner must configure the Wext deployment service before "
-"customers can connect Cloudflare."
+"The plugin owner must configure the Wext deployment service before customers "
+"can connect Cloudflare."
 msgstr ""
 
 #: wext-static-publisher/includes/class-admin.php:1170
@@ -2687,4 +2686,29 @@ msgstr ""
 #: wext-static-publisher/includes/class-managed-deployer.php:86
 msgid ""
 "The Cloudflare connection request has expired. Start the connection again."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php
+#, php-format
+msgid "Pro v%s"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php
+msgid "Upgrade to Pro"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php
+msgid "Support"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php
+msgid "About sections"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php
+msgid "Wext Support"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php
+msgid "Get help with licensing, static publishing, and deployment."
 msgstr ""

@@ -50,7 +50,9 @@ $screens = [
     'hide-static-outputs' => ['tab' => 'hide', 'hide_tab' => 'static-outputs'],
     'diagnostics' => ['tab' => 'diagnostics'],
     'activity' => ['tab' => 'activity'],
-    'about' => ['tab' => 'about'],
+    'about' => ['tab' => 'about', 'about_tab' => 'about'],
+    'about-license' => ['tab' => 'about', 'about_tab' => 'license'],
+    'about-support' => ['tab' => 'about', 'about_tab' => 'support'],
 ];
 
 $expected = [
@@ -77,7 +79,9 @@ $expected = [
     'hide-static-outputs' => ['Directory', 'Traces', 'Static Outputs', 'Disable XML-RPC Links', 'Save Hide Settings'],
     'diagnostics' => ['checks passed', 'Last checked:', 'Check Again'],
     'activity' => ['Activity Logs', 'Search source or static URL...'],
-    'about' => ['About', 'Version Number', 'License', 'Wext License', 'Active', 'Plan'],
+    'about' => ['About', 'Version Number', 'Plugin Website', 'Pro v' . WEXTSTAT_VERSION],
+    'about-license' => ['About', 'License', 'Wext License', 'Active', 'Plan'],
+    'about-support' => ['About', 'Support', 'Wext Support', 'Plugin Website'],
 ];
 
 $forbidden_fragments = [

@@ -2217,8 +2217,7 @@ msgstr ""
 "[Wext Static Publisher] No se pudo enviar el webhook de implementación."
 
 #: wext-static-publisher/includes/class-plugin.php:722
-msgid ""
-"[Wext Static Publisher] Some old export archives could not be deleted."
+msgid "[Wext Static Publisher] Some old export archives could not be deleted."
 msgstr ""
 "[Wext Static Publisher] Algunos archivos de exportación antiguos no se "
 "pudieron eliminar."
@@ -2578,8 +2577,8 @@ msgstr ""
 
 #: wext-static-publisher/includes/class-admin.php:1169
 msgid ""
-"The plugin owner must configure the Wext deployment service before "
-"customers can connect Cloudflare."
+"The plugin owner must configure the Wext deployment service before customers "
+"can connect Cloudflare."
 msgstr ""
 
 #: wext-static-publisher/includes/class-admin.php:1170
@@ -2811,3 +2810,28 @@ msgstr ""
 msgid ""
 "The Cloudflare connection request has expired. Start the connection again."
 msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php
+#, php-format
+msgid "Pro v%s"
+msgstr "Pro v%s"
+
+#: wext-static-publisher/includes/class-admin.php
+msgid "Upgrade to Pro"
+msgstr "Upgrade to Pro"
+
+#: wext-static-publisher/includes/class-admin.php
+msgid "Support"
+msgstr "Support"
+
+#: wext-static-publisher/includes/class-admin.php
+msgid "About sections"
+msgstr "About sections"
+
+#: wext-static-publisher/includes/class-admin.php
+msgid "Wext Support"
+msgstr "Wext Support"
+
+#: wext-static-publisher/includes/class-admin.php
+msgid "Get help with licensing, static publishing, and deployment."
+msgstr "Get help with licensing, static publishing, and deployment."

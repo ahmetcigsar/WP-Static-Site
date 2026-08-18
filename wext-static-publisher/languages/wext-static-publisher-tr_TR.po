@@ -2236,8 +2236,7 @@ msgid "[Wext Static Publisher] Automatic SFTP upload failed: %s"
 msgstr "[Wext Static Publisher] Otomatik SFTP yüklemesi başarısız oldu: %s"
 
 #: wext-static-publisher/includes/class-plugin.php:722
-msgid ""
-"[Wext Static Publisher] Some old export archives could not be deleted."
+msgid "[Wext Static Publisher] Some old export archives could not be deleted."
 msgstr "[Wext Static Publisher] Bazı eski export arşivleri silinemedi."
 
 #: wext-static-publisher/includes/class-plugin.php:766
@@ -2595,11 +2594,11 @@ msgstr "Kolay Kurulum servisi bu pakette henüz etkin değil."
 
 #: wext-static-publisher/includes/class-admin.php:1169
 msgid ""
-"The plugin owner must configure the Wext deployment service before "
-"customers can connect Cloudflare."
+"The plugin owner must configure the Wext deployment service before customers "
+"can connect Cloudflare."
 msgstr ""
-"Müşterilerin Cloudflare'ı bağlayabilmesi için eklenti sahibi Wext "
-"yayınlama servisini yapılandırmalıdır."
+"Müşterilerin Cloudflare'ı bağlayabilmesi için eklenti sahibi Wext yayınlama "
+"servisini yapılandırmalıdır."
 
 #: wext-static-publisher/includes/class-admin.php:1170
 msgid "Technical setup"
@@ -2843,3 +2842,28 @@ msgid ""
 "The Cloudflare connection request has expired. Start the connection again."
 msgstr ""
 "Cloudflare bağlantı isteğinin süresi doldu. Kolay Kurulumu yeniden başlatın."
+
+#: wext-static-publisher/includes/class-admin.php
+#, php-format
+msgid "Pro v%s"
+msgstr "Pro v%s"
+
+#: wext-static-publisher/includes/class-admin.php
+msgid "Upgrade to Pro"
+msgstr "Upgrade to Pro"
+
+#: wext-static-publisher/includes/class-admin.php
+msgid "Support"
+msgstr "Destek"
+
+#: wext-static-publisher/includes/class-admin.php
+msgid "About sections"
+msgstr "Hakkında bölümleri"
+
+#: wext-static-publisher/includes/class-admin.php
+msgid "Wext Support"
+msgstr "Wext Destek"
+
+#: wext-static-publisher/includes/class-admin.php
+msgid "Get help with licensing, static publishing, and deployment."
+msgstr "Lisanslama, statik yayınlama ve deployment konularında yardım alın."

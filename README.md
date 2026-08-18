@@ -39,7 +39,7 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 - Main sekmesinde iki saniyede bir yenilenen canlı export durumu, aşamalı ilerleme ve takılan WP-Cron işi uyarısı
 - Diagnostics sekmesinde PHP, Basic Auth, php-xml, cURL, site URL erişimi, kalıcı bağlantılar, indexlenebilirlik, önbellek ve WP-Cron kontrolleri
 - İlk kurulumda ve isteğe bağlı yeniden kontrolde çalışan uyumsuz eklenti, geçici dizin ve MySQL yetki kontrolleri
-- About sekmesinde sürüm, destek e-postası ve eklenti web sitesi bilgileri
+- About sekmesinde solda About, License ve Support dikey alt menüsü; sürüm, lisans ve destek bilgileri için ayrı sayfalar
 - Modern yönetim arayüzü, kart tabanlı içerik alanları, yenilenmiş sekmeler ve butonlar
 - Activity Logs kayıtlarında arama ve ortalanmış modern sayfalama
 - Activity Logs kayıtlarında WordPress ayarlarına bağlı tarih/saat biçimi

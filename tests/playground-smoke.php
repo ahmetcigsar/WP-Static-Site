@@ -401,6 +401,13 @@ if (! wp_script_is('wext-static-publisher-admin', 'enqueued')) {
     fwrite(STDERR, "Canlı durum takip betiği yüklenmedi.\n");
     exit(1);
 }
+$style_version = (string) (wp_styles()->registered['wext-static-publisher-admin']->ver ?? '');
+$script_version = (string) (wp_scripts()->registered['wext-static-publisher-admin']->ver ?? '');
+if ($style_version !== (string) filemtime(WEXTSTAT_DIR . 'assets/admin.css')
+    || $script_version !== (string) filemtime(WEXTSTAT_DIR . 'assets/admin.js')) {
+    fwrite(STDERR, "Yönetim asset sürümleri dosya değişikliklerini cache-bust etmiyor.\n");
+    exit(1);
+}
 $script_data = (string) wp_scripts()->get_data('wext-static-publisher-admin', 'data');
 if (! str_contains($script_data, 'wext-static/v1/exports/latest')
     || ! str_contains($script_data, 'pollInterval')

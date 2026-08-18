@@ -59,18 +59,23 @@ final class Admin
             return;
         }
 
+        $style_path = WEXTSTAT_DIR . 'assets/admin.css';
+        $script_path = WEXTSTAT_DIR . 'assets/admin.js';
+        $style_version = is_readable($style_path) ? (string) filemtime($style_path) : WEXTSTAT_VERSION;
+        $script_version = is_readable($script_path) ? (string) filemtime($script_path) : WEXTSTAT_VERSION;
+
         wp_enqueue_style(
             'wext-static-publisher-admin',
             plugins_url('assets/admin.css', WEXTSTAT_FILE),
             [],
-            WEXTSTAT_VERSION
+            $style_version
         );
 
         wp_enqueue_script(
             'wext-static-publisher-admin',
             plugins_url('assets/admin.js', WEXTSTAT_FILE),
             [],
-            WEXTSTAT_VERSION,
+            $script_version,
             true
         );
         $cloudflare_configured = Plugin::cloudflare_deployment_configured();

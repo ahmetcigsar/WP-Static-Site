@@ -2385,6 +2385,10 @@ final class Admin
 
     private static function render_managed_license_card(array $managed_license): void
     {
+        $plan_code = sanitize_key((string) ($managed_license['plan_code'] ?? ''));
+        $plan_label = in_array($plan_code, ['annual', 'lifetime'], true)
+            ? ucfirst($plan_code)
+            : '';
         ?>
         <section class="wextstat-deploy-card wextstat-about-license-card" aria-labelledby="wextstat-license-title">
             <div class="wextstat-deploy-card__content">
@@ -2412,7 +2416,16 @@ final class Admin
                                 </form>
                             </td>
                         </tr>
-                        <tr><th><?php esc_html_e('Plan', 'wext-static-publisher'); ?></th><td><code><?php echo esc_html((string) ($managed_license['plan_code'] ?: '—')); ?></code></td></tr>
+                        <tr>
+                            <th><?php esc_html_e('Plan', 'wext-static-publisher'); ?></th>
+                            <td>
+                                <?php if ($plan_label !== '') : ?>
+                                    <span class="wextstat-plan-badge is-<?php echo esc_attr($plan_code); ?>"><?php echo esc_html($plan_label); ?></span>
+                                <?php else : ?>
+                                    <code><?php echo esc_html($plan_code ?: '—'); ?></code>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
                         <tr><th><?php esc_html_e('Site limit', 'wext-static-publisher'); ?></th><td><?php echo esc_html((string) ($managed_license['site_limit'] ?: '—')); ?></td></tr>
                         </tbody>
                     </table>

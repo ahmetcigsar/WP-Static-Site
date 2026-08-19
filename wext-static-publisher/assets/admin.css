@@ -194,6 +194,29 @@
     color: var(--wextstat-danger);
 }
 
+.wextstat-plan-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.wextstat-plan-badge.is-annual {
+    color: #166534;
+    border-color: #86efac;
+    background: #dcfce7;
+}
+
+.wextstat-plan-badge.is-lifetime {
+    color: #1d4ed8;
+    border-color: #93c5fd;
+    background: #dbeafe;
+}
+
 .wextstat-files-table {
     width: 100%;
     max-width: 1160px;

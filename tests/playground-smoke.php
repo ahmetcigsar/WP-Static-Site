@@ -468,18 +468,24 @@ if (! str_contains($support_html, 'Wext Support') || ! str_contains($support_htm
     exit(1);
 }
 
-update_option(Wext\StaticPublisher\Managed_Deployer::LICENSE_KEY, ['active' => '1'], false);
+update_option(Wext\StaticPublisher\Managed_Deployer::LICENSE_KEY, ['active' => '1', 'plan_code' => 'annual'], false);
 $_GET['about_tab'] = 'license';
 ob_start();
 Wext\StaticPublisher\Admin::render();
-$pro_html = (string) ob_get_clean();
+$annual_html = (string) ob_get_clean();
+update_option(Wext\StaticPublisher\Managed_Deployer::LICENSE_KEY, ['active' => '1', 'plan_code' => 'lifetime'], false);
+ob_start();
+Wext\StaticPublisher\Admin::render();
+$lifetime_html = (string) ob_get_clean();
 delete_option(Wext\StaticPublisher\Managed_Deployer::LICENSE_KEY);
 unset($_GET['tab'], $_GET['about_tab']);
-if (! str_contains($pro_html, 'Pro v' . WEXTSTAT_VERSION)
-    || ! str_contains($pro_html, 'wextstat-license-badge is-pro')
-    || ! str_contains($pro_html, 'Detach License')
-    || ! str_contains($pro_html, 'data-wextstat-confirm-label="Detach License"')
-    || ! str_contains($pro_html, 'wext_static_license_deactivate')) {
+if (! str_contains($annual_html, 'Pro v' . WEXTSTAT_VERSION)
+    || ! str_contains($annual_html, 'wextstat-license-badge is-pro')
+    || ! str_contains($annual_html, 'Detach License')
+    || ! str_contains($annual_html, 'data-wextstat-confirm-label="Detach License"')
+    || ! str_contains($annual_html, 'wext_static_license_deactivate')
+    || ! str_contains($annual_html, 'wextstat-plan-badge is-annual">Annual</span>')
+    || ! str_contains($lifetime_html, 'wextstat-plan-badge is-lifetime">Lifetime</span>')) {
     fwrite(STDERR, "Aktif lisans Pro ve versiyon rozetini göstermiyor.\n");
     exit(1);
 }

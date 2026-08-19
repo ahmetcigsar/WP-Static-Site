@@ -112,6 +112,7 @@ final class Plugin
         ]);
 
         self::migrate_legacy_installation();
+        self::repair_managed_deployment_mode();
 
         $administrator = get_role('administrator');
         if ($administrator !== null) {
@@ -124,6 +125,21 @@ final class Plugin
 
         update_option('wext_static_plugin_version', WEXTSTAT_VERSION, false);
         Diagnostics::refresh();
+    }
+
+    public static function repair_managed_deployment_mode(): void
+    {
+        if (! Managed_Deployer::configured()) {
+            return;
+        }
+
+        $settings = self::settings();
+        if ((string) ($settings['deployment_mode'] ?? '') === 'managed') {
+            return;
+        }
+
+        $settings['deployment_mode'] = 'managed';
+        update_option(self::SETTINGS_KEY, $settings, false);
     }
 
     public static function maybe_upgrade(): void

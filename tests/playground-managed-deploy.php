@@ -172,6 +172,14 @@ if (empty($public['connected'])
     throw new RuntimeException('Yönetilen servis bağlantısı güvenli biçimde kaydedilmedi.');
 }
 
+$settings = Wext\StaticPublisher\Plugin::settings();
+$settings['deployment_mode'] = 'advanced';
+update_option(Wext\StaticPublisher\Plugin::SETTINGS_KEY, $settings, false);
+Wext\StaticPublisher\Plugin::repair_managed_deployment_mode();
+if ((Wext\StaticPublisher\Plugin::settings()['deployment_mode'] ?? '') !== 'managed') {
+    throw new RuntimeException('Mevcut yönetilen bağlantının dağıtım modu yükseltmede onarılamadı.');
+}
+
 $job_id = 'managed-test-job';
 $artifact_url = Wext\StaticPublisher\Managed_Deployer::signed_artifact_url($job_id);
 parse_str((string) parse_url($artifact_url, PHP_URL_QUERY), $artifact_query);

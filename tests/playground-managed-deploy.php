@@ -2,8 +2,18 @@
 
 declare(strict_types=1);
 
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
+register_shutdown_function(static function (): void {
+    $error = error_get_last();
+    if (is_array($error) && in_array($error['type'] ?? 0, [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR], true)) {
+        fwrite(STDERR, sprintf("Fatal error: %s in %s:%d\n", $error['message'], $error['file'], $error['line']));
+    }
+});
+
 require '/wordpress/wp-load.php';
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
+require_once ABSPATH . 'wp-admin/includes/template.php';
 
 $plugin = 'wext-static-publisher/wext-static-publisher.php';
 $activation = activate_plugin($plugin);
@@ -11,6 +21,7 @@ if (is_wp_error($activation)) {
     throw new RuntimeException($activation->get_error_message());
 }
 do_action('init');
+do_action('admin_init');
 wp_set_current_user(1);
 
 $access_token = 'managed-access-token';

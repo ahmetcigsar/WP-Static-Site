@@ -161,8 +161,7 @@ final class Admin
             }
         }
 
-        $deploy_submitted = $section === 'deploy'
-            || ($section === 'all' && (array_key_exists('deployment_webhook_url', $value) || array_key_exists('deployment_webhook_token', $value)));
+        $deploy_submitted = $section === 'deploy';
         if ($deploy_submitted) {
             if (Plugin::license_active()) {
                 $submitted_token = sanitize_text_field((string) ($value['deployment_webhook_token'] ?? ''));
@@ -171,6 +170,11 @@ final class Admin
                 $sanitized['deployment_mode'] = 'advanced';
             } else {
                 add_settings_error(Plugin::SETTINGS_KEY, 'license-required-github', __('An active Wext license is required to use GitHub deployment.', 'wext-static-publisher'), 'error');
+            }
+        } elseif ($section === 'all' && isset($value['deployment_mode'])) {
+            $mode = sanitize_key((string) $value['deployment_mode']);
+            if (in_array($mode, ['advanced', 'managed'], true)) {
+                $sanitized['deployment_mode'] = $mode;
             }
         }
 

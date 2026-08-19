@@ -2408,7 +2408,7 @@ final class Admin
                         <tr>
                             <th><?php esc_html_e('Status', 'wext-static-publisher'); ?></th>
                             <td class="wextstat-license-status">
-                                <span><?php esc_html_e('Active', 'wext-static-publisher'); ?></span>
+                                <span class="wextstat-license-active"><span class="dashicons dashicons-yes-alt" aria-hidden="true"></span><span><?php esc_html_e('Active', 'wext-static-publisher'); ?></span></span>
                                 <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                                     <input type="hidden" name="action" value="wext_static_license_deactivate">
                                     <?php wp_nonce_field('wext_static_license_deactivate'); ?>

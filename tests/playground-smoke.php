@@ -484,6 +484,7 @@ if (! str_contains($annual_html, 'Pro v' . WEXTSTAT_VERSION)
     || ! str_contains($annual_html, 'Detach License')
     || ! str_contains($annual_html, 'data-wextstat-confirm-label="Detach License"')
     || ! str_contains($annual_html, 'wext_static_license_deactivate')
+    || ! str_contains($annual_html, 'wextstat-license-active"><span class="dashicons dashicons-yes-alt" aria-hidden="true"></span><span>Active</span>')
     || ! str_contains($annual_html, 'wextstat-plan-badge is-annual">Annual</span>')
     || ! str_contains($lifetime_html, 'wextstat-plan-badge is-lifetime">Lifetime</span>')) {
     fwrite(STDERR, "Aktif lisans Pro ve versiyon rozetini göstermiyor.\n");

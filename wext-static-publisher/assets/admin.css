@@ -190,6 +190,22 @@
     margin: 0 0 0 12px;
 }
 
+.wextstat-license-active {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: #166534;
+    font-weight: 600;
+}
+
+.wextstat-license-active .dashicons {
+    width: 18px;
+    height: 18px;
+    color: #16a34a;
+    font-size: 18px;
+    line-height: 1;
+}
+
 .wextstat-admin .wextstat-license-detach-link {
     color: var(--wextstat-danger);
 }

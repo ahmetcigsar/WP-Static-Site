@@ -2728,3 +2728,48 @@ msgstr ""
 #: wext-static-publisher/includes/class-managed-deployer.php
 msgid "Activate the license again before detaching it from this site."
 msgstr ""
+
+msgid "Connect Cloudflare before changing the deployment URL."
+msgstr ""
+
+msgid "Enter a public HTTPS deployment URL without a path, query, port, or credentials."
+msgstr ""
+
+msgid "The saved Wext service credential is invalid. Reconnect Cloudflare."
+msgstr ""
+
+msgid "The deployment service returned an invalid target response."
+msgstr ""
+
+msgid "Wait for the current Cloudflare deployment to finish before changing the deployment URL."
+msgstr ""
+
+msgid "The deployment URL must belong to an active domain in the connected Cloudflare account."
+msgstr ""
+
+msgid "The deployment URL already has a conflicting Cloudflare Worker or DNS record."
+msgstr ""
+
+msgid "Cloudflare could not attach the new deployment URL. Try again."
+msgstr ""
+
+msgid "Cloudflare could not detach the previous deployment URL. No target change was saved."
+msgstr ""
+
+msgid "Reconnect Cloudflare before changing the deployment URL."
+msgstr ""
+
+msgid "The deployment URL was changed. Publish again to rebuild the static site for this address."
+msgstr ""
+
+msgid "Confirm the deployment URL change before saving it."
+msgstr ""
+
+msgid "Change Deployment URL"
+msgstr ""
+
+msgid "I confirm that the new address belongs to this connected Cloudflare account. The previous Worker domain will be detached."
+msgstr ""
+
+msgid "Change the deployment URL and detach the previous Worker domain?"
+msgstr ""

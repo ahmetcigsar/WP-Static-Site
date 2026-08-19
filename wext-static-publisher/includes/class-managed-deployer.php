@@ -254,6 +254,64 @@ final class Managed_Deployer
         return $provider_revoke ?? 'already_revoked';
     }
 
+    public static function update_deployment_url(string $deployment_url): array
+    {
+        if (! self::configured()) {
+            throw new RuntimeException(__('Connect Cloudflare before changing the deployment URL.', 'wext-static-publisher'));
+        }
+        $deployment_url = trim($deployment_url);
+        if (! str_contains($deployment_url, '://')) {
+            $deployment_url = 'https://' . $deployment_url;
+        }
+        $parts = wp_parse_url($deployment_url);
+        if (! is_array($parts)
+            || strtolower((string) ($parts['scheme'] ?? '')) !== 'https'
+            || (string) ($parts['host'] ?? '') === ''
+            || isset($parts['user'])
+            || isset($parts['pass'])
+            || isset($parts['port'])
+            || ! in_array((string) ($parts['path'] ?? ''), ['', '/'], true)
+            || isset($parts['query'])
+            || isset($parts['fragment'])) {
+            throw new RuntimeException(__('Enter a public HTTPS deployment URL without a path, query, port, or credentials.', 'wext-static-publisher'));
+        }
+        $deployment_url = 'https://' . strtolower((string) $parts['host']);
+        $connection = self::connection();
+        try {
+            $token = Secret_Store::decrypt((string) ($connection['access_token'] ?? ''));
+        } catch (\Throwable $error) {
+            throw new RuntimeException(__('The saved Wext service credential is invalid. Reconnect Cloudflare.', 'wext-static-publisher'));
+        }
+        $payload = self::remote_json('PUT', '/v1/wordpress/connections/current/target', [
+            'deployment_url' => $deployment_url,
+            'confirm_domain_change' => true,
+        ], $token, [200]);
+        $returned_url = esc_url_raw((string) ($payload['deployment_url'] ?? ''));
+        $domain = sanitize_text_field((string) ($payload['domain'] ?? ''));
+        $returned_parts = wp_parse_url($returned_url);
+        if (! is_array($returned_parts)
+            || strtolower((string) ($returned_parts['scheme'] ?? '')) !== 'https'
+            || strtolower((string) ($returned_parts['host'] ?? '')) !== strtolower($domain)
+            || isset($returned_parts['user'])
+            || isset($returned_parts['pass'])
+            || isset($returned_parts['port'])
+            || ! in_array((string) ($returned_parts['path'] ?? ''), ['', '/'], true)
+            || isset($returned_parts['query'])
+            || isset($returned_parts['fragment'])) {
+            throw new RuntimeException(__('The deployment service returned an invalid target response.', 'wext-static-publisher'));
+        }
+
+        $connection['domain'] = $domain;
+        $connection['deployment_url'] = $returned_url;
+        update_option(self::CONNECTION_KEY, $connection, false);
+        $settings = Plugin::settings();
+        $settings['deployment_mode'] = 'managed';
+        $settings['target_url'] = $returned_url;
+        update_option(Plugin::SETTINGS_KEY, $settings, false);
+        delete_option(Plugin::DEPLOYMENT_STATUS_KEY);
+        return self::public_connection();
+    }
+
     public static function deactivate_license(): void
     {
         $license = self::license();
@@ -503,6 +561,12 @@ final class Managed_Deployer
             'connect_ticket_invalid' => __('The Cloudflare connection request expired. Activate the license and try again.', 'wext-static-publisher'),
             'service_token_required' => __('The saved Wext service credential is missing.', 'wext-static-publisher'),
             'deployment_target_not_allowed' => __('The connected Cloudflare target is no longer authorized for this site.', 'wext-static-publisher'),
+            'deployment_target_busy' => __('Wait for the current Cloudflare deployment to finish before changing the deployment URL.', 'wext-static-publisher'),
+            'custom_domain_outside_account' => __('The deployment URL must belong to an active domain in the connected Cloudflare account.', 'wext-static-publisher'),
+            'custom_domain_conflict' => __('The deployment URL already has a conflicting Cloudflare Worker or DNS record.', 'wext-static-publisher'),
+            'custom_domain_attach_failed' => __('Cloudflare could not attach the new deployment URL. Try again.', 'wext-static-publisher'),
+            'custom_domain_detach_failed' => __('Cloudflare could not detach the previous deployment URL. No target change was saved.', 'wext-static-publisher'),
+            'provider_reconnect_required' => __('Reconnect Cloudflare before changing the deployment URL.', 'wext-static-publisher'),
             'idempotency_conflict' => __('This deployment job is already bound to different export data.', 'wext-static-publisher'),
             'route_not_found' => __('This operation is not available on the Wext deployment service yet.', 'wext-static-publisher'),
         ];

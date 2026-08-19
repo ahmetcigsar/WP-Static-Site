@@ -575,6 +575,23 @@ final class Admin
         );
     }
 
+    public static function update_managed_cloudflare_target(): void
+    {
+        self::authorize_managed_action('wext_static_managed_target_update');
+        if (! isset($_POST['confirm_domain_change'])) {
+            self::redirect_managed('deployment-url-confirmation-required', 'error');
+        }
+        $deployment_url = isset($_POST['deployment_url'])
+            ? sanitize_text_field(wp_unslash((string) $_POST['deployment_url']))
+            : '';
+        try {
+            Managed_Deployer::update_deployment_url($deployment_url);
+            self::redirect_managed('deployment-url-updated', 'success');
+        } catch (\Throwable $error) {
+            self::redirect_managed($error->getMessage(), 'error');
+        }
+    }
+
     private static function authorize_managed_action(string $nonce_action): void
     {
         if (! current_user_can('manage_options')) {
@@ -608,6 +625,8 @@ final class Admin
             'cloudflare-connected' => __('Cloudflare is connected to the Wext deployment service.', 'wext-static-publisher'),
             'cloudflare-disconnected' => __('Cloudflare was disconnected.', 'wext-static-publisher'),
             'cloudflare-disconnected-pending' => __('The local connection was removed. Cloudflare token revocation is pending in the service.', 'wext-static-publisher'),
+            'deployment-url-updated' => __('The deployment URL was changed. Publish again to rebuild the static site for this address.', 'wext-static-publisher'),
+            'deployment-url-confirmation-required' => __('Confirm the deployment URL change before saving it.', 'wext-static-publisher'),
             'license-required-cloudflare' => __('An active Wext license is required to use Cloudflare deployment.', 'wext-static-publisher'),
         ];
         $message = (string) ($notice['message'] ?? '');
@@ -1232,6 +1251,18 @@ final class Admin
                                     <tr><th><?php esc_html_e('Deployment URL', 'wext-static-publisher'); ?></th><td><a href="<?php echo esc_url((string) ($managed_connection['deployment_url'] ?? '')); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html((string) ($managed_connection['deployment_url'] ?? '')); ?></a></td></tr>
                                     </tbody>
                                 </table>
+                                <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                                    <input type="hidden" name="action" value="wext_static_managed_target_update">
+                                    <?php wp_nonce_field('wext_static_managed_target_update'); ?>
+                                    <p>
+                                        <label for="wextstat-managed-deployment-url"><strong><?php esc_html_e('Change Deployment URL', 'wext-static-publisher'); ?></strong></label><br>
+                                        <input id="wextstat-managed-deployment-url" class="regular-text" type="url" name="deployment_url" value="<?php echo esc_attr((string) ($managed_connection['deployment_url'] ?? '')); ?>" required placeholder="https://www.example.com">
+                                    </p>
+                                    <p>
+                                        <label><input type="checkbox" name="confirm_domain_change" value="1" required> <?php esc_html_e('I confirm that the new address belongs to this connected Cloudflare account. The previous Worker domain will be detached.', 'wext-static-publisher'); ?></label>
+                                    </p>
+                                    <?php submit_button(__('Change Deployment URL', 'wext-static-publisher'), 'secondary', 'submit', false, ['data-wextstat-confirm' => __('Change the deployment URL and detach the previous Worker domain?', 'wext-static-publisher')]); ?>
+                                </form>
                                 <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                                     <input type="hidden" name="action" value="wext_static_managed_disconnect">
                                     <?php wp_nonce_field('wext_static_managed_disconnect'); ?>

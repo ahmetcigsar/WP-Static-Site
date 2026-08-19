@@ -29,11 +29,12 @@ $callback_secret = str_repeat('c', 48);
 $deployment_request = [];
 $activation_request = [];
 $ticket_request = [];
+$target_update_request = [];
 $detach_request = [];
 $legacy_detach_request = [];
 $license_rejected = false;
 add_filter('wext_static_deploy_service_url', static fn (): string => 'https://deploy.example.com');
-add_filter('pre_http_request', static function ($preempt, $args, $url) use ($access_token, $callback_secret, &$deployment_request, &$activation_request, &$ticket_request, &$detach_request, &$legacy_detach_request, &$license_rejected) {
+add_filter('pre_http_request', static function ($preempt, $args, $url) use ($access_token, $callback_secret, &$deployment_request, &$activation_request, &$ticket_request, &$target_update_request, &$detach_request, &$legacy_detach_request, &$license_rejected) {
     if ($url === 'https://deploy.example.com/v1/wordpress/license-activations') {
         $activation_request = $args;
         return [
@@ -99,6 +100,20 @@ add_filter('pre_http_request', static function ($preempt, $args, $url) use ($acc
                 'created_at' => gmdate('c'),
             ]),
             'response' => ['code' => 202, 'message' => 'Accepted'],
+            'cookies' => [],
+            'filename' => null,
+        ];
+    }
+    if ($url === 'https://deploy.example.com/v1/wordpress/connections/current/target') {
+        $target_update_request = $args;
+        return [
+            'headers' => [],
+            'body' => wp_json_encode([
+                'domain' => 'cdn.example.com',
+                'deployment_url' => 'https://cdn.example.com',
+                'previous_domain' => 'static.example.com',
+            ]),
+            'response' => ['code' => 200, 'message' => 'OK'],
             'cookies' => [],
             'filename' => null,
         ];
@@ -172,6 +187,31 @@ if (empty($public['connected'])
     throw new RuntimeException('Yönetilen servis bağlantısı güvenli biçimde kaydedilmedi.');
 }
 
+Wext\StaticPublisher\Plugin::record_deployment_status('old-target-job', 'completed', [
+    'deployment_url' => 'https://static.example.com',
+]);
+$updated_connection = Wext\StaticPublisher\Managed_Deployer::update_deployment_url('cdn.example.com');
+$target_update_payload = json_decode((string) ($target_update_request['body'] ?? ''), true);
+if (($target_update_request['method'] ?? '') !== 'PUT'
+    || ($target_update_request['headers']['Authorization'] ?? '') !== 'Bearer ' . $access_token
+    || ($target_update_payload['deployment_url'] ?? '') !== 'https://cdn.example.com'
+    || ($target_update_payload['confirm_domain_change'] ?? null) !== true
+    || ($updated_connection['domain'] ?? '') !== 'cdn.example.com'
+    || (Wext\StaticPublisher\Plugin::settings()['target_url'] ?? '') !== 'https://cdn.example.com'
+    || Wext\StaticPublisher\Plugin::deployment_status() !== []) {
+    throw new RuntimeException('Deployment URL güvenli biçimde güncellenmedi.');
+}
+
+$_GET = ['page' => 'wext-static-publisher', 'tab' => 'deploy', 'deploy_tab' => 'cloudflare'];
+ob_start();
+Wext\StaticPublisher\Admin::render();
+$cloudflare_html = (string) ob_get_clean();
+if (! str_contains($cloudflare_html, 'Change Deployment URL')
+    || ! str_contains($cloudflare_html, 'https://cdn.example.com')
+    || ! str_contains($cloudflare_html, 'wext_static_managed_target_update')) {
+    throw new RuntimeException('Deployment URL değiştirme arayüzü oluşturulamadı.');
+}
+
 $settings = Wext\StaticPublisher\Plugin::settings();
 $settings['deployment_mode'] = 'advanced';
 update_option(Wext\StaticPublisher\Plugin::SETTINGS_KEY, $settings, false);
@@ -217,6 +257,7 @@ $deployment_status = Wext\StaticPublisher\Plugin::deployment_status();
 if (($deployment_request['headers']['Authorization'] ?? '') !== 'Bearer ' . $access_token
     || ($deployment_payload['job_id'] ?? '') !== $job_id
     || ($deployment_payload['build_sha256'] ?? '') !== $checksum
+    || ($deployment_payload['target_url'] ?? '') !== 'https://cdn.example.com'
     || ! str_contains((string) ($deployment_payload['artifact_url'] ?? ''), '/managed-artifact')
     || str_contains((string) ($deployment_payload['artifact_url'] ?? ''), $callback_secret)
     || ($deployment_status['service_deployment_id'] ?? '') !== '33333333-3333-4333-8333-333333333333'

@@ -2894,3 +2894,48 @@ msgstr "The Wext license was detached from this site. You can use it on this dom
 #: wext-static-publisher/includes/class-managed-deployer.php
 msgid "Activate the license again before detaching it from this site."
 msgstr "Activate the license again before detaching it from this site."
+
+msgid "Connect Cloudflare before changing the deployment URL."
+msgstr "Connect Cloudflare before changing the deployment URL."
+
+msgid "Enter a public HTTPS deployment URL without a path, query, port, or credentials."
+msgstr "Enter a public HTTPS deployment URL without a path, query, port, or credentials."
+
+msgid "The saved Wext service credential is invalid. Reconnect Cloudflare."
+msgstr "The saved Wext service credential is invalid. Reconnect Cloudflare."
+
+msgid "The deployment service returned an invalid target response."
+msgstr "The deployment service returned an invalid target response."
+
+msgid "Wait for the current Cloudflare deployment to finish before changing the deployment URL."
+msgstr "Wait for the current Cloudflare deployment to finish before changing the deployment URL."
+
+msgid "The deployment URL must belong to an active domain in the connected Cloudflare account."
+msgstr "The deployment URL must belong to an active domain in the connected Cloudflare account."
+
+msgid "The deployment URL already has a conflicting Cloudflare Worker or DNS record."
+msgstr "The deployment URL already has a conflicting Cloudflare Worker or DNS record."
+
+msgid "Cloudflare could not attach the new deployment URL. Try again."
+msgstr "Cloudflare could not attach the new deployment URL. Try again."
+
+msgid "Cloudflare could not detach the previous deployment URL. No target change was saved."
+msgstr "Cloudflare could not detach the previous deployment URL. No target change was saved."
+
+msgid "Reconnect Cloudflare before changing the deployment URL."
+msgstr "Reconnect Cloudflare before changing the deployment URL."
+
+msgid "The deployment URL was changed. Publish again to rebuild the static site for this address."
+msgstr "The deployment URL was changed. Publish again to rebuild the static site for this address."
+
+msgid "Confirm the deployment URL change before saving it."
+msgstr "Confirm the deployment URL change before saving it."
+
+msgid "Change Deployment URL"
+msgstr "Change Deployment URL"
+
+msgid "I confirm that the new address belongs to this connected Cloudflare account. The previous Worker domain will be detached."
+msgstr "I confirm that the new address belongs to this connected Cloudflare account. The previous Worker domain will be detached."
+
+msgid "Change the deployment URL and detach the previous Worker domain?"
+msgstr "Change the deployment URL and detach the previous Worker domain?"

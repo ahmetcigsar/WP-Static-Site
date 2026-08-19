@@ -49,6 +49,7 @@ final class Plugin
         add_action('admin_post_wext_static_license_deactivate', [Admin::class, 'deactivate_managed_license']);
         add_action('admin_post_wext_static_managed_connect', [Admin::class, 'connect_managed_cloudflare']);
         add_action('admin_post_wext_static_managed_callback', [Admin::class, 'complete_managed_cloudflare']);
+        add_action('admin_post_wext_static_managed_target_update', [Admin::class, 'update_managed_cloudflare_target']);
         add_action('admin_post_wext_static_managed_disconnect', [Admin::class, 'disconnect_managed_cloudflare']);
         add_action('update_option_' . self::SETTINGS_KEY, [self::class, 'apply_archive_retention'], 10, 2);
         add_action(self::CRON_HOOK, [self::class, 'run_scheduled'], 10, 1);

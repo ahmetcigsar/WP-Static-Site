@@ -120,6 +120,10 @@ foreach ($expected_translations as $locale => $expected) {
     }
 
     if ($locale === 'tr_TR') {
+        if (__('Detach License', 'wext-static-publisher') !== 'Lisansı Ayır') {
+            fwrite(STDERR, "Türkçe Detach License çevirisi beklenen değerde değil.\n");
+            exit(1);
+        }
         foreach (['SFTP Connection' => 'SFTP Bağlantısı', 'Save SFTP Settings' => 'SFTP Ayarlarını Kaydet', 'Test Connection' => 'Bağlantıyı Test Et'] as $source => $sftp_expected) {
             $sftp_actual = __($source, 'wext-static-publisher');
             if ($sftp_actual !== $sftp_expected) {

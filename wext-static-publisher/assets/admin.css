@@ -185,6 +185,15 @@
     color: #334155;
 }
 
+.wextstat-license-status form {
+    display: inline-block;
+    margin: 0 0 0 12px;
+}
+
+.wextstat-admin .wextstat-license-detach-link {
+    color: var(--wextstat-danger);
+}
+
 .wextstat-files-table {
     width: 100%;
     max-width: 1160px;

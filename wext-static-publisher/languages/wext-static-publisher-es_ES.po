@@ -2835,3 +2835,19 @@ msgstr "Wext Support"
 #: wext-static-publisher/includes/class-admin.php
 msgid "Get help with licensing, static publishing, and deployment."
 msgstr "Get help with licensing, static publishing, and deployment."
+
+#: wext-static-publisher/includes/class-admin.php
+msgid "Detach License"
+msgstr "Detach License"
+
+#: wext-static-publisher/includes/class-admin.php
+msgid "Detach this license from this site? Cloudflare publishing will stop, but the remaining license term will stay available."
+msgstr "Detach this license from this site? Cloudflare publishing will stop, but the remaining license term will stay available."
+
+#: wext-static-publisher/includes/class-admin.php
+msgid "The Wext license was detached from this site. You can use it on this domain or another domain while it remains valid."
+msgstr "The Wext license was detached from this site. You can use it on this domain or another domain while it remains valid."
+
+#: wext-static-publisher/includes/class-managed-deployer.php
+msgid "Activate the license again before detaching it from this site."
+msgstr "Activate the license again before detaching it from this site."

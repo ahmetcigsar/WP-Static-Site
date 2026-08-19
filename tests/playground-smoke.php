@@ -469,12 +469,17 @@ if (! str_contains($support_html, 'Wext Support') || ! str_contains($support_htm
 }
 
 update_option(Wext\StaticPublisher\Managed_Deployer::LICENSE_KEY, ['active' => '1'], false);
+$_GET['about_tab'] = 'license';
 ob_start();
 Wext\StaticPublisher\Admin::render();
 $pro_html = (string) ob_get_clean();
 delete_option(Wext\StaticPublisher\Managed_Deployer::LICENSE_KEY);
 unset($_GET['tab'], $_GET['about_tab']);
-if (! str_contains($pro_html, 'Pro v' . WEXTSTAT_VERSION) || ! str_contains($pro_html, 'wextstat-license-badge is-pro')) {
+if (! str_contains($pro_html, 'Pro v' . WEXTSTAT_VERSION)
+    || ! str_contains($pro_html, 'wextstat-license-badge is-pro')
+    || ! str_contains($pro_html, 'Detach License')
+    || ! str_contains($pro_html, 'data-wextstat-confirm-label="Detach License"')
+    || ! str_contains($pro_html, 'wext_static_license_deactivate')) {
     fwrite(STDERR, "Aktif lisans Pro ve versiyon rozetini göstermiyor.\n");
     exit(1);
 }

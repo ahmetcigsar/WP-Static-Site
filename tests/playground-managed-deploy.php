@@ -18,9 +18,10 @@ $callback_secret = str_repeat('c', 48);
 $deployment_request = [];
 $activation_request = [];
 $ticket_request = [];
+$detach_request = [];
 $license_rejected = false;
 add_filter('wext_static_deploy_service_url', static fn (): string => 'https://deploy.example.com');
-add_filter('pre_http_request', static function ($preempt, $args, $url) use ($access_token, $callback_secret, &$deployment_request, &$activation_request, &$ticket_request, &$license_rejected) {
+add_filter('pre_http_request', static function ($preempt, $args, $url) use ($access_token, $callback_secret, &$deployment_request, &$activation_request, &$ticket_request, &$detach_request, &$license_rejected) {
     if ($url === 'https://deploy.example.com/v1/wordpress/license-activations') {
         $activation_request = $args;
         return [
@@ -30,6 +31,7 @@ add_filter('pre_http_request', static function ($preempt, $args, $url) use ($acc
                 'site_id' => '22222222-2222-4222-8222-222222222222',
                 'plan' => ['code' => 'pro', 'site_limit' => 3],
                 'activation_credential' => 'wext_act_' . str_repeat('a', 48),
+                'detach_credential' => 'wext_detach_' . str_repeat('d', 48),
                 'expires_at' => gmdate('c', time() + 900),
             ]),
             'response' => ['code' => 201, 'message' => 'Created'],
@@ -89,6 +91,16 @@ add_filter('pre_http_request', static function ($preempt, $args, $url) use ($acc
             'filename' => null,
         ];
     }
+    if ($url === 'https://deploy.example.com/v1/wordpress/license-activations/current') {
+        $detach_request = $args;
+        return [
+            'headers' => [],
+            'body' => wp_json_encode(['status' => 'deactivated']),
+            'response' => ['code' => 200, 'message' => 'OK'],
+            'cookies' => [],
+            'filename' => null,
+        ];
+    }
     return $preempt;
 }, 10, 3);
 
@@ -100,7 +112,8 @@ if (empty($license['active'])
     || ($activation_payload['license_key'] ?? '') !== 'wext-license-key-1234567890'
     || ! str_starts_with((string) ($activation_payload['installation_id'] ?? ''), 'wext_')
     || str_contains(wp_json_encode($stored_license), 'wext-license-key-1234567890')
-    || str_contains((string) ($stored_license['activation_credential'] ?? ''), 'wext_act_')) {
+    || str_contains((string) ($stored_license['activation_credential'] ?? ''), 'wext_act_')
+    || str_contains((string) ($stored_license['detach_credential'] ?? ''), 'wext_detach_')) {
     throw new RuntimeException('Lisans aktivasyonu güvenli biçimde kaydedilmedi.');
 }
 
@@ -182,6 +195,15 @@ if (Wext\StaticPublisher\Managed_Deployer::notify_export('inactive-license-job',
     || Wext\StaticPublisher\Plugin::license_active()
     || Wext\StaticPublisher\Managed_Deployer::configured()) {
     throw new RuntimeException('Servisin pasif saydığı lisans yerel premium özellik kilidini kapatmadı.');
+}
+
+Wext\StaticPublisher\Managed_Deployer::deactivate_license();
+if (($detach_request['method'] ?? '') !== 'DELETE'
+    || ! str_starts_with((string) ($detach_request['headers']['Authorization'] ?? ''), 'Bearer wext_detach_')
+    || get_option(Wext\StaticPublisher\Managed_Deployer::LICENSE_KEY, null) !== null
+    || get_option(Wext\StaticPublisher\Managed_Deployer::CONNECTION_KEY, null) !== null
+    || (Wext\StaticPublisher\Plugin::settings()['deployment_mode'] ?? '') !== 'advanced') {
+    throw new RuntimeException('Detach License işlemi site aktivasyonunu ve yerel bağlantıyı temizlemedi.');
 }
 
 echo "Wext Static Publisher managed deploy test passed.\n";

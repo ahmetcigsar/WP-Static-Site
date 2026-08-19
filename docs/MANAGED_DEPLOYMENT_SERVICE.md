@@ -139,4 +139,4 @@ Authorization: Bearer site-scoped-service-token
 
 Servis bağlantıyı ve Cloudflare refresh/access tokenlarını iptal eder. WordPress, servis yanıt veremese bile yerel şifrelenmiş bağlantıyı siler; kullanıcı daha sonra yeniden bağlanabilir.
 
-Lisans deaktivasyonu bağlantıdan ayrı olarak `DELETE /v1/wordpress/license-activations/current` ile siteye bağlı servis tokenı kullanılarak yapılır. Başarılı deaktivasyonda yerel bağlantı ve lisans durumu temizlenir; installation ID yeniden kurulum bağını korumak için saklanır.
+Lisans ayırma bağlantıdan ayrı olarak `DELETE /v1/wordpress/license-activations/current` ile yalnızca `license:deactivate` yetkisi taşıyan siteye bağlı `detach_credential` kullanılarak yapılır. Credential servis tarafında tek yönlü hash, eklentide şifreli option olarak tutulur ve lisans hak süresinden daha uzun geçerli olmaz. Başarılı ayırmada yerel bağlantı ve lisans durumu temizlenir, aktif site slotu boşalır; lisansın kalan süresi ve müşteri verisi silinmez. Lisans kalan süre içinde aynı veya başka bir domainde yeniden etkinleştirilebilir; installation ID yeniden kurulum bağını korumak için saklanır.

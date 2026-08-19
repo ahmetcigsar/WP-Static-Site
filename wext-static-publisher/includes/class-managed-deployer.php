@@ -56,6 +56,7 @@ final class Managed_Deployer
             'plan_code' => '',
             'site_limit' => 0,
             'activation_credential' => '',
+            'detach_credential' => '',
             'credential_expires_at' => '',
             'activated_at' => '',
         ]) : [];
@@ -71,6 +72,7 @@ final class Managed_Deployer
             'activation_id' => sanitize_text_field((string) ($license['activation_id'] ?? '')),
             'plan_code' => sanitize_key((string) ($license['plan_code'] ?? '')),
             'site_limit' => absint($license['site_limit'] ?? 0),
+            'detach_available' => (string) ($license['detach_credential'] ?? '') !== '',
             'credential_available' => $expires > time() && (string) ($license['activation_credential'] ?? '') !== '',
             'credential_expires_at' => sanitize_text_field((string) ($license['credential_expires_at'] ?? '')),
             'activated_at' => sanitize_text_field((string) ($license['activated_at'] ?? '')),
@@ -115,9 +117,10 @@ final class Managed_Deployer
         $activation_id = sanitize_text_field((string) ($payload['activation_id'] ?? ''));
         $site_id = sanitize_text_field((string) ($payload['site_id'] ?? ''));
         $credential = (string) ($payload['activation_credential'] ?? '');
+        $detach_credential = (string) ($payload['detach_credential'] ?? '');
         $expires_at = sanitize_text_field((string) ($payload['expires_at'] ?? ''));
         $plan = is_array($payload['plan'] ?? null) ? $payload['plan'] : [];
-        if ($activation_id === '' || $site_id === '' || strlen($credential) < 32 || strtotime($expires_at) <= time()) {
+        if ($activation_id === '' || $site_id === '' || strlen($credential) < 32 || strlen($detach_credential) < 32 || strtotime($expires_at) <= time()) {
             throw new RuntimeException(__('The deployment service returned an invalid license response.', 'wext-static-publisher'));
         }
 
@@ -128,6 +131,7 @@ final class Managed_Deployer
             'plan_code' => sanitize_key((string) ($plan['code'] ?? '')),
             'site_limit' => absint($plan['site_limit'] ?? 0),
             'activation_credential' => Secret_Store::encrypt($credential),
+            'detach_credential' => Secret_Store::encrypt($detach_credential),
             'credential_expires_at' => $expires_at,
             'activated_at' => gmdate('c'),
         ], false);
@@ -246,11 +250,17 @@ final class Managed_Deployer
 
     public static function deactivate_license(): void
     {
+        $license = self::license();
         $connection = self::connection();
-        if (! self::configured()) {
-            throw new RuntimeException(__('Connect Cloudflare before deactivating this site license.', 'wext-static-publisher'));
+        $token = '';
+        if ((string) ($license['detach_credential'] ?? '') !== '') {
+            $token = Secret_Store::decrypt((string) $license['detach_credential']);
+        } elseif ((string) ($connection['access_token'] ?? '') !== '') {
+            $token = Secret_Store::decrypt((string) $connection['access_token']);
         }
-        $token = Secret_Store::decrypt((string) ($connection['access_token'] ?? ''));
+        if ($token === '') {
+            throw new RuntimeException(__('Activate the license again before detaching it from this site.', 'wext-static-publisher'));
+        }
         self::remote_json('DELETE', '/v1/wordpress/license-activations/current', null, $token, [200]);
         delete_option(self::CONNECTION_KEY);
         delete_option(self::LICENSE_KEY);

@@ -522,7 +522,7 @@ final class Admin
         self::authorize_managed_action('wext_static_license_deactivate');
         try {
             Managed_Deployer::deactivate_license();
-            self::redirect_managed('license-deactivated', 'success', 'about');
+            self::redirect_managed('license-detached', 'success', 'about');
         } catch (\Throwable $error) {
             self::redirect_managed($error->getMessage(), 'error', 'about');
         }
@@ -600,7 +600,7 @@ final class Admin
         }
         $messages = [
             'license-activated' => __('The Wext license is active. You can now connect Cloudflare.', 'wext-static-publisher'),
-            'license-deactivated' => __('The Wext license was deactivated for this site.', 'wext-static-publisher'),
+            'license-detached' => __('The Wext license was detached from this site. You can use it on this domain or another domain while it remains valid.', 'wext-static-publisher'),
             'cloudflare-connected' => __('Cloudflare is connected to the Wext deployment service.', 'wext-static-publisher'),
             'cloudflare-disconnected' => __('Cloudflare was disconnected.', 'wext-static-publisher'),
             'cloudflare-disconnected-pending' => __('The local connection was removed. Cloudflare token revocation is pending in the service.', 'wext-static-publisher'),
@@ -2350,7 +2350,7 @@ final class Admin
                     <?php if ($managed_notice !== [] && (string) ($managed_notice['message'] ?? '') !== '') : ?>
                         <div class="notice notice-<?php echo esc_attr((string) ($managed_notice['type'] ?? 'error')); ?> inline is-dismissible" role="status"><p><?php echo esc_html((string) $managed_notice['message']); ?></p></div>
                     <?php endif; ?>
-                    <?php self::render_managed_license_card($managed_license, $managed_connection); ?>
+                    <?php self::render_managed_license_card($managed_license); ?>
                 <?php else : ?>
                     <h2><?php esc_html_e('Support', 'wext-static-publisher'); ?></h2>
                     <section class="wextstat-about-card" aria-labelledby="wextstat-support-title">
@@ -2383,7 +2383,7 @@ final class Admin
         <?php
     }
 
-    private static function render_managed_license_card(array $managed_license, array $managed_connection): void
+    private static function render_managed_license_card(array $managed_license): void
     {
         ?>
         <section class="wextstat-deploy-card wextstat-about-license-card" aria-labelledby="wextstat-license-title">
@@ -2401,18 +2401,21 @@ final class Admin
                 <?php else : ?>
                     <table class="widefat striped wextstat-status-table">
                         <tbody>
-                        <tr><th><?php esc_html_e('Status', 'wext-static-publisher'); ?></th><td><?php esc_html_e('Active', 'wext-static-publisher'); ?></td></tr>
+                        <tr>
+                            <th><?php esc_html_e('Status', 'wext-static-publisher'); ?></th>
+                            <td class="wextstat-license-status">
+                                <span><?php esc_html_e('Active', 'wext-static-publisher'); ?></span>
+                                <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                                    <input type="hidden" name="action" value="wext_static_license_deactivate">
+                                    <?php wp_nonce_field('wext_static_license_deactivate'); ?>
+                                    <button type="submit" class="button-link wextstat-license-detach-link" data-wextstat-confirm="<?php echo esc_attr__('Detach this license from this site? Cloudflare publishing will stop, but the remaining license term will stay available.', 'wext-static-publisher'); ?>" data-wextstat-confirm-label="<?php echo esc_attr__('Detach License', 'wext-static-publisher'); ?>"><?php esc_html_e('Detach License', 'wext-static-publisher'); ?></button>
+                                </form>
+                            </td>
+                        </tr>
                         <tr><th><?php esc_html_e('Plan', 'wext-static-publisher'); ?></th><td><code><?php echo esc_html((string) ($managed_license['plan_code'] ?: '—')); ?></code></td></tr>
                         <tr><th><?php esc_html_e('Site limit', 'wext-static-publisher'); ?></th><td><?php echo esc_html((string) ($managed_license['site_limit'] ?: '—')); ?></td></tr>
                         </tbody>
                     </table>
-                    <?php if (! empty($managed_connection['connected'])) : ?>
-                        <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
-                            <input type="hidden" name="action" value="wext_static_license_deactivate">
-                            <?php wp_nonce_field('wext_static_license_deactivate'); ?>
-                            <?php submit_button(__('Deactivate License', 'wext-static-publisher'), 'secondary', 'submit', false, ['data-wextstat-confirm' => __('Cloudflare publishing will stop for this site. Continue?', 'wext-static-publisher')]); ?>
-                        </form>
-                    <?php endif; ?>
                 <?php endif; ?>
             </div>
         </section>

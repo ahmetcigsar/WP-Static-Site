@@ -2867,3 +2867,19 @@ msgstr "Wext Destek"
 #: wext-static-publisher/includes/class-admin.php
 msgid "Get help with licensing, static publishing, and deployment."
 msgstr "Lisanslama, statik yayınlama ve deployment konularında yardım alın."
+
+#: wext-static-publisher/includes/class-admin.php
+msgid "Detach License"
+msgstr "Lisansı Ayır"
+
+#: wext-static-publisher/includes/class-admin.php
+msgid "Detach this license from this site? Cloudflare publishing will stop, but the remaining license term will stay available."
+msgstr "Bu lisans bu siteden ayrılsın mı? Cloudflare yayınlama durur ancak kalan lisans süresi kullanılabilir durumda kalır."
+
+#: wext-static-publisher/includes/class-admin.php
+msgid "The Wext license was detached from this site. You can use it on this domain or another domain while it remains valid."
+msgstr "Wext lisansı bu siteden ayrıldı. Geçerlilik süresi boyunca bu domainde veya başka bir domainde kullanabilirsiniz."
+
+#: wext-static-publisher/includes/class-managed-deployer.php
+msgid "Activate the license again before detaching it from this site."
+msgstr "Lisansı bu siteden ayırmadan önce yeniden etkinleştirin."

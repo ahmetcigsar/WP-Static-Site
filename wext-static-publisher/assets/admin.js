@@ -20,6 +20,7 @@
     if (confirmModal) {
         const confirmMessage = confirmModal.querySelector('#wextstat-confirm-message');
         const confirmButton = confirmModal.querySelector('[data-wextstat-confirm-accept]');
+        const defaultConfirmLabel = confirmButton.textContent;
         const cancelButtons = confirmModal.querySelectorAll('[data-wextstat-confirm-cancel]');
         let pendingButton = null;
         let previousFocus = null;
@@ -38,6 +39,7 @@
             pendingButton = button;
             previousFocus = document.activeElement;
             confirmMessage.textContent = button.dataset.wextstatConfirm || '';
+            confirmButton.textContent = button.dataset.wextstatConfirmLabel || defaultConfirmLabel;
             confirmModal.hidden = false;
             document.body.classList.add('wextstat-modal-open');
             confirmButton.focus();
@@ -78,6 +80,7 @@
             document.body.classList.remove('wextstat-modal-open');
             pendingButton = null;
             previousFocus = null;
+            confirmButton.textContent = defaultConfirmLabel;
             button.form.requestSubmit(button);
         });
 

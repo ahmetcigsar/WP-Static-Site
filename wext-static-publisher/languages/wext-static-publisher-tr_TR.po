@@ -2869,8 +2869,8 @@ msgid "Get help with licensing, static publishing, and deployment."
 msgstr "Lisanslama, statik yayınlama ve deployment konularında yardım alın."
 
 #: wext-static-publisher/includes/class-admin.php
-msgid "Detach License"
-msgstr "Lisansı Ayır"
+msgid "Revoke License"
+msgstr "Lisans Yetkisini Kaldır"
 
 #: wext-static-publisher/includes/class-admin.php
 msgid "Detach this license from this site? Cloudflare publishing will stop, but the remaining license term will stay available."

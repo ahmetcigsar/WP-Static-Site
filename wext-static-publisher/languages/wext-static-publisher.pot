@@ -2714,7 +2714,7 @@ msgid "Get help with licensing, static publishing, and deployment."
 msgstr ""
 
 #: wext-static-publisher/includes/class-admin.php
-msgid "Detach License"
+msgid "Revoke License"
 msgstr ""
 
 #: wext-static-publisher/includes/class-admin.php

@@ -2412,7 +2412,7 @@ final class Admin
                                 <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                                     <input type="hidden" name="action" value="wext_static_license_deactivate">
                                     <?php wp_nonce_field('wext_static_license_deactivate'); ?>
-                                    <button type="submit" class="button-link wextstat-license-detach-link" data-wextstat-confirm="<?php echo esc_attr__('Detach this license from this site? Cloudflare publishing will stop, but the remaining license term will stay available.', 'wext-static-publisher'); ?>" data-wextstat-confirm-label="<?php echo esc_attr__('Detach License', 'wext-static-publisher'); ?>"><?php esc_html_e('Detach License', 'wext-static-publisher'); ?></button>
+                                    <button type="submit" class="button-link wextstat-license-detach-link" data-wextstat-confirm="<?php echo esc_attr__('Detach this license from this site? Cloudflare publishing will stop, but the remaining license term will stay available.', 'wext-static-publisher'); ?>" data-wextstat-confirm-label="<?php echo esc_attr__('Revoke License', 'wext-static-publisher'); ?>"><?php esc_html_e('Revoke License', 'wext-static-publisher'); ?></button>
                                 </form>
                             </td>
                         </tr>

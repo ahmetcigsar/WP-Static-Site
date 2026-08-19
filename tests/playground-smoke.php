@@ -481,8 +481,8 @@ delete_option(Wext\StaticPublisher\Managed_Deployer::LICENSE_KEY);
 unset($_GET['tab'], $_GET['about_tab']);
 if (! str_contains($annual_html, 'Pro v' . WEXTSTAT_VERSION)
     || ! str_contains($annual_html, 'wextstat-license-badge is-pro')
-    || ! str_contains($annual_html, 'Detach License')
-    || ! str_contains($annual_html, 'data-wextstat-confirm-label="Detach License"')
+    || ! str_contains($annual_html, 'Revoke License')
+    || ! str_contains($annual_html, 'data-wextstat-confirm-label="Revoke License"')
     || ! str_contains($annual_html, 'wext_static_license_deactivate')
     || ! str_contains($annual_html, 'wextstat-license-active"><span class="dashicons dashicons-yes-alt" aria-hidden="true"></span><span>Active</span>')
     || ! str_contains($annual_html, 'wextstat-plan-badge is-annual">Annual</span>')

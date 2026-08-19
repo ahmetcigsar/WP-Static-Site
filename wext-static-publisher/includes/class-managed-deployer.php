@@ -258,10 +258,19 @@ final class Managed_Deployer
         } elseif ((string) ($connection['access_token'] ?? '') !== '') {
             $token = Secret_Store::decrypt((string) $connection['access_token']);
         }
-        if ($token === '') {
-            throw new RuntimeException(__('Activate the license again before detaching it from this site.', 'wext-static-publisher'));
+        if ($token !== '') {
+            self::remote_json('DELETE', '/v1/wordpress/license-activations/current', null, $token, [200]);
+        } else {
+            $activation_id = (string) ($license['activation_id'] ?? '');
+            if ($activation_id === '') {
+                throw new RuntimeException(__('Activate the license again before detaching it from this site.', 'wext-static-publisher'));
+            }
+            self::remote_json('POST', '/v1/wordpress/license-activations/current/detach', [
+                'activation_id' => $activation_id,
+                'installation_id' => self::installation_id(),
+                'site_url' => home_url(),
+            ], '', [200]);
         }
-        self::remote_json('DELETE', '/v1/wordpress/license-activations/current', null, $token, [200]);
         delete_option(self::CONNECTION_KEY);
         delete_option(self::LICENSE_KEY);
         $settings = Plugin::settings();

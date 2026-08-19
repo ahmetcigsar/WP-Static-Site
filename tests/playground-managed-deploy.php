@@ -19,9 +19,10 @@ $deployment_request = [];
 $activation_request = [];
 $ticket_request = [];
 $detach_request = [];
+$legacy_detach_request = [];
 $license_rejected = false;
 add_filter('wext_static_deploy_service_url', static fn (): string => 'https://deploy.example.com');
-add_filter('pre_http_request', static function ($preempt, $args, $url) use ($access_token, $callback_secret, &$deployment_request, &$activation_request, &$ticket_request, &$detach_request, &$license_rejected) {
+add_filter('pre_http_request', static function ($preempt, $args, $url) use ($access_token, $callback_secret, &$deployment_request, &$activation_request, &$ticket_request, &$detach_request, &$legacy_detach_request, &$license_rejected) {
     if ($url === 'https://deploy.example.com/v1/wordpress/license-activations') {
         $activation_request = $args;
         return [
@@ -93,6 +94,16 @@ add_filter('pre_http_request', static function ($preempt, $args, $url) use ($acc
     }
     if ($url === 'https://deploy.example.com/v1/wordpress/license-activations/current') {
         $detach_request = $args;
+        return [
+            'headers' => [],
+            'body' => wp_json_encode(['status' => 'deactivated']),
+            'response' => ['code' => 200, 'message' => 'OK'],
+            'cookies' => [],
+            'filename' => null,
+        ];
+    }
+    if ($url === 'https://deploy.example.com/v1/wordpress/license-activations/current/detach') {
+        $legacy_detach_request = $args;
         return [
             'headers' => [],
             'body' => wp_json_encode(['status' => 'deactivated']),
@@ -204,6 +215,24 @@ if (($detach_request['method'] ?? '') !== 'DELETE'
     || get_option(Wext\StaticPublisher\Managed_Deployer::CONNECTION_KEY, null) !== null
     || (Wext\StaticPublisher\Plugin::settings()['deployment_mode'] ?? '') !== 'advanced') {
     throw new RuntimeException('Detach License işlemi site aktivasyonunu ve yerel bağlantıyı temizlemedi.');
+}
+
+update_option(Wext\StaticPublisher\Managed_Deployer::LICENSE_KEY, [
+    'active' => '1',
+    'activation_id' => '11111111-1111-4111-8111-111111111111',
+    'site_id' => '22222222-2222-4222-8222-222222222222',
+    'plan_code' => 'pro',
+], false);
+delete_option(Wext\StaticPublisher\Managed_Deployer::CONNECTION_KEY);
+Wext\StaticPublisher\Managed_Deployer::deactivate_license();
+$legacy_detach_payload = json_decode((string) ($legacy_detach_request['body'] ?? ''), true);
+if (($legacy_detach_request['method'] ?? '') !== 'POST'
+    || isset($legacy_detach_request['headers']['Authorization'])
+    || ($legacy_detach_payload['activation_id'] ?? '') !== '11111111-1111-4111-8111-111111111111'
+    || ($legacy_detach_payload['installation_id'] ?? '') !== ($activation_payload['installation_id'] ?? '')
+    || ($legacy_detach_payload['site_url'] ?? '') !== home_url()
+    || get_option(Wext\StaticPublisher\Managed_Deployer::LICENSE_KEY, null) !== null) {
+    throw new RuntimeException('Eski aktivasyonun güvenli Detach License uyumluluk akışı başarısız.');
 }
 
 echo "Wext Static Publisher managed deploy test passed.\n";

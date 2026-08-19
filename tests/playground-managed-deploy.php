@@ -130,12 +130,23 @@ if (empty($license['active'])
 
 $authorization_url = Wext\StaticPublisher\Managed_Deployer::authorization_url();
 parse_str((string) parse_url($authorization_url, PHP_URL_QUERY), $authorization_query);
-$state = (string) ($authorization_query['state'] ?? '');
-if ($state === ''
+if ((string) ($authorization_query['state'] ?? '') === ''
     || ! str_starts_with($authorization_url, 'https://deploy.example.com/connect/cloudflare?')
     || ! str_starts_with((string) ($authorization_query['connect_ticket'] ?? ''), 'wext_ct_')
     || ! str_starts_with((string) ($ticket_request['headers']['Authorization'] ?? ''), 'Bearer wext_act_')) {
     throw new RuntimeException('Yönetilen servis connect-ticket, URL ve state üretimi başarısız.');
+}
+
+$stored_license['credential_expires_at'] = gmdate('c', time() - 1);
+update_option(Wext\StaticPublisher\Managed_Deployer::LICENSE_KEY, $stored_license, false);
+$ticket_request = [];
+$authorization_url = Wext\StaticPublisher\Managed_Deployer::authorization_url();
+parse_str((string) parse_url($authorization_url, PHP_URL_QUERY), $authorization_query);
+$state = (string) ($authorization_query['state'] ?? '');
+if ($state === ''
+    || empty(Wext\StaticPublisher\Managed_Deployer::public_license()['credential_available'])
+    || ! str_starts_with((string) ($ticket_request['headers']['Authorization'] ?? ''), 'Bearer wext_detach_')) {
+    throw new RuntimeException('Süresi dolan aktivasyon yetkisi kalıcı site credential ile yenilenemedi.');
 }
 
 $public = Wext\StaticPublisher\Managed_Deployer::complete_connection($state, 'one-time-code');

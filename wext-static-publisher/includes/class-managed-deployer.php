@@ -66,6 +66,9 @@ final class Managed_Deployer
     {
         $license = self::license();
         $expires = strtotime((string) ($license['credential_expires_at'] ?? '')) ?: 0;
+        $activation_credential_available = $expires > time()
+            && (string) ($license['activation_credential'] ?? '') !== '';
+        $site_credential_available = (string) ($license['detach_credential'] ?? '') !== '';
         return [
             'available' => self::available(),
             'active' => (string) ($license['active'] ?? '0') === '1',
@@ -73,7 +76,7 @@ final class Managed_Deployer
             'plan_code' => sanitize_key((string) ($license['plan_code'] ?? '')),
             'site_limit' => absint($license['site_limit'] ?? 0),
             'detach_available' => (string) ($license['detach_credential'] ?? '') !== '',
-            'credential_available' => $expires > time() && (string) ($license['activation_credential'] ?? '') !== '',
+            'credential_available' => $activation_credential_available || $site_credential_available,
             'credential_expires_at' => sanitize_text_field((string) ($license['credential_expires_at'] ?? '')),
             'activated_at' => sanitize_text_field((string) ($license['activated_at'] ?? '')),
         ];
@@ -148,14 +151,17 @@ final class Managed_Deployer
 
         $license = self::license();
         $expires = strtotime((string) ($license['credential_expires_at'] ?? '')) ?: 0;
+        $encrypted_credential = $expires > time()
+            && (string) ($license['activation_credential'] ?? '') !== ''
+                ? (string) $license['activation_credential']
+                : (string) ($license['detach_credential'] ?? '');
         if ((string) ($license['active'] ?? '0') !== '1'
-            || $expires <= time()
-            || (string) ($license['activation_credential'] ?? '') === '') {
+            || $encrypted_credential === '') {
             throw new RuntimeException(__('Activate the license again before connecting Cloudflare.', 'wext-static-publisher'));
         }
 
         try {
-            $credential = Secret_Store::decrypt((string) $license['activation_credential']);
+            $credential = Secret_Store::decrypt($encrypted_credential);
         } catch (\Throwable $error) {
             throw new RuntimeException(__('The saved license credential is invalid. Activate the license again.', 'wext-static-publisher'));
         }

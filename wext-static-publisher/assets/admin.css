@@ -724,6 +724,13 @@
     font-weight: 700;
 }
 
+.wextstat-easy-start__progress li > strong {
+    position: relative;
+    z-index: 1;
+    padding-right: 12px;
+    background: #f8fafc;
+}
+
 .wextstat-easy-start__progress li.is-current,
 .wextstat-easy-start__progress li.is-complete {
     color: var(--wextstat-text);

@@ -2788,13 +2788,187 @@ msgid "Revoke License"
 msgstr "Revoke License"
 
 #: wext-static-publisher/includes/class-admin.php
-msgid "Detach this license from this site? Cloudflare publishing will stop, but the remaining license term will stay available."
-msgstr "Detach this license from this site? Cloudflare publishing will stop, but the remaining license term will stay available."
+msgid ""
+"Detach this license from this site? Cloudflare publishing will stop, but the "
+"remaining license term will stay available."
+msgstr ""
+"Detach this license from this site? Cloudflare publishing will stop, but the "
+"remaining license term will stay available."
 
 #: wext-static-publisher/includes/class-admin.php
-msgid "The Wext license was detached from this site. You can use it on this domain or another domain while it remains valid."
-msgstr "The Wext license was detached from this site. You can use it on this domain or another domain while it remains valid."
+msgid ""
+"The Wext license was detached from this site. You can use it on this domain "
+"or another domain while it remains valid."
+msgstr ""
+"The Wext license was detached from this site. You can use it on this domain "
+"or another domain while it remains valid."
 
 #: wext-static-publisher/includes/class-managed-deployer.php
 msgid "Activate the license again before detaching it from this site."
 msgstr "Activate the license again before detaching it from this site."
+
+msgid "Connect Cloudflare before changing the deployment URL."
+msgstr ""
+
+msgid ""
+"Enter a public HTTPS deployment URL without a path, query, port, or "
+"credentials."
+msgstr ""
+
+msgid "The saved Wext service credential is invalid. Reconnect Cloudflare."
+msgstr ""
+
+msgid "The deployment service returned an invalid target response."
+msgstr ""
+
+msgid ""
+"Wait for the current Cloudflare deployment to finish before changing the "
+"deployment URL."
+msgstr ""
+
+msgid ""
+"The deployment URL must belong to an active domain in the connected "
+"Cloudflare account."
+msgstr ""
+
+msgid ""
+"The deployment URL already has a conflicting Cloudflare Worker or DNS record."
+msgstr ""
+
+msgid "Cloudflare could not attach the new deployment URL. Try again."
+msgstr ""
+
+msgid ""
+"Cloudflare could not detach the previous deployment URL. No target change "
+"was saved."
+msgstr ""
+
+msgid "Reconnect Cloudflare before changing the deployment URL."
+msgstr ""
+
+msgid ""
+"The deployment URL was changed. Publish again to rebuild the static site for "
+"this address."
+msgstr ""
+
+msgid "Confirm the deployment URL change before saving it."
+msgstr ""
+
+msgid "Change Deployment URL"
+msgstr ""
+
+msgid ""
+"I confirm that the new address belongs to this connected Cloudflare account. "
+"The previous Worker domain will be detached."
+msgstr ""
+
+msgid "Change the deployment URL and detach the previous Worker domain?"
+msgstr ""
+
+msgid "Easy Start"
+msgstr ""
+
+msgid ""
+"Connect Cloudflare, confirm the source and public static domains, then "
+"publish your site without API tokens or Account IDs."
+msgstr ""
+
+msgid "Easy Start progress"
+msgstr ""
+
+msgid "Activate Wext License"
+msgstr ""
+
+msgid "License is active."
+msgstr ""
+
+#, php-format
+msgid "Plan: %s"
+msgstr ""
+
+msgid ""
+"Managed Cloudflare deployment requires an active Wext license. The key is "
+"verified securely and is not stored as plain text."
+msgstr ""
+
+msgid "License key"
+msgstr ""
+
+msgid "Activate and Continue"
+msgstr ""
+
+msgid "Connect Cloudflare Account"
+msgstr ""
+
+#, fuzzy
+msgid "Cloudflare connected"
+msgstr "Cloudflare"
+
+msgid ""
+"Cloudflare credentials remain encrypted in the Wext deployment service and "
+"are never stored in WordPress."
+msgstr ""
+
+msgid ""
+"The secure Wext screen will ask you to authorize Cloudflare, choose the "
+"account, and select the zone and publication domain."
+msgstr ""
+
+msgid "Connect Cloudflare and Continue"
+msgstr ""
+
+msgid ""
+"Refresh the license connection from About > License, then return to Easy "
+"Start."
+msgstr ""
+
+msgid "Confirm Site Domains"
+msgstr ""
+
+msgid "Deployment source (WordPress)"
+msgstr ""
+
+msgid "Wext reads the site from this address during export."
+msgstr ""
+
+#, fuzzy
+msgid "Public static site domain"
+msgstr "تمكين إنشاء موقع ثابت تلقائيًا"
+
+msgid "Cloudflare serves the completed static site from this HTTPS address."
+msgstr ""
+
+msgid "Static site HTTPS address"
+msgstr ""
+
+msgid "I confirm that this domain belongs to the connected Cloudflare account."
+msgstr ""
+
+#, fuzzy
+msgid "Save Static Site Domain"
+msgstr "إنشاء موقع ثابت"
+
+msgid ""
+"The source address comes from WordPress. You will select the static domain "
+"while connecting Cloudflare."
+msgstr ""
+
+#, fuzzy
+msgid "Create and Deploy Static Site"
+msgstr "إنشاء موقع ثابت"
+
+msgid ""
+"Wext will create a fresh static ZIP, verify it, send it to the managed "
+"service, and publish it to the selected Cloudflare domain."
+msgstr ""
+
+#, fuzzy
+msgid "Deployment status"
+msgstr "خطاف الويب للنشر"
+
+msgid "Published address"
+msgstr ""
+
+#, fuzzy
+msgid "Create and Deploy"
+msgstr "تاريخ الإنشاء"

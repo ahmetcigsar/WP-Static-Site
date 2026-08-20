@@ -399,11 +399,17 @@ final class Admin
             wp_die(__('You are not authorized for this operation.', 'wext-static-publisher'), 403);
         }
         check_admin_referer('wext_static_export');
+        $return_to = isset($_POST['return_to'])
+            ? sanitize_key(wp_unslash((string) $_POST['return_to']))
+            : '';
+        $return_url = $return_to === 'easy-start'
+            ? self::deploy_page_url('easy-start')
+            : self::admin_page_url('main');
         $current_status = Plugin::public_status();
         $current_state = (string) ($current_status['state'] ?? '');
         $retry_stalled_queue = $current_state === 'queued' && ! empty($current_status['stalled']) && ! get_transient(Plugin::LOCK_KEY);
         if (get_transient(Plugin::LOCK_KEY) || (in_array($current_state, ['queued', 'running'], true) && ! $retry_stalled_queue)) {
-            wp_safe_redirect(add_query_arg('started', 'running', self::admin_page_url('main')));
+            wp_safe_redirect(add_query_arg('started', 'running', $return_url));
             exit;
         }
         if ($retry_stalled_queue) {
@@ -421,7 +427,7 @@ final class Admin
                 'error' => '',
             ]);
         }
-        wp_safe_redirect(add_query_arg('started', '1', self::admin_page_url('main')));
+        wp_safe_redirect(add_query_arg('started', '1', $return_url));
         exit;
     }
 
@@ -510,14 +516,17 @@ final class Admin
     public static function activate_managed_license(): void
     {
         self::authorize_managed_action('wext_static_license_activate');
+        $return_tab = isset($_POST['return_tab'])
+            ? sanitize_key(wp_unslash((string) $_POST['return_tab']))
+            : 'about';
         $license_key = isset($_POST['license_key'])
             ? sanitize_text_field(wp_unslash((string) $_POST['license_key']))
             : '';
         try {
             Managed_Deployer::activate_license($license_key);
-            self::redirect_managed('license-activated', 'success', 'about');
+            self::redirect_managed('license-activated', 'success', $return_tab);
         } catch (\Throwable $error) {
-            self::redirect_managed($error->getMessage(), 'error', 'about');
+            self::redirect_managed($error->getMessage(), 'error', $return_tab);
         }
     }
 
@@ -535,15 +544,18 @@ final class Admin
     public static function connect_managed_cloudflare(): void
     {
         self::authorize_managed_action('wext_static_managed_connect');
+        $return_tab = isset($_POST['return_tab'])
+            ? sanitize_key(wp_unslash((string) $_POST['return_tab']))
+            : 'cloudflare';
         if (! Plugin::license_active()) {
-            self::redirect_managed('license-required-cloudflare', 'error', 'about');
+            self::redirect_managed('license-required-cloudflare', 'error', $return_tab);
         }
         try {
-            $url = Managed_Deployer::authorization_url();
+            $url = Managed_Deployer::authorization_url($return_tab);
             wp_redirect($url, 302, 'Wext Static Publisher');
             exit;
         } catch (\Throwable $error) {
-            self::redirect_managed($error->getMessage(), 'error');
+            self::redirect_managed($error->getMessage(), 'error', $return_tab);
         }
     }
 
@@ -554,14 +566,19 @@ final class Admin
         }
         $state = isset($_GET['state']) ? sanitize_text_field(wp_unslash((string) $_GET['state'])) : '';
         $code = isset($_GET['code']) ? sanitize_text_field(wp_unslash((string) $_GET['code'])) : '';
+        $return_tab = Managed_Deployer::return_tab_for_state($state);
         if (! Plugin::license_active()) {
-            self::redirect_managed('license-required-cloudflare', 'error', 'about');
+            self::redirect_managed('license-required-cloudflare', 'error', $return_tab);
         }
         try {
-            Managed_Deployer::complete_connection($state, $code);
-            self::redirect_managed('cloudflare-connected', 'success');
+            $connection = Managed_Deployer::complete_connection($state, $code);
+            self::redirect_managed(
+                'cloudflare-connected',
+                'success',
+                ($connection['return_tab'] ?? '') === 'easy-start' ? 'easy-start' : 'cloudflare'
+            );
         } catch (\Throwable $error) {
-            self::redirect_managed($error->getMessage(), 'error');
+            self::redirect_managed($error->getMessage(), 'error', $return_tab);
         }
     }
 
@@ -578,17 +595,20 @@ final class Admin
     public static function update_managed_cloudflare_target(): void
     {
         self::authorize_managed_action('wext_static_managed_target_update');
+        $return_tab = isset($_POST['return_tab'])
+            ? sanitize_key(wp_unslash((string) $_POST['return_tab']))
+            : 'cloudflare';
         if (! isset($_POST['confirm_domain_change'])) {
-            self::redirect_managed('deployment-url-confirmation-required', 'error');
+            self::redirect_managed('deployment-url-confirmation-required', 'error', $return_tab);
         }
         $deployment_url = isset($_POST['deployment_url'])
             ? sanitize_text_field(wp_unslash((string) $_POST['deployment_url']))
             : '';
         try {
             Managed_Deployer::update_deployment_url($deployment_url);
-            self::redirect_managed('deployment-url-updated', 'success');
+            self::redirect_managed('deployment-url-updated', 'success', $return_tab);
         } catch (\Throwable $error) {
-            self::redirect_managed($error->getMessage(), 'error');
+            self::redirect_managed($error->getMessage(), 'error', $return_tab);
         }
     }
 
@@ -607,7 +627,12 @@ final class Admin
             'message' => sanitize_text_field($message),
             'type' => in_array($type, ['success', 'warning', 'error'], true) ? $type : 'error',
         ], MINUTE_IN_SECONDS);
-        wp_safe_redirect($tab === 'about' ? self::about_page_url('license') : self::deploy_page_url('cloudflare'));
+        if ($tab === 'about') {
+            $url = self::about_page_url('license');
+        } else {
+            $url = self::deploy_page_url($tab === 'easy-start' ? 'easy-start' : 'cloudflare');
+        }
+        wp_safe_redirect($url);
         exit;
     }
 
@@ -782,7 +807,7 @@ final class Admin
         }
         $requested_tab = isset($_GET['tab']) ? sanitize_key(wp_unslash((string) $_GET['tab'])) : 'main';
         $requested_settings_tab = isset($_GET['settings_tab']) ? sanitize_key(wp_unslash((string) $_GET['settings_tab'])) : 'general';
-        $requested_deploy_tab = isset($_GET['deploy_tab']) ? sanitize_key(wp_unslash((string) $_GET['deploy_tab'])) : 'zip';
+        $requested_deploy_tab = isset($_GET['deploy_tab']) ? sanitize_key(wp_unslash((string) $_GET['deploy_tab'])) : 'easy-start';
         $requested_seo_tab = isset($_GET['seo_tab']) ? sanitize_key(wp_unslash((string) $_GET['seo_tab'])) : 'plugins';
         $requested_search_tab = isset($_GET['search_tab']) ? sanitize_key(wp_unslash((string) $_GET['search_tab'])) : 'static';
         $requested_hide_tab = isset($_GET['hide_tab']) ? sanitize_key(wp_unslash((string) $_GET['hide_tab'])) : 'directory';
@@ -1129,6 +1154,7 @@ final class Admin
         $github_configured = (string) ($settings['deployment_webhook_url'] ?? '') !== '';
         $sftp_configured = SFTP_Deployer::configured($settings);
         $deploy_tabs = [
+            'easy-start' => [__('Easy Start', 'wext-static-publisher'), 'dashicons-superhero-alt'],
             'zip' => [__('ZIP File', 'wext-static-publisher'), 'dashicons-media-archive'],
             'github' => [__('GitHub', 'wext-static-publisher'), 'github'],
             'cloudflare' => [__('Cloudflare', 'wext-static-publisher'), 'cloudflare'],
@@ -1160,7 +1186,9 @@ final class Admin
                 <?php endforeach; ?>
             </nav>
             <div class="wextstat-deploy-panel">
-                <?php if (! $license_active && in_array($current_deploy_tab, $licensed_tabs, true)) : ?>
+                <?php if ($current_deploy_tab === 'easy-start') : ?>
+                    <?php self::render_easy_start($settings); ?>
+                <?php elseif (! $license_active && in_array($current_deploy_tab, $licensed_tabs, true)) : ?>
                     <?php self::render_license_required_card($deploy_tabs[$current_deploy_tab][0]); ?>
                 <?php elseif ($current_deploy_tab === 'zip') : ?>
                     <section class="wextstat-deploy-card" aria-labelledby="wextstat-deploy-zip-title">
@@ -1311,6 +1339,157 @@ final class Admin
                 <?php endif; ?>
             </div>
         </div>
+        <?php
+    }
+
+    private static function render_easy_start(array $settings): void
+    {
+        $license = Managed_Deployer::public_license();
+        $connection = Managed_Deployer::public_connection();
+        $deployment = Plugin::public_deployment_status();
+        $export = Plugin::public_status();
+        $license_ready = ! empty($license['active']);
+        $connection_ready = ! empty($connection['connected']);
+        $domain_ready = $connection_ready && (string) ($connection['deployment_url'] ?? '') !== '';
+        $export_active = in_array((string) ($export['state'] ?? ''), ['queued', 'running'], true);
+        $deployment_state = (string) ($deployment['state'] ?? '');
+        $current_step = ! $license_ready ? 1 : (! $connection_ready ? 2 : (! $domain_ready ? 3 : 4));
+        $notice = self::managed_notice();
+        $steps = [
+            1 => __('License', 'wext-static-publisher'),
+            2 => __('Cloudflare Account', 'wext-static-publisher'),
+            3 => __('Site Domains', 'wext-static-publisher'),
+            4 => __('Deploy', 'wext-static-publisher'),
+        ];
+        $deployment_labels = [
+            'waiting' => __('Waiting', 'wext-static-publisher'),
+            'dispatched' => __('Queued', 'wext-static-publisher'),
+            'deploying' => __('Running', 'wext-static-publisher'),
+            'completed' => __('Completed', 'wext-static-publisher'),
+            'failed' => __('Failed', 'wext-static-publisher'),
+        ];
+        ?>
+        <?php if ($notice !== [] && (string) ($notice['message'] ?? '') !== '') : ?>
+            <div class="notice notice-<?php echo esc_attr((string) ($notice['type'] ?? 'error')); ?> inline is-dismissible" role="status"><p><?php echo esc_html((string) $notice['message']); ?></p></div>
+        <?php endif; ?>
+        <section class="wextstat-easy-start" aria-labelledby="wextstat-easy-start-title">
+            <header class="wextstat-easy-start__header">
+                <span class="wextstat-easy-start__mark dashicons dashicons-superhero-alt" aria-hidden="true"></span>
+                <div>
+                    <h3 id="wextstat-easy-start-title"><?php esc_html_e('Easy Start', 'wext-static-publisher'); ?></h3>
+                    <p><?php esc_html_e('Connect Cloudflare, confirm the source and public static domains, then publish your site without API tokens or Account IDs.', 'wext-static-publisher'); ?></p>
+                </div>
+            </header>
+
+            <ol class="wextstat-easy-start__progress" aria-label="<?php echo esc_attr__('Easy Start progress', 'wext-static-publisher'); ?>">
+                <?php foreach ($steps as $number => $label) : ?>
+                    <?php $completed = $number < $current_step || ($number === 4 && $deployment_state === 'completed'); ?>
+                    <li class="<?php echo $completed ? 'is-complete' : ($number === $current_step ? 'is-current' : ''); ?>" <?php echo $number === $current_step ? 'aria-current="step"' : ''; ?>>
+                        <span><?php echo $completed ? '<span class="dashicons dashicons-yes" aria-hidden="true"></span>' : esc_html((string) $number); ?></span>
+                        <strong><?php echo esc_html($label); ?></strong>
+                    </li>
+                <?php endforeach; ?>
+            </ol>
+
+            <div class="wextstat-easy-start__steps">
+                <section class="wextstat-easy-step <?php echo $license_ready ? 'is-complete' : 'is-current'; ?>" aria-labelledby="wextstat-easy-license-title">
+                    <span class="wextstat-easy-step__number">1</span>
+                    <div class="wextstat-easy-step__body">
+                        <h4 id="wextstat-easy-license-title"><?php esc_html_e('Activate Wext License', 'wext-static-publisher'); ?></h4>
+                        <?php if ($license_ready) : ?>
+                            <p class="wextstat-easy-step__success"><span class="dashicons dashicons-yes-alt" aria-hidden="true"></span> <?php esc_html_e('License is active.', 'wext-static-publisher'); ?></p>
+                            <p class="description"><?php echo esc_html(sprintf(__('Plan: %s', 'wext-static-publisher'), (string) ($license['plan_code'] ?: '—'))); ?></p>
+                        <?php else : ?>
+                            <p><?php esc_html_e('Managed Cloudflare deployment requires an active Wext license. The key is verified securely and is not stored as plain text.', 'wext-static-publisher'); ?></p>
+                            <form class="wextstat-easy-step__form" method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                                <input type="hidden" name="action" value="wext_static_license_activate">
+                                <input type="hidden" name="return_tab" value="easy-start">
+                                <?php wp_nonce_field('wext_static_license_activate'); ?>
+                                <label for="wextstat-easy-license-key"><?php esc_html_e('License key', 'wext-static-publisher'); ?></label>
+                                <input id="wextstat-easy-license-key" class="regular-text" type="password" name="license_key" required minlength="16" autocomplete="off">
+                                <?php submit_button(__('Activate and Continue', 'wext-static-publisher'), 'primary', 'submit', false); ?>
+                            </form>
+                        <?php endif; ?>
+                    </div>
+                </section>
+
+                <section class="wextstat-easy-step <?php echo $connection_ready ? 'is-complete' : ($license_ready ? 'is-current' : 'is-disabled'); ?>" aria-labelledby="wextstat-easy-cloudflare-title">
+                    <span class="wextstat-easy-step__number">2</span>
+                    <div class="wextstat-easy-step__body">
+                        <h4 id="wextstat-easy-cloudflare-title"><?php esc_html_e('Connect Cloudflare Account', 'wext-static-publisher'); ?></h4>
+                        <?php if ($connection_ready) : ?>
+                            <p class="wextstat-easy-step__success"><span class="dashicons dashicons-yes-alt" aria-hidden="true"></span> <?php echo esc_html((string) ($connection['account_label'] ?? __('Cloudflare connected', 'wext-static-publisher'))); ?></p>
+                            <p class="description"><?php esc_html_e('Cloudflare credentials remain encrypted in the Wext deployment service and are never stored in WordPress.', 'wext-static-publisher'); ?></p>
+                        <?php else : ?>
+                            <p><?php esc_html_e('The secure Wext screen will ask you to authorize Cloudflare, choose the account, and select the zone and publication domain.', 'wext-static-publisher'); ?></p>
+                            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                                <input type="hidden" name="action" value="wext_static_managed_connect">
+                                <input type="hidden" name="return_tab" value="easy-start">
+                                <?php wp_nonce_field('wext_static_managed_connect'); ?>
+                                <?php submit_button(__('Connect Cloudflare and Continue', 'wext-static-publisher'), 'primary', 'submit', false, $license_ready && ! empty($license['credential_available']) && ! empty($license['available']) ? [] : ['disabled' => 'disabled']); ?>
+                            </form>
+                            <?php if ($license_ready && empty($license['credential_available'])) : ?>
+                                <p class="description"><?php esc_html_e('Refresh the license connection from About > License, then return to Easy Start.', 'wext-static-publisher'); ?></p>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                    </div>
+                </section>
+
+                <section class="wextstat-easy-step <?php echo $domain_ready ? 'is-complete' : ($connection_ready ? 'is-current' : 'is-disabled'); ?>" aria-labelledby="wextstat-easy-domains-title">
+                    <span class="wextstat-easy-step__number">3</span>
+                    <div class="wextstat-easy-step__body">
+                        <h4 id="wextstat-easy-domains-title"><?php esc_html_e('Confirm Site Domains', 'wext-static-publisher'); ?></h4>
+                        <div class="wextstat-easy-domains">
+                            <div>
+                                <span><?php esc_html_e('Deployment source (WordPress)', 'wext-static-publisher'); ?></span>
+                                <code><?php echo esc_html(untrailingslashit(home_url())); ?></code>
+                                <small><?php esc_html_e('Wext reads the site from this address during export.', 'wext-static-publisher'); ?></small>
+                            </div>
+                            <span class="dashicons dashicons-arrow-right-alt" aria-hidden="true"></span>
+                            <div>
+                                <span><?php esc_html_e('Public static site domain', 'wext-static-publisher'); ?></span>
+                                <code><?php echo esc_html((string) ($connection['deployment_url'] ?? ($settings['target_url'] ?? '—'))); ?></code>
+                                <small><?php esc_html_e('Cloudflare serves the completed static site from this HTTPS address.', 'wext-static-publisher'); ?></small>
+                            </div>
+                        </div>
+                        <?php if ($connection_ready) : ?>
+                            <form class="wextstat-easy-step__form" method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                                <input type="hidden" name="action" value="wext_static_managed_target_update">
+                                <input type="hidden" name="return_tab" value="easy-start">
+                                <?php wp_nonce_field('wext_static_managed_target_update'); ?>
+                                <label for="wextstat-easy-deployment-url"><?php esc_html_e('Static site HTTPS address', 'wext-static-publisher'); ?></label>
+                                <input id="wextstat-easy-deployment-url" class="regular-text" type="url" name="deployment_url" value="<?php echo esc_attr((string) ($connection['deployment_url'] ?? '')); ?>" required placeholder="https://www.example.com">
+                                <label class="wextstat-easy-confirm"><input type="checkbox" name="confirm_domain_change" value="1" required> <?php esc_html_e('I confirm that this domain belongs to the connected Cloudflare account.', 'wext-static-publisher'); ?></label>
+                                <?php submit_button(__('Save Static Site Domain', 'wext-static-publisher'), 'secondary', 'submit', false, ['data-wextstat-confirm' => __('Change the deployment URL and detach the previous Worker domain?', 'wext-static-publisher')]); ?>
+                            </form>
+                        <?php else : ?>
+                            <p class="description"><?php esc_html_e('The source address comes from WordPress. You will select the static domain while connecting Cloudflare.', 'wext-static-publisher'); ?></p>
+                        <?php endif; ?>
+                    </div>
+                </section>
+
+                <section class="wextstat-easy-step <?php echo $domain_ready ? 'is-current' : 'is-disabled'; ?>" aria-labelledby="wextstat-easy-deploy-title">
+                    <span class="wextstat-easy-step__number">4</span>
+                    <div class="wextstat-easy-step__body">
+                        <h4 id="wextstat-easy-deploy-title"><?php esc_html_e('Create and Deploy Static Site', 'wext-static-publisher'); ?></h4>
+                        <p><?php esc_html_e('Wext will create a fresh static ZIP, verify it, send it to the managed service, and publish it to the selected Cloudflare domain.', 'wext-static-publisher'); ?></p>
+                        <?php if ($deployment_state !== '') : ?>
+                            <dl class="wextstat-easy-deployment-status">
+                                <div><dt><?php esc_html_e('Deployment status', 'wext-static-publisher'); ?></dt><dd><?php echo esc_html($deployment_labels[$deployment_state] ?? $deployment_state); ?></dd></div>
+                                <?php if (! empty($deployment['deployment_url'])) : ?><div><dt><?php esc_html_e('Published address', 'wext-static-publisher'); ?></dt><dd><a href="<?php echo esc_url((string) $deployment['deployment_url']); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html((string) $deployment['deployment_url']); ?></a></dd></div><?php endif; ?>
+                                <?php if (! empty($deployment['error'])) : ?><div><dt><?php esc_html_e('Error', 'wext-static-publisher'); ?></dt><dd><?php echo esc_html((string) $deployment['error']); ?></dd></div><?php endif; ?>
+                            </dl>
+                        <?php endif; ?>
+                        <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                            <input type="hidden" name="action" value="wext_static_export">
+                            <input type="hidden" name="return_to" value="easy-start">
+                            <?php wp_nonce_field('wext_static_export'); ?>
+                            <?php submit_button($deployment_state === '' ? __('Create and Deploy', 'wext-static-publisher') : __('Deploy Again', 'wext-static-publisher'), 'primary', 'submit', false, (! $domain_ready || $export_active) ? ['disabled' => 'disabled'] : []); ?>
+                        </form>
+                    </div>
+                </section>
+            </div>
+        </section>
         <?php
     }
 

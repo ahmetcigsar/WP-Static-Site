@@ -90,7 +90,9 @@ Callback ve job-specific artifact uçları da `Static Publisher Deploy` rolü il
 
 ## Yönetilen Cloudflare deployment
 
-Wext lisansı **About > License** alanında etkinleştirilir; ardından **Deploy > Cloudflare** ekranında Cloudflare hesabı bağlanır. Varsayılan servis adresi `https://deploy.wext.io` değeridir; self-hosted veya staging servis için `WEXTSTAT_DEPLOY_SERVICE_URL` sabiti ya da `wext_static_deploy_service_url` filtresi kullanılabilir. Üretim servis adresi HTTPS olmalıdır.
+Yeni kurulumlarda **Deploy > Easy Start** sihirbazı kullanılır. Sihirbaz lisansı etkinleştirir; güvenli Wext OAuth ekranında Cloudflare hesabı ile zone/yayın domainini seçtirir; WordPress kaynak domaini ile herkese açık statik site domainini birlikte doğrulatır ve son adımda yeni export + yönetilen deployment işini başlatır. API tokenı veya Cloudflare Account ID WordPress'e girilmez. İleri seviye ZIP, GitHub, Cloudflare, SFTP ve Auto Deploy ekranları ayrıca korunur.
+
+Alternatif olarak Wext lisansı **About > License** alanında etkinleştirilip **Deploy > Cloudflare** ekranından bağlantı yönetilebilir. Varsayılan servis adresi `https://deploy.wext.io` değeridir; self-hosted veya staging servis için `WEXTSTAT_DEPLOY_SERVICE_URL` sabiti ya da `wext_static_deploy_service_url` filtresi kullanılabilir. Üretim servis adresi HTTPS olmalıdır.
 
 Eklenti Free ve lisanslı kullanım sunar. Lisans etkin değilken manuel statik export, ZIP indirme, SFTP ve temel ayarlar kullanılabilir; GitHub deployment, yönetilen Cloudflare deployment, Auto Deploy ve Wext SEO özellikleri kilitlidir. Mevcut premium ayarlar lisans pasifleştiğinde silinmez, fakat arayüzden değiştirilemez ve çalışma zamanında yürütülmez. Lisans yeniden etkinleştirildiğinde bu ayarlar tekrar kullanılabilir.
 

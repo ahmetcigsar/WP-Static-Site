@@ -764,6 +764,7 @@ if (! str_contains($settings_html, 'Static Site') || ! str_contains($settings_ht
 }
 
 foreach ([
+    'easy-start' => ['Easy Start', 'Cloudflare Account', 'Site Domains', 'Create and Deploy Static Site'],
     'zip' => ['ZIP Files', 'Number of ZIPs to Store', 'Save ZIP Settings', 'value="zip"'],
     'github' => ['GitHub Deployment Webhook', 'Save Deploy Settings'],
     'cloudflare' => ['License and connection required', 'Cloudflare Connection', 'Cloudflare Deploy', 'Deploy to Cloudflare'],
@@ -775,7 +776,7 @@ foreach ([
     Wext\StaticPublisher\Admin::render();
     $deploy_html = (string) ob_get_clean();
 
-    foreach (['ZIP File', 'GitHub', 'Cloudflare', 'SFTP', 'Auto Deploy', 'wextstat-deploy-tabs', 'deploy_tab=' . $deploy_tab, ...$panel_expectations] as $expected) {
+    foreach (['Easy Start', 'ZIP File', 'GitHub', 'Cloudflare', 'SFTP', 'Auto Deploy', 'wextstat-deploy-tabs', 'deploy_tab=' . $deploy_tab, ...$panel_expectations] as $expected) {
         if (! str_contains($deploy_html, $expected)) {
             fwrite(STDERR, "Deploy {$deploy_tab} sekmesinde beklenen içerik bulunamadı: {$expected}\n");
             exit(1);

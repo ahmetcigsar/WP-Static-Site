@@ -154,7 +154,7 @@ if (empty($license['active'])
     throw new RuntimeException('Lisans aktivasyonu güvenli biçimde kaydedilmedi.');
 }
 
-$authorization_url = Wext\StaticPublisher\Managed_Deployer::authorization_url();
+$authorization_url = Wext\StaticPublisher\Managed_Deployer::authorization_url('easy-start');
 parse_str((string) parse_url($authorization_url, PHP_URL_QUERY), $authorization_query);
 if ((string) ($authorization_query['state'] ?? '') === ''
     || ! str_starts_with($authorization_url, 'https://deploy.example.com/connect/cloudflare?')
@@ -166,10 +166,11 @@ if ((string) ($authorization_query['state'] ?? '') === ''
 $stored_license['credential_expires_at'] = gmdate('c', time() - 1);
 update_option(Wext\StaticPublisher\Managed_Deployer::LICENSE_KEY, $stored_license, false);
 $ticket_request = [];
-$authorization_url = Wext\StaticPublisher\Managed_Deployer::authorization_url();
+$authorization_url = Wext\StaticPublisher\Managed_Deployer::authorization_url('easy-start');
 parse_str((string) parse_url($authorization_url, PHP_URL_QUERY), $authorization_query);
 $state = (string) ($authorization_query['state'] ?? '');
 if ($state === ''
+    || Wext\StaticPublisher\Managed_Deployer::return_tab_for_state($state) !== 'easy-start'
     || empty(Wext\StaticPublisher\Managed_Deployer::public_license()['credential_available'])
     || ! str_starts_with((string) ($ticket_request['headers']['Authorization'] ?? ''), 'Bearer wext_detach_')) {
     throw new RuntimeException('Süresi dolan aktivasyon yetkisi kalıcı site credential ile yenilenemedi.');
@@ -178,6 +179,7 @@ if ($state === ''
 $public = Wext\StaticPublisher\Managed_Deployer::complete_connection($state, 'one-time-code');
 $stored = get_option(Wext\StaticPublisher\Managed_Deployer::CONNECTION_KEY, []);
 if (empty($public['connected'])
+    || ($public['return_tab'] ?? '') !== 'easy-start'
     || ($public['domain'] ?? '') !== 'static.example.com'
     || ($stored['access_token'] ?? '') === $access_token
     || ($stored['callback_secret'] ?? '') === $callback_secret
@@ -210,6 +212,16 @@ if (! str_contains($cloudflare_html, 'Change Deployment URL')
     || ! str_contains($cloudflare_html, 'https://cdn.example.com')
     || ! str_contains($cloudflare_html, 'wext_static_managed_target_update')) {
     throw new RuntimeException('Deployment URL değiştirme arayüzü oluşturulamadı.');
+}
+
+$_GET = ['page' => 'wext-static-publisher', 'tab' => 'deploy', 'deploy_tab' => 'easy-start'];
+ob_start();
+Wext\StaticPublisher\Admin::render();
+$easy_start_html = (string) ob_get_clean();
+foreach (['Easy Start', 'Wext Test Account', 'Deployment source (WordPress)', 'https://cdn.example.com', 'wext_static_managed_target_update', 'return_to" value="easy-start', 'Create and Deploy'] as $expected) {
+    if (! str_contains($easy_start_html, $expected)) {
+        throw new RuntimeException('Easy Start sihirbazında beklenen içerik bulunamadı: ' . $expected);
+    }
 }
 
 $settings = Wext\StaticPublisher\Plugin::settings();

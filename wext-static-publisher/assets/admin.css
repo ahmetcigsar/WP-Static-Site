@@ -635,6 +635,262 @@
     min-width: 0;
 }
 
+.wextstat-easy-start {
+    overflow: hidden;
+    border: 1px solid var(--wextstat-border);
+    border-radius: 16px;
+    background: var(--wextstat-surface);
+    box-shadow: 0 10px 28px rgba(15, 23, 42, .07);
+}
+
+.wextstat-easy-start__header {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    padding: 26px 28px;
+    color: #fff;
+    background: linear-gradient(135deg, #172554 0%, #1d4ed8 62%, #0ea5e9 100%);
+}
+
+.wextstat-easy-start__mark {
+    width: 52px;
+    height: 52px;
+    flex: 0 0 52px;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, .16);
+    font-size: 29px;
+    line-height: 52px;
+    text-align: center;
+}
+
+.wextstat-easy-start__header h3 {
+    margin: 0 0 6px;
+    color: #fff;
+    font-size: 24px;
+}
+
+.wextstat-easy-start__header p {
+    max-width: 720px;
+    margin: 0;
+    color: #dbeafe;
+    line-height: 1.55;
+}
+
+.wextstat-easy-start__progress {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin: 0;
+    padding: 22px 28px;
+    border-bottom: 1px solid var(--wextstat-border);
+    background: #f8fafc;
+    list-style: none;
+}
+
+.wextstat-easy-start__progress li {
+    display: flex;
+    position: relative;
+    gap: 9px;
+    align-items: center;
+    margin: 0;
+    color: var(--wextstat-muted);
+}
+
+.wextstat-easy-start__progress li::after {
+    position: absolute;
+    z-index: 0;
+    top: 15px;
+    right: 12px;
+    left: 45px;
+    height: 2px;
+    background: #dbe3ee;
+    content: "";
+}
+
+.wextstat-easy-start__progress li:last-child::after {
+    display: none;
+}
+
+.wextstat-easy-start__progress li > span {
+    display: inline-flex;
+    z-index: 1;
+    width: 30px;
+    height: 30px;
+    flex: 0 0 30px;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #cbd5e1;
+    border-radius: 50%;
+    background: #fff;
+    font-weight: 700;
+}
+
+.wextstat-easy-start__progress li.is-current,
+.wextstat-easy-start__progress li.is-complete {
+    color: var(--wextstat-text);
+}
+
+.wextstat-easy-start__progress li.is-current > span {
+    border-color: var(--wextstat-primary);
+    color: var(--wextstat-primary);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, .12);
+}
+
+.wextstat-easy-start__progress li.is-complete > span {
+    border-color: #16a34a;
+    background: #16a34a;
+    color: #fff;
+}
+
+.wextstat-easy-start__progress .dashicons {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+    line-height: 18px;
+}
+
+.wextstat-easy-start__steps {
+    padding: 4px 28px 28px;
+}
+
+.wextstat-easy-step {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr);
+    gap: 16px;
+    padding: 24px 0;
+    border-bottom: 1px solid #e8edf3;
+}
+
+.wextstat-easy-step:last-child {
+    border-bottom: 0;
+}
+
+.wextstat-easy-step.is-disabled {
+    opacity: .55;
+}
+
+.wextstat-easy-step__number {
+    display: inline-flex;
+    width: 36px;
+    height: 36px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: #e8efff;
+    color: var(--wextstat-primary-dark);
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.wextstat-easy-step.is-complete .wextstat-easy-step__number {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.wextstat-easy-step__body h4 {
+    margin: 4px 0 8px;
+    color: var(--wextstat-text);
+    font-size: 17px;
+}
+
+.wextstat-easy-step__body > p {
+    max-width: 760px;
+    margin: 6px 0 12px;
+    color: var(--wextstat-muted);
+    line-height: 1.55;
+}
+
+.wextstat-easy-step__success {
+    color: #166534 !important;
+    font-weight: 700;
+}
+
+.wextstat-easy-step__success .dashicons {
+    margin-right: 4px;
+}
+
+.wextstat-easy-step__form {
+    display: grid;
+    max-width: 610px;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.wextstat-easy-step__form p.submit {
+    margin: 4px 0 0;
+    padding: 0;
+}
+
+.wextstat-easy-confirm {
+    margin: 5px 0;
+    color: #334155;
+}
+
+.wextstat-easy-domains {
+    display: grid;
+    max-width: 800px;
+    grid-template-columns: minmax(0, 1fr) 32px minmax(0, 1fr);
+    gap: 14px;
+    align-items: center;
+    margin: 16px 0;
+}
+
+.wextstat-easy-domains > div {
+    display: grid;
+    gap: 6px;
+    min-height: 100px;
+    align-content: center;
+    padding: 14px 16px;
+    border: 1px solid #dbe3ee;
+    border-radius: 11px;
+    background: #f8fafc;
+}
+
+.wextstat-easy-domains > .dashicons {
+    color: var(--wextstat-primary);
+}
+
+.wextstat-easy-domains span {
+    color: #334155;
+    font-weight: 700;
+}
+
+.wextstat-easy-domains code {
+    overflow-wrap: anywhere;
+}
+
+.wextstat-easy-domains small {
+    color: var(--wextstat-muted);
+    line-height: 1.4;
+}
+
+.wextstat-easy-deployment-status {
+    max-width: 720px;
+    margin: 14px 0;
+    border: 1px solid #dbe3ee;
+    border-radius: 10px;
+    background: #f8fafc;
+}
+
+.wextstat-easy-deployment-status > div {
+    display: grid;
+    grid-template-columns: 180px minmax(0, 1fr);
+    gap: 14px;
+    padding: 11px 14px;
+    border-bottom: 1px solid #e8edf3;
+}
+
+.wextstat-easy-deployment-status > div:last-child {
+    border-bottom: 0;
+}
+
+.wextstat-easy-deployment-status dt {
+    font-weight: 700;
+}
+
+.wextstat-easy-deployment-status dd {
+    margin: 0;
+}
+
 .wextstat-seo-header {
     margin-bottom: 20px;
 }
@@ -2474,6 +2730,49 @@ body.wextstat-modal-open {
 }
 
 @media (max-width: 782px) {
+    .wextstat-easy-start__header {
+        align-items: flex-start;
+        padding: 22px;
+    }
+
+    .wextstat-easy-start__progress {
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        padding: 18px 20px;
+    }
+
+    .wextstat-easy-start__progress li::after {
+        display: none;
+    }
+
+    .wextstat-easy-start__steps {
+        padding: 2px 20px 22px;
+    }
+
+    .wextstat-easy-step {
+        grid-template-columns: 34px minmax(0, 1fr);
+        gap: 12px;
+    }
+
+    .wextstat-easy-step__number {
+        width: 32px;
+        height: 32px;
+    }
+
+    .wextstat-easy-domains {
+        grid-template-columns: 1fr;
+    }
+
+    .wextstat-easy-domains > .dashicons {
+        margin: 0 auto;
+        transform: rotate(90deg);
+    }
+
+    .wextstat-easy-deployment-status > div {
+        grid-template-columns: 1fr;
+        gap: 4px;
+    }
+
     .wextstat-admin {
         margin-right: 12px;
     }

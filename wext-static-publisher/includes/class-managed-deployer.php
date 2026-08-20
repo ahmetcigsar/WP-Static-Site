@@ -142,7 +142,7 @@ final class Managed_Deployer
         return self::public_license();
     }
 
-    public static function authorization_url(): string
+    public static function authorization_url(string $return_tab = 'cloudflare'): string
     {
         $service_url = self::service_url();
         if ($service_url === '') {
@@ -176,7 +176,9 @@ final class Managed_Deployer
         }
 
         $state = wp_generate_password(48, false, false);
-        set_transient(self::STATE_PREFIX . hash('sha256', $state), '1', 15 * MINUTE_IN_SECONDS);
+        set_transient(self::STATE_PREFIX . hash('sha256', $state), [
+            'return_tab' => $return_tab === 'easy-start' ? 'easy-start' : 'cloudflare',
+        ], 15 * MINUTE_IN_SECONDS);
         return add_query_arg([
             'site_url' => home_url(),
             'callback_url' => self::callback_url(),
@@ -192,7 +194,8 @@ final class Managed_Deployer
             throw new RuntimeException(__('An active Wext license is required to use Cloudflare deployment.', 'wext-static-publisher'));
         }
         $state_key = self::STATE_PREFIX . hash('sha256', $state);
-        if ($state === '' || $code === '' || get_transient($state_key) !== '1') {
+        $state_context = get_transient($state_key);
+        if ($state === '' || $code === '' || (! is_array($state_context) && $state_context !== '1')) {
             throw new RuntimeException(__('The Cloudflare connection request has expired. Start the connection again.', 'wext-static-publisher'));
         }
         delete_transient($state_key);
@@ -231,7 +234,22 @@ final class Managed_Deployer
             $settings['target_url'] = (string) $connection['deployment_url'];
         }
         update_option(Plugin::SETTINGS_KEY, $settings, false);
-        return self::public_connection();
+        return array_merge(self::public_connection(), [
+            'return_tab' => is_array($state_context) && ($state_context['return_tab'] ?? '') === 'easy-start'
+                ? 'easy-start'
+                : 'cloudflare',
+        ]);
+    }
+
+    public static function return_tab_for_state(string $state): string
+    {
+        if ($state === '') {
+            return 'cloudflare';
+        }
+        $context = get_transient(self::STATE_PREFIX . hash('sha256', $state));
+        return is_array($context) && ($context['return_tab'] ?? '') === 'easy-start'
+            ? 'easy-start'
+            : 'cloudflare';
     }
 
     public static function disconnect(): string

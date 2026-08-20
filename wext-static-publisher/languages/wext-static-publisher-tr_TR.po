@@ -2873,12 +2873,20 @@ msgid "Revoke License"
 msgstr "Lisans Yetkisini Kaldır"
 
 #: wext-static-publisher/includes/class-admin.php
-msgid "Detach this license from this site? Cloudflare publishing will stop, but the remaining license term will stay available."
-msgstr "Bu lisans bu siteden ayrılsın mı? Cloudflare yayınlama durur ancak kalan lisans süresi kullanılabilir durumda kalır."
+msgid ""
+"Detach this license from this site? Cloudflare publishing will stop, but the "
+"remaining license term will stay available."
+msgstr ""
+"Bu lisans bu siteden ayrılsın mı? Cloudflare yayınlama durur ancak kalan "
+"lisans süresi kullanılabilir durumda kalır."
 
 #: wext-static-publisher/includes/class-admin.php
-msgid "The Wext license was detached from this site. You can use it on this domain or another domain while it remains valid."
-msgstr "Wext lisansı bu siteden ayrıldı. Geçerlilik süresi boyunca bu domainde veya başka bir domainde kullanabilirsiniz."
+msgid ""
+"The Wext license was detached from this site. You can use it on this domain "
+"or another domain while it remains valid."
+msgstr ""
+"Wext lisansı bu siteden ayrıldı. Geçerlilik süresi boyunca bu domainde veya "
+"başka bir domainde kullanabilirsiniz."
 
 #: wext-static-publisher/includes/class-managed-deployer.php
 msgid "Activate the license again before detaching it from this site."
@@ -2887,35 +2895,60 @@ msgstr "Lisansı bu siteden ayırmadan önce yeniden etkinleştirin."
 msgid "Connect Cloudflare before changing the deployment URL."
 msgstr "Deployment URL'sini değiştirmeden önce Cloudflare bağlantısını kurun."
 
-msgid "Enter a public HTTPS deployment URL without a path, query, port, or credentials."
-msgstr "Yol, sorgu, port veya kimlik bilgisi içermeyen herkese açık bir HTTPS deployment URL'si girin."
+msgid ""
+"Enter a public HTTPS deployment URL without a path, query, port, or "
+"credentials."
+msgstr ""
+"Yol, sorgu, port veya kimlik bilgisi içermeyen herkese açık bir HTTPS "
+"deployment URL'si girin."
 
 msgid "The saved Wext service credential is invalid. Reconnect Cloudflare."
-msgstr "Kayıtlı Wext servis kimlik bilgisi geçersiz. Cloudflare bağlantısını yeniden kurun."
+msgstr ""
+"Kayıtlı Wext servis kimlik bilgisi geçersiz. Cloudflare bağlantısını yeniden "
+"kurun."
 
 msgid "The deployment service returned an invalid target response."
 msgstr "Deployment servisi geçersiz bir hedef yanıtı döndürdü."
 
-msgid "Wait for the current Cloudflare deployment to finish before changing the deployment URL."
-msgstr "Deployment URL'sini değiştirmeden önce mevcut Cloudflare deployment işleminin tamamlanmasını bekleyin."
+msgid ""
+"Wait for the current Cloudflare deployment to finish before changing the "
+"deployment URL."
+msgstr ""
+"Deployment URL'sini değiştirmeden önce mevcut Cloudflare deployment "
+"işleminin tamamlanmasını bekleyin."
 
-msgid "The deployment URL must belong to an active domain in the connected Cloudflare account."
-msgstr "Deployment URL'si bağlı Cloudflare hesabındaki etkin bir domaine ait olmalıdır."
+msgid ""
+"The deployment URL must belong to an active domain in the connected "
+"Cloudflare account."
+msgstr ""
+"Deployment URL'si bağlı Cloudflare hesabındaki etkin bir domaine ait "
+"olmalıdır."
 
-msgid "The deployment URL already has a conflicting Cloudflare Worker or DNS record."
-msgstr "Deployment URL'sinde çakışan bir Cloudflare Worker veya DNS kaydı zaten var."
+msgid ""
+"The deployment URL already has a conflicting Cloudflare Worker or DNS record."
+msgstr ""
+"Deployment URL'sinde çakışan bir Cloudflare Worker veya DNS kaydı zaten var."
 
 msgid "Cloudflare could not attach the new deployment URL. Try again."
 msgstr "Cloudflare yeni deployment URL'sini bağlayamadı. Yeniden deneyin."
 
-msgid "Cloudflare could not detach the previous deployment URL. No target change was saved."
-msgstr "Cloudflare önceki deployment URL'sini ayıramadı. Hedef değişikliği kaydedilmedi."
+msgid ""
+"Cloudflare could not detach the previous deployment URL. No target change "
+"was saved."
+msgstr ""
+"Cloudflare önceki deployment URL'sini ayıramadı. Hedef değişikliği "
+"kaydedilmedi."
 
 msgid "Reconnect Cloudflare before changing the deployment URL."
-msgstr "Deployment URL'sini değiştirmeden önce Cloudflare bağlantısını yeniden kurun."
+msgstr ""
+"Deployment URL'sini değiştirmeden önce Cloudflare bağlantısını yeniden kurun."
 
-msgid "The deployment URL was changed. Publish again to rebuild the static site for this address."
-msgstr "Deployment URL'si değiştirildi. Statik siteyi bu adres için yeniden oluşturmak üzere tekrar yayımlayın."
+msgid ""
+"The deployment URL was changed. Publish again to rebuild the static site for "
+"this address."
+msgstr ""
+"Deployment URL'si değiştirildi. Statik siteyi bu adres için yeniden "
+"oluşturmak üzere tekrar yayımlayın."
 
 msgid "Confirm the deployment URL change before saving it."
 msgstr "Kaydetmeden önce deployment URL değişikliğini onaylayın."
@@ -2923,8 +2956,114 @@ msgstr "Kaydetmeden önce deployment URL değişikliğini onaylayın."
 msgid "Change Deployment URL"
 msgstr "Deployment URL'sini Değiştir"
 
-msgid "I confirm that the new address belongs to this connected Cloudflare account. The previous Worker domain will be detached."
-msgstr "Yeni adresin bağlı Cloudflare hesabına ait olduğunu onaylıyorum. Önceki Worker domaini ayrılacaktır."
+msgid ""
+"I confirm that the new address belongs to this connected Cloudflare account. "
+"The previous Worker domain will be detached."
+msgstr ""
+"Yeni adresin bağlı Cloudflare hesabına ait olduğunu onaylıyorum. Önceki "
+"Worker domaini ayrılacaktır."
 
 msgid "Change the deployment URL and detach the previous Worker domain?"
 msgstr "Deployment URL'si değiştirilsin ve önceki Worker domaini ayrılsın mı?"
+
+msgid "Easy Start"
+msgstr "Easy Start"
+
+msgid ""
+"Connect Cloudflare, confirm the source and public static domains, then "
+"publish your site without API tokens or Account IDs."
+msgstr "Cloudflare'ı bağlayın, kaynak ve herkese açık statik domainleri doğrulayın; ardından API tokenı veya Account ID kullanmadan sitenizi yayınlayın."
+
+msgid "Easy Start progress"
+msgstr "Easy Start ilerlemesi"
+
+msgid "Activate Wext License"
+msgstr "Wext Lisansını Etkinleştir"
+
+msgid "License is active."
+msgstr "Lisans etkin."
+
+#, php-format
+msgid "Plan: %s"
+msgstr "Plan: %s"
+
+msgid ""
+"Managed Cloudflare deployment requires an active Wext license. The key is "
+"verified securely and is not stored as plain text."
+msgstr "Yönetilen Cloudflare deployment için etkin bir Wext lisansı gerekir. Anahtar güvenli biçimde doğrulanır ve düz metin olarak saklanmaz."
+
+msgid "License key"
+msgstr ""
+
+msgid "Activate and Continue"
+msgstr "Etkinleştir ve Devam Et"
+
+msgid "Connect Cloudflare Account"
+msgstr "Cloudflare Hesabını Bağla"
+
+msgid "Cloudflare connected"
+msgstr "Cloudflare bağlı"
+
+msgid ""
+"Cloudflare credentials remain encrypted in the Wext deployment service and "
+"are never stored in WordPress."
+msgstr "Cloudflare kimlik bilgileri Wext deployment servisinde şifreli kalır ve WordPress'te hiçbir zaman saklanmaz."
+
+msgid ""
+"The secure Wext screen will ask you to authorize Cloudflare, choose the "
+"account, and select the zone and publication domain."
+msgstr "Güvenli Wext ekranı Cloudflare yetkisi vermenizi, hesabı seçmenizi ve zone ile yayın domainini belirlemenizi isteyecek."
+
+msgid "Connect Cloudflare and Continue"
+msgstr "Cloudflare'ı Bağla ve Devam Et"
+
+msgid ""
+"Refresh the license connection from About > License, then return to Easy "
+"Start."
+msgstr "Hakkında > Lisans bölümünden lisans bağlantısını yenileyin, ardından Easy Start'a dönün."
+
+msgid "Confirm Site Domains"
+msgstr "Site Domainlerini Doğrula"
+
+msgid "Deployment source (WordPress)"
+msgstr "Deployment kaynağı (WordPress)"
+
+msgid "Wext reads the site from this address during export."
+msgstr "Wext export sırasında siteyi bu adresten okur."
+
+msgid "Public static site domain"
+msgstr "Herkese açık statik site domaini"
+
+msgid "Cloudflare serves the completed static site from this HTTPS address."
+msgstr "Cloudflare tamamlanan statik siteyi bu HTTPS adresinden sunar."
+
+msgid "Static site HTTPS address"
+msgstr "Statik site HTTPS adresi"
+
+msgid "I confirm that this domain belongs to the connected Cloudflare account."
+msgstr "Bu domainin bağlı Cloudflare hesabına ait olduğunu onaylıyorum."
+
+msgid "Save Static Site Domain"
+msgstr "Statik Site Domainini Kaydet"
+
+msgid ""
+"The source address comes from WordPress. You will select the static domain "
+"while connecting Cloudflare."
+msgstr "Kaynak adres WordPress'ten alınır. Statik domaini Cloudflare bağlantısı sırasında seçeceksiniz."
+
+msgid "Create and Deploy Static Site"
+msgstr "Statik Siteyi Oluştur ve Deploy Et"
+
+msgid ""
+"Wext will create a fresh static ZIP, verify it, send it to the managed "
+"service, and publish it to the selected Cloudflare domain."
+msgstr "Wext yeni bir statik ZIP oluşturacak, doğrulayacak, yönetilen servise gönderecek ve seçilen Cloudflare domaininde yayınlayacak."
+
+msgid "Deployment status"
+msgstr "Deployment durumu"
+
+msgid "Published address"
+msgstr "Yayın adresi"
+
+msgid "Create and Deploy"
+msgstr "Oluştur ve Deploy Et"

@@ -1137,11 +1137,19 @@ msgid ""
 "plugin is active."
 msgstr ""
 
-#: wext-static-publisher/includes/class-admin.php:1474
+#: wext-static-publisher/includes/class-admin.php:1948
+msgid "CMS Address"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1948
+msgid "Detected automatically from the WordPress site address."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1949
 msgid "Live Site Address"
 msgstr ""
 
-#: wext-static-publisher/includes/class-admin.php:1474
+#: wext-static-publisher/includes/class-admin.php:1949
 msgid "Example: https://example.com"
 msgstr ""
 
@@ -2538,14 +2546,10 @@ msgstr ""
 msgid "PHP OpenSSL is required to read the saved secret."
 msgstr ""
 
-#: wext-static-publisher/includes/class-admin.php:121
-msgid "Enter an HTTP(S) frontend address on a different origin than WordPress."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:130
+#: wext-static-publisher/includes/class-admin.php:126
 msgid ""
-"A frontend address is required for redirect behavior. The 404 behavior was "
-"selected instead."
+"A Live Site Address on a different origin than WordPress is required for "
+"redirect behavior. The 404 behavior was selected instead."
 msgstr ""
 
 #: wext-static-publisher/includes/class-admin.php:1189
@@ -2593,14 +2597,8 @@ msgstr ""
 msgid "410 Gone"
 msgstr ""
 
-#: wext-static-publisher/includes/class-admin.php:1564
-msgid "Frontend Address"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1565
-msgid ""
-"Required only when visitors should be redirected. It must use a different "
-"origin than WordPress."
+#: wext-static-publisher/includes/class-admin.php:1980
+msgid "307 redirects visitors to the Live Site Address configured in General."
 msgstr ""
 
 #: wext-static-publisher/includes/class-admin.php:1568

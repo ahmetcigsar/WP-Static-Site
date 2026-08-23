@@ -181,7 +181,7 @@ final class Headless_Mode
 
     private static function frontend_destination(array $settings): string
     {
-        $frontend = untrailingslashit((string) ($settings['headless_frontend_url'] ?? ''));
+        $frontend = untrailingslashit((string) ($settings['target_url'] ?? ''));
         if ($frontend === '' || ! self::is_http_url($frontend) || self::same_origin($frontend, home_url('/'))) {
             return '';
         }

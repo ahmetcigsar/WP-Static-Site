@@ -32,17 +32,21 @@ $invalid_redirect = Wext\StaticPublisher\Admin::sanitize([
     '_section' => 'headless',
     'headless_enabled' => '1',
     'headless_frontend_behavior' => 'redirect',
-    'headless_frontend_url' => home_url('/'),
 ]);
 if (($invalid_redirect['headless_frontend_behavior'] ?? '') !== '404') {
     throw new RuntimeException('WordPress originine yönlendirme güvenli biçimde 404 davranışına düşürülmedi.');
 }
 
+$general_settings = Wext\StaticPublisher\Admin::sanitize([
+    '_section' => 'general',
+    'target_url' => 'https://www.example.com/',
+]);
+update_option(Wext\StaticPublisher\Plugin::SETTINGS_KEY, $general_settings);
+
 $settings = Wext\StaticPublisher\Admin::sanitize([
     '_section' => 'headless',
     'headless_enabled' => '1',
     'headless_frontend_behavior' => 'redirect',
-    'headless_frontend_url' => 'https://www.example.com/',
     'headless_preserve_path' => '1',
     'headless_allow_authenticated_preview' => '1',
     'headless_allow_graphql' => '1',
@@ -53,7 +57,7 @@ $settings = Wext\StaticPublisher\Admin::sanitize([
 if (($settings['headless_enabled'] ?? '') !== '1'
     || ($settings['headless_frontend_behavior'] ?? '') !== 'redirect'
     || ($settings['headless_frontend_url'] ?? '') !== 'https://www.example.com'
-    || ($settings['target_url'] ?? '') !== ($defaults['target_url'] ?? '')) {
+    || ($settings['target_url'] ?? '') !== 'https://www.example.com') {
     throw new RuntimeException('Headless ayarları diğer Static Site ayarlarını koruyarak temizlenmedi.');
 }
 update_option(Wext\StaticPublisher\Plugin::SETTINGS_KEY, $settings);
@@ -78,6 +82,11 @@ $_SERVER['REQUEST_URI'] = '/sample/?page=2';
 $_SERVER['HTTP_X_WEXT_STATIC_EXPORT'] = '1';
 $_SERVER['HTTP_X_WEXT_STATIC_TIMESTAMP'] = (string) $signed['headers']['X-Wext-Static-Timestamp'];
 $_SERVER['HTTP_X_WEXT_STATIC_SIGNATURE'] = (string) $signed['headers']['X-Wext-Static-Signature'];
+$frontend_destination = new ReflectionMethod(Wext\StaticPublisher\Headless_Mode::class, 'frontend_destination');
+$frontend_destination->setAccessible(true);
+if ($frontend_destination->invoke(null, $settings) !== 'https://www.example.com/sample/') {
+    throw new RuntimeException('Headless yönlendirmesi Canlı Site Adresi ve istenen yolu kullanmadı.');
+}
 if (! Wext\StaticPublisher\Headless_Mode::valid_export_request()
     || Wext\StaticPublisher\Headless_Mode::should_protect_frontend()) {
     throw new RuntimeException('Geçerli imzalı export isteği WordPress tema render erişimini alamadı.');
@@ -122,8 +131,23 @@ foreach (['Headless CMS', 'Headless + Static Publisher', 'Protect the WordPress 
 }
 if (! str_contains($headless_html, 'notice notice-info inline wextstat-headless-notice')
     || substr_count($headless_html, 'wextstat-settings-tab is-active') !== 1
-    || ! str_contains($headless_html, 'settings_tab=headless')) {
+    || ! str_contains($headless_html, 'settings_tab=headless')
+    || str_contains($headless_html, 'wextstat-headless-frontend-url')
+    || str_contains($headless_html, 'Frontend Address')) {
     throw new RuntimeException('Headless CMS alt sekmesi etkin durumda render edilmedi.');
+}
+
+$_GET = ['tab' => 'settings', 'settings_tab' => 'general'];
+ob_start();
+Wext\StaticPublisher\Admin::render();
+$general_html = (string) ob_get_clean();
+$_GET = [];
+if (! str_contains($general_html, 'CMS Address')
+    || ! str_contains($general_html, 'Live Site Address')
+    || ! str_contains($general_html, 'id="wextstat-cms-address"')
+    || ! str_contains($general_html, 'readonly aria-readonly="true"')
+    || substr_count($general_html, 'type="url"') !== 2) {
+    throw new RuntimeException('General ekranında CMS ve canlı site adresleri beklenen biçimde render edilmedi.');
 }
 
 $admin_css = (string) file_get_contents(WEXTSTAT_DIR . 'assets/admin.css');

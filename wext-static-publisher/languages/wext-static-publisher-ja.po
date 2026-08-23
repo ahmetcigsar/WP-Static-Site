@@ -1162,11 +1162,19 @@ msgid ""
 "plugin is active."
 msgstr ""
 
-#: wext-static-publisher/includes/class-admin.php:1474
+#: wext-static-publisher/includes/class-admin.php:1948
+msgid "CMS Address"
+msgstr "CMS アドレス"
+
+#: wext-static-publisher/includes/class-admin.php:1948
+msgid "Detected automatically from the WordPress site address."
+msgstr "WordPress のサイトアドレスから自動的に検出されます。"
+
+#: wext-static-publisher/includes/class-admin.php:1949
 msgid "Live Site Address"
 msgstr "ライブサイトアドレス"
 
-#: wext-static-publisher/includes/class-admin.php:1474
+#: wext-static-publisher/includes/class-admin.php:1949
 msgid "Example: https://example.com"
 msgstr "例: https://example.com"
 
@@ -2631,15 +2639,11 @@ msgstr ""
 msgid "PHP OpenSSL is required to read the saved secret."
 msgstr ""
 
-#: wext-static-publisher/includes/class-admin.php:121
-msgid "Enter an HTTP(S) frontend address on a different origin than WordPress."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:130
+#: wext-static-publisher/includes/class-admin.php:126
 msgid ""
-"A frontend address is required for redirect behavior. The 404 behavior was "
-"selected instead."
-msgstr ""
+"A Live Site Address on a different origin than WordPress is required for "
+"redirect behavior. The 404 behavior was selected instead."
+msgstr "リダイレクトには、WordPress とは異なるオリジンのライブサイトアドレスが必要です。代わりに 404 動作が選択されました。"
 
 #: wext-static-publisher/includes/class-admin.php:1189
 msgid "Headless CMS"
@@ -2687,16 +2691,9 @@ msgstr ""
 msgid "410 Gone"
 msgstr ""
 
-#: wext-static-publisher/includes/class-admin.php:1564
-#, fuzzy
-msgid "Frontend Address"
-msgstr "ライブサイトアドレス"
-
-#: wext-static-publisher/includes/class-admin.php:1565
-msgid ""
-"Required only when visitors should be redirected. It must use a different "
-"origin than WordPress."
-msgstr ""
+#: wext-static-publisher/includes/class-admin.php:1980
+msgid "307 redirects visitors to the Live Site Address configured in General."
+msgstr "307 は訪問者を「一般」で設定されたライブサイトアドレスへリダイレクトします。"
 
 #: wext-static-publisher/includes/class-admin.php:1568
 msgid "Redirect Paths"
@@ -3002,3 +2999,7 @@ msgstr ""
 #, fuzzy
 msgid "Create and Deploy"
 msgstr "作成日"
+
+#, fuzzy
+#~ msgid "Frontend Address"
+#~ msgstr "ライブサイトアドレス"

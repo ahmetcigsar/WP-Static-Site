@@ -1142,11 +1142,19 @@ msgid ""
 "plugin is active."
 msgstr ""
 
-#: wext-static-publisher/includes/class-admin.php:1474
+#: wext-static-publisher/includes/class-admin.php:1948
+msgid "CMS Address"
+msgstr "CMS 地址"
+
+#: wext-static-publisher/includes/class-admin.php:1948
+msgid "Detected automatically from the WordPress site address."
+msgstr "从 WordPress 站点地址自动检测。"
+
+#: wext-static-publisher/includes/class-admin.php:1949
 msgid "Live Site Address"
 msgstr "实时站点地址"
 
-#: wext-static-publisher/includes/class-admin.php:1474
+#: wext-static-publisher/includes/class-admin.php:1949
 msgid "Example: https://example.com"
 msgstr "示例：https://example.com"
 
@@ -2568,15 +2576,11 @@ msgstr ""
 msgid "PHP OpenSSL is required to read the saved secret."
 msgstr ""
 
-#: wext-static-publisher/includes/class-admin.php:121
-msgid "Enter an HTTP(S) frontend address on a different origin than WordPress."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:130
+#: wext-static-publisher/includes/class-admin.php:126
 msgid ""
-"A frontend address is required for redirect behavior. The 404 behavior was "
-"selected instead."
-msgstr ""
+"A Live Site Address on a different origin than WordPress is required for "
+"redirect behavior. The 404 behavior was selected instead."
+msgstr "重定向需要使用与 WordPress 不同源的实时站点地址。已改为选择 404 行为。"
 
 #: wext-static-publisher/includes/class-admin.php:1189
 msgid "Headless CMS"
@@ -2624,16 +2628,9 @@ msgstr ""
 msgid "410 Gone"
 msgstr ""
 
-#: wext-static-publisher/includes/class-admin.php:1564
-#, fuzzy
-msgid "Frontend Address"
-msgstr "实时站点地址"
-
-#: wext-static-publisher/includes/class-admin.php:1565
-msgid ""
-"Required only when visitors should be redirected. It must use a different "
-"origin than WordPress."
-msgstr ""
+#: wext-static-publisher/includes/class-admin.php:1980
+msgid "307 redirects visitors to the Live Site Address configured in General."
+msgstr "307 会将访问者重定向到“常规”中配置的实时站点地址。"
 
 #: wext-static-publisher/includes/class-admin.php:1568
 msgid "Redirect Paths"
@@ -2939,3 +2936,7 @@ msgstr ""
 #, fuzzy
 msgid "Create and Deploy"
 msgstr "创建日期"
+
+#, fuzzy
+#~ msgid "Frontend Address"
+#~ msgstr "实时站点地址"

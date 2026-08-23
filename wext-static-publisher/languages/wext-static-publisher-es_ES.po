@@ -1167,11 +1167,19 @@ msgid ""
 "plugin is active."
 msgstr ""
 
-#: wext-static-publisher/includes/class-admin.php:1474
+#: wext-static-publisher/includes/class-admin.php:1948
+msgid "CMS Address"
+msgstr "Dirección del CMS"
+
+#: wext-static-publisher/includes/class-admin.php:1948
+msgid "Detected automatically from the WordPress site address."
+msgstr "Se detecta automáticamente a partir de la dirección del sitio de WordPress."
+
+#: wext-static-publisher/includes/class-admin.php:1949
 msgid "Live Site Address"
 msgstr "Dirección del sitio en vivo"
 
-#: wext-static-publisher/includes/class-admin.php:1474
+#: wext-static-publisher/includes/class-admin.php:1949
 msgid "Example: https://example.com"
 msgstr "Ejemplo: https://example.com"
 
@@ -2654,15 +2662,11 @@ msgstr ""
 msgid "PHP OpenSSL is required to read the saved secret."
 msgstr ""
 
-#: wext-static-publisher/includes/class-admin.php:121
-msgid "Enter an HTTP(S) frontend address on a different origin than WordPress."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:130
+#: wext-static-publisher/includes/class-admin.php:126
 msgid ""
-"A frontend address is required for redirect behavior. The 404 behavior was "
-"selected instead."
-msgstr ""
+"A Live Site Address on a different origin than WordPress is required for "
+"redirect behavior. The 404 behavior was selected instead."
+msgstr "Para la redirección se requiere una Dirección del sitio en vivo con un origen diferente al de WordPress. Se seleccionó el comportamiento 404."
 
 #: wext-static-publisher/includes/class-admin.php:1189
 msgid "Headless CMS"
@@ -2710,16 +2714,9 @@ msgstr ""
 msgid "410 Gone"
 msgstr ""
 
-#: wext-static-publisher/includes/class-admin.php:1564
-#, fuzzy
-msgid "Frontend Address"
-msgstr "Dirección del sitio en vivo"
-
-#: wext-static-publisher/includes/class-admin.php:1565
-msgid ""
-"Required only when visitors should be redirected. It must use a different "
-"origin than WordPress."
-msgstr ""
+#: wext-static-publisher/includes/class-admin.php:1980
+msgid "307 redirects visitors to the Live Site Address configured in General."
+msgstr "La redirección 307 envía a los visitantes a la Dirección del sitio en vivo configurada en General."
 
 #: wext-static-publisher/includes/class-admin.php:1568
 msgid "Redirect Paths"
@@ -3025,3 +3022,7 @@ msgstr ""
 #, fuzzy
 msgid "Create and Deploy"
 msgstr "Fecha de creación"
+
+#, fuzzy
+#~ msgid "Frontend Address"
+#~ msgstr "Dirección del sitio en vivo"

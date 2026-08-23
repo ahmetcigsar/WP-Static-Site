@@ -118,21 +118,12 @@ final class Admin
         if (in_array($section, ['headless', 'all'], true)) {
             $behavior = sanitize_key((string) ($value['headless_frontend_behavior'] ?? '404'));
             $behavior = in_array($behavior, ['404', '410', 'redirect'], true) ? $behavior : '404';
-            $frontend_url = esc_url_raw(untrailingslashit((string) ($value['headless_frontend_url'] ?? '')));
-            if ($frontend_url !== '' && ! self::valid_frontend_url($frontend_url)) {
-                add_settings_error(
-                    Plugin::SETTINGS_KEY,
-                    'headless-frontend-url-error',
-                    __('Enter an HTTP(S) frontend address on a different origin than WordPress.', 'wext-static-publisher'),
-                    'error'
-                );
-                $frontend_url = (string) ($current['headless_frontend_url'] ?? '');
-            }
-            if ($behavior === 'redirect' && $frontend_url === '') {
+            $live_site_url = (string) ($current['target_url'] ?? '');
+            if ($behavior === 'redirect' && ! self::valid_frontend_url($live_site_url)) {
                 add_settings_error(
                     Plugin::SETTINGS_KEY,
                     'headless-redirect-url-error',
-                    __('A frontend address is required for redirect behavior. The 404 behavior was selected instead.', 'wext-static-publisher'),
+                    __('A Live Site Address on a different origin than WordPress is required for redirect behavior. The 404 behavior was selected instead.', 'wext-static-publisher'),
                     'error'
                 );
                 $behavior = '404';
@@ -140,7 +131,6 @@ final class Admin
 
             $sanitized['headless_enabled'] = isset($value['headless_enabled']) ? '1' : '0';
             $sanitized['headless_frontend_behavior'] = $behavior;
-            $sanitized['headless_frontend_url'] = $frontend_url;
             foreach (['headless_preserve_path', 'headless_allow_authenticated_preview', 'headless_allow_graphql', 'headless_noindex', 'headless_disable_xmlrpc', 'headless_disable_comments'] as $key) {
                 $sanitized[$key] = isset($value[$key]) ? '1' : '0';
             }
@@ -218,6 +208,10 @@ final class Admin
                 $sanitized['sftp_auto_deploy'] = '0';
             }
         }
+
+        // Keep the legacy value synchronized for backward compatibility. Headless redirects
+        // use target_url directly so managed deployments cannot leave the two values out of sync.
+        $sanitized['headless_frontend_url'] = (string) ($sanitized['target_url'] ?? '');
 
         return $sanitized;
     }
@@ -1951,6 +1945,7 @@ final class Admin
             <?php settings_fields('wext_static'); ?>
             <input type="hidden" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[_section]" value="general">
             <table class="form-table" role="presentation">
+                <tr><th><label for="wextstat-cms-address"><?php esc_html_e('CMS Address', 'wext-static-publisher'); ?></label></th><td><input class="regular-text" id="wextstat-cms-address" type="url" value="<?php echo esc_attr(untrailingslashit(home_url())); ?>" readonly aria-readonly="true"><p class="description"><?php esc_html_e('Detected automatically from the WordPress site address.', 'wext-static-publisher'); ?></p></td></tr>
                 <tr><th><label for="wextstat-target"><?php esc_html_e('Live Site Address', 'wext-static-publisher'); ?></label></th><td><input class="regular-text" id="wextstat-target" type="url" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[target_url]" value="<?php echo esc_attr((string) $settings['target_url']); ?>"><p class="description"><?php esc_html_e('Example: https://example.com', 'wext-static-publisher'); ?></p></td></tr>
                 <tr><th><label for="wextstat-limit"><?php esc_html_e('Most URLs', 'wext-static-publisher'); ?></label></th><td><input id="wextstat-limit" type="number" min="10" max="20000" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[maximum_urls]" value="<?php echo esc_attr((string) $settings['maximum_urls']); ?>"></td></tr>
                 <tr><th><label for="wextstat-excluded"><?php esc_html_e('Excluded Paths', 'wext-static-publisher'); ?></label></th><td><textarea class="large-text code" rows="7" id="wextstat-excluded" name="<?php echo esc_attr(Plugin::SETTINGS_KEY); ?>[excluded_paths]"><?php echo esc_textarea((string) $settings['excluded_paths']); ?></textarea><p class="description"><?php esc_html_e('One path prefix per line.', 'wext-static-publisher'); ?></p></td></tr>
@@ -1982,11 +1977,7 @@ final class Admin
                         <option value="404" <?php selected((string) ($settings['headless_frontend_behavior'] ?? '404'), '404'); ?>><?php esc_html_e('404 Not Found (recommended)', 'wext-static-publisher'); ?></option>
                         <option value="redirect" <?php selected((string) ($settings['headless_frontend_behavior'] ?? '404'), 'redirect'); ?>><?php esc_html_e('307 Redirect to frontend', 'wext-static-publisher'); ?></option>
                         <option value="410" <?php selected((string) ($settings['headless_frontend_behavior'] ?? '404'), '410'); ?>><?php esc_html_e('410 Gone', 'wext-static-publisher'); ?></option>
-                    </select></td>
-                </tr>
-                <tr>
-                    <th><label for="wextstat-headless-frontend-url"><?php esc_html_e('Frontend Address', 'wext-static-publisher'); ?></label></th>
-                    <td><input class="regular-text" id="wextstat-headless-frontend-url" type="url" name="<?php echo esc_attr($option_name); ?>[headless_frontend_url]" value="<?php echo esc_attr((string) ($settings['headless_frontend_url'] ?? '')); ?>" placeholder="https://www.example.com"><p class="description"><?php esc_html_e('Required only when visitors should be redirected. It must use a different origin than WordPress.', 'wext-static-publisher'); ?></p></td>
+                    </select><p class="description"><?php esc_html_e('307 redirects visitors to the Live Site Address configured in General.', 'wext-static-publisher'); ?></p></td>
                 </tr>
                 <tr>
                     <th><?php esc_html_e('Redirect Paths', 'wext-static-publisher'); ?></th>

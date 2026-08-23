@@ -1204,11 +1204,19 @@ msgstr ""
 "Bu ayarlar korunur ancak eklenti etkin olana kadar hiçbir %s çıktısı export "
 "edilmez."
 
-#: wext-static-publisher/includes/class-admin.php:1474
+#: wext-static-publisher/includes/class-admin.php:1948
+msgid "CMS Address"
+msgstr "CMS Adresi"
+
+#: wext-static-publisher/includes/class-admin.php:1948
+msgid "Detected automatically from the WordPress site address."
+msgstr "WordPress site adresinden otomatik olarak algılanır."
+
+#: wext-static-publisher/includes/class-admin.php:1949
 msgid "Live Site Address"
 msgstr "Canlı Site Adresi"
 
-#: wext-static-publisher/includes/class-admin.php:1474
+#: wext-static-publisher/includes/class-admin.php:1949
 msgid "Example: https://example.com"
 msgstr "Örnek: https://example.com"
 
@@ -2676,18 +2684,11 @@ msgstr ""
 msgid "PHP OpenSSL is required to read the saved secret."
 msgstr "Kaydedilmiş gizli bilgiyi okumak için PHP OpenSSL gereklidir."
 
-#: wext-static-publisher/includes/class-admin.php:121
-msgid "Enter an HTTP(S) frontend address on a different origin than WordPress."
-msgstr ""
-"WordPress'ten farklı bir origin üzerinde HTTP(S) frontend adresi girin."
-
-#: wext-static-publisher/includes/class-admin.php:130
+#: wext-static-publisher/includes/class-admin.php:126
 msgid ""
-"A frontend address is required for redirect behavior. The 404 behavior was "
-"selected instead."
-msgstr ""
-"Yönlendirme davranışı için bir frontend adresi gereklidir. Bunun yerine 404 "
-"davranışı seçildi."
+"A Live Site Address on a different origin than WordPress is required for "
+"redirect behavior. The 404 behavior was selected instead."
+msgstr "307 yönlendirmesi için WordPress'ten farklı bir origin kullanan Canlı Site Adresi gereklidir. Bunun yerine 404 davranışı seçildi."
 
 #: wext-static-publisher/includes/class-admin.php:1189
 msgid "Headless CMS"
@@ -2739,17 +2740,9 @@ msgstr "Frontend'e 307 yönlendirmesi"
 msgid "410 Gone"
 msgstr "410 Artık Yok"
 
-#: wext-static-publisher/includes/class-admin.php:1564
-msgid "Frontend Address"
-msgstr "Frontend Adresi"
-
-#: wext-static-publisher/includes/class-admin.php:1565
-msgid ""
-"Required only when visitors should be redirected. It must use a different "
-"origin than WordPress."
-msgstr ""
-"Yalnızca ziyaretçiler yönlendirilecekse gereklidir. WordPress'ten farklı bir "
-"origin kullanmalıdır."
+#: wext-static-publisher/includes/class-admin.php:1980
+msgid "307 redirects visitors to the Live Site Address configured in General."
+msgstr "307, ziyaretçileri Genel bölümünde yapılandırılan Canlı Site Adresi'ne yönlendirir."
 
 #: wext-static-publisher/includes/class-admin.php:1568
 msgid "Redirect Paths"
@@ -2972,7 +2965,9 @@ msgstr "Easy Start"
 msgid ""
 "Connect Cloudflare, confirm the source and public static domains, then "
 "publish your site without API tokens or Account IDs."
-msgstr "Cloudflare'ı bağlayın, kaynak ve herkese açık statik domainleri doğrulayın; ardından API tokenı veya Account ID kullanmadan sitenizi yayınlayın."
+msgstr ""
+"Cloudflare'ı bağlayın, kaynak ve herkese açık statik domainleri doğrulayın; "
+"ardından API tokenı veya Account ID kullanmadan sitenizi yayınlayın."
 
 msgid "Easy Start progress"
 msgstr "Easy Start ilerlemesi"
@@ -2990,7 +2985,9 @@ msgstr "Plan: %s"
 msgid ""
 "Managed Cloudflare deployment requires an active Wext license. The key is "
 "verified securely and is not stored as plain text."
-msgstr "Yönetilen Cloudflare deployment için etkin bir Wext lisansı gerekir. Anahtar güvenli biçimde doğrulanır ve düz metin olarak saklanmaz."
+msgstr ""
+"Yönetilen Cloudflare deployment için etkin bir Wext lisansı gerekir. Anahtar "
+"güvenli biçimde doğrulanır ve düz metin olarak saklanmaz."
 
 msgid "License key"
 msgstr ""
@@ -3007,12 +3004,16 @@ msgstr "Cloudflare bağlı"
 msgid ""
 "Cloudflare credentials remain encrypted in the Wext deployment service and "
 "are never stored in WordPress."
-msgstr "Cloudflare kimlik bilgileri Wext deployment servisinde şifreli kalır ve WordPress'te hiçbir zaman saklanmaz."
+msgstr ""
+"Cloudflare kimlik bilgileri Wext deployment servisinde şifreli kalır ve "
+"WordPress'te hiçbir zaman saklanmaz."
 
 msgid ""
 "The secure Wext screen will ask you to authorize Cloudflare, choose the "
 "account, and select the zone and publication domain."
-msgstr "Güvenli Wext ekranı Cloudflare yetkisi vermenizi, hesabı seçmenizi ve zone ile yayın domainini belirlemenizi isteyecek."
+msgstr ""
+"Güvenli Wext ekranı Cloudflare yetkisi vermenizi, hesabı seçmenizi ve zone "
+"ile yayın domainini belirlemenizi isteyecek."
 
 msgid "Connect Cloudflare and Continue"
 msgstr "Cloudflare'ı Bağla ve Devam Et"
@@ -3020,7 +3021,9 @@ msgstr "Cloudflare'ı Bağla ve Devam Et"
 msgid ""
 "Refresh the license connection from About > License, then return to Easy "
 "Start."
-msgstr "Hakkında > Lisans bölümünden lisans bağlantısını yenileyin, ardından Easy Start'a dönün."
+msgstr ""
+"Hakkında > Lisans bölümünden lisans bağlantısını yenileyin, ardından Easy "
+"Start'a dönün."
 
 msgid "Confirm Site Domains"
 msgstr "Site Domainlerini Doğrula"
@@ -3049,7 +3052,9 @@ msgstr "Statik Site Domainini Kaydet"
 msgid ""
 "The source address comes from WordPress. You will select the static domain "
 "while connecting Cloudflare."
-msgstr "Kaynak adres WordPress'ten alınır. Statik domaini Cloudflare bağlantısı sırasında seçeceksiniz."
+msgstr ""
+"Kaynak adres WordPress'ten alınır. Statik domaini Cloudflare bağlantısı "
+"sırasında seçeceksiniz."
 
 msgid "Create and Deploy Static Site"
 msgstr "Statik Siteyi Oluştur ve Deploy Et"
@@ -3057,7 +3062,9 @@ msgstr "Statik Siteyi Oluştur ve Deploy Et"
 msgid ""
 "Wext will create a fresh static ZIP, verify it, send it to the managed "
 "service, and publish it to the selected Cloudflare domain."
-msgstr "Wext yeni bir statik ZIP oluşturacak, doğrulayacak, yönetilen servise gönderecek ve seçilen Cloudflare domaininde yayınlayacak."
+msgstr ""
+"Wext yeni bir statik ZIP oluşturacak, doğrulayacak, yönetilen servise "
+"gönderecek ve seçilen Cloudflare domaininde yayınlayacak."
 
 msgid "Deployment status"
 msgstr "Deployment durumu"
@@ -3067,3 +3074,25 @@ msgstr "Yayın adresi"
 
 msgid "Create and Deploy"
 msgstr "Oluştur ve Deploy Et"
+
+#~ msgid ""
+#~ "Enter an HTTP(S) frontend address on a different origin than WordPress."
+#~ msgstr ""
+#~ "WordPress'ten farklı bir origin üzerinde HTTP(S) frontend adresi girin."
+
+#~ msgid ""
+#~ "A frontend address is required for redirect behavior. The 404 behavior "
+#~ "was selected instead."
+#~ msgstr ""
+#~ "Yönlendirme davranışı için bir frontend adresi gereklidir. Bunun yerine "
+#~ "404 davranışı seçildi."
+
+#~ msgid "Frontend Address"
+#~ msgstr "Frontend Adresi"
+
+#~ msgid ""
+#~ "Required only when visitors should be redirected. It must use a different "
+#~ "origin than WordPress."
+#~ msgstr ""
+#~ "Yalnızca ziyaretçiler yönlendirilecekse gereklidir. WordPress'ten farklı "
+#~ "bir origin kullanmalıdır."

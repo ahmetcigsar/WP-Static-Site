@@ -278,7 +278,7 @@ final class Plugin
     {
         $stored = get_option(self::SETTINGS_KEY, []);
         $stored = is_array($stored) ? $stored : [];
-        return wp_parse_args($stored, array_merge([
+        $settings = wp_parse_args($stored, array_merge([
             'target_url' => home_url(),
             'maximum_urls' => 2000,
             'excluded_paths' => "/wp-admin/\n/wp-login.php\n/wp-json/\n/feed/",
@@ -305,6 +305,11 @@ final class Plugin
             'headless_disable_xmlrpc' => '1',
             'headless_disable_comments' => '1',
         ], self::auto_export_trigger_defaults()));
+
+        // Retain the legacy key for integrations while keeping the public frontend
+        // address identical to the canonical live-site target.
+        $settings['headless_frontend_url'] = (string) $settings['target_url'];
+        return $settings;
     }
 
     public static function auto_export_trigger_defaults(): array

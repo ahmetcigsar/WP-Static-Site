@@ -58,8 +58,8 @@ $screens = [
 
 $expected = [
     'main' => ['Publishing Status', 'Status', 'Create Static Site'],
-    'settings-general' => ['Static Site', 'General', 'Headless CMS', 'Multilingual', 'Save General Settings'],
-    'settings-headless' => ['Headless CMS', 'Headless + Static Publisher', 'Visitor Response', 'Save Headless CMS Settings'],
+    'settings-general' => ['Static Site', 'General', 'Headless CMS', 'Multilingual', 'CMS Address', 'Live Site Address', 'Save General Settings'],
+    'settings-headless' => ['Headless CMS', 'Headless + Static Publisher', 'Visitor Response', '307 redirects visitors to the Live Site Address configured in General.', 'Save Headless CMS Settings'],
     'settings-multilingual' => ['Static Site', 'Multilingual', 'Redirection by Browser Language', 'Save Language Settings'],
     'seo-plugins' => ['SEO Plugins', 'Rank Math SEO', 'Metadata', 'Technical SEO', 'Save SEO Plugin Settings'],
     'seo-audit' => ['SEO Audit', 'Create SEO audit report', 'Validate JSON-LD structured data', 'Save SEO Settings'],

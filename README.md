@@ -1,6 +1,28 @@
 # WP Static Publisher
 
-An open-source WordPress plugin that exports sites as static files and deploys them to your own Cloudflare Workers account.
+An open-source WordPress plugin that exports sites as static files and deploys them to your own Cloudflare Workers account. Headless CMS mode keeps the WordPress theme front end private while preserving its design in the static export.
+
+## Screenshots
+
+1. **Main dashboard** — publishing status and the latest static build.
+
+   ![WP Static Publisher Main dashboard](docs/screenshots/1.png)
+
+2. **Deploy** — guided setup for your own Cloudflare account.
+
+   ![WP Static Publisher Deploy screen](docs/screenshots/2.png)
+
+3. **Static Site** — general settings and access to Headless CMS and multilingual options.
+
+   ![WP Static Publisher Static Site settings](docs/screenshots/3.png)
+
+4. **SEO** — integrations and static search engine settings.
+
+   ![WP Static Publisher SEO integrations](docs/screenshots/4.png)
+
+5. **Hide** — static output paths and WordPress trace settings.
+
+   ![WP Static Publisher Hide settings](docs/screenshots/5.png)
 
 ## Features
 

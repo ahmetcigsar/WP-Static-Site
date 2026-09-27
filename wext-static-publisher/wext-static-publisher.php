@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: WP Static Publisher
- * Plugin URI: https://github.com/ahmetcigsar/Wordpress-Static-Site
+ * Plugin URI: https://github.com/ahmetcigsar/WP-Static-Site
  * Description: Exports WordPress sites to static files and publishes them to your own Cloudflare Workers account.
  * Version: 3.0.1
  * Requires at least: 6.5

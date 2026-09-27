@@ -2243,7 +2243,7 @@ final class Admin
                             <div>
                                 <dt><?php esc_html_e('Plugin Website', 'wext-static-publisher'); ?></dt>
                                 <dd>
-                                    <a href="<?php echo esc_url('https://github.com/ahmetcigsar/Wordpress-Static-Site'); ?>" target="_blank" rel="noopener noreferrer">
+                                    <a href="<?php echo esc_url('https://github.com/ahmetcigsar/WP-Static-Site'); ?>" target="_blank" rel="noopener noreferrer">
                                         GitHub
                                         <span class="dashicons dashicons-external" aria-hidden="true"></span>
                                     </a>
@@ -2264,12 +2264,12 @@ final class Admin
                         <dl class="wextstat-about-details">
                             <div>
                                 <dt><?php esc_html_e('Report an Issue', 'wext-static-publisher'); ?></dt>
-                                <dd><a href="<?php echo esc_url('https://github.com/ahmetcigsar/Wordpress-Static-Site/issues'); ?>" target="_blank" rel="noopener noreferrer">GitHub Issues</a></dd>
+                                <dd><a href="<?php echo esc_url('https://github.com/ahmetcigsar/WP-Static-Site/issues'); ?>" target="_blank" rel="noopener noreferrer">GitHub Issues</a></dd>
                             </div>
                             <div>
                                 <dt><?php esc_html_e('Plugin Website', 'wext-static-publisher'); ?></dt>
                                 <dd>
-                                    <a href="<?php echo esc_url('https://github.com/ahmetcigsar/Wordpress-Static-Site'); ?>" target="_blank" rel="noopener noreferrer">
+                                    <a href="<?php echo esc_url('https://github.com/ahmetcigsar/WP-Static-Site'); ?>" target="_blank" rel="noopener noreferrer">
                                         GitHub
                                         <span class="dashicons dashicons-external" aria-hidden="true"></span>
                                     </a>

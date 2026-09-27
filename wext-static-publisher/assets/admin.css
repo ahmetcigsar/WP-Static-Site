@@ -97,40 +97,6 @@
     box-shadow: 0 5px 12px rgba(37, 99, 235, .24);
 }
 
-.wextstat-license-badge {
-    display: inline-flex;
-    flex: 0 0 auto;
-    align-items: center;
-    margin-inline-start: auto;
-    padding: 9px 15px;
-    border: 1px solid transparent;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 700;
-    line-height: 1.4;
-    text-decoration: none;
-    white-space: nowrap;
-}
-
-.wextstat-license-badge.is-upgrade {
-    color: #fff;
-    background: #0f172a;
-}
-
-.wextstat-license-badge.is-pro {
-    color: #075985;
-    border-color: #bae6fd;
-    background: #e0f2fe;
-}
-
-.wextstat-license-badge:hover,
-.wextstat-license-badge:focus {
-    color: #fff;
-    background: var(--wextstat-primary-dark);
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(37, 99, 235, .22);
-}
-
 .wextstat-tab-content {
     margin-top: 18px;
     padding: 24px;
@@ -183,54 +149,6 @@
 .wextstat-status-table tbody th {
     width: 220px;
     color: #334155;
-}
-
-.wextstat-license-status form {
-    display: inline-block;
-    margin: 0 0 0 12px;
-}
-
-.wextstat-license-active {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    color: #166534;
-    font-weight: 600;
-}
-
-.wextstat-license-active .dashicons {
-    width: 18px;
-    height: 18px;
-    color: #16a34a;
-    font-size: 18px;
-    line-height: 1;
-}
-
-.wextstat-admin .wextstat-license-detach-link {
-    color: var(--wextstat-danger);
-}
-
-.wextstat-plan-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 4px 10px;
-    border: 1px solid transparent;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 700;
-    line-height: 1.4;
-}
-
-.wextstat-plan-badge.is-annual {
-    color: #166534;
-    border-color: #86efac;
-    background: #dcfce7;
-}
-
-.wextstat-plan-badge.is-lifetime {
-    color: #1d4ed8;
-    border-color: #93c5fd;
-    background: #dbeafe;
 }
 
 .wextstat-files-table {
@@ -599,36 +517,6 @@
     color: #fff;
     background: var(--wextstat-primary);
     box-shadow: 0 4px 10px rgba(37, 99, 235, .22);
-}
-
-.wextstat-deploy-tab.is-locked,
-.wextstat-seo-tab.is-locked,
-.wextstat-admin .nav-tab.is-locked {
-    color: var(--wextstat-muted);
-}
-
-.wextstat-deploy-tab.is-locked .dashicons-lock,
-.wextstat-seo-tab.is-locked .dashicons-lock {
-    width: 16px;
-    height: 16px;
-    margin-left: auto;
-    font-size: 16px;
-    line-height: 16px;
-}
-
-.wextstat-admin .nav-tab.is-locked .dashicons-lock {
-    width: 16px;
-    height: 16px;
-    margin: 1px 0 0 6px;
-    font-size: 16px;
-    line-height: 16px;
-}
-
-.wextstat-deploy-tab.is-active.is-locked,
-.wextstat-seo-tab.is-active.is-locked,
-.wextstat-admin .nav-tab-active.is-locked {
-    color: #fff;
-    background: #64748b;
 }
 
 .wextstat-deploy-panel {
@@ -2617,17 +2505,6 @@ body.wextstat-modal-open {
     font-size: 20px;
 }
 
-.wextstat-about-license-card {
-    max-width: 900px;
-    min-height: 0;
-    margin: 18px 0;
-}
-
-.wextstat-license-required-card {
-    max-width: 900px;
-    min-height: 270px;
-}
-
 .wextstat-about-card__intro {
     display: flex;
     gap: 20px;
@@ -2796,10 +2673,6 @@ body.wextstat-modal-open {
     .wextstat-tab-content {
         padding: 16px;
         border-radius: 12px;
-    }
-
-    .wextstat-license-badge {
-        margin-inline-start: 0;
     }
 
     .wextstat-confirm-modal__dialog {

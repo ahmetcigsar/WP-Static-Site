@@ -14,14 +14,6 @@ if (is_wp_error($activation)) {
 
 do_action('init');
 wp_set_current_user(1);
-update_option(Wext\StaticPublisher\Managed_Deployer::LICENSE_KEY, [
-    'active' => '1',
-    'activation_id' => 'activation-i18n',
-    'site_id' => 'site-i18n',
-    'plan_code' => 'pro',
-    'site_limit' => 1,
-    'activated_at' => gmdate('c'),
-], false);
 switch_to_locale('en_US');
 unload_textdomain('wext-static-publisher');
 Wext\StaticPublisher\Plugin::load_textdomain();
@@ -52,7 +44,6 @@ $screens = [
     'diagnostics' => ['tab' => 'diagnostics'],
     'activity' => ['tab' => 'activity'],
     'about' => ['tab' => 'about', 'about_tab' => 'about'],
-    'about-license' => ['tab' => 'about', 'about_tab' => 'license'],
     'about-support' => ['tab' => 'about', 'about_tab' => 'support'],
 ];
 
@@ -68,9 +59,9 @@ $expected = [
     'seo-indexing' => ['Indexing', 'X-Robots-Tag Rules', 'IndexNow Key', 'Save SEO Settings'],
     'seo-performance' => ['Performance', 'Large HTML Threshold (KB)', 'Large Asset Threshold (KB)', 'Save SEO Settings'],
     'deploy-zip' => ['ZIP File', 'ZIP Files', 'Number of ZIPs to Store', 'Save ZIP Settings'],
-    'deploy-easy-start' => ['Easy Start', 'Cloudflare Account', 'Site Domains', 'Create and Deploy Static Site'],
+    'deploy-easy-start' => ['Easy Start', 'Connect your Cloudflare account', 'Create and Deploy Static Site'],
     'deploy-github' => ['GitHub Deployment Webhook', 'Save Deploy Settings'],
-    'deploy-cloudflare' => ['License and connection required', 'Cloudflare Connection', 'Cloudflare Deploy', 'Deploy to Cloudflare'],
+    'deploy-cloudflare' => ['Cloudflare Connection', 'Cloudflare Deploy', 'Deploy to Cloudflare'],
     'deploy-sftp' => ['SFTP Connection', 'Save SFTP Settings', 'Test Connection'],
     'deploy-auto' => ['Auto Deploy', 'Automatic Static Site Creation and Deploy', 'Save Auto Deploy Settings'],
     'search-static' => ['Static Search', 'Search Page Path', 'Save Search Settings'],
@@ -81,8 +72,7 @@ $expected = [
     'hide-static-outputs' => ['Directory', 'Traces', 'Static Outputs', 'Disable XML-RPC Links', 'Save Hide Settings'],
     'diagnostics' => ['checks passed', 'Last checked:', 'Check Again'],
     'activity' => ['Activity Logs', 'Search source or static URL...'],
-    'about' => ['About', 'Version Number', 'Plugin Website', 'Pro v' . WEXTSTAT_VERSION],
-    'about-license' => ['About', 'License', 'Wext License', 'Active', 'Plan'],
+    'about' => ['About', 'Version Number', 'Plugin Website'],
     'about-support' => ['About', 'Support', 'Wext Support', 'Plugin Website'],
 ];
 

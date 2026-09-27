@@ -97,14 +97,13 @@ Wext\StaticPublisher\Plugin::activate();
 do_action('init');
 
 $settings = Wext\StaticPublisher\Plugin::settings();
-$connection = get_option(Wext\StaticPublisher\Managed_Deployer::CONNECTION_KEY, []);
+$connection = get_option('wext_static_managed_connection', null);
 $migrated_user = new WP_User((int) $user_id);
 $new_storage = Wext\StaticPublisher\Plugin::storage_directory();
 $checks = [
     'settings' => ($settings['maximum_urls'] ?? 0) === 321,
     'sftp_secret' => Wext\StaticPublisher\Secret_Store::decrypt((string) ($settings['sftp_password'] ?? '')) === $sftp_password,
-    'access_token' => Wext\StaticPublisher\Secret_Store::decrypt((string) ($connection['access_token'] ?? '')) === $service_token,
-    'callback_secret' => Wext\StaticPublisher\Secret_Store::decrypt((string) ($connection['callback_secret'] ?? '')) === $callback_secret,
+    'old_connection_removed' => $connection === null,
     'role' => in_array('wext_static_deployer', $migrated_user->roles, true),
     'legacy_role_removed' => get_role($legacy_prefix . 'deployer') === null,
     'storage' => is_file($new_storage . '/archives/migration-marker.txt'),

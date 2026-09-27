@@ -4,8 +4,7 @@
 
 - WordPress içerik kaynağı ve export motorudur.
 - Gelişmiş GitHub akışında Cloudflare kimlik bilgileri yalnızca CI secrets içinde tutulur.
-- Yönetilen akışta Cloudflare OAuth erişimi yalnızca deployment servisinde tutulur; WordPress lisans anahtarını kaydetmez ve yalnızca korumalı installation ID ile siteye özel, şifrelenmiş servis erişim/callback anahtarlarını saklar.
-- Ticari satın alma, Stripe webhook'u ve entitlement uzlaştırması deployment servisinin sorumluluğundadır. WordPress Stripe veya billing server secret'ı taşımaz; yalnızca dış satın alma akışından alınan lisans anahtarını etkinleştirir.
+- Doğrudan Cloudflare akışında kullanıcı kendi Account ID ve API tokenını girer. WordPress tokenı şifreli saklar; Wext servisi kullanılmaz.
 - REST uçları WordPress Application Password ve eklentiye ait `wext_static_export` yetkisi ister.
 - Headless + Static Publisher modu tema ön yüzünü ziyaretçilere kapatır; aynı-origin export istekleri WordPress salt değerinden türetilen, beş dakika geçerli timestamp + HMAC başlıklarıyla tema HTML'ine erişir.
 - Cloudflare CI deployment'ı tam ve atomik bir statik snapshot'tır; SFTP akışı dosyaları doğrudan hedef dizine yükler.
@@ -21,15 +20,11 @@
 5. Snapshot, `_headers`, `_redirects`, dil yönlendirme yapılandırması, manifest ve ZIP oluşturulur.
 6. Export tamamlanınca isteğe bağlı GitHub `repository_dispatch` webhook'u job ID ve build SHA-256 ile CI akışını tetikler.
 7. CI yalnızca `/exports/{job_id}/artifact` uç noktasındaki ZIP'i indirir; manifest job ID ve SHA-256 değerlerini webhook verisiyle karşılaştırır.
-8. Doğrulanan snapshot Wrangler ile `wp-statik-deneme` Workers Static Assets deployment'ına yüklenir ve deployment URL için HTTP kontrolü yapılır.
+8. Doğrulanan snapshot Wrangler ile kullanıcının `wrangler.jsonc` içinde belirlediği Workers Static Assets hedefine yüklenir ve deployment URL için HTTP kontrolü yapılır.
 9. GitHub Actions `deploying`, `completed` veya `failed` sonucunu kimlik doğrulamalı `/deployments/callback` ucuna gönderir. Export ve Cloudflare deploy durumları WordPress'te ayrı saklanır.
 10. SFTP otomatik yükleme açıksa aynı başarılı build dizinindeki statik dosyalar uzak hedefe aktarılır; bu durum ve hatalar ZIP exportundan ayrı kaydedilir.
 
-Yönetilen Cloudflare akışında GitHub adımları yerine lisans aktivasyonu, tek kullanımlık connect ticket ve Cloudflare OAuth hesap seçimi çalışır. `Deploy > Easy Start`, bu sözleşmeyi lisans → Cloudflare hesap/zone/custom-domain seçimi → WordPress kaynak ve statik hedef doğrulaması → export/deployment sırasıyla sunar; provider tokenı ve Account ID WordPress formuna girilmez. Başarılı export sonrasında WordPress 15 dakika geçerli HMAC imzalı artifact URL'siyle `POST /v1/deployments` çağrısı yapar. Yalnız zorunlu `deployment_id`, eşleşen `job_id`, `status` ve `created_at` alanlarını taşıyan `202` yanıtı dispatch olarak kaydedilir; servis imzalı callback ile `deploying`, `completed` veya `failed` sonucunu bildirir.
-
-Bu yönetilen zincirin gerçek OAuth, artifact indirme, Workers Static Assets yayını, callback retry/dead-letter ve queue recovery kabulü 17 Ağustos 2026 tarihinde tamamlanmıştır. Bu servis kabulü, yeni bağlanan her WordPress sitesinin ilk yayın sonucunu otomatik olarak kanıtlamaz; site bazlı durum WordPress'te ayrı izlenir.
-
-Faz 5 ticari modelinde yıllık `$39` ve lifetime `$199` planları birer site hakkı verir. Annual grace/suspension/reactivation ile lifetime refund/revocation kararları servis tarafında entitlement durumundan lisansa uzlaştırılır; eklentinin lisans aktivasyon API sözleşmesi değişmez. Checkout ve portal API'leri güvenilir sunucu kimliği gerektirir ve WordPress tarafından çağrılmaz.
+Doğrudan Cloudflare akışında başarılı exporttan sonra WordPress, kullanıcı hesabındaki Worker için asset manifesti oluşturur, eksik assetleri yükler ve Worker modülünü yeni asset tokenıyla günceller. `_headers` ve `_redirects` içerikleri asset yapılandırmasına eklenir. Kullanıcı Worker için `workers.dev` veya özel domaini Cloudflare panelinde ayarlar.
 
 ## SFTP akışı
 
@@ -60,10 +55,8 @@ Faz 5 ticari modelinde yıllık `$39` ve lifetime `$199` planları birer site ha
 - Bu kullanıcı için yalnızca Application Password üretilmelidir.
 - WordPress yönetim parolası CI içine konmamalıdır.
 - `WP_APP_PASSWORD` ve Cloudflare token aynı sistem dışında paylaşılmamalıdır.
-- Yönetilen akışta artifact indirme URL'si 15 dakika geçerlidir; callback gövdesi siteye özel secret ile HMAC-SHA256 olarak imzalanır ve beş dakikalık zaman penceresinde kabul edilir.
-- Callback `delivery_id` taşıyorsa son beş dakika içinde aynı teslimatın tekrar işlenmesi reddedilir.
 - Deploy callback'i arşivdeki job ID ve SHA-256 ile eşleşmeyen durum güncellemelerini reddeder.
-- Cloudflare token yalnızca yetkili Workers Static Assets hedefi için gereken en düşük kapsamda olmalıdır.
+- Cloudflare API tokenı yalnızca hedef hesapta Workers Scripts Write yetkisine sahip olmalıdır ve WordPress güvenlik anahtarlarıyla şifrelenir.
 - Otomatik GitHub `repository_dispatch` tetiklemesinde WordPress'te tutulan fine-grained token yalnızca ilgili repository için `Contents: write` yetkisine sahip olmalıdır.
 - SFTP hesabı yalnızca hedef statik dizinde yazma yetkisine sahip olmalı; kabuk, WordPress dizini veya daha geniş sunucu erişimi verilmemelidir.
 - SFTP host fingerprint hosting sağlayıcısından ayrı bir kanalla doğrulanmalıdır. Parmak izi olmadan bağlantı şifrelidir ancak sunucu kimliği sabitlenmez.

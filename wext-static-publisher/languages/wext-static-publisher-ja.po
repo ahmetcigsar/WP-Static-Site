@@ -2,8 +2,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Wext Static Publisher 2.0.0\n"
-"Report-Msgid-Bugs-To: info@wext.co\n"
-"POT-Creation-Date: 2026-08-15 21:39+0300\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-27 12:33+0300\n"
 "PO-Revision-Date: 2026-08-12 22:57+0300\n"
 "Last-Translator: Wext <info@wext.co>\n"
 "Language-Team: Japanese\n"
@@ -14,12 +14,2031 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Wext translation build\n"
 
-#: wext-static-publisher/includes/class-rank-math-integration.php:140
-msgid "Rank Math sitemap could not be exported."
+#: wext-static-publisher/includes/class-admin.php:89
+#: wext-static-publisher/includes/class-admin.php:820
+#: wext-static-publisher/includes/class-admin.php:837
+msgid "Queued"
+msgstr "列に並んでいる"
+
+#: wext-static-publisher/includes/class-admin.php:90
+#: wext-static-publisher/includes/class-admin.php:821
+#: wext-static-publisher/includes/class-admin.php:838
+msgid "Running"
+msgstr "働く"
+
+#: wext-static-publisher/includes/class-admin.php:91
+#: wext-static-publisher/includes/class-admin.php:822
+#: wext-static-publisher/includes/class-admin.php:839
+#: wext-static-publisher/includes/class-admin.php:853
+msgid "Completed"
+msgstr "完成した"
+
+#: wext-static-publisher/includes/class-admin.php:92
+#: wext-static-publisher/includes/class-admin.php:823
+#: wext-static-publisher/includes/class-admin.php:840
+#: wext-static-publisher/includes/class-admin.php:855
+#: wext-static-publisher/includes/class-admin.php:2198
+msgid "Failed"
+msgstr "失敗しました"
+
+#: wext-static-publisher/includes/class-admin.php:93
+#: wext-static-publisher/includes/class-admin.php:848
+msgid "Not run yet"
+msgstr "まだ機能していません"
+
+#: wext-static-publisher/includes/class-admin.php:94
+#: wext-static-publisher/includes/class-admin.php:857
+msgid "Static rendering progress"
+msgstr "静的レンダリングの進行状況"
+
+#: wext-static-publisher/includes/class-admin.php:95
+msgid "Retry"
+msgstr "もう一度やり直してください"
+
+#: wext-static-publisher/includes/class-admin.php:96
+#: wext-static-publisher/includes/class-admin.php:889
+msgid "Create Static Site"
+msgstr "静的サイトの作成"
+
+#: wext-static-publisher/includes/class-admin.php:97
+#: wext-static-publisher/includes/class-admin.php:889
+#: wext-static-publisher/includes/class-admin.php:1208
+msgid "Deploy to Cloudflare"
 msgstr ""
 
-#: wext-static-publisher/includes/class-rank-math-integration.php:163
-msgid "Rank Math robots.txt could not be exported."
+#: wext-static-publisher/includes/class-admin.php:98
+#: wext-static-publisher/includes/class-admin.php:836
+msgid "Waiting"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:99
+#: wext-static-publisher/includes/class-admin.php:877
+#: wext-static-publisher/includes/class-admin.php:1198
+msgid "Not deployed yet"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:100
+msgid ""
+"Progress information is unavailable. Check your internet connection or "
+"WordPress REST API access."
+msgstr ""
+"進捗情報は入手できません。インターネット接続または WordPress REST API アクセ"
+"スを確認してください。"
+
+#: wext-static-publisher/includes/class-admin.php:126
+msgid ""
+"A Live Site Address on a different origin than WordPress is required for "
+"redirect behavior. The 404 behavior was selected instead."
+msgstr ""
+"リダイレクトには、WordPress とは異なるオリジンのライブサイトアドレスが必要で"
+"す。代わりに 404 動作が選択されました。"
+
+#: wext-static-publisher/includes/class-admin.php:164
+msgid "The SFTP remote directory cannot contain .. path segments."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:172
+msgid "Enter the SFTP server fingerprint as 32 hexadecimal MD5 characters."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:192
+msgid ""
+"Complete the SFTP connection information before enabling automatic upload."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:266
+msgid ""
+"IndexNow key must be 8–128 characters and contain only letters, numbers, or "
+"hyphens."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:370
+#: wext-static-publisher/includes/class-admin.php:408
+#: wext-static-publisher/includes/class-admin.php:423
+#: wext-static-publisher/includes/class-admin.php:452
+#: wext-static-publisher/includes/class-admin.php:511
+#: wext-static-publisher/includes/class-admin.php:537
+#: wext-static-publisher/includes/class-admin.php:551
+#: wext-static-publisher/includes/class-admin.php:567
+#: wext-static-publisher/includes/class-admin.php:654
+msgid "You are not authorized for this operation."
+msgstr "この操作を行う権限がありません。"
+
+#: wext-static-publisher/includes/class-admin.php:414
+#: wext-static-publisher/includes/class-rest-controller.php:78
+msgid "No downloadable exports found."
+msgstr "ダウンロード可能なエクスポートが見つかりません。"
+
+#: wext-static-publisher/includes/class-admin.php:433
+#: wext-static-publisher/includes/class-rest-controller.php:62
+msgid "The export process is already running."
+msgstr "エクスポートプロセスはすでに実行中です。"
+
+#: wext-static-publisher/includes/class-admin.php:495
+#: wext-static-publisher/includes/class-admin.php:1128
+msgid "Cloudflare account connected."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:505
+msgid "Cloudflare connection removed from this site."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:558
+msgid "No downloadable ZIP file found."
+msgstr "ダウンロード可能な ZIP ファイルが見つかりません。"
+
+#: wext-static-publisher/includes/class-admin.php:704
+msgid "Main"
+msgstr "メイン"
+
+#: wext-static-publisher/includes/class-admin.php:705
+#: wext-static-publisher/includes/class-admin.php:1030
+#: wext-static-publisher/includes/class-admin.php:1034
+msgid "Deploy"
+msgstr "展開する"
+
+#: wext-static-publisher/includes/class-admin.php:706
+#: wext-static-publisher/includes/class-admin.php:1318
+msgid "Static Site"
+msgstr "静的サイト"
+
+#: wext-static-publisher/includes/class-admin.php:707
+#: wext-static-publisher/includes/class-admin.php:1353
+#: wext-static-publisher/includes/class-admin.php:1357
+msgid "SEO"
+msgstr "SEO"
+
+#: wext-static-publisher/includes/class-admin.php:708
+#: wext-static-publisher/includes/class-admin.php:1254
+#: wext-static-publisher/includes/class-admin.php:1929
+#: wext-static-publisher/includes/class-admin.php:1935
+#: wext-static-publisher/includes/class-static-search.php:250
+msgid "Search"
+msgstr "検索"
+
+#: wext-static-publisher/includes/class-admin.php:709
+#: wext-static-publisher/includes/class-admin.php:2023
+#: wext-static-publisher/includes/class-admin.php:2026
+msgid "Hide"
+msgstr "非表示"
+
+#: wext-static-publisher/includes/class-admin.php:710
+#: wext-static-publisher/includes/class-admin.php:2175
+msgid "Diagnostics"
+msgstr "診断"
+
+#: wext-static-publisher/includes/class-admin.php:711
+#: wext-static-publisher/includes/class-admin.php:1241
+msgid "Activity Logs"
+msgstr "アクティビティログ"
+
+#: wext-static-publisher/includes/class-admin.php:712
+#: wext-static-publisher/includes/class-admin.php:2216
+#: wext-static-publisher/includes/class-admin.php:2229
+msgid "About"
+msgstr "このプラグインについて"
+
+#: wext-static-publisher/includes/class-admin.php:724
+msgid ""
+"Generate a static copy of your WordPress site and publish it to your own "
+"Cloudflare account."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:727
+msgid "Static Publisher sections"
+msgstr "静的パブリッシャーセクション"
+
+#: wext-static-publisher/includes/class-admin.php:767
+msgid "Confirm Transaction"
+msgstr "取引の確認"
+
+#: wext-static-publisher/includes/class-admin.php:771
+msgid "Cancel"
+msgstr "キャンセル"
+
+#: wext-static-publisher/includes/class-admin.php:772
+#: wext-static-publisher/includes/class-admin.php:970
+msgid "Delete"
+msgstr "シル"
+
+#: wext-static-publisher/includes/class-admin.php:844
+msgid "Publishing Status"
+msgstr "出版状況"
+
+#: wext-static-publisher/includes/class-admin.php:848
+#: wext-static-publisher/includes/class-admin.php:877
+#: wext-static-publisher/includes/class-admin.php:1198
+msgid "Status"
+msgstr "状態"
+
+#: wext-static-publisher/includes/class-admin.php:850
+msgid "Progress"
+msgstr "進捗"
+
+#: wext-static-publisher/includes/class-admin.php:864
+msgid "Stage"
+msgstr "ステージ"
+
+#: wext-static-publisher/includes/class-admin.php:865
+#: wext-static-publisher/includes/class-admin.php:878
+#: wext-static-publisher/includes/class-admin.php:953
+#: wext-static-publisher/includes/class-admin.php:1199
+msgid "Job ID"
+msgstr "ジョブID"
+
+#: wext-static-publisher/includes/class-admin.php:866
+#: wext-static-publisher/includes/class-admin.php:953
+msgid "URL Count"
+msgstr "URL数"
+
+#: wext-static-publisher/includes/class-admin.php:867
+msgid "Current URL"
+msgstr "現在のURL"
+
+#: wext-static-publisher/includes/class-admin.php:868
+msgid "Last Static Build"
+msgstr "最後の静的ビルド"
+
+#: wext-static-publisher/includes/class-admin.php:869
+#: wext-static-publisher/includes/class-admin.php:881
+#: wext-static-publisher/includes/class-admin.php:1201
+msgid "Error"
+msgstr "エラー"
+
+#: wext-static-publisher/includes/class-admin.php:874
+#: wext-static-publisher/includes/class-admin.php:1196
+msgid "Cloudflare Deploy"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:879
+#: wext-static-publisher/includes/class-admin.php:1200
+msgid "Last Cloudflare Deploy"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:880
+msgid "Deployment URL"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:890
+#: wext-static-publisher/includes/class-admin.php:970
+msgid "Download"
+msgstr "ダウンロード"
+
+#: wext-static-publisher/includes/class-admin.php:908
+#: wext-static-publisher/includes/class-admin.php:994
+msgid "ZIP Files"
+msgstr "ZIPファイル"
+
+#: wext-static-publisher/includes/class-admin.php:910
+#, php-format
+msgid "The old ZIP file %d has been deleted."
+msgstr "古い ZIP ファイル %d は削除されました。"
+
+#: wext-static-publisher/includes/class-admin.php:912
+#, php-format
+msgid "%1$d old ZIP file was deleted, %2$d file could not be deleted."
+msgstr ""
+"%1$d の古い ZIP ファイルは削除されましたが、%2$d ファイルは削除できませんでし"
+"た。"
+
+#: wext-static-publisher/includes/class-admin.php:914
+msgid "Old files cannot be deleted while export is in progress."
+msgstr "エクスポートの進行中は古いファイルを削除できません。"
+
+#: wext-static-publisher/includes/class-admin.php:918
+#, php-format
+msgid "%d ZIP file has been deleted."
+msgstr "%d ZIP ファイルは削除されました。"
+
+#: wext-static-publisher/includes/class-admin.php:920
+#, php-format
+msgid "ZIP file %1$d was deleted, file %2$d could not be deleted."
+msgstr ""
+"ZIP ファイル %1$d は削除されましたが、ファイル %2$d は削除できませんでした。"
+
+#: wext-static-publisher/includes/class-admin.php:922
+msgid "Select at least one ZIP file to process."
+msgstr "処理する ZIP ファイルを少なくとも 1 つ選択します。"
+
+#: wext-static-publisher/includes/class-admin.php:924
+msgid "Select a valid batch action."
+msgstr "有効なバッチ アクションを選択します。"
+
+#: wext-static-publisher/includes/class-admin.php:926
+msgid "ZIP files cannot be deleted while export is in progress."
+msgstr "エクスポートの進行中は ZIP ファイルを削除できません。"
+
+#: wext-static-publisher/includes/class-admin.php:930
+msgid "There is no ZIP file created yet."
+msgstr "ZIP ファイルはまだ作成されていません。"
+
+#: wext-static-publisher/includes/class-admin.php:938
+msgid "Select Batch Action"
+msgstr "バッチアクションの選択"
+
+#: wext-static-publisher/includes/class-admin.php:940
+msgid "Batch Process"
+msgstr "バッチ処理"
+
+#: wext-static-publisher/includes/class-admin.php:941
+msgid "Download Selected"
+msgstr "選択したものをダウンロード"
+
+#: wext-static-publisher/includes/class-admin.php:942
+msgid "Delete Selected"
+msgstr "選択したものを削除"
+
+#: wext-static-publisher/includes/class-admin.php:944
+msgid "Apply"
+msgstr "適用する"
+
+#: wext-static-publisher/includes/class-admin.php:945
+msgid "The selected ZIP files will be permanently deleted. Should we continue?"
+msgstr "選択した ZIP ファイルは完全に削除されます。続けるべきでしょうか？"
+
+#: wext-static-publisher/includes/class-admin.php:953
+msgid "Actions"
+msgstr "アクション"
+
+#: wext-static-publisher/includes/class-admin.php:953
+msgid "Creation Date"
+msgstr "作成日"
+
+#: wext-static-publisher/includes/class-admin.php:953
+msgid "Creation Time"
+msgstr "作成時間"
+
+#: wext-static-publisher/includes/class-admin.php:953
+msgid "Order"
+msgstr "注文"
+
+#: wext-static-publisher/includes/class-admin.php:953
+msgid "Select All"
+msgstr "すべて選択"
+
+#: wext-static-publisher/includes/class-admin.php:964
+#, php-format
+msgid "Select %s"
+msgstr "%sを選択します"
+
+#: wext-static-publisher/includes/class-admin.php:970
+msgid "This ZIP file will be permanently deleted. Do you want to continue?"
+msgstr "この ZIP ファイルは完全に削除されます。続けますか?"
+
+#: wext-static-publisher/includes/class-admin.php:989
+#: wext-static-publisher/includes/class-admin.php:1297
+msgid "‹ Previous"
+msgstr "< 前の"
+
+#: wext-static-publisher/includes/class-admin.php:990
+#: wext-static-publisher/includes/class-admin.php:1298
+msgid "Next ›"
+msgstr "次 >"
+
+#: wext-static-publisher/includes/class-admin.php:1005
+msgid "Delete Old Files"
+msgstr "古いファイルを削除する"
+
+#: wext-static-publisher/includes/class-admin.php:1006
+msgid ""
+"All old ZIP files except the latest ZIP will be deleted. Should we continue?"
+msgstr ""
+"最新の ZIP を除く古い ZIP ファイルはすべて削除されます。続けるべきでしょう"
+"か？"
+
+#: wext-static-publisher/includes/class-admin.php:1008
+msgid ""
+"The latest ZIP file is preserved; Previous ZIP files and their temporary "
+"build folders are permanently deleted."
+msgstr ""
+"最新の ZIP ファイルが保存されます。以前の ZIP ファイルとその一時ビルド フォル"
+"ダーは完全に削除されます。"
+
+#: wext-static-publisher/includes/class-admin.php:1019
+#: wext-static-publisher/includes/class-admin.php:1111
+msgid "Easy Start"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1020
+#: wext-static-publisher/includes/class-admin.php:1055
+msgid "ZIP File"
+msgstr "ZIPファイル"
+
+#: wext-static-publisher/includes/class-admin.php:1021
+#: wext-static-publisher/includes/class-admin.php:1072
+msgid "GitHub"
+msgstr "GitHub"
+
+#: wext-static-publisher/includes/class-admin.php:1022
+msgid "Cloudflare"
+msgstr "Cloudflare"
+
+#: wext-static-publisher/includes/class-admin.php:1023
+#: wext-static-publisher/includes/class-admin.php:1086
+msgid "SFTP"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1024
+msgid "Auto Deploy"
+msgstr "自動デプロイ"
+
+#: wext-static-publisher/includes/class-admin.php:1056
+msgid ""
+"Download the created static site package and manually install it on the "
+"desired server."
+msgstr ""
+"作成した静的サイト パッケージをダウンロードし、目的のサーバーに手動でインス"
+"トールします。"
+
+#: wext-static-publisher/includes/class-admin.php:1059
+msgid "Create static site first"
+msgstr "最初に静的サイトを作成する"
+
+#: wext-static-publisher/includes/class-admin.php:1059
+msgid "ZIP ready"
+msgstr "ZIP の準備ができました"
+
+#: wext-static-publisher/includes/class-admin.php:1073
+msgid ""
+"Automatically trigger the GitHub Actions flow via webhook when the export is "
+"complete."
+msgstr ""
+"エクスポートが完了したら、Webhook 経由で GitHub Actions フローを自動的にトリ"
+"ガーします。"
+
+#: wext-static-publisher/includes/class-admin.php:1076
+#: wext-static-publisher/includes/class-admin.php:1091
+msgid "Configuration required"
+msgstr "構成が必要です"
+
+#: wext-static-publisher/includes/class-admin.php:1076
+msgid "Webhook configured"
+msgstr "Webhook が設定されました"
+
+#: wext-static-publisher/includes/class-admin.php:1087
+msgid ""
+"Upload the generated static files directly to a remote server over an "
+"encrypted SFTP connection."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1091
+#, fuzzy
+msgid "SFTP configured"
+msgstr "Webhook が設定されました"
+
+#: wext-static-publisher/includes/class-admin.php:1091
+msgid "SFTP unavailable on this server"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1112
+msgid ""
+"Set your public site address, connect your Cloudflare account, then create "
+"and deploy the static site."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1119
+msgid "Set your public site address"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1121
+msgid "Open Static Site Settings"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1127
+msgid "Connect your Cloudflare account"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1128
+msgid "Enter your own Account ID and API token in the Cloudflare tab."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1129
+msgid "Open Cloudflare Settings"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1135
+#, fuzzy
+msgid "Create and Deploy Static Site"
+msgstr "静的サイトの作成"
+
+#: wext-static-publisher/includes/class-admin.php:1140
+#, fuzzy
+msgid "Create and Deploy"
+msgstr "作成日"
+
+#: wext-static-publisher/includes/class-admin.php:1165
+msgid "Cloudflare Connection"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1166
+msgid ""
+"Use an API token from your own Cloudflare account with Workers Scripts Write "
+"permission. The token is encrypted in WordPress and is never shown again."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1168
+msgid "Find your Account ID"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1170
+msgid "Create an API token"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1175
+msgid "Account ID"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1177
+msgid "Worker name"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1179
+msgid "API token"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1181
+msgid "Leave blank to keep the saved token."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1182
+msgid "Save Cloudflare Connection"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1188
+msgid "Disconnect Cloudflare"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1188
+msgid "Remove the Cloudflare connection from this site?"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1191
+msgid ""
+"Set the public address in Static Site settings. Configure its custom domain "
+"or workers.dev subdomain for this Worker in your Cloudflare dashboard before "
+"publishing."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1244
+msgid "Records of the last static transaction:"
+msgstr "最後の静的トランザクションの記録:"
+
+#: wext-static-publisher/includes/class-admin.php:1245
+msgid "Number of Records:"
+msgstr "レコード数:"
+
+#: wext-static-publisher/includes/class-admin.php:1251
+msgid "Search Log Records"
+msgstr "ログレコードの検索"
+
+#: wext-static-publisher/includes/class-admin.php:1253
+msgid "Search source or static URL..."
+msgstr "ソースまたは静的 URL を検索..."
+
+#: wext-static-publisher/includes/class-admin.php:1256
+msgid "Clear Search"
+msgstr "検索をクリア"
+
+#: wext-static-publisher/includes/class-admin.php:1262
+msgid "No export activity has been recorded yet."
+msgstr "輸出活動はまだ記録されていません。"
+
+#: wext-static-publisher/includes/class-admin.php:1262
+msgid "No log entries matched your search."
+msgstr "検索に一致するログ エントリはありませんでした。"
+
+#: wext-static-publisher/includes/class-admin.php:1266
+msgid "Date"
+msgstr "日付"
+
+#: wext-static-publisher/includes/class-admin.php:1266
+msgid "Source URL"
+msgstr "ソースURL"
+
+#: wext-static-publisher/includes/class-admin.php:1266
+msgid "Static URL"
+msgstr "静的 URL"
+
+#: wext-static-publisher/includes/class-admin.php:1266
+msgid "Time"
+msgstr "時間"
+
+#: wext-static-publisher/includes/class-admin.php:1287
+msgid "Activity log pages"
+msgstr "アクティビティ ログ ページ"
+
+#: wext-static-publisher/includes/class-admin.php:1288
+#, php-format
+msgid "%d records"
+msgstr "%d レコード"
+
+#: wext-static-publisher/includes/class-admin.php:1311
+msgid "General"
+msgstr "一般"
+
+#: wext-static-publisher/includes/class-admin.php:1312
+msgid "Headless CMS"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1313
+msgid "Multilingual"
+msgstr "多言語"
+
+#: wext-static-publisher/includes/class-admin.php:1319
+msgid "Manage static generation settings."
+msgstr "静的生成設定を管理します。"
+
+#: wext-static-publisher/includes/class-admin.php:1322
+msgid "Static Site subsections"
+msgstr "静的サイトのサブセクション"
+
+#: wext-static-publisher/includes/class-admin.php:1343
+msgid "SEO Plugins"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1344
+#: wext-static-publisher/includes/class-admin.php:1380
+msgid "SEO Audit"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1345
+msgid "Sitemaps"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1346
+#: wext-static-publisher/includes/class-admin.php:1382
+msgid "Redirects"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1347
+#, fuzzy
+msgid "Indexing"
+msgstr "インデックスセレクター"
+
+#: wext-static-publisher/includes/class-admin.php:1348
+msgid "Performance"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1354
+msgid ""
+"Manage SEO plugin output and multilingual search engine signals in the "
+"static site."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1380
+msgid ""
+"Validate metadata, canonical URLs, structured data, images, links, and "
+"multilingual signals after every export."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1381
+msgid "Advanced Sitemaps"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1381
+msgid ""
+"Generate an indexable canonical sitemap with reliable modification dates, "
+"images, and language alternatives."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1382
+msgid ""
+"Export custom redirects and WordPress old slugs while reporting redirect "
+"chains and loops."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1383
+msgid ""
+"Control indexing for HTML and non-HTML files and optionally notify IndexNow "
+"after automatic deployment."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1383
+#, fuzzy
+msgid "Indexing Controls"
+msgstr "インデックスセレクター"
+
+#: wext-static-publisher/includes/class-admin.php:1384
+msgid "Performance Audit"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1384
+msgid ""
+"Report large files, large HTML documents, and render-blocking resources in "
+"the static package."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1395
+msgid "Create SEO audit report"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1395
+msgid "Writes JSON and export diagnostics for every generated page."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1396
+msgid "Adds wext-seo-report.html to the ZIP with noindex protection."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1396
+msgid "Include readable HTML report"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1397
+msgid "Add missing canonical URLs"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1397
+msgid "Uses the final static URL only when the page has no canonical element."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1398
+msgid "Reports invalid JSON-LD without inventing content or schema properties."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1398
+msgid "Validate JSON-LD structured data"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1399
+msgid "Checks missing and non-reciprocal hreflang targets."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1399
+msgid "Validate multilingual signals"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1400
+msgid "Audit image SEO"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1400
+msgid "Reports missing alt attributes and explicit image dimensions."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1402
+msgid "Creates wext-sitemap.xml and adds it to robots.txt."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1402
+msgid "Generate Wext sitemap"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1403
+msgid "Include accurate last modified dates"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1403
+msgid "Uses the WordPress content modification time when available."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1404
+msgid "Adds discoverable page images with absolute static URLs."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1404
+msgid "Include images"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1405
+msgid "Adds existing hreflang relationships to sitemap entries."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1405
+msgid "Include language alternatives"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1406
+msgid ""
+"Creates a separate sitemap only for videos with complete title, description, "
+"thumbnail, and upload date metadata."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1406
+msgid "Generate video sitemap"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1407
+msgid ""
+"Creates a separate sitemap for posts published during the last two days. "
+"Enable only for eligible news sites."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1407
+msgid "Generate Google News sitemap"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1409
+msgid "Creates permanent redirects for published content with saved old slugs."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1409
+msgid "Redirect WordPress old slugs"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1410
+msgid "Import redirect plugin rules"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1410
+msgid "Imports compatible non-regex redirects from Redirection and Rank Math."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1411
+msgid "Custom Redirect Rules"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1411
+msgid ""
+"Enter one source, target, and optional status code per line. Supported "
+"codes: 301, 302, 303, 307, 308."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1413
+#, fuzzy
+msgid "Noindex the entire static output"
+msgstr "静的出力では"
+
+#: wext-static-publisher/includes/class-admin.php:1413
+msgid ""
+"Use only for staging or private static deployments. This blocks indexing "
+"through HTML and response headers."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1414
+msgid "Noindex Paths"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1414
+#, fuzzy
+msgid "One path prefix or wildcard pattern per line."
+msgstr "1 行に 1 つのパス プレフィックス。"
+
+#: wext-static-publisher/includes/class-admin.php:1415
+msgid "Use pattern|directives format for non-HTML files."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1415
+msgid "X-Robots-Tag Rules"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1416
+msgid "Notify IndexNow after automatic deployment"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1416
+msgid ""
+"Submits only added, changed, or deleted URLs after webhook or automatic SFTP "
+"deployment."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1417
+msgid "Configured — leave blank to keep"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1417
+msgid "IndexNow Key"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1417
+msgid "Use an 8–128 character key containing letters, numbers, or hyphens."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1419
+msgid "Adds wext-performance-report.json to the static package."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1419
+msgid "Create performance report"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1421
+msgid "Large HTML Threshold (KB)"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1422
+msgid "Large Asset Threshold (KB)"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1427
+#, fuzzy
+msgid "Save SEO Settings"
+msgstr "検索設定の保存"
+
+#: wext-static-publisher/includes/class-admin.php:1448
+msgid "Keep SEO metadata on WordPress pages."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1448
+msgid "Page Metadata"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1449
+msgid "Keep SEO metadata on WordPress posts."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1449
+msgid "Post Metadata"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1450
+msgid "Custom Post Type Metadata"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1450
+msgid ""
+"Keep SEO metadata on public custom post types such as products and "
+"portfolios."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1451
+msgid "Archive & Taxonomy Metadata"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1451
+msgid ""
+"Keep SEO metadata on the posts page, archives, categories, tags, author "
+"pages and other listing views."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1456
+#, php-format
+msgid ""
+"Keep %s JSON-LD data, convert its URLs to the live domain, and adapt "
+"SearchAction to static search."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1456
+#: wext-static-publisher/includes/class-admin.php:1470
+#: wext-static-publisher/includes/class-admin.php:1483
+#: wext-static-publisher/includes/class-admin.php:1496
+msgid "Schema Structured Data"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1457
+#, php-format
+msgid "Copy %s sitemap and its linked sitemap files into the static package."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1457
+#: wext-static-publisher/includes/class-admin.php:1471
+#: wext-static-publisher/includes/class-admin.php:1484
+#: wext-static-publisher/includes/class-admin.php:1497
+msgid "XML Sitemaps"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1458
+#, php-format
+msgid ""
+"Copy %s robots.txt rules and point sitemap declarations to the live static "
+"domain."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1458
+#: wext-static-publisher/includes/class-admin.php:1472
+#: wext-static-publisher/includes/class-admin.php:1485
+#: wext-static-publisher/includes/class-admin.php:1498
+msgid "Robots.txt"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1468
+msgid ""
+"Choose which Rank Math outputs will be included in the generated static site."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1470
+msgid ""
+"Keep Rank Math JSON-LD data, convert its URLs to the live domain, and adapt "
+"SearchAction to static search."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1471
+msgid ""
+"Copy the Rank Math sitemap index, child sitemaps and sitemap stylesheet into "
+"the static package."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1472
+msgid ""
+"Copy Rank Math robots.txt rules and point the sitemap declaration to the "
+"live static domain."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1481
+msgid ""
+"Choose which All in One SEO outputs will be included in the generated static "
+"site."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1483
+msgid ""
+"Keep All in One SEO JSON-LD data, convert its URLs to the live domain, and "
+"adapt SearchAction to static search."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1484
+msgid ""
+"Copy the All in One SEO sitemap index, child sitemaps and sitemap stylesheet "
+"into the static package."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1485
+msgid ""
+"Copy All in One SEO robots.txt rules and point sitemap declarations to the "
+"live static domain."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1494
+msgid ""
+"Choose which SEOPress outputs will be included in the generated static site."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1496
+msgid ""
+"Keep SEOPress JSON-LD data, convert its URLs to the live domain, and adapt "
+"SearchAction to static search."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1497
+msgid ""
+"Copy the SEOPress sitemap index, child sitemaps and sitemap stylesheets into "
+"the static package."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1498
+msgid ""
+"Copy SEOPress robots.txt rules and point sitemap declarations to the live "
+"static domain."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1507
+#: wext-static-publisher/includes/class-admin.php:1516
+#: wext-static-publisher/includes/class-admin.php:1525
+#, php-format
+msgid "Choose which %s outputs will be included in the generated static site."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1540
+msgid "Detected SEO plugin:"
+msgstr "検出された SEO プラグイン:"
+
+#: wext-static-publisher/includes/class-admin.php:1545
+msgid ""
+"Multiple active SEO plugins were detected. Review their output settings to "
+"prevent duplicate metadata."
+msgstr ""
+"有効な SEO プラグインが複数検出されました。メタデータの重複を防ぐため、出力設"
+"定を確認してください。"
+
+#: wext-static-publisher/includes/class-admin.php:1550
+msgid ""
+"No active SEO plugin was detected. Saved settings will be used when a "
+"supported plugin is activated."
+msgstr ""
+"有効な SEO プラグインは検出されませんでした。対応プラグインが有効になると、保"
+"存済みの設定が使用されます。"
+
+#: wext-static-publisher/includes/class-admin.php:1557
+msgid "Save SEO Plugin Settings"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1590
+msgid "Active"
+msgstr "有効"
+
+#: wext-static-publisher/includes/class-admin.php:1590
+#, php-format
+msgid "Active — version %s"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1590
+msgid "Not active"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1595
+#, php-format
+msgid "Include %s outputs in the static site"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1600
+#, php-format
+msgid ""
+"When disabled, %s metadata and schema outputs are removed and its sitemap "
+"and robots files are not exported."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1601
+msgid "Metadata"
+msgstr "メタデータ"
+
+#: wext-static-publisher/includes/class-admin.php:1602
+msgid "Technical SEO"
+msgstr "テクニカル SEO"
+
+#: wext-static-publisher/includes/class-admin.php:1604
+#, php-format
+msgid ""
+"These settings are preserved, but no %s output will be exported until the "
+"plugin is active."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1653
+msgid "CMS Address"
+msgstr "CMS アドレス"
+
+#: wext-static-publisher/includes/class-admin.php:1653
+msgid "Detected automatically from the WordPress site address."
+msgstr "WordPress のサイトアドレスから自動的に検出されます。"
+
+#: wext-static-publisher/includes/class-admin.php:1654
+msgid "Example: https://example.com"
+msgstr "例: https://example.com"
+
+#: wext-static-publisher/includes/class-admin.php:1654
+msgid "Live Site Address"
+msgstr "ライブサイトアドレス"
+
+#: wext-static-publisher/includes/class-admin.php:1655
+msgid "Most URLs"
+msgstr "ほとんどの URL"
+
+#: wext-static-publisher/includes/class-admin.php:1656
+msgid "Excluded Paths"
+msgstr "除外されたパス"
+
+#: wext-static-publisher/includes/class-admin.php:1656
+msgid "One path prefix per line."
+msgstr "1 行に 1 つのパス プレフィックス。"
+
+#: wext-static-publisher/includes/class-admin.php:1658
+msgid "Save General Settings"
+msgstr "一般設定の保存"
+
+#: wext-static-publisher/includes/class-admin.php:1671
+#, fuzzy
+msgid "Headless + Static Publisher"
+msgstr "静的パブリッシャーセクション"
+
+#: wext-static-publisher/includes/class-admin.php:1672
+msgid ""
+"Visitors cannot open the WordPress theme frontend. Signed internal export "
+"requests can still render the homepage, pages, design assets, and menus for "
+"the static site."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1676
+msgid "Headless CMS Mode"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1677
+msgid "Protect the WordPress theme frontend"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1677
+msgid ""
+"WordPress Admin, REST API, media files, cron, and signed static export "
+"requests remain available."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1680
+msgid "Visitor Response"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1682
+msgid "404 Not Found (recommended)"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1683
+msgid "307 Redirect to frontend"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1684
+msgid "410 Gone"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1685
+msgid "307 redirects visitors to the Live Site Address configured in General."
+msgstr ""
+"307 は訪問者を「一般」で設定されたライブサイトアドレスへリダイレクトします。"
+
+#: wext-static-publisher/includes/class-admin.php:1688
+msgid "Redirect Paths"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1689
+msgid ""
+"Example: /about/ redirects to the frontend /about/. Query parameters are not "
+"forwarded."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1689
+msgid "Preserve the requested path when redirecting"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1692
+msgid "Editor Preview"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1693
+msgid "Allow signed-in editors to view the WordPress theme"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1696
+msgid "GraphQL"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1697
+msgid "Allow the /graphql endpoint when WPGraphQL is installed"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1700
+#, fuzzy
+msgid "CMS Indexing"
+msgstr "インデックスセレクター"
+
+#: wext-static-publisher/includes/class-admin.php:1701
+msgid "Block indexing on the WordPress CMS origin"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1701
+msgid ""
+"Returns noindex headers, disables the CMS sitemap, and disallows crawling "
+"through robots.txt without changing the generated static site."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1704
+msgid "Legacy Publishing"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1705
+#, fuzzy
+msgid "Disable XML-RPC requests"
+msgstr "XML-RPC リンクを無効にする"
+
+#: wext-static-publisher/includes/class-admin.php:1708
+msgid "Comments and Pingbacks"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1709
+msgid "Close comments and pingbacks on the CMS origin"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1712
+#, fuzzy
+msgid "Save Headless CMS Settings"
+msgstr "非表示設定を保存"
+
+#: wext-static-publisher/includes/class-admin.php:1724
+msgid ""
+"Determines how many last successful export archives will be stored. Default: "
+"5."
+msgstr ""
+"最後に成功したエクスポート アーカイブをいくつ保存するかを決定します。デフォル"
+"ト: 5。"
+
+#: wext-static-publisher/includes/class-admin.php:1724
+msgid "Number of ZIPs to Store"
+msgstr "保存する ZIP の数"
+
+#: wext-static-publisher/includes/class-admin.php:1726
+msgid "Save ZIP Settings"
+msgstr "ZIP 設定を保存"
+
+#: wext-static-publisher/includes/class-admin.php:1734
+#: wext-static-publisher/includes/class-admin.php:1991
+msgid "Contents"
+msgstr "コンテンツ"
+
+#: wext-static-publisher/includes/class-admin.php:1735
+msgid "When a new article is published"
+msgstr "新しい記事が公開されたとき"
+
+#: wext-static-publisher/includes/class-admin.php:1735
+msgid "When a new blog post is published for the first time."
+msgstr "新しいブログ投稿が初めて公開されるとき。"
+
+#: wext-static-publisher/includes/class-admin.php:1736
+msgid "When a live blog post is changed or removed."
+msgstr "ライブブログ投稿が変更または削除されたとき。"
+
+#: wext-static-publisher/includes/class-admin.php:1736
+msgid "When the current post is updated"
+msgstr "現在の投稿が更新されたとき"
+
+#: wext-static-publisher/includes/class-admin.php:1737
+msgid "When a new page is published for the first time."
+msgstr "新しいページが初めて公開されたとき。"
+
+#: wext-static-publisher/includes/class-admin.php:1737
+msgid "When the new page is published"
+msgstr "新しいページが公開されたとき"
+
+#: wext-static-publisher/includes/class-admin.php:1738
+msgid "When a published page is changed or removed."
+msgstr "公開されているページが変更または削除されたとき。"
+
+#: wext-static-publisher/includes/class-admin.php:1738
+msgid "When the current page is updated"
+msgstr "現在のページが更新されたとき"
+
+#: wext-static-publisher/includes/class-admin.php:1739
+msgid "When custom content types change"
+msgstr "カスタム コンテンツ タイプが変更された場合"
+
+#: wext-static-publisher/includes/class-admin.php:1739
+msgid ""
+"When product, portfolio, etc. special content in the publication changes."
+msgstr "製品、ポートフォリオなど、出版物の特別な内容が変更された場合。"
+
+#: wext-static-publisher/includes/class-admin.php:1741
+msgid "Structure and Design"
+msgstr "構造とデザイン"
+
+#: wext-static-publisher/includes/class-admin.php:1742
+msgid "When categories, tags, or custom classifications are changed."
+msgstr "カテゴリ、タグ、またはカスタム分類が変更されたとき。"
+
+#: wext-static-publisher/includes/class-admin.php:1742
+msgid "When the category or tag changes"
+msgstr "カテゴリやタグが変わったとき"
+
+#: wext-static-publisher/includes/class-admin.php:1743
+msgid "When an image or other media file is added, updated, or deleted."
+msgstr ""
+"画像またはその他のメディア ファイルが追加、更新、または削除されたとき。"
+
+#: wext-static-publisher/includes/class-admin.php:1743
+msgid "When the media changes"
+msgstr "メディアが変わるとき"
+
+#: wext-static-publisher/includes/class-admin.php:1744
+msgid "When the menu changes"
+msgstr "メニューが変わるとき"
+
+#: wext-static-publisher/includes/class-admin.php:1744
+msgid "When the structure or links of navigation menus are changed."
+msgstr "ナビゲーションメニューの構造やリンクが変更された場合。"
+
+#: wext-static-publisher/includes/class-admin.php:1745
+msgid "When components change"
+msgstr "コンポーネントが変更された場合"
+
+#: wext-static-publisher/includes/class-admin.php:1745
+msgid "When widget and widget layouts are updated."
+msgstr "ウィジェットとウィジェットのレイアウトが更新されたとき。"
+
+#: wext-static-publisher/includes/class-admin.php:1746
+msgid "When the theme changes"
+msgstr "テーマが変わると"
+
+#: wext-static-publisher/includes/class-admin.php:1746
+msgid "When the theme is changed, updated, or customizer settings are saved."
+msgstr ""
+"テーマが変更、更新されたとき、またはカスタマイザー設定が保存されたとき。"
+
+#: wext-static-publisher/includes/class-admin.php:1747
+msgid "When site settings change"
+msgstr "サイトの設定が変更されたとき"
+
+#: wext-static-publisher/includes/class-admin.php:1747
+msgid ""
+"When the site name, description, homepage, reading or permalink settings are "
+"changed."
+msgstr ""
+"サイト名、説明、ホームページ、読み方、パーマリンクの設定が変更された場合。"
+
+#: wext-static-publisher/includes/class-admin.php:1758
+msgid "Automatic Static Site Creation and Deploy"
+msgstr "静的サイトの自動作成と展開"
+
+#: wext-static-publisher/includes/class-admin.php:1759
+msgid ""
+"After the selected changes, the static site is created; If the deployment "
+"webhook is set, the deploy flow is triggered automatically."
+msgstr ""
+"選択した内容が変更されると、静的サイトが作成されます。デプロイ Webhook が設定"
+"されている場合、デプロイ フローは自動的にトリガーされます。"
+
+#: wext-static-publisher/includes/class-admin.php:1761
+msgid "Enable automatic static site generation"
+msgstr "静的サイトの自動生成を有効にする"
+
+#: wext-static-publisher/includes/class-admin.php:1779
+msgid ""
+"Changes made consecutively are combined for 60 seconds and run as a single "
+"export and deploy."
+msgstr ""
+"連続して行われた変更は 60 秒間結合され、単一のエクスポートおよびデプロイとし"
+"て実行されます。"
+
+#: wext-static-publisher/includes/class-admin.php:1781
+msgid "Save Auto Deploy Settings"
+msgstr "自動デプロイ設定を保存"
+
+#: wext-static-publisher/includes/class-admin.php:1792
+msgid "GitHub Deployment Webhook"
+msgstr "GitHub デプロイ Webhook"
+
+#: wext-static-publisher/includes/class-admin.php:1794
+msgid "Deployment Webhook"
+msgstr "デプロイ Webhook"
+
+#: wext-static-publisher/includes/class-admin.php:1794
+msgid "For GitHub: https://api.github.com/repos/OWNER/REPOSITORY/dispatches"
+msgstr ""
+"GitHub の場合: https://api.github.com/repos/OWNER/REPOSITORY/dispatches"
+
+#: wext-static-publisher/includes/class-admin.php:1795
+msgid ""
+"If using GitHub, use a fine-grained token limited to this repository with "
+"Contents: write permission."
+msgstr ""
+"GitHub を使用する場合は、Contents: 書き込み権限を持つこのリポジトリに限定され"
+"たきめ細かいトークンを使用します。"
+
+#: wext-static-publisher/includes/class-admin.php:1795
+msgid "Leave blank to keep the saved token"
+msgstr "保存されたトークンを保持するには空白のままにします"
+
+#: wext-static-publisher/includes/class-admin.php:1795
+msgid "Webhook Bearer Token"
+msgstr "Webhook ベアラー トークン"
+
+#: wext-static-publisher/includes/class-admin.php:1797
+msgid "Save Deploy Settings"
+msgstr "デプロイ設定の保存"
+
+#: wext-static-publisher/includes/class-admin.php:1815
+msgid ""
+"The SFTP client is unavailable. Reinstall the complete plugin package before "
+"using this deployment method."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1821
+msgid "SFTP Connection"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1824
+msgid "SFTP Host"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1825
+msgid "Enter only the hostname or IP address; do not include sftp://."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1828
+msgid "Port"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1832
+msgid "Username"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1836
+#, fuzzy
+msgid "Password"
+msgstr "合格した"
+
+#: wext-static-publisher/includes/class-admin.php:1837
+msgid "Delete saved password"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1837
+#, fuzzy
+msgid "Leave blank to keep the saved password"
+msgstr "保存されたトークンを保持するには空白のままにします"
+
+#: wext-static-publisher/includes/class-admin.php:1837
+msgid ""
+"The password is encrypted using the WordPress security keys and is never "
+"shown again."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1840
+#, fuzzy
+msgid "Remote Directory"
+msgstr "テーマディレクトリ"
+
+#: wext-static-publisher/includes/class-admin.php:1841
+msgid ""
+"Static files are uploaded into this directory. Existing files with the same "
+"path are overwritten; unrelated remote files are preserved."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1844
+msgid "Server MD5 Fingerprint"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1845
+msgid ""
+"Recommended. Verify this value with your hosting provider to prevent "
+"connecting to the wrong server."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1848
+msgid "Per-file Timeout"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1849
+msgid "seconds"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1852
+msgid ""
+"An SFTP failure is recorded separately and does not delete the successfully "
+"generated ZIP file."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1852
+msgid "Upload automatically after every successful export"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1853
+#, fuzzy
+msgid "Save SFTP Settings"
+msgstr "検索設定の保存"
+
+#: wext-static-publisher/includes/class-admin.php:1860
+msgid "Test Connection"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1865
+#, fuzzy
+msgid "Upload Latest Static Site"
+msgstr "静的サイトの作成"
+
+#: wext-static-publisher/includes/class-admin.php:1869
+#, fuzzy
+msgid "Last SFTP Status"
+msgstr "最後の静的ビルド"
+
+#: wext-static-publisher/includes/class-admin.php:1883
+msgid "Redirection by Browser Language"
+msgstr "ブラウザ言語によるリダイレクト"
+
+#: wext-static-publisher/includes/class-admin.php:1884
+msgid ""
+"When the visitor arrives at the main address, first the saved preference is "
+"used, then the language sequence of the browser."
+msgstr ""
+"訪問者がメイン アドレスに到着すると、まず保存されている設定が使用され、次にブ"
+"ラウザの言語シーケンスが使用されます。"
+
+#: wext-static-publisher/includes/class-admin.php:1886
+msgid "Enable browser language redirection"
+msgstr "ブラウザ言語のリダイレクトを有効にする"
+
+#: wext-static-publisher/includes/class-admin.php:1893
+msgid "Supported Language Codes"
+msgstr "サポートされている言語コード"
+
+#: wext-static-publisher/includes/class-admin.php:1895
+msgid "There should be equivalents like this."
+msgstr "このような同等のものがあるはずです。"
+
+#: wext-static-publisher/includes/class-admin.php:1895
+msgid "Write one language per line. These codes in WordPress"
+msgstr "1 行に 1 つの言語を記述します。 WordPress のこれらのコード"
+
+#: wext-static-publisher/includes/class-admin.php:1898
+msgid "Default Language"
+msgstr "デフォルトの言語"
+
+#: wext-static-publisher/includes/class-admin.php:1900
+msgid "If the browser language is not supported, this language is opened."
+msgstr "ブラウザ言語がサポートされていない場合は、この言語が開きます。"
+
+#: wext-static-publisher/includes/class-admin.php:1902
+msgid "Language Preference Period"
+msgstr "言語優先期間"
+
+#: wext-static-publisher/includes/class-admin.php:1905
+msgid "day"
+msgstr "日"
+
+#: wext-static-publisher/includes/class-admin.php:1907
+msgid ""
+"The language that the user explicitly visited is preserved for subsequent "
+"logins."
+msgstr ""
+"ユーザーが明示的にアクセスした言語は、その後のログインのために保存されます。"
+
+#: wext-static-publisher/includes/class-admin.php:1910
+msgid "It works at. Direct links containing languages ​​are not changed."
+msgstr "で動作します。言語を含む直接リンクは変更されません。"
+
+#: wext-static-publisher/includes/class-admin.php:1910
+msgid "The redirect is only for the site"
+msgstr "リダイレクトはサイトのみに適用されます"
+
+#: wext-static-publisher/includes/class-admin.php:1912
+msgid "Save Language Settings"
+msgstr "言語設定の保存"
+
+#: wext-static-publisher/includes/class-admin.php:1921
+#: wext-static-publisher/includes/class-admin.php:1952
+msgid "Static Search"
+msgstr "静的検索"
+
+#: wext-static-publisher/includes/class-admin.php:1922
+#: wext-static-publisher/includes/class-admin.php:1971
+msgid "Indexing Selectors"
+msgstr "インデックスセレクター"
+
+#: wext-static-publisher/includes/class-admin.php:1923
+#: wext-static-publisher/includes/class-admin.php:1984
+msgid "Fuse.js"
+msgstr "Fuse.js"
+
+#: wext-static-publisher/includes/class-admin.php:1930
+msgid ""
+"Configure static site search that doesn't require a server, powered by "
+"Fuse.js."
+msgstr "Fuse.js を利用した、サーバーを必要としない静的サイト検索を構成します。"
+
+#: wext-static-publisher/includes/class-admin.php:1952
+msgid ""
+"The search page, index and necessary Fuse.js files are added to the export "
+"ZIP."
+msgstr ""
+"検索ページ、インデックス、および必要な Fuse.js ファイルがエクスポート ZIP に"
+"追加されます。"
+
+#: wext-static-publisher/includes/class-admin.php:1953
+msgid "Enable static search"
+msgstr "静的検索を有効にする"
+
+#: wext-static-publisher/includes/class-admin.php:1959
+#: wext-static-publisher/includes/class-admin.php:1974
+#: wext-static-publisher/includes/class-admin.php:1975
+msgid "Example:"
+msgstr "例："
+
+#: wext-static-publisher/includes/class-admin.php:1959
+msgid "Search Page Path"
+msgstr "検索ページのパス"
+
+#: wext-static-publisher/includes/class-admin.php:1960
+msgid "Number of Results to Show"
+msgstr "表示する結果の数"
+
+#: wext-static-publisher/includes/class-admin.php:1961
+msgid "Minimum Search Characters"
+msgstr "最小検索文字数"
+
+#: wext-static-publisher/includes/class-admin.php:1962
+msgid "Content Character Limit"
+msgstr "コンテンツの文字数制限"
+
+#: wext-static-publisher/includes/class-admin.php:1962
+msgid "Maximum text length to be indexed from each page."
+msgstr "各ページからインデックス付けされるテキストの最大長。"
+
+#: wext-static-publisher/includes/class-admin.php:1963
+msgid ""
+"A lower value gives a more precise result, a higher value gives a more "
+"tolerant result."
+msgstr ""
+"値が低いほど、より正確な結果が得られ、値が高いほど、より寛容な結果が得られま"
+"す。"
+
+#: wext-static-publisher/includes/class-admin.php:1963
+msgid "Blur Threshold"
+msgstr "ぼかしのしきい値"
+
+#: wext-static-publisher/includes/class-admin.php:1964
+msgid "Match all words"
+msgstr "すべての単語と一致する"
+
+#: wext-static-publisher/includes/class-admin.php:1964
+msgid "Match any word"
+msgstr "任意の単語に一致します"
+
+#: wext-static-publisher/includes/class-admin.php:1964
+msgid "Word Matching"
+msgstr "単語の一致"
+
+#: wext-static-publisher/includes/class-admin.php:1971
+msgid ""
+"Determine which fields to take from the page and post HTML with the CSS "
+"selector."
+msgstr ""
+"ページからどのフィールドを取得するかを決定し、CSS セレクターを使用して HTML "
+"をポストします。"
+
+#: wext-static-publisher/includes/class-admin.php:1974
+msgid "CSS Selector For Title"
+msgstr "タイトルの CSS セレクター"
+
+#: wext-static-publisher/includes/class-admin.php:1974
+#: wext-static-publisher/includes/class-admin.php:1975
+msgid "or"
+msgstr "または"
+
+#: wext-static-publisher/includes/class-admin.php:1975
+msgid "CSS Selector for Content"
+msgstr "コンテンツの CSS セレクター"
+
+#: wext-static-publisher/includes/class-admin.php:1976
+msgid "CSS Selector for Summary"
+msgstr "概要用の CSS セレクター"
+
+#: wext-static-publisher/includes/class-admin.php:1976
+msgid ""
+"If the field is not found, a short summary is automatically generated from "
+"the content."
+msgstr ""
+"フィールドが見つからない場合は、コンテンツから短い概要が自動的に生成されま"
+"す。"
+
+#: wext-static-publisher/includes/class-admin.php:1977
+msgid "URLs to Exclude from Indexing"
+msgstr "インデックスから除外する URL"
+
+#: wext-static-publisher/includes/class-admin.php:1977
+msgid "You can type the full URL, URL fragment, or word per line."
+msgstr "完全な URL、URL フラグメント、または 1 行に 1 単語を入力できます。"
+
+#: wext-static-publisher/includes/class-admin.php:1984
+msgid ""
+"Select the fields to search and determine their impact on the result ranking."
+msgstr "検索するフィールドを選択し、結果ランキングへの影響を判断します。"
+
+#: wext-static-publisher/includes/class-admin.php:1989
+msgid "Shows title matches at the top."
+msgstr "タイトルマッチを上位に表示します。"
+
+#: wext-static-publisher/includes/class-admin.php:1989
+msgid "Title"
+msgstr "タイトル"
+
+#: wext-static-publisher/includes/class-admin.php:1990
+msgid "Searches in the text of the tagline and summary."
+msgstr "キャッチフレーズと概要のテキストを検索します。"
+
+#: wext-static-publisher/includes/class-admin.php:1990
+msgid "Summary"
+msgstr "まとめ"
+
+#: wext-static-publisher/includes/class-admin.php:1991
+msgid "It searches in the main text of the page and article."
+msgstr "ページや記事の本文を検索します。"
+
+#: wext-static-publisher/includes/class-admin.php:1992
+msgid "Category and Tags"
+msgstr "カテゴリとタグ"
+
+#: wext-static-publisher/includes/class-admin.php:1992
+msgid "WordPress adds category and tag names to the index."
+msgstr "WordPress はカテゴリ名とタグ名をインデックスに追加します。"
+
+#: wext-static-publisher/includes/class-admin.php:1999
+msgid "Weight"
+msgstr "重さ"
+
+#: wext-static-publisher/includes/class-admin.php:2006
+msgid "Save Search Settings"
+msgstr "検索設定の保存"
+
+#: wext-static-publisher/includes/class-admin.php:2017
+msgid "Directory"
+msgstr "ディレクトリ"
+
+#: wext-static-publisher/includes/class-admin.php:2018
+#: wext-static-publisher/includes/class-admin.php:2088
+msgid "Traces"
+msgstr "痕跡"
+
+#: wext-static-publisher/includes/class-admin.php:2019
+#: wext-static-publisher/includes/class-admin.php:2121
+msgid "Static Outputs"
+msgstr "静的出力"
+
+#: wext-static-publisher/includes/class-admin.php:2024
+msgid ""
+"Specify which WordPress-specific directory and path names will be used in "
+"static output. Source WordPress files are not modified."
+msgstr ""
+"静的出力で使用される WordPress 固有のディレクトリとパス名を指定します。ソー"
+"ス WordPress ファイルは変更されません。"
+
+#: wext-static-publisher/includes/class-admin.php:2041
+msgid "WP-Content Directory"
+msgstr "WPコンテンツディレクトリ"
+
+#: wext-static-publisher/includes/class-admin.php:2043
+#: wext-static-publisher/includes/class-admin.php:2049
+#: wext-static-publisher/includes/class-admin.php:2055
+#: wext-static-publisher/includes/class-admin.php:2061
+#: wext-static-publisher/includes/class-admin.php:2067
+#: wext-static-publisher/includes/class-admin.php:2079
+msgid "In the static output"
+msgstr "静的出力では"
+
+#: wext-static-publisher/includes/class-admin.php:2043
+#: wext-static-publisher/includes/class-admin.php:2049
+msgid "The name to replace the directory."
+msgstr "ディレクトリを置き換える名前。"
+
+#: wext-static-publisher/includes/class-admin.php:2047
+msgid "WP-Includes Directory"
+msgstr "WP-インクルードディレクトリ"
+
+#: wext-static-publisher/includes/class-admin.php:2053
+msgid "Uploads Directory"
+msgstr "アップロードディレクトリ"
+
+#: wext-static-publisher/includes/class-admin.php:2055
+#: wext-static-publisher/includes/class-admin.php:2061
+#: wext-static-publisher/includes/class-admin.php:2067
+msgid "The subdirectory to use in place of the path."
+msgstr "パスの代わりに使用するサブディレクトリ。"
+
+#: wext-static-publisher/includes/class-admin.php:2059
+msgid "Plugins Directory"
+msgstr "プラグインディレクトリ"
+
+#: wext-static-publisher/includes/class-admin.php:2065
+msgid "Themes Directory"
+msgstr "テーマディレクトリ"
+
+#: wext-static-publisher/includes/class-admin.php:2071
+msgid "Theme Style File"
+msgstr "テーマスタイルファイル"
+
+#: wext-static-publisher/includes/class-admin.php:2073
+msgid "The name of the file in the static output."
+msgstr "静的出力内のファイルの名前。"
+
+#: wext-static-publisher/includes/class-admin.php:2073
+msgid "in active theme"
+msgstr "アクティブなテーマで"
+
+#: wext-static-publisher/includes/class-admin.php:2077
+msgid "Author URL"
+msgstr "著者のURL"
+
+#: wext-static-publisher/includes/class-admin.php:2079
+msgid "The path to be used instead of the path."
+msgstr "パスの代わりに使用されるパス。"
+
+#: wext-static-publisher/includes/class-admin.php:2089
+msgid "Removes selected WordPress identifiers from static HTML output."
+msgstr "選択した WordPress 識別子を静的 HTML 出力から削除します。"
+
+#: wext-static-publisher/includes/class-admin.php:2094
+msgid "Hide WordPress Version"
+msgstr "WordPress のバージョンを隠す"
+
+#: wext-static-publisher/includes/class-admin.php:2094
+msgid ""
+"Removes asset version parameters that specify the WordPress core version."
+msgstr ""
+"WordPress コア バージョンを指定するアセット バージョン パラメーターを削除しま"
+"す。"
+
+#: wext-static-publisher/includes/class-admin.php:2095
+msgid "Hide WordPress Generator Meta Tag"
+msgstr "WordPress ジェネレーターのメタタグを非表示にする"
+
+#: wext-static-publisher/includes/class-admin.php:2095
+msgid "It removes the generator meta tag that describes the WordPress version."
+msgstr ""
+"WordPress のバージョンを説明するジェネレーターのメタタグが削除されます。"
+
+#: wext-static-publisher/includes/class-admin.php:2096
+msgid "Hide WordPress DNS Prefetch Connection"
+msgstr "WordPress DNS プリフェッチ接続を非表示にする"
+
+#: wext-static-publisher/includes/class-admin.php:2096
+msgid "Removes DNS prefetch connections for WordPress services."
+msgstr "WordPress サービスの DNS プリフェッチ接続を削除します。"
+
+#: wext-static-publisher/includes/class-admin.php:2097
+msgid "Hide RSD Header Link"
+msgstr "RSD ヘッダー リンクを非表示にする"
+
+#: wext-static-publisher/includes/class-admin.php:2097
+msgid "Really Simple Removes the Discovery link from static HTML."
+msgstr "Really Simple 静的 HTML から Discovery リンクを削除します。"
+
+#: wext-static-publisher/includes/class-admin.php:2122
+msgid "Cleans up unused WordPress links and scripts on the static site."
+msgstr ""
+"静的サイト上の未使用の WordPress リンクとスクリプトをクリーンアップします。"
+
+#: wext-static-publisher/includes/class-admin.php:2127
+msgid "Disable XML-RPC Links"
+msgstr "XML-RPC リンクを無効にする"
+
+#: wext-static-publisher/includes/class-admin.php:2127
+msgid "Removes XML-RPC and pingback discovery connections."
+msgstr "XML-RPC およびピンバック検出接続を削除します。"
+
+#: wext-static-publisher/includes/class-admin.php:2128
+msgid "Disable Embed Scripts"
+msgstr "埋め込みスクリプトを無効にする"
+
+#: wext-static-publisher/includes/class-admin.php:2128
+msgid "Removes WordPress embed scripts from static HTML."
+msgstr "静的 HTML から WordPress 埋め込みスクリプトを削除します。"
+
+#: wext-static-publisher/includes/class-admin.php:2129
+msgid "Disable Frontend DB Debug Information"
+msgstr "フロントエンド DB デバッグ情報を無効にする"
+
+#: wext-static-publisher/includes/class-admin.php:2129
+msgid ""
+"It only prevents database error details from being shown in export requests."
+msgstr ""
+"データベース エラーの詳細がエクスポート リクエストに表示されないようにするだ"
+"けです。"
+
+#: wext-static-publisher/includes/class-admin.php:2130
+msgid "Disable WLW Manifest Link"
+msgstr "WLWマニフェストリンクを無効にする"
+
+#: wext-static-publisher/includes/class-admin.php:2130
+msgid "Windows Live Writer removes the manifest link."
+msgstr "Windows Live Writer はマニフェスト リンクを削除します。"
+
+#: wext-static-publisher/includes/class-admin.php:2131
+msgid "Disable Emoji Scripts"
+msgstr "絵文字スクリプトを無効にする"
+
+#: wext-static-publisher/includes/class-admin.php:2131
+msgid "Removes WordPress emoji scripts and styles from static HTML."
+msgstr "静的 HTML から WordPress 絵文字スクリプトとスタイルを削除します。"
+
+#: wext-static-publisher/includes/class-admin.php:2150
+msgid "Save Hide Settings"
+msgstr "非表示設定を保存"
+
+#: wext-static-publisher/includes/class-admin.php:2176
+#, php-format
+msgid "%1$d of %2$d checks passed."
+msgstr "%1$d/%2$d チェックに合格しました。"
+
+#: wext-static-publisher/includes/class-admin.php:2176
+msgid "Last checked:"
+msgstr "最後にチェックした内容:"
+
+#: wext-static-publisher/includes/class-admin.php:2181
+msgid "Check Again"
+msgstr "もう一度確認してください"
+
+#: wext-static-publisher/includes/class-admin.php:2187
+msgid "Diagnostics checks have been updated."
+msgstr "診断チェックが更新されました。"
+
+#: wext-static-publisher/includes/class-admin.php:2198
+msgid "Passed"
+msgstr "合格した"
+
+#: wext-static-publisher/includes/class-admin.php:2217
+#: wext-static-publisher/includes/class-admin.php:2255
+msgid "Support"
+msgstr "Support"
+
+#: wext-static-publisher/includes/class-admin.php:2222
+msgid "About sections"
+msgstr "About sections"
+
+#: wext-static-publisher/includes/class-admin.php:2235
+msgid ""
+"It was developed to convert your WordPress site into static files and "
+"prepare them for publication processes."
+msgstr ""
+"これは、WordPress サイトを静的ファイルに変換し、公開プロセスの準備をするため"
+"に開発されました。"
+
+#: wext-static-publisher/includes/class-admin.php:2240
+msgid "Version Number"
+msgstr "バージョン番号"
+
+#: wext-static-publisher/includes/class-admin.php:2244
+#: wext-static-publisher/includes/class-admin.php:2270
+msgid "Plugin Website"
+msgstr "プラグインのウェブサイト"
+
+#: wext-static-publisher/includes/class-admin.php:2260
+msgid "Wext Support"
+msgstr "Wext Support"
+
+#: wext-static-publisher/includes/class-admin.php:2261
+msgid "Get help with static publishing and deployment."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:2266
+msgid "Support Email"
+msgstr "サポートメール"
+
+#: wext-static-publisher/includes/class-aioseo-integration.php:160
+msgid "All in One SEO sitemap could not be exported."
+msgstr ""
+
+#: wext-static-publisher/includes/class-aioseo-integration.php:183
+msgid "All in One SEO robots.txt could not be exported."
 msgstr ""
 
 #: wext-static-publisher/includes/class-archive-manager.php:119
@@ -27,7 +2046,7 @@ msgid "No ZIP file found to download."
 msgstr "ダウンロードする ZIP ファイルが見つかりません。"
 
 #: wext-static-publisher/includes/class-archive-manager.php:122
-#: wext-static-publisher/includes/class-exporter.php:721
+#: wext-static-publisher/includes/class-exporter.php:728
 msgid "PHP ZipArchive extension is not installed."
 msgstr "PHP ZipArchive 拡張機能がインストールされていません。"
 
@@ -39,1887 +2058,443 @@ msgstr "一時ダウンロードパッケージを作成できませんでした
 msgid "The bulk download package could not be created."
 msgstr "一括ダウンロード パッケージを作成できませんでした。"
 
-#: wext-static-publisher/includes/class-exporter.php:80
+#: wext-static-publisher/includes/class-block-seo-integration.php:158
+#, php-format
+msgid "%s sitemap could not be exported."
+msgstr ""
+
+#: wext-static-publisher/includes/class-block-seo-integration.php:180
+#, php-format
+msgid "%s robots.txt could not be exported."
+msgstr ""
+
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:52
+msgid "Enter a valid Cloudflare Account ID and Worker name."
+msgstr ""
+
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:56
+msgid "Enter a Cloudflare API token."
+msgstr ""
+
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:59
+msgid "Enter a valid Cloudflare API token."
+msgstr ""
+
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:75
+msgid "The Cloudflare API token is not active."
+msgstr ""
+
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:127
+msgid "The completed export folder is unavailable."
+msgstr ""
+
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:146
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:173
+msgid "An export file could not be read."
+msgstr ""
+
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:153
+msgid "The export contains no files to publish."
+msgstr ""
+
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:159
+msgid "Cloudflare returned an invalid asset upload session."
+msgstr ""
+
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:164
+msgid "Cloudflare returned an invalid upload bucket."
+msgstr ""
+
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:169
+msgid "Cloudflare requested an unknown asset."
+msgstr ""
+
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:183
+msgid "Cloudflare did not confirm the asset upload."
+msgstr ""
+
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:187
+msgid "The bundled Cloudflare Worker is missing."
+msgstr ""
+
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:203
+msgid "A Cloudflare configuration file could not be read."
+msgstr ""
+
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:246
+#, php-format
+msgid "Cloudflare API request failed (HTTP %d): %s"
+msgstr ""
+
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:246
+msgid "Unknown error"
+msgstr ""
+
+#: wext-static-publisher/includes/class-diagnostics.php:76
+#, php-format
+msgid "Site URL accessible (HTTP %d): %s"
+msgstr "アクセス可能なサイト URL (HTTP %d): %s"
+
+#: wext-static-publisher/includes/class-diagnostics.php:78
+msgid "Site URL unreachable:"
+msgstr "サイト URL に到達できません:"
+
+#: wext-static-publisher/includes/class-diagnostics.php:79
+#, php-format
+msgid "Site URL returned an unexpected HTTP %d response: %s"
+msgstr "サイト URL が予期しない HTTP %d 応答を返しました: %s"
+
+#: wext-static-publisher/includes/class-diagnostics.php:82
+msgid "Server"
+msgstr "サーバ"
+
+#: wext-static-publisher/includes/class-diagnostics.php:85
+msgid "PHP Version"
+msgstr "PHPのバージョン"
+
+#: wext-static-publisher/includes/class-diagnostics.php:88
+#, php-format
+msgid "PHP 8.1 or above can be used. Current version: %s."
+msgstr "PHP8.1以降が使用可能です。現在のバージョン: %s。"
+
+#: wext-static-publisher/includes/class-diagnostics.php:89
+#, php-format
+msgid "PHP 8.1 or above required. Current version: %s."
+msgstr "PHP 8.1 以降が必要です。現在のバージョン: %s。"
+
+#: wext-static-publisher/includes/class-diagnostics.php:93
+msgid "Basic Auth"
+msgstr "基本認証"
+
+#: wext-static-publisher/includes/class-diagnostics.php:96
+msgid ""
+"Basic Auth appears to be enabled; static scan may stop at authentication."
+msgstr ""
+"基本認証が有効になっているようです。静的スキャンは認証時に停止する場合があり"
+"ます。"
+
+#: wext-static-publisher/includes/class-diagnostics.php:97
+msgid "Basic Auth is not enabled."
+msgstr "基本認証が有効になっていません。"
+
+#: wext-static-publisher/includes/class-diagnostics.php:101
+msgid "PHP-XML"
+msgstr "PHP-XML"
+
+#: wext-static-publisher/includes/class-diagnostics.php:103
+msgid "php-xml can be used."
+msgstr "php-xmlが使えます。"
+
+#: wext-static-publisher/includes/class-diagnostics.php:103
+msgid "php-xml unavailable; Enable the DOMDocument plugin."
+msgstr "php-xml は利用できません。 DOMDocument プラグインを有効にします。"
+
+#: wext-static-publisher/includes/class-diagnostics.php:107
+msgid "cURL"
+msgstr "カール"
+
+#: wext-static-publisher/includes/class-diagnostics.php:109
+msgid "cURL can be used."
+msgstr "cURLを使用できます。"
+
+#: wext-static-publisher/includes/class-diagnostics.php:109
+msgid "cURL unavailable; Enable the PHP cURL extension."
+msgstr "cURL は利用できません。 PHP cURL 拡張機能を有効にします。"
+
+#: wext-static-publisher/includes/class-diagnostics.php:113
+msgid "SFTP Client"
+msgstr ""
+
+#: wext-static-publisher/includes/class-diagnostics.php:116
+msgid "The bundled SFTP client is available."
+msgstr ""
+
+#: wext-static-publisher/includes/class-diagnostics.php:117
+msgid ""
+"No SFTP client is available. Reinstall the complete plugin package to use "
+"SFTP deploy."
+msgstr ""
+
+#: wext-static-publisher/includes/class-diagnostics.php:121
+msgid "Docker / Site URL"
+msgstr "Docker / サイト URL"
+
+#: wext-static-publisher/includes/class-diagnostics.php:126
+msgid "WordPress"
+msgstr "ワードプレス"
+
+#: wext-static-publisher/includes/class-diagnostics.php:129
+msgid "Permalinks"
+msgstr "パーマリンク"
+
+#: wext-static-publisher/includes/class-diagnostics.php:132
+msgid "WordPress permalink structure is set."
+msgstr "WordPressのパーマリンク構造が設定されました。"
+
+#: wext-static-publisher/includes/class-diagnostics.php:133
+msgid ""
+"Permanent links have a flat structure; Select a structure in Settings > "
+"Permalinks."
+msgstr ""
+"永久リンクはフラット構造です。 [設定] > [パーマリンク] で構造を選択します。"
+
+#: wext-static-publisher/includes/class-diagnostics.php:137
+msgid "Indexability"
+msgstr "インデックス可能性"
+
+#: wext-static-publisher/includes/class-diagnostics.php:140
+msgid ""
+"The setting that prevents search engines from indexing the site is turned "
+"off."
+msgstr ""
+"検索エンジンがサイトにインデックスを作成できないようにする設定がオフになって"
+"います。"
+
+#: wext-static-publisher/includes/class-diagnostics.php:141
+msgid "The setting that prevents search engines from indexing the site is on."
+msgstr ""
+"検索エンジンがサイトのインデックスを作成できないようにする設定がオンになって"
+"います。"
+
+#: wext-static-publisher/includes/class-diagnostics.php:145
+msgid "Cache"
+msgstr "キャッシュ"
+
+#: wext-static-publisher/includes/class-diagnostics.php:148
+msgid "WordPress page caching is disabled."
+msgstr "WordPress ページのキャッシュが無効になっています。"
+
+#: wext-static-publisher/includes/class-diagnostics.php:149
+msgid "WP_CACHE enabled; Verify that no stale content is served during export."
+msgstr ""
+"WP_CACHE が有効になっています。エクスポート中に古いコンテンツが提供されていな"
+"いことを確認します。"
+
+#: wext-static-publisher/includes/class-diagnostics.php:153
+msgid "WP-CRON"
+msgstr "WP-クロン"
+
+#: wext-static-publisher/includes/class-diagnostics.php:156
+msgid "WordPress cron is available."
+msgstr "WordPressのcronが利用可能になりました。"
+
+#: wext-static-publisher/includes/class-diagnostics.php:157
+msgid "WordPress cron disabled; Scheduled export jobs may not run."
+msgstr ""
+"WordPress cron が無効になっています。スケジュールされたエクスポート ジョブが"
+"実行されない場合があります。"
+
+#: wext-static-publisher/includes/class-diagnostics.php:160
+msgid "Plugins"
+msgstr "プラグイン"
+
+#: wext-static-publisher/includes/class-diagnostics.php:163
+msgid "Incompatible Plugins"
+msgstr "互換性のないプラグイン"
+
+#: wext-static-publisher/includes/class-diagnostics.php:166
+msgid "No active incompatible plugins found."
+msgstr "アクティブな互換性のないプラグインは見つかりませんでした。"
+
+#: wext-static-publisher/includes/class-diagnostics.php:167
+msgid "Active plugins that may block static scanning:"
+msgstr "静的スキャンをブロックする可能性のあるアクティブなプラグイン:"
+
+#: wext-static-publisher/includes/class-diagnostics.php:170
+msgid "File System"
+msgstr "ファイルシステム"
+
+#: wext-static-publisher/includes/class-diagnostics.php:173
+msgid "Temporary Directory Readable"
+msgstr "一時ディレクトリの読み取り可能"
+
+#: wext-static-publisher/includes/class-diagnostics.php:176
+#, php-format
+msgid "The web server is able to read the temporary directory: %s"
+msgstr "Web サーバーは一時ディレクトリ %s を読み取ることができます。"
+
+#: wext-static-publisher/includes/class-diagnostics.php:177
+#, php-format
+msgid "Web server cannot read temporary directory: %s"
+msgstr "Web サーバーが一時ディレクトリを読み取れません: %s"
+
+#: wext-static-publisher/includes/class-diagnostics.php:181
+msgid "Temporary Directory Writable"
+msgstr "書き込み可能な一時ディレクトリ"
+
+#: wext-static-publisher/includes/class-diagnostics.php:184
+#, php-format
+msgid "The web server is able to write to the temporary directory: %s"
+msgstr "Web サーバーは一時ディレクトリ %s に書き込むことができます。"
+
+#: wext-static-publisher/includes/class-diagnostics.php:185
+#, php-format
+msgid "Web server cannot write to temporary directory: %s"
+msgstr "Web サーバーが一時ディレクトリに書き込めません: %s"
+
+#: wext-static-publisher/includes/class-diagnostics.php:198
+#, php-format
+msgid "MySQL user has %s privilege."
+msgstr "MySQL ユーザーには %s 権限があります。"
+
+#: wext-static-publisher/includes/class-diagnostics.php:199
+#, php-format
+msgid "The MySQL user does not have the %s privilege."
+msgstr "MySQL ユーザーには %s 権限がありません。"
+
+#: wext-static-publisher/includes/class-exporter.php:82
 msgid "Another export process is still running."
 msgstr "別のエクスポート プロセスがまだ実行中です。"
 
-#: wext-static-publisher/includes/class-exporter.php:93
+#: wext-static-publisher/includes/class-exporter.php:95
 msgid "Export folder is being prepared."
 msgstr "エクスポートフォルダーを準備中です。"
 
-#: wext-static-publisher/includes/class-exporter.php:122
+#: wext-static-publisher/includes/class-exporter.php:124
 msgid "Fuse.js search index is being prepared."
 msgstr "Fuse.js の検索インデックスを準備中です。"
 
-#: wext-static-publisher/includes/class-exporter.php:129
+#: wext-static-publisher/includes/class-exporter.php:131
 #, fuzzy
 msgid "SEO reports and advanced sitemap are being prepared."
 msgstr "エクスポートマニフェストを準備中です。"
 
-#: wext-static-publisher/includes/class-exporter.php:138
+#: wext-static-publisher/includes/class-exporter.php:140
 msgid "Cloudflare configuration files are being prepared."
 msgstr "Cloudflare設定ファイルは準備中です。"
 
-#: wext-static-publisher/includes/class-exporter.php:144
+#: wext-static-publisher/includes/class-exporter.php:146
 msgid "Export manifest is being prepared."
 msgstr "エクスポートマニフェストを準備中です。"
 
-#: wext-static-publisher/includes/class-exporter.php:149
+#: wext-static-publisher/includes/class-exporter.php:151
 msgid "ZIP archive is being created."
 msgstr "ZIP アーカイブが作成されています。"
 
-#: wext-static-publisher/includes/class-exporter.php:161
+#: wext-static-publisher/includes/class-exporter.php:163
 msgid "The static site has been created successfully."
 msgstr "静的サイトが正常に作成されました。"
 
-#: wext-static-publisher/includes/class-exporter.php:175
+#: wext-static-publisher/includes/class-exporter.php:177
 msgid "Failed to create static site."
 msgstr "静的サイトの作成に失敗しました。"
 
-#: wext-static-publisher/includes/class-exporter.php:193
+#: wext-static-publisher/includes/class-exporter.php:195
 msgid "Failed to create export folder."
 msgstr "エクスポートフォルダーの作成に失敗しました。"
 
-#: wext-static-publisher/includes/class-exporter.php:271
+#: wext-static-publisher/includes/class-exporter.php:273
 msgid "Unsafe file path skipped."
 msgstr "安全でないファイル パスはスキップされました。"
 
-#: wext-static-publisher/includes/class-exporter.php:291
+#: wext-static-publisher/includes/class-exporter.php:293
 msgid "The source has been converted to static file."
 msgstr "ソースは静的ファイルに変換されました。"
 
-#: wext-static-publisher/includes/class-exporter.php:303
+#: wext-static-publisher/includes/class-exporter.php:305
 msgid "Site scan completed."
 msgstr "サイトスキャンが完了しました。"
 
-#: wext-static-publisher/includes/class-exporter.php:309
+#: wext-static-publisher/includes/class-exporter.php:311
 msgid "URL limit reached; Some resources were excluded from export."
 msgstr "URL 制限に達しました。一部のリソースはエクスポートから除外されました。"
 
-#: wext-static-publisher/includes/class-exporter.php:322
+#: wext-static-publisher/includes/class-exporter.php:324
 msgid "Site addresses are converted to static files."
 msgstr "サイトアドレスは静的ファイルに変換されます。"
 
-#: wext-static-publisher/includes/class-exporter.php:654
+#: wext-static-publisher/includes/class-exporter.php:661
 msgid "Failed to write file:"
 msgstr "ファイルの書き込みに失敗しました:"
 
-#: wext-static-publisher/includes/class-exporter.php:667
+#: wext-static-publisher/includes/class-exporter.php:674
 #, php-format
 msgid "Could not export language root: /%s/"
 msgstr "言語ルートをエクスポートできませんでした: /%s/"
 
-#: wext-static-publisher/includes/class-exporter.php:705
+#: wext-static-publisher/includes/class-exporter.php:712
 msgid "Page Not Found"
 msgstr "ページが見つかりません"
 
-#: wext-static-publisher/includes/class-exporter.php:706
+#: wext-static-publisher/includes/class-exporter.php:713
 msgid "The page you requested could not be found."
 msgstr "リクエストしたページは見つかりませんでした。"
 
-#: wext-static-publisher/includes/class-exporter.php:727
+#: wext-static-publisher/includes/class-exporter.php:734
 msgid "Could not create ZIP archive."
 msgstr "ZIP アーカイブを作成できませんでした。"
 
-#: wext-static-publisher/includes/class-admin.php:84
-#: wext-static-publisher/includes/class-admin.php:711
-#: wext-static-publisher/includes/class-admin.php:728
-#: wext-static-publisher/includes/class-admin.php:975
-msgid "Queued"
-msgstr "列に並んでいる"
+#: wext-static-publisher/includes/class-headless-mode.php:94
+#, fuzzy
+msgid "This WordPress frontend is no longer available."
+msgstr "WordPressのcronが利用可能になりました。"
 
-#: wext-static-publisher/includes/class-admin.php:85
-#: wext-static-publisher/includes/class-admin.php:712
-#: wext-static-publisher/includes/class-admin.php:729
-#: wext-static-publisher/includes/class-admin.php:976
-msgid "Running"
-msgstr "働く"
+#: wext-static-publisher/includes/class-headless-mode.php:95
+#, fuzzy
+msgid "This WordPress frontend is not available."
+msgstr "WordPressのcronが利用可能になりました。"
 
-#: wext-static-publisher/includes/class-admin.php:86
-#: wext-static-publisher/includes/class-admin.php:713
-#: wext-static-publisher/includes/class-admin.php:730
-#: wext-static-publisher/includes/class-admin.php:744
-#: wext-static-publisher/includes/class-admin.php:977
-msgid "Completed"
-msgstr "完成した"
-
-#: wext-static-publisher/includes/class-admin.php:87
-#: wext-static-publisher/includes/class-admin.php:714
-#: wext-static-publisher/includes/class-admin.php:731
-#: wext-static-publisher/includes/class-admin.php:746
-#: wext-static-publisher/includes/class-admin.php:978
-#: wext-static-publisher/includes/class-admin.php:1964
-msgid "Failed"
-msgstr "失敗しました"
-
-#: wext-static-publisher/includes/class-admin.php:88
-#: wext-static-publisher/includes/class-admin.php:739
-msgid "Not run yet"
-msgstr "まだ機能していません"
-
-#: wext-static-publisher/includes/class-admin.php:89
-#: wext-static-publisher/includes/class-admin.php:748
-msgid "Static rendering progress"
-msgstr "静的レンダリングの進行状況"
-
-#: wext-static-publisher/includes/class-admin.php:90
-msgid "Retry"
-msgstr "もう一度やり直してください"
-
-#: wext-static-publisher/includes/class-admin.php:91
-#: wext-static-publisher/includes/class-admin.php:780
-msgid "Create Static Site"
-msgstr "静的サイトの作成"
-
-#: wext-static-publisher/includes/class-admin.php:92
-#: wext-static-publisher/includes/class-admin.php:780
-#: wext-static-publisher/includes/class-admin.php:1013
-msgid "Deploy to Cloudflare"
+#: wext-static-publisher/includes/class-headless-mode.php:169
+msgid "XML-RPC is disabled in Headless CMS mode."
 msgstr ""
 
-#: wext-static-publisher/includes/class-admin.php:93
-#: wext-static-publisher/includes/class-admin.php:727
-#: wext-static-publisher/includes/class-admin.php:974
-msgid "Waiting"
-msgstr ""
+#: wext-static-publisher/includes/class-plugin.php:512
+msgid "Export job queued."
+msgstr "エクスポートジョブがキューに入れられました。"
 
-#: wext-static-publisher/includes/class-admin.php:94
-#: wext-static-publisher/includes/class-admin.php:768
-#: wext-static-publisher/includes/class-admin.php:1001
-msgid "Not deployed yet"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:95
+#: wext-static-publisher/includes/class-plugin.php:586
 msgid ""
-"Progress information is unavailable. Check your internet connection or "
-"WordPress REST API access."
+"The export job has been in the queue for more than 90 seconds. Check WP-Cron "
+"or server loopback requests."
 msgstr ""
-"進捗情報は入手できません。インターネット接続または WordPress REST API アクセ"
-"スを確認してください。"
+"エクスポート ジョブは 90 秒以上キュー内にあります。 WP-Cron またはサーバーの"
+"ループバック リクエストを確認してください。"
 
-#: wext-static-publisher/includes/class-admin.php:138
-msgid "The SFTP remote directory cannot contain .. path segments."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:146
-msgid "Enter the SFTP server fingerprint as 32 hexadecimal MD5 characters."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:166
+#: wext-static-publisher/includes/class-plugin.php:592
 msgid ""
-"Complete the SFTP connection information before enabling automatic upload."
+"The export job has been running longer than expected. Check server error "
+"logs and PHP uptime limit."
 msgstr ""
+"エクスポート ジョブの実行時間が予想より長くなりました。サーバーエラーログと"
+"PHP稼働時間制限を確認してください。"
 
-#: wext-static-publisher/includes/class-admin.php:216
-msgid ""
-"IndexNow key must be 8–128 characters and contain only letters, numbers, or "
-"hyphens."
+#: wext-static-publisher/includes/class-plugin.php:747
+msgid "The automatic export job is queued."
+msgstr "自動エクスポート ジョブはキューに入れられます。"
+
+#: wext-static-publisher/includes/class-plugin.php:780
+#, fuzzy, php-format
+msgid "[Wext Static Publisher] Automatic SFTP upload failed: %s"
 msgstr ""
+"[Wext Static Publisher] デプロイメント Webhook を送信できませんでした。"
 
-#: wext-static-publisher/includes/class-admin.php:320
-#: wext-static-publisher/includes/class-admin.php:352
-#: wext-static-publisher/includes/class-admin.php:367
-#: wext-static-publisher/includes/class-admin.php:396
-#: wext-static-publisher/includes/class-admin.php:434
-#: wext-static-publisher/includes/class-admin.php:448
-#: wext-static-publisher/includes/class-admin.php:464
-#: wext-static-publisher/includes/class-admin.php:551
-msgid "You are not authorized for this operation."
-msgstr "この操作を行う権限がありません。"
-
-#: wext-static-publisher/includes/class-admin.php:358
-#: wext-static-publisher/includes/class-rest-controller.php:78
-msgid "No downloadable exports found."
-msgstr "ダウンロード可能なエクスポートが見つかりません。"
-
-#: wext-static-publisher/includes/class-admin.php:377
-#: wext-static-publisher/includes/class-rest-controller.php:62
-msgid "The export process is already running."
-msgstr "エクスポートプロセスはすでに実行中です。"
-
-#: wext-static-publisher/includes/class-admin.php:455
-msgid "No downloadable ZIP file found."
-msgstr "ダウンロード可能な ZIP ファイルが見つかりません。"
-
-#: wext-static-publisher/includes/class-admin.php:600
-msgid "Main"
-msgstr "メイン"
-
-#: wext-static-publisher/includes/class-admin.php:601
-#: wext-static-publisher/includes/class-admin.php:920
-#: wext-static-publisher/includes/class-admin.php:925
-msgid "Deploy"
-msgstr "展開する"
-
-#: wext-static-publisher/includes/class-admin.php:602
-#: wext-static-publisher/includes/class-admin.php:1141
-msgid "Static Site"
-msgstr "静的サイト"
-
-#: wext-static-publisher/includes/class-admin.php:603
-#: wext-static-publisher/includes/class-admin.php:1174
-#: wext-static-publisher/includes/class-admin.php:1178
-msgid "SEO"
-msgstr "SEO"
-
-#: wext-static-publisher/includes/class-admin.php:604
-#: wext-static-publisher/includes/class-admin.php:1078
-#: wext-static-publisher/includes/class-admin.php:1695
-#: wext-static-publisher/includes/class-admin.php:1701
-#: wext-static-publisher/includes/class-static-search.php:250
-msgid "Search"
-msgstr "検索"
-
-#: wext-static-publisher/includes/class-admin.php:605
-#: wext-static-publisher/includes/class-admin.php:1789
-#: wext-static-publisher/includes/class-admin.php:1792
-msgid "Hide"
-msgstr "非表示"
-
-#: wext-static-publisher/includes/class-admin.php:606
-#: wext-static-publisher/includes/class-admin.php:1941
-msgid "Diagnostics"
-msgstr "診断"
-
-#: wext-static-publisher/includes/class-admin.php:607
-#: wext-static-publisher/includes/class-admin.php:1065
-msgid "Activity Logs"
-msgstr "アクティビティログ"
-
-#: wext-static-publisher/includes/class-admin.php:608
-#: wext-static-publisher/includes/class-admin.php:1982
-msgid "About"
-msgstr "このプラグインについて"
-
-#: wext-static-publisher/includes/class-admin.php:620
-msgid ""
-"Generate a static copy of your WordPress site. Cloudflare credentials are "
-"not kept in this plugin."
+#: wext-static-publisher/includes/class-plugin.php:864
+msgid "[Wext Static Publisher] Some old export archives could not be deleted."
 msgstr ""
-"WordPress サイトの静的コピーを生成します。 Cloudflareの認証情報はこのプラグイ"
-"ンには保持されません。"
-
-#: wext-static-publisher/includes/class-admin.php:623
-msgid "Static Publisher sections"
-msgstr "静的パブリッシャーセクション"
-
-#: wext-static-publisher/includes/class-admin.php:663
-msgid "Confirm Transaction"
-msgstr "取引の確認"
-
-#: wext-static-publisher/includes/class-admin.php:667
-msgid "Cancel"
-msgstr "キャンセル"
-
-#: wext-static-publisher/includes/class-admin.php:668
-#: wext-static-publisher/includes/class-admin.php:861
-msgid "Delete"
-msgstr "シル"
-
-#: wext-static-publisher/includes/class-admin.php:735
-msgid "Publishing Status"
-msgstr "出版状況"
-
-#: wext-static-publisher/includes/class-admin.php:739
-#: wext-static-publisher/includes/class-admin.php:768
-#: wext-static-publisher/includes/class-admin.php:1001
-msgid "Status"
-msgstr "状態"
-
-#: wext-static-publisher/includes/class-admin.php:741
-msgid "Progress"
-msgstr "進捗"
-
-#: wext-static-publisher/includes/class-admin.php:755
-msgid "Stage"
-msgstr "ステージ"
-
-#: wext-static-publisher/includes/class-admin.php:756
-#: wext-static-publisher/includes/class-admin.php:769
-#: wext-static-publisher/includes/class-admin.php:844
-#: wext-static-publisher/includes/class-admin.php:1002
-msgid "Job ID"
-msgstr "ジョブID"
-
-#: wext-static-publisher/includes/class-admin.php:757
-#: wext-static-publisher/includes/class-admin.php:844
-msgid "URL Count"
-msgstr "URL数"
-
-#: wext-static-publisher/includes/class-admin.php:758
-msgid "Current URL"
-msgstr "現在のURL"
-
-#: wext-static-publisher/includes/class-admin.php:759
-msgid "Last Static Build"
-msgstr "最後の静的ビルド"
-
-#: wext-static-publisher/includes/class-admin.php:760
-#: wext-static-publisher/includes/class-admin.php:772
-#: wext-static-publisher/includes/class-admin.php:1005
-msgid "Error"
-msgstr "エラー"
-
-#: wext-static-publisher/includes/class-admin.php:765
-#: wext-static-publisher/includes/class-admin.php:998
-msgid "Cloudflare Deploy"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:770
-#: wext-static-publisher/includes/class-admin.php:1003
-msgid "Last Cloudflare Deploy"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:771
-#: wext-static-publisher/includes/class-admin.php:1004
-msgid "Deployment URL"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:781
-#: wext-static-publisher/includes/class-admin.php:861
-msgid "Download"
-msgstr "ダウンロード"
-
-#: wext-static-publisher/includes/class-admin.php:799
-#: wext-static-publisher/includes/class-admin.php:885
-msgid "ZIP Files"
-msgstr "ZIPファイル"
-
-#: wext-static-publisher/includes/class-admin.php:801
-#, php-format
-msgid "The old ZIP file %d has been deleted."
-msgstr "古い ZIP ファイル %d は削除されました。"
-
-#: wext-static-publisher/includes/class-admin.php:803
-#, php-format
-msgid "%1$d old ZIP file was deleted, %2$d file could not be deleted."
-msgstr ""
-"%1$d の古い ZIP ファイルは削除されましたが、%2$d ファイルは削除できませんでし"
+"[Wext Static Publisher] 一部の古いエクスポート アーカイブを削除できませんでし"
 "た。"
 
-#: wext-static-publisher/includes/class-admin.php:805
-msgid "Old files cannot be deleted while export is in progress."
-msgstr "エクスポートの進行中は古いファイルを削除できません。"
+#: wext-static-publisher/includes/class-plugin.php:908
+msgid "Deployment workflow could not be started."
+msgstr ""
 
-#: wext-static-publisher/includes/class-admin.php:809
+#: wext-static-publisher/includes/class-plugin.php:910
+msgid "[Wext Static Publisher] Deployment webhook could not be sent."
+msgstr ""
+"[Wext Static Publisher] デプロイメント Webhook を送信できませんでした。"
+
+#: wext-static-publisher/includes/class-plugin.php:934
 #, php-format
-msgid "%d ZIP file has been deleted."
-msgstr "%d ZIP ファイルは削除されました。"
+msgid "Export completed: %d URL"
+msgstr "エクスポート完了: %d URL"
 
-#: wext-static-publisher/includes/class-admin.php:811
-#, php-format
-msgid "ZIP file %1$d was deleted, file %2$d could not be deleted."
+#: wext-static-publisher/includes/class-rank-math-integration.php:140
+msgid "Rank Math sitemap could not be exported."
 msgstr ""
-"ZIP ファイル %1$d は削除されましたが、ファイル %2$d は削除できませんでした。"
 
-#: wext-static-publisher/includes/class-admin.php:813
-msgid "Select at least one ZIP file to process."
-msgstr "処理する ZIP ファイルを少なくとも 1 つ選択します。"
-
-#: wext-static-publisher/includes/class-admin.php:815
-msgid "Select a valid batch action."
-msgstr "有効なバッチ アクションを選択します。"
-
-#: wext-static-publisher/includes/class-admin.php:817
-msgid "ZIP files cannot be deleted while export is in progress."
-msgstr "エクスポートの進行中は ZIP ファイルを削除できません。"
-
-#: wext-static-publisher/includes/class-admin.php:821
-msgid "There is no ZIP file created yet."
-msgstr "ZIP ファイルはまだ作成されていません。"
-
-#: wext-static-publisher/includes/class-admin.php:829
-msgid "Select Batch Action"
-msgstr "バッチアクションの選択"
-
-#: wext-static-publisher/includes/class-admin.php:831
-msgid "Batch Process"
-msgstr "バッチ処理"
-
-#: wext-static-publisher/includes/class-admin.php:832
-msgid "Download Selected"
-msgstr "選択したものをダウンロード"
-
-#: wext-static-publisher/includes/class-admin.php:833
-msgid "Delete Selected"
-msgstr "選択したものを削除"
-
-#: wext-static-publisher/includes/class-admin.php:835
-msgid "Apply"
-msgstr "適用する"
-
-#: wext-static-publisher/includes/class-admin.php:836
-msgid "The selected ZIP files will be permanently deleted. Should we continue?"
-msgstr "選択した ZIP ファイルは完全に削除されます。続けるべきでしょうか？"
-
-#: wext-static-publisher/includes/class-admin.php:844
-msgid "Select All"
-msgstr "すべて選択"
-
-#: wext-static-publisher/includes/class-admin.php:844
-msgid "Order"
-msgstr "注文"
-
-#: wext-static-publisher/includes/class-admin.php:844
-msgid "Creation Date"
-msgstr "作成日"
-
-#: wext-static-publisher/includes/class-admin.php:844
-msgid "Creation Time"
-msgstr "作成時間"
-
-#: wext-static-publisher/includes/class-admin.php:844
-msgid "Actions"
-msgstr "アクション"
-
-#: wext-static-publisher/includes/class-admin.php:855
-#, php-format
-msgid "Select %s"
-msgstr "%sを選択します"
-
-#: wext-static-publisher/includes/class-admin.php:861
-msgid "This ZIP file will be permanently deleted. Do you want to continue?"
-msgstr "この ZIP ファイルは完全に削除されます。続けますか?"
-
-#: wext-static-publisher/includes/class-admin.php:880
-#: wext-static-publisher/includes/class-admin.php:1121
-msgid "‹ Previous"
-msgstr "< 前の"
-
-#: wext-static-publisher/includes/class-admin.php:881
-#: wext-static-publisher/includes/class-admin.php:1122
-msgid "Next ›"
-msgstr "次 >"
-
-#: wext-static-publisher/includes/class-admin.php:896
-msgid "Delete Old Files"
-msgstr "古いファイルを削除する"
-
-#: wext-static-publisher/includes/class-admin.php:897
-msgid ""
-"All old ZIP files except the latest ZIP will be deleted. Should we continue?"
-msgstr ""
-"最新の ZIP を除く古い ZIP ファイルはすべて削除されます。続けるべきでしょう"
-"か？"
-
-#: wext-static-publisher/includes/class-admin.php:899
-msgid ""
-"The latest ZIP file is preserved; Previous ZIP files and their temporary "
-"build folders are permanently deleted."
-msgstr ""
-"最新の ZIP ファイルが保存されます。以前の ZIP ファイルとその一時ビルド フォル"
-"ダーは完全に削除されます。"
-
-#: wext-static-publisher/includes/class-admin.php:910
-#: wext-static-publisher/includes/class-admin.php:944
-msgid "ZIP File"
-msgstr "ZIPファイル"
-
-#: wext-static-publisher/includes/class-admin.php:911
-#: wext-static-publisher/includes/class-admin.php:961
-msgid "GitHub"
-msgstr "GitHub"
-
-#: wext-static-publisher/includes/class-admin.php:912
-#: wext-static-publisher/includes/class-admin.php:988
-msgid "Cloudflare"
-msgstr "Cloudflare"
-
-#: wext-static-publisher/includes/class-admin.php:913
-#: wext-static-publisher/includes/class-admin.php:1021
-msgid "SFTP"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:914
-msgid "Auto Deploy"
-msgstr "自動デプロイ"
-
-#: wext-static-publisher/includes/class-admin.php:945
-msgid ""
-"Download the created static site package and manually install it on the "
-"desired server."
-msgstr ""
-"作成した静的サイト パッケージをダウンロードし、目的のサーバーに手動でインス"
-"トールします。"
-
-#: wext-static-publisher/includes/class-admin.php:948
-msgid "ZIP ready"
-msgstr "ZIP の準備ができました"
-
-#: wext-static-publisher/includes/class-admin.php:948
-msgid "Create static site first"
-msgstr "最初に静的サイトを作成する"
-
-#: wext-static-publisher/includes/class-admin.php:962
-msgid ""
-"Automatically trigger the GitHub Actions flow via webhook when the export is "
-"complete."
-msgstr ""
-"エクスポートが完了したら、Webhook 経由で GitHub Actions フローを自動的にトリ"
-"ガーします。"
-
-#: wext-static-publisher/includes/class-admin.php:965
-msgid "Webhook configured"
-msgstr "Webhook が設定されました"
-
-#: wext-static-publisher/includes/class-admin.php:965
-#: wext-static-publisher/includes/class-admin.php:992
-#: wext-static-publisher/includes/class-admin.php:1026
-msgid "Configuration required"
-msgstr "構成が必要です"
-
-#: wext-static-publisher/includes/class-admin.php:989
-msgid ""
-"Publish static files to Cloudflare Workers Static Assets with a GitHub "
-"Actions workflow."
-msgstr ""
-"GitHub Actions ワークフローを使用して静的ファイルを Cloudflare Workers 静的ア"
-"セットに公開します。"
-
-#: wext-static-publisher/includes/class-admin.php:992
-msgid "Ready to deploy"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:993
-msgid "Open Cloudflare"
-msgstr "クラウドフレアを開く"
-
-#: wext-static-publisher/includes/class-admin.php:1013
-msgid "Deploy Again"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1022
-msgid ""
-"Upload the generated static files directly to a remote server over an "
-"encrypted SFTP connection."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1026
-#, fuzzy
-msgid "SFTP configured"
-msgstr "Webhook が設定されました"
-
-#: wext-static-publisher/includes/class-admin.php:1026
-msgid "SFTP unavailable on this server"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1068
-msgid "Records of the last static transaction:"
-msgstr "最後の静的トランザクションの記録:"
-
-#: wext-static-publisher/includes/class-admin.php:1069
-msgid "Number of Records:"
-msgstr "レコード数:"
-
-#: wext-static-publisher/includes/class-admin.php:1075
-msgid "Search Log Records"
-msgstr "ログレコードの検索"
-
-#: wext-static-publisher/includes/class-admin.php:1077
-msgid "Search source or static URL..."
-msgstr "ソースまたは静的 URL を検索..."
-
-#: wext-static-publisher/includes/class-admin.php:1080
-msgid "Clear Search"
-msgstr "検索をクリア"
-
-#: wext-static-publisher/includes/class-admin.php:1086
-msgid "No export activity has been recorded yet."
-msgstr "輸出活動はまだ記録されていません。"
-
-#: wext-static-publisher/includes/class-admin.php:1086
-msgid "No log entries matched your search."
-msgstr "検索に一致するログ エントリはありませんでした。"
-
-#: wext-static-publisher/includes/class-admin.php:1090
-msgid "Date"
-msgstr "日付"
-
-#: wext-static-publisher/includes/class-admin.php:1090
-msgid "Time"
-msgstr "時間"
-
-#: wext-static-publisher/includes/class-admin.php:1090
-msgid "Source URL"
-msgstr "ソースURL"
-
-#: wext-static-publisher/includes/class-admin.php:1090
-msgid "Static URL"
-msgstr "静的 URL"
-
-#: wext-static-publisher/includes/class-admin.php:1111
-msgid "Activity log pages"
-msgstr "アクティビティ ログ ページ"
-
-#: wext-static-publisher/includes/class-admin.php:1112
-#, php-format
-msgid "%d records"
-msgstr "%d レコード"
-
-#: wext-static-publisher/includes/class-admin.php:1135
-msgid "General"
-msgstr "一般"
-
-#: wext-static-publisher/includes/class-admin.php:1136
-msgid "Multilingual"
-msgstr "多言語"
-
-#: wext-static-publisher/includes/class-admin.php:1142
-msgid "Manage static generation settings."
-msgstr "静的生成設定を管理します。"
-
-#: wext-static-publisher/includes/class-admin.php:1145
-msgid "Static Site subsections"
-msgstr "静的サイトのサブセクション"
-
-#: wext-static-publisher/includes/class-admin.php:1164
-msgid "SEO Plugins"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1165
-#: wext-static-publisher/includes/class-admin.php:1201
-msgid "SEO Audit"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1166
-msgid "Sitemaps"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1167
-#: wext-static-publisher/includes/class-admin.php:1203
-msgid "Redirects"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1168
-#, fuzzy
-msgid "Indexing"
-msgstr "インデックスセレクター"
-
-#: wext-static-publisher/includes/class-admin.php:1169
-msgid "Performance"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1175
-msgid ""
-"Manage SEO plugin output and multilingual search engine signals in the "
-"static site."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1201
-msgid ""
-"Validate metadata, canonical URLs, structured data, images, links, and "
-"multilingual signals after every export."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1202
-msgid "Advanced Sitemaps"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1202
-msgid ""
-"Generate an indexable canonical sitemap with reliable modification dates, "
-"images, and language alternatives."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1203
-msgid ""
-"Export custom redirects and WordPress old slugs while reporting redirect "
-"chains and loops."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1204
-#, fuzzy
-msgid "Indexing Controls"
-msgstr "インデックスセレクター"
-
-#: wext-static-publisher/includes/class-admin.php:1204
-msgid ""
-"Control indexing for HTML and non-HTML files and optionally notify IndexNow "
-"after automatic deployment."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1205
-msgid "Performance Audit"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1205
-msgid ""
-"Report large files, large HTML documents, and render-blocking resources in "
-"the static package."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1216
-msgid "Create SEO audit report"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1216
-msgid "Writes JSON and export diagnostics for every generated page."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1217
-msgid "Include readable HTML report"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1217
-msgid "Adds wext-seo-report.html to the ZIP with noindex protection."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1218
-msgid "Add missing canonical URLs"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1218
-msgid "Uses the final static URL only when the page has no canonical element."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1219
-msgid "Validate JSON-LD structured data"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1219
-msgid "Reports invalid JSON-LD without inventing content or schema properties."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1220
-msgid "Validate multilingual signals"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1220
-msgid "Checks missing and non-reciprocal hreflang targets."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1221
-msgid "Audit image SEO"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1221
-msgid "Reports missing alt attributes and explicit image dimensions."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1223
-msgid "Generate Wext sitemap"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1223
-msgid "Creates wext-sitemap.xml and adds it to robots.txt."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1224
-msgid "Include accurate last modified dates"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1224
-msgid "Uses the WordPress content modification time when available."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1225
-msgid "Include images"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1225
-msgid "Adds discoverable page images with absolute static URLs."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1226
-msgid "Include language alternatives"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1226
-msgid "Adds existing hreflang relationships to sitemap entries."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1227
-msgid "Generate video sitemap"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1227
-msgid ""
-"Creates a separate sitemap only for videos with complete title, description, "
-"thumbnail, and upload date metadata."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1228
-msgid "Generate Google News sitemap"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1228
-msgid ""
-"Creates a separate sitemap for posts published during the last two days. "
-"Enable only for eligible news sites."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1230
-msgid "Redirect WordPress old slugs"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1230
-msgid "Creates permanent redirects for published content with saved old slugs."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1231
-msgid "Import redirect plugin rules"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1231
-msgid "Imports compatible non-regex redirects from Redirection and Rank Math."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1232
-msgid "Custom Redirect Rules"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1232
-msgid ""
-"Enter one source, target, and optional status code per line. Supported "
-"codes: 301, 302, 303, 307, 308."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1234
-#, fuzzy
-msgid "Noindex the entire static output"
-msgstr "静的出力では"
-
-#: wext-static-publisher/includes/class-admin.php:1234
-msgid ""
-"Use only for staging or private static deployments. This blocks indexing "
-"through HTML and response headers."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1235
-msgid "Noindex Paths"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1235
-#, fuzzy
-msgid "One path prefix or wildcard pattern per line."
-msgstr "1 行に 1 つのパス プレフィックス。"
-
-#: wext-static-publisher/includes/class-admin.php:1236
-msgid "X-Robots-Tag Rules"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1236
-msgid "Use pattern|directives format for non-HTML files."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1237
-msgid "Notify IndexNow after automatic deployment"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1237
-msgid ""
-"Submits only added, changed, or deleted URLs after webhook or automatic SFTP "
-"deployment."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1238
-msgid "IndexNow Key"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1238
-msgid "Configured — leave blank to keep"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1238
-msgid "Use an 8–128 character key containing letters, numbers, or hyphens."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1240
-msgid "Create performance report"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1240
-msgid "Adds wext-performance-report.json to the static package."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1242
-msgid "Large HTML Threshold (KB)"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1243
-msgid "Large Asset Threshold (KB)"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1248
-#, fuzzy
-msgid "Save SEO Settings"
-msgstr "検索設定の保存"
-
-#: wext-static-publisher/includes/class-admin.php:1269
-msgid "Page Metadata"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1269
-msgid "Keep SEO metadata on WordPress pages."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1270
-msgid "Post Metadata"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1270
-msgid "Keep SEO metadata on WordPress posts."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1271
-msgid "Custom Post Type Metadata"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1271
-msgid ""
-"Keep SEO metadata on public custom post types such as products and "
-"portfolios."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1272
-msgid "Archive & Taxonomy Metadata"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1272
-msgid ""
-"Keep SEO metadata on the posts page, archives, categories, tags, author "
-"pages and other listing views."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1277
-#: wext-static-publisher/includes/class-admin.php:1291
-#: wext-static-publisher/includes/class-admin.php:1304
-#: wext-static-publisher/includes/class-admin.php:1317
-msgid "Schema Structured Data"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1277
-#, php-format
-msgid ""
-"Keep %s JSON-LD data, convert its URLs to the live domain, and adapt "
-"SearchAction to static search."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1278
-#: wext-static-publisher/includes/class-admin.php:1292
-#: wext-static-publisher/includes/class-admin.php:1305
-#: wext-static-publisher/includes/class-admin.php:1318
-msgid "XML Sitemaps"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1278
-#, php-format
-msgid "Copy %s sitemap and its linked sitemap files into the static package."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1279
-#: wext-static-publisher/includes/class-admin.php:1293
-#: wext-static-publisher/includes/class-admin.php:1306
-#: wext-static-publisher/includes/class-admin.php:1319
-msgid "Robots.txt"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1279
-#, php-format
-msgid ""
-"Copy %s robots.txt rules and point sitemap declarations to the live static "
-"domain."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1289
-msgid ""
-"Choose which Rank Math outputs will be included in the generated static site."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1291
-msgid ""
-"Keep Rank Math JSON-LD data, convert its URLs to the live domain, and adapt "
-"SearchAction to static search."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1292
-msgid ""
-"Copy the Rank Math sitemap index, child sitemaps and sitemap stylesheet into "
-"the static package."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1293
-msgid ""
-"Copy Rank Math robots.txt rules and point the sitemap declaration to the "
-"live static domain."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1302
-msgid ""
-"Choose which All in One SEO outputs will be included in the generated static "
-"site."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1304
-msgid ""
-"Keep All in One SEO JSON-LD data, convert its URLs to the live domain, and "
-"adapt SearchAction to static search."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1305
-msgid ""
-"Copy the All in One SEO sitemap index, child sitemaps and sitemap stylesheet "
-"into the static package."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1306
-msgid ""
-"Copy All in One SEO robots.txt rules and point sitemap declarations to the "
-"live static domain."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1315
-msgid ""
-"Choose which SEOPress outputs will be included in the generated static site."
+#: wext-static-publisher/includes/class-rank-math-integration.php:163
+msgid "Rank Math robots.txt could not be exported."
 msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1317
-msgid ""
-"Keep SEOPress JSON-LD data, convert its URLs to the live domain, and adapt "
-"SearchAction to static search."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1318
-msgid ""
-"Copy the SEOPress sitemap index, child sitemaps and sitemap stylesheets into "
-"the static package."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1319
-msgid ""
-"Copy SEOPress robots.txt rules and point sitemap declarations to the live "
-"static domain."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1328
-#: wext-static-publisher/includes/class-admin.php:1337
-#: wext-static-publisher/includes/class-admin.php:1346
-#, php-format
-msgid "Choose which %s outputs will be included in the generated static site."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1361
-msgid "Detected SEO plugin:"
-msgstr "検出された SEO プラグイン:"
-
-#: wext-static-publisher/includes/class-admin.php:1366
-msgid ""
-"Multiple active SEO plugins were detected. Review their output settings to "
-"prevent duplicate metadata."
-msgstr ""
-"有効な SEO プラグインが複数検出されました。メタデータの重複を防ぐため、出力設"
-"定を確認してください。"
-
-#: wext-static-publisher/includes/class-admin.php:1371
-msgid ""
-"No active SEO plugin was detected. Saved settings will be used when a "
-"supported plugin is activated."
-msgstr ""
-"有効な SEO プラグインは検出されませんでした。対応プラグインが有効になると、保"
-"存済みの設定が使用されます。"
-
-#: wext-static-publisher/includes/class-admin.php:1378
-msgid "Save SEO Plugin Settings"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1411
-#, php-format
-msgid "Active — version %s"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1411
-msgid "Active"
-msgstr "有効"
-
-#: wext-static-publisher/includes/class-admin.php:1411
-msgid "Not active"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1416
-#, php-format
-msgid "Include %s outputs in the static site"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1421
-#, php-format
-msgid ""
-"When disabled, %s metadata and schema outputs are removed and its sitemap "
-"and robots files are not exported."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1422
-msgid "Metadata"
-msgstr "メタデータ"
-
-#: wext-static-publisher/includes/class-admin.php:1423
-msgid "Technical SEO"
-msgstr "テクニカル SEO"
-
-#: wext-static-publisher/includes/class-admin.php:1425
-#, php-format
-msgid ""
-"These settings are preserved, but no %s output will be exported until the "
-"plugin is active."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1948
-msgid "CMS Address"
-msgstr "CMS アドレス"
-
-#: wext-static-publisher/includes/class-admin.php:1948
-msgid "Detected automatically from the WordPress site address."
-msgstr "WordPress のサイトアドレスから自動的に検出されます。"
-
-#: wext-static-publisher/includes/class-admin.php:1949
-msgid "Live Site Address"
-msgstr "ライブサイトアドレス"
-
-#: wext-static-publisher/includes/class-admin.php:1949
-msgid "Example: https://example.com"
-msgstr "例: https://example.com"
-
-#: wext-static-publisher/includes/class-admin.php:1475
-msgid "Most URLs"
-msgstr "ほとんどの URL"
-
-#: wext-static-publisher/includes/class-admin.php:1476
-msgid "Excluded Paths"
-msgstr "除外されたパス"
-
-#: wext-static-publisher/includes/class-admin.php:1476
-msgid "One path prefix per line."
-msgstr "1 行に 1 つのパス プレフィックス。"
-
-#: wext-static-publisher/includes/class-admin.php:1478
-msgid "Save General Settings"
-msgstr "一般設定の保存"
-
-#: wext-static-publisher/includes/class-admin.php:1490
-msgid "Number of ZIPs to Store"
-msgstr "保存する ZIP の数"
-
-#: wext-static-publisher/includes/class-admin.php:1490
-msgid ""
-"Determines how many last successful export archives will be stored. Default: "
-"5."
-msgstr ""
-"最後に成功したエクスポート アーカイブをいくつ保存するかを決定します。デフォル"
-"ト: 5。"
-
-#: wext-static-publisher/includes/class-admin.php:1492
-msgid "Save ZIP Settings"
-msgstr "ZIP 設定を保存"
-
-#: wext-static-publisher/includes/class-admin.php:1500
-#: wext-static-publisher/includes/class-admin.php:1757
-msgid "Contents"
-msgstr "コンテンツ"
-
-#: wext-static-publisher/includes/class-admin.php:1501
-msgid "When a new article is published"
-msgstr "新しい記事が公開されたとき"
-
-#: wext-static-publisher/includes/class-admin.php:1501
-msgid "When a new blog post is published for the first time."
-msgstr "新しいブログ投稿が初めて公開されるとき。"
-
-#: wext-static-publisher/includes/class-admin.php:1502
-msgid "When the current post is updated"
-msgstr "現在の投稿が更新されたとき"
-
-#: wext-static-publisher/includes/class-admin.php:1502
-msgid "When a live blog post is changed or removed."
-msgstr "ライブブログ投稿が変更または削除されたとき。"
-
-#: wext-static-publisher/includes/class-admin.php:1503
-msgid "When the new page is published"
-msgstr "新しいページが公開されたとき"
-
-#: wext-static-publisher/includes/class-admin.php:1503
-msgid "When a new page is published for the first time."
-msgstr "新しいページが初めて公開されたとき。"
-
-#: wext-static-publisher/includes/class-admin.php:1504
-msgid "When the current page is updated"
-msgstr "現在のページが更新されたとき"
-
-#: wext-static-publisher/includes/class-admin.php:1504
-msgid "When a published page is changed or removed."
-msgstr "公開されているページが変更または削除されたとき。"
-
-#: wext-static-publisher/includes/class-admin.php:1505
-msgid "When custom content types change"
-msgstr "カスタム コンテンツ タイプが変更された場合"
-
-#: wext-static-publisher/includes/class-admin.php:1505
-msgid ""
-"When product, portfolio, etc. special content in the publication changes."
-msgstr "製品、ポートフォリオなど、出版物の特別な内容が変更された場合。"
-
-#: wext-static-publisher/includes/class-admin.php:1507
-msgid "Structure and Design"
-msgstr "構造とデザイン"
-
-#: wext-static-publisher/includes/class-admin.php:1508
-msgid "When the category or tag changes"
-msgstr "カテゴリやタグが変わったとき"
-
-#: wext-static-publisher/includes/class-admin.php:1508
-msgid "When categories, tags, or custom classifications are changed."
-msgstr "カテゴリ、タグ、またはカスタム分類が変更されたとき。"
-
-#: wext-static-publisher/includes/class-admin.php:1509
-msgid "When the media changes"
-msgstr "メディアが変わるとき"
-
-#: wext-static-publisher/includes/class-admin.php:1509
-msgid "When an image or other media file is added, updated, or deleted."
-msgstr ""
-"画像またはその他のメディア ファイルが追加、更新、または削除されたとき。"
-
-#: wext-static-publisher/includes/class-admin.php:1510
-msgid "When the menu changes"
-msgstr "メニューが変わるとき"
-
-#: wext-static-publisher/includes/class-admin.php:1510
-msgid "When the structure or links of navigation menus are changed."
-msgstr "ナビゲーションメニューの構造やリンクが変更された場合。"
-
-#: wext-static-publisher/includes/class-admin.php:1511
-msgid "When components change"
-msgstr "コンポーネントが変更された場合"
-
-#: wext-static-publisher/includes/class-admin.php:1511
-msgid "When widget and widget layouts are updated."
-msgstr "ウィジェットとウィジェットのレイアウトが更新されたとき。"
-
-#: wext-static-publisher/includes/class-admin.php:1512
-msgid "When the theme changes"
-msgstr "テーマが変わると"
-
-#: wext-static-publisher/includes/class-admin.php:1512
-msgid "When the theme is changed, updated, or customizer settings are saved."
-msgstr ""
-"テーマが変更、更新されたとき、またはカスタマイザー設定が保存されたとき。"
-
-#: wext-static-publisher/includes/class-admin.php:1513
-msgid "When site settings change"
-msgstr "サイトの設定が変更されたとき"
-
-#: wext-static-publisher/includes/class-admin.php:1513
-msgid ""
-"When the site name, description, homepage, reading or permalink settings are "
-"changed."
-msgstr ""
-"サイト名、説明、ホームページ、読み方、パーマリンクの設定が変更された場合。"
-
-#: wext-static-publisher/includes/class-admin.php:1524
-msgid "Automatic Static Site Creation and Deploy"
-msgstr "静的サイトの自動作成と展開"
-
-#: wext-static-publisher/includes/class-admin.php:1525
-msgid ""
-"After the selected changes, the static site is created; If the deployment "
-"webhook is set, the deploy flow is triggered automatically."
-msgstr ""
-"選択した内容が変更されると、静的サイトが作成されます。デプロイ Webhook が設定"
-"されている場合、デプロイ フローは自動的にトリガーされます。"
-
-#: wext-static-publisher/includes/class-admin.php:1527
-msgid "Enable automatic static site generation"
-msgstr "静的サイトの自動生成を有効にする"
-
-#: wext-static-publisher/includes/class-admin.php:1545
-msgid ""
-"Changes made consecutively are combined for 60 seconds and run as a single "
-"export and deploy."
-msgstr ""
-"連続して行われた変更は 60 秒間結合され、単一のエクスポートおよびデプロイとし"
-"て実行されます。"
-
-#: wext-static-publisher/includes/class-admin.php:1547
-msgid "Save Auto Deploy Settings"
-msgstr "自動デプロイ設定を保存"
-
-#: wext-static-publisher/includes/class-admin.php:1558
-msgid "GitHub Deployment Webhook"
-msgstr "GitHub デプロイ Webhook"
-
-#: wext-static-publisher/includes/class-admin.php:1560
-msgid "Deployment Webhook"
-msgstr "デプロイ Webhook"
-
-#: wext-static-publisher/includes/class-admin.php:1560
-msgid "For GitHub: https://api.github.com/repos/OWNER/REPOSITORY/dispatches"
-msgstr ""
-"GitHub の場合: https://api.github.com/repos/OWNER/REPOSITORY/dispatches"
-
-#: wext-static-publisher/includes/class-admin.php:1561
-msgid "Webhook Bearer Token"
-msgstr "Webhook ベアラー トークン"
-
-#: wext-static-publisher/includes/class-admin.php:1561
-msgid "Leave blank to keep the saved token"
-msgstr "保存されたトークンを保持するには空白のままにします"
-
-#: wext-static-publisher/includes/class-admin.php:1561
-msgid ""
-"If using GitHub, use a fine-grained token limited to this repository with "
-"Contents: write permission."
-msgstr ""
-"GitHub を使用する場合は、Contents: 書き込み権限を持つこのリポジトリに限定され"
-"たきめ細かいトークンを使用します。"
-
-#: wext-static-publisher/includes/class-admin.php:1563
-msgid "Save Deploy Settings"
-msgstr "デプロイ設定の保存"
-
-#: wext-static-publisher/includes/class-admin.php:1581
-msgid ""
-"The SFTP client is unavailable. Reinstall the complete plugin package before "
-"using this deployment method."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1587
-msgid "SFTP Connection"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1590
-msgid "SFTP Host"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1591
-msgid "Enter only the hostname or IP address; do not include sftp://."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1594
-msgid "Port"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1598
-msgid "Username"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1602
-#, fuzzy
-msgid "Password"
-msgstr "合格した"
-
-#: wext-static-publisher/includes/class-admin.php:1603
-#, fuzzy
-msgid "Leave blank to keep the saved password"
-msgstr "保存されたトークンを保持するには空白のままにします"
-
-#: wext-static-publisher/includes/class-admin.php:1603
-msgid ""
-"The password is encrypted using the WordPress security keys and is never "
-"shown again."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1603
-msgid "Delete saved password"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1606
-#, fuzzy
-msgid "Remote Directory"
-msgstr "テーマディレクトリ"
-
-#: wext-static-publisher/includes/class-admin.php:1607
-msgid ""
-"Static files are uploaded into this directory. Existing files with the same "
-"path are overwritten; unrelated remote files are preserved."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1610
-msgid "Server MD5 Fingerprint"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1611
-msgid ""
-"Recommended. Verify this value with your hosting provider to prevent "
-"connecting to the wrong server."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1614
-msgid "Per-file Timeout"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1615
-msgid "seconds"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1618
-msgid "Upload automatically after every successful export"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1618
-msgid ""
-"An SFTP failure is recorded separately and does not delete the successfully "
-"generated ZIP file."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1619
-#, fuzzy
-msgid "Save SFTP Settings"
-msgstr "検索設定の保存"
-
-#: wext-static-publisher/includes/class-admin.php:1626
-msgid "Test Connection"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1631
-#, fuzzy
-msgid "Upload Latest Static Site"
-msgstr "静的サイトの作成"
-
-#: wext-static-publisher/includes/class-admin.php:1635
-#, fuzzy
-msgid "Last SFTP Status"
-msgstr "最後の静的ビルド"
-
-#: wext-static-publisher/includes/class-admin.php:1649
-msgid "Redirection by Browser Language"
-msgstr "ブラウザ言語によるリダイレクト"
-
-#: wext-static-publisher/includes/class-admin.php:1650
-msgid ""
-"When the visitor arrives at the main address, first the saved preference is "
-"used, then the language sequence of the browser."
-msgstr ""
-"訪問者がメイン アドレスに到着すると、まず保存されている設定が使用され、次にブ"
-"ラウザの言語シーケンスが使用されます。"
-
-#: wext-static-publisher/includes/class-admin.php:1652
-msgid "Enable browser language redirection"
-msgstr "ブラウザ言語のリダイレクトを有効にする"
-
-#: wext-static-publisher/includes/class-admin.php:1659
-msgid "Supported Language Codes"
-msgstr "サポートされている言語コード"
-
-#: wext-static-publisher/includes/class-admin.php:1661
-msgid "Write one language per line. These codes in WordPress"
-msgstr "1 行に 1 つの言語を記述します。 WordPress のこれらのコード"
-
-#: wext-static-publisher/includes/class-admin.php:1661
-msgid "There should be equivalents like this."
-msgstr "このような同等のものがあるはずです。"
-
-#: wext-static-publisher/includes/class-admin.php:1664
-msgid "Default Language"
-msgstr "デフォルトの言語"
-
-#: wext-static-publisher/includes/class-admin.php:1666
-msgid "If the browser language is not supported, this language is opened."
-msgstr "ブラウザ言語がサポートされていない場合は、この言語が開きます。"
-
-#: wext-static-publisher/includes/class-admin.php:1668
-msgid "Language Preference Period"
-msgstr "言語優先期間"
-
-#: wext-static-publisher/includes/class-admin.php:1671
-msgid "day"
-msgstr "日"
-
-#: wext-static-publisher/includes/class-admin.php:1673
-msgid ""
-"The language that the user explicitly visited is preserved for subsequent "
-"logins."
-msgstr ""
-"ユーザーが明示的にアクセスした言語は、その後のログインのために保存されます。"
-
-#: wext-static-publisher/includes/class-admin.php:1676
-msgid "The redirect is only for the site"
-msgstr "リダイレクトはサイトのみに適用されます"
-
-#: wext-static-publisher/includes/class-admin.php:1676
-msgid "It works at. Direct links containing languages ​​are not changed."
-msgstr "で動作します。言語を含む直接リンクは変更されません。"
-
-#: wext-static-publisher/includes/class-admin.php:1678
-msgid "Save Language Settings"
-msgstr "言語設定の保存"
-
-#: wext-static-publisher/includes/class-admin.php:1687
-#: wext-static-publisher/includes/class-admin.php:1718
-msgid "Static Search"
-msgstr "静的検索"
-
-#: wext-static-publisher/includes/class-admin.php:1688
-#: wext-static-publisher/includes/class-admin.php:1737
-msgid "Indexing Selectors"
-msgstr "インデックスセレクター"
-
-#: wext-static-publisher/includes/class-admin.php:1689
-#: wext-static-publisher/includes/class-admin.php:1750
-msgid "Fuse.js"
-msgstr "Fuse.js"
-
-#: wext-static-publisher/includes/class-admin.php:1696
-msgid ""
-"Configure static site search that doesn't require a server, powered by "
-"Fuse.js."
-msgstr "Fuse.js を利用した、サーバーを必要としない静的サイト検索を構成します。"
-
-#: wext-static-publisher/includes/class-admin.php:1718
-msgid ""
-"The search page, index and necessary Fuse.js files are added to the export "
-"ZIP."
-msgstr ""
-"検索ページ、インデックス、および必要な Fuse.js ファイルがエクスポート ZIP に"
-"追加されます。"
-
-#: wext-static-publisher/includes/class-admin.php:1719
-msgid "Enable static search"
-msgstr "静的検索を有効にする"
-
-#: wext-static-publisher/includes/class-admin.php:1725
-msgid "Search Page Path"
-msgstr "検索ページのパス"
-
-#: wext-static-publisher/includes/class-admin.php:1725
-#: wext-static-publisher/includes/class-admin.php:1740
-#: wext-static-publisher/includes/class-admin.php:1741
-msgid "Example:"
-msgstr "例："
-
-#: wext-static-publisher/includes/class-admin.php:1726
-msgid "Number of Results to Show"
-msgstr "表示する結果の数"
-
-#: wext-static-publisher/includes/class-admin.php:1727
-msgid "Minimum Search Characters"
-msgstr "最小検索文字数"
-
-#: wext-static-publisher/includes/class-admin.php:1728
-msgid "Content Character Limit"
-msgstr "コンテンツの文字数制限"
-
-#: wext-static-publisher/includes/class-admin.php:1728
-msgid "Maximum text length to be indexed from each page."
-msgstr "各ページからインデックス付けされるテキストの最大長。"
-
-#: wext-static-publisher/includes/class-admin.php:1729
-msgid "Blur Threshold"
-msgstr "ぼかしのしきい値"
-
-#: wext-static-publisher/includes/class-admin.php:1729
-msgid ""
-"A lower value gives a more precise result, a higher value gives a more "
-"tolerant result."
-msgstr ""
-"値が低いほど、より正確な結果が得られ、値が高いほど、より寛容な結果が得られま"
-"す。"
-
-#: wext-static-publisher/includes/class-admin.php:1730
-msgid "Word Matching"
-msgstr "単語の一致"
-
-#: wext-static-publisher/includes/class-admin.php:1730
-msgid "Match all words"
-msgstr "すべての単語と一致する"
-
-#: wext-static-publisher/includes/class-admin.php:1730
-msgid "Match any word"
-msgstr "任意の単語に一致します"
-
-#: wext-static-publisher/includes/class-admin.php:1737
-msgid ""
-"Determine which fields to take from the page and post HTML with the CSS "
-"selector."
-msgstr ""
-"ページからどのフィールドを取得するかを決定し、CSS セレクターを使用して HTML "
-"をポストします。"
-
-#: wext-static-publisher/includes/class-admin.php:1740
-msgid "CSS Selector For Title"
-msgstr "タイトルの CSS セレクター"
-
-#: wext-static-publisher/includes/class-admin.php:1740
-#: wext-static-publisher/includes/class-admin.php:1741
-msgid "or"
-msgstr "または"
-
-#: wext-static-publisher/includes/class-admin.php:1741
-msgid "CSS Selector for Content"
-msgstr "コンテンツの CSS セレクター"
-
-#: wext-static-publisher/includes/class-admin.php:1742
-msgid "CSS Selector for Summary"
-msgstr "概要用の CSS セレクター"
-
-#: wext-static-publisher/includes/class-admin.php:1742
-msgid ""
-"If the field is not found, a short summary is automatically generated from "
-"the content."
-msgstr ""
-"フィールドが見つからない場合は、コンテンツから短い概要が自動的に生成されま"
-"す。"
-
-#: wext-static-publisher/includes/class-admin.php:1743
-msgid "URLs to Exclude from Indexing"
-msgstr "インデックスから除外する URL"
-
-#: wext-static-publisher/includes/class-admin.php:1743
-msgid "You can type the full URL, URL fragment, or word per line."
-msgstr "完全な URL、URL フラグメント、または 1 行に 1 単語を入力できます。"
-
-#: wext-static-publisher/includes/class-admin.php:1750
-msgid ""
-"Select the fields to search and determine their impact on the result ranking."
-msgstr "検索するフィールドを選択し、結果ランキングへの影響を判断します。"
-
-#: wext-static-publisher/includes/class-admin.php:1755
-msgid "Title"
-msgstr "タイトル"
-
-#: wext-static-publisher/includes/class-admin.php:1755
-msgid "Shows title matches at the top."
-msgstr "タイトルマッチを上位に表示します。"
-
-#: wext-static-publisher/includes/class-admin.php:1756
-msgid "Summary"
-msgstr "まとめ"
-
-#: wext-static-publisher/includes/class-admin.php:1756
-msgid "Searches in the text of the tagline and summary."
-msgstr "キャッチフレーズと概要のテキストを検索します。"
-
-#: wext-static-publisher/includes/class-admin.php:1757
-msgid "It searches in the main text of the page and article."
-msgstr "ページや記事の本文を検索します。"
-
-#: wext-static-publisher/includes/class-admin.php:1758
-msgid "Category and Tags"
-msgstr "カテゴリとタグ"
-
-#: wext-static-publisher/includes/class-admin.php:1758
-msgid "WordPress adds category and tag names to the index."
-msgstr "WordPress はカテゴリ名とタグ名をインデックスに追加します。"
-
-#: wext-static-publisher/includes/class-admin.php:1765
-msgid "Weight"
-msgstr "重さ"
-
-#: wext-static-publisher/includes/class-admin.php:1772
-msgid "Save Search Settings"
-msgstr "検索設定の保存"
-
-#: wext-static-publisher/includes/class-admin.php:1783
-msgid "Directory"
-msgstr "ディレクトリ"
-
-#: wext-static-publisher/includes/class-admin.php:1784
-#: wext-static-publisher/includes/class-admin.php:1854
-msgid "Traces"
-msgstr "痕跡"
-
-#: wext-static-publisher/includes/class-admin.php:1785
-#: wext-static-publisher/includes/class-admin.php:1887
-msgid "Static Outputs"
-msgstr "静的出力"
-
-#: wext-static-publisher/includes/class-admin.php:1790
-msgid ""
-"Specify which WordPress-specific directory and path names will be used in "
-"static output. Source WordPress files are not modified."
-msgstr ""
-"静的出力で使用される WordPress 固有のディレクトリとパス名を指定します。ソー"
-"ス WordPress ファイルは変更されません。"
-
-#: wext-static-publisher/includes/class-admin.php:1807
-msgid "WP-Content Directory"
-msgstr "WPコンテンツディレクトリ"
-
-#: wext-static-publisher/includes/class-admin.php:1809
-#: wext-static-publisher/includes/class-admin.php:1815
-#: wext-static-publisher/includes/class-admin.php:1821
-#: wext-static-publisher/includes/class-admin.php:1827
-#: wext-static-publisher/includes/class-admin.php:1833
-#: wext-static-publisher/includes/class-admin.php:1845
-msgid "In the static output"
-msgstr "静的出力では"
-
-#: wext-static-publisher/includes/class-admin.php:1809
-#: wext-static-publisher/includes/class-admin.php:1815
-msgid "The name to replace the directory."
-msgstr "ディレクトリを置き換える名前。"
-
-#: wext-static-publisher/includes/class-admin.php:1813
-msgid "WP-Includes Directory"
-msgstr "WP-インクルードディレクトリ"
-
-#: wext-static-publisher/includes/class-admin.php:1819
-msgid "Uploads Directory"
-msgstr "アップロードディレクトリ"
-
-#: wext-static-publisher/includes/class-admin.php:1821
-#: wext-static-publisher/includes/class-admin.php:1827
-#: wext-static-publisher/includes/class-admin.php:1833
-msgid "The subdirectory to use in place of the path."
-msgstr "パスの代わりに使用するサブディレクトリ。"
-
-#: wext-static-publisher/includes/class-admin.php:1825
-msgid "Plugins Directory"
-msgstr "プラグインディレクトリ"
-
-#: wext-static-publisher/includes/class-admin.php:1831
-msgid "Themes Directory"
-msgstr "テーマディレクトリ"
-
-#: wext-static-publisher/includes/class-admin.php:1837
-msgid "Theme Style File"
-msgstr "テーマスタイルファイル"
-
-#: wext-static-publisher/includes/class-admin.php:1839
-msgid "in active theme"
-msgstr "アクティブなテーマで"
-
-#: wext-static-publisher/includes/class-admin.php:1839
-msgid "The name of the file in the static output."
-msgstr "静的出力内のファイルの名前。"
-
-#: wext-static-publisher/includes/class-admin.php:1843
-msgid "Author URL"
-msgstr "著者のURL"
-
-#: wext-static-publisher/includes/class-admin.php:1845
-msgid "The path to be used instead of the path."
-msgstr "パスの代わりに使用されるパス。"
-
-#: wext-static-publisher/includes/class-admin.php:1855
-msgid "Removes selected WordPress identifiers from static HTML output."
-msgstr "選択した WordPress 識別子を静的 HTML 出力から削除します。"
-
-#: wext-static-publisher/includes/class-admin.php:1860
-msgid "Hide WordPress Version"
-msgstr "WordPress のバージョンを隠す"
-
-#: wext-static-publisher/includes/class-admin.php:1860
-msgid ""
-"Removes asset version parameters that specify the WordPress core version."
-msgstr ""
-"WordPress コア バージョンを指定するアセット バージョン パラメーターを削除しま"
-"す。"
-
-#: wext-static-publisher/includes/class-admin.php:1861
-msgid "Hide WordPress Generator Meta Tag"
-msgstr "WordPress ジェネレーターのメタタグを非表示にする"
-
-#: wext-static-publisher/includes/class-admin.php:1861
-msgid "It removes the generator meta tag that describes the WordPress version."
-msgstr ""
-"WordPress のバージョンを説明するジェネレーターのメタタグが削除されます。"
-
-#: wext-static-publisher/includes/class-admin.php:1862
-msgid "Hide WordPress DNS Prefetch Connection"
-msgstr "WordPress DNS プリフェッチ接続を非表示にする"
-
-#: wext-static-publisher/includes/class-admin.php:1862
-msgid "Removes DNS prefetch connections for WordPress services."
-msgstr "WordPress サービスの DNS プリフェッチ接続を削除します。"
-
-#: wext-static-publisher/includes/class-admin.php:1863
-msgid "Hide RSD Header Link"
-msgstr "RSD ヘッダー リンクを非表示にする"
-
-#: wext-static-publisher/includes/class-admin.php:1863
-msgid "Really Simple Removes the Discovery link from static HTML."
-msgstr "Really Simple 静的 HTML から Discovery リンクを削除します。"
-
-#: wext-static-publisher/includes/class-admin.php:1888
-msgid "Cleans up unused WordPress links and scripts on the static site."
-msgstr ""
-"静的サイト上の未使用の WordPress リンクとスクリプトをクリーンアップします。"
-
-#: wext-static-publisher/includes/class-admin.php:1893
-msgid "Disable XML-RPC Links"
-msgstr "XML-RPC リンクを無効にする"
-
-#: wext-static-publisher/includes/class-admin.php:1893
-msgid "Removes XML-RPC and pingback discovery connections."
-msgstr "XML-RPC およびピンバック検出接続を削除します。"
-
-#: wext-static-publisher/includes/class-admin.php:1894
-msgid "Disable Embed Scripts"
-msgstr "埋め込みスクリプトを無効にする"
-
-#: wext-static-publisher/includes/class-admin.php:1894
-msgid "Removes WordPress embed scripts from static HTML."
-msgstr "静的 HTML から WordPress 埋め込みスクリプトを削除します。"
-
-#: wext-static-publisher/includes/class-admin.php:1895
-msgid "Disable Frontend DB Debug Information"
-msgstr "フロントエンド DB デバッグ情報を無効にする"
-
-#: wext-static-publisher/includes/class-admin.php:1895
-msgid ""
-"It only prevents database error details from being shown in export requests."
-msgstr ""
-"データベース エラーの詳細がエクスポート リクエストに表示されないようにするだ"
-"けです。"
-
-#: wext-static-publisher/includes/class-admin.php:1896
-msgid "Disable WLW Manifest Link"
-msgstr "WLWマニフェストリンクを無効にする"
-
-#: wext-static-publisher/includes/class-admin.php:1896
-msgid "Windows Live Writer removes the manifest link."
-msgstr "Windows Live Writer はマニフェスト リンクを削除します。"
-
-#: wext-static-publisher/includes/class-admin.php:1897
-msgid "Disable Emoji Scripts"
-msgstr "絵文字スクリプトを無効にする"
-
-#: wext-static-publisher/includes/class-admin.php:1897
-msgid "Removes WordPress emoji scripts and styles from static HTML."
-msgstr "静的 HTML から WordPress 絵文字スクリプトとスタイルを削除します。"
-
-#: wext-static-publisher/includes/class-admin.php:1916
-msgid "Save Hide Settings"
-msgstr "非表示設定を保存"
-
-#: wext-static-publisher/includes/class-admin.php:1942
-#, php-format
-msgid "%1$d of %2$d checks passed."
-msgstr "%1$d/%2$d チェックに合格しました。"
-
-#: wext-static-publisher/includes/class-admin.php:1942
-msgid "Last checked:"
-msgstr "最後にチェックした内容:"
-
-#: wext-static-publisher/includes/class-admin.php:1947
-msgid "Check Again"
-msgstr "もう一度確認してください"
-
-#: wext-static-publisher/includes/class-admin.php:1953
-msgid "Diagnostics checks have been updated."
-msgstr "診断チェックが更新されました。"
-
-#: wext-static-publisher/includes/class-admin.php:1964
-msgid "Passed"
-msgstr "合格した"
-
-#: wext-static-publisher/includes/class-admin.php:1988
-msgid ""
-"It was developed to convert your WordPress site into static files and "
-"prepare them for publication processes."
-msgstr ""
-"これは、WordPress サイトを静的ファイルに変換し、公開プロセスの準備をするため"
-"に開発されました。"
-
-#: wext-static-publisher/includes/class-admin.php:1993
-msgid "Version Number"
-msgstr "バージョン番号"
-
-#: wext-static-publisher/includes/class-admin.php:1997
-msgid "Support Email"
-msgstr "サポートメール"
-
-#: wext-static-publisher/includes/class-admin.php:2001
-msgid "Plugin Website"
-msgstr "プラグインのウェブサイト"
 
 #: wext-static-publisher/includes/class-rest-controller.php:89
 #: wext-static-publisher/includes/class-rest-controller.php:103
@@ -1934,35 +2509,28 @@ msgstr ""
 msgid "The deployment build checksum does not match the export."
 msgstr ""
 
-#: wext-static-publisher/includes/class-static-search.php:115
-msgid "No results matched your search."
-msgstr "検索に一致する結果はありませんでした。"
+#: wext-static-publisher/includes/class-secret-store.php:33
+msgid "The secret could not be encrypted. Enable Sodium or OpenSSL in PHP."
+msgstr ""
 
-#: wext-static-publisher/includes/class-static-search.php:116
-#, php-format
-msgid "%d results shown."
-msgstr "%d の結果が表示されます。"
+#: wext-static-publisher/includes/class-secret-store.php:63
+#: wext-static-publisher/includes/class-secret-store.php:74
+#: wext-static-publisher/includes/class-secret-store.php:93
+msgid "The saved secret is invalid. Save the connection again."
+msgstr ""
 
-#: wext-static-publisher/includes/class-static-search.php:117
-#, php-format
-msgid "Enter at least %d characters to search."
-msgstr "検索するには少なくとも %d 文字を入力してください。"
+#: wext-static-publisher/includes/class-secret-store.php:69
+msgid "PHP Sodium is required to read the saved secret."
+msgstr ""
 
-#: wext-static-publisher/includes/class-static-search.php:118
-msgid "The search index could not be loaded. Please try again later."
-msgstr "検索インデックスをロードできませんでした。後でもう一度試してください。"
+#: wext-static-publisher/includes/class-secret-store.php:80
+#: wext-static-publisher/includes/class-secret-store.php:105
+msgid "The saved secret could not be decrypted. Save the connection again."
+msgstr ""
 
-#: wext-static-publisher/includes/class-static-search.php:251
-msgid "Home"
-msgstr "家"
-
-#: wext-static-publisher/includes/class-static-search.php:252
-msgid "Search This Site"
-msgstr "このサイトを検索"
-
-#: wext-static-publisher/includes/class-static-search.php:253
-msgid "Enter a search term..."
-msgstr "検索語を入力してください..."
+#: wext-static-publisher/includes/class-secret-store.php:88
+msgid "PHP OpenSSL is required to read the saved secret."
+msgstr ""
 
 #: wext-static-publisher/includes/class-seo-toolkit.php:191
 msgid "HTML could not be parsed."
@@ -2042,6 +2610,14 @@ msgstr ""
 
 #: wext-static-publisher/includes/class-seo-toolkit.php:708
 msgid "Product structured data has no offers, review, or aggregate rating."
+msgstr ""
+
+#: wext-static-publisher/includes/class-seopress-integration.php:161
+msgid "SEOPress sitemap could not be exported."
+msgstr ""
+
+#: wext-static-publisher/includes/class-seopress-integration.php:183
+msgid "SEOPress robots.txt could not be exported."
 msgstr ""
 
 #: wext-static-publisher/includes/class-sftp-deployer.php:71
@@ -2172,834 +2748,32 @@ msgstr ""
 msgid "The SFTP connection options could not be configured."
 msgstr ""
 
-#: wext-static-publisher/includes/class-plugin.php:374
-msgid "Export job queued."
-msgstr "エクスポートジョブがキューに入れられました。"
+#: wext-static-publisher/includes/class-static-search.php:115
+msgid "No results matched your search."
+msgstr "検索に一致する結果はありませんでした。"
 
-#: wext-static-publisher/includes/class-plugin.php:448
-msgid ""
-"The export job has been in the queue for more than 90 seconds. Check WP-Cron "
-"or server loopback requests."
-msgstr ""
-"エクスポート ジョブは 90 秒以上キュー内にあります。 WP-Cron またはサーバーの"
-"ループバック リクエストを確認してください。"
-
-#: wext-static-publisher/includes/class-plugin.php:454
-msgid ""
-"The export job has been running longer than expected. Check server error "
-"logs and PHP uptime limit."
-msgstr ""
-"エクスポート ジョブの実行時間が予想より長くなりました。サーバーエラーログと"
-"PHP稼働時間制限を確認してください。"
-
-#: wext-static-publisher/includes/class-plugin.php:609
-msgid "The automatic export job is queued."
-msgstr "自動エクスポート ジョブはキューに入れられます。"
-
-#: wext-static-publisher/includes/class-plugin.php:638
-#, fuzzy, php-format
-msgid "[Wext Static Publisher] Automatic SFTP upload failed: %s"
-msgstr ""
-"[Wext Static Publisher] デプロイメント Webhook を送信できませんでした。"
-
-#: wext-static-publisher/includes/class-plugin.php:722
-msgid "[Wext Static Publisher] Some old export archives could not be deleted."
-msgstr ""
-"[Wext Static Publisher] 一部の古いエクスポート アーカイブを削除できませんでし"
-"た。"
-
-#: wext-static-publisher/includes/class-plugin.php:766
-msgid "Deployment workflow could not be started."
-msgstr ""
-
-#: wext-static-publisher/includes/class-plugin.php:768
-msgid "[Wext Static Publisher] Deployment webhook could not be sent."
-msgstr ""
-"[Wext Static Publisher] デプロイメント Webhook を送信できませんでした。"
-
-#: wext-static-publisher/includes/class-plugin.php:792
+#: wext-static-publisher/includes/class-static-search.php:116
 #, php-format
-msgid "Export completed: %d URL"
-msgstr "エクスポート完了: %d URL"
+msgid "%d results shown."
+msgstr "%d の結果が表示されます。"
 
-#: wext-static-publisher/includes/class-block-seo-integration.php:158
+#: wext-static-publisher/includes/class-static-search.php:117
 #, php-format
-msgid "%s sitemap could not be exported."
-msgstr ""
-
-#: wext-static-publisher/includes/class-block-seo-integration.php:180
-#, php-format
-msgid "%s robots.txt could not be exported."
-msgstr ""
-
-#: wext-static-publisher/includes/class-diagnostics.php:75
-#, php-format
-msgid "Site URL accessible (HTTP %d): %s"
-msgstr "アクセス可能なサイト URL (HTTP %d): %s"
-
-#: wext-static-publisher/includes/class-diagnostics.php:77
-msgid "Site URL unreachable:"
-msgstr "サイト URL に到達できません:"
-
-#: wext-static-publisher/includes/class-diagnostics.php:78
-#, php-format
-msgid "Site URL returned an unexpected HTTP %d response: %s"
-msgstr "サイト URL が予期しない HTTP %d 応答を返しました: %s"
-
-#: wext-static-publisher/includes/class-diagnostics.php:81
-msgid "Server"
-msgstr "サーバ"
-
-#: wext-static-publisher/includes/class-diagnostics.php:84
-msgid "PHP Version"
-msgstr "PHPのバージョン"
-
-#: wext-static-publisher/includes/class-diagnostics.php:87
-#, php-format
-msgid "PHP 8.1 or above can be used. Current version: %s."
-msgstr "PHP8.1以降が使用可能です。現在のバージョン: %s。"
-
-#: wext-static-publisher/includes/class-diagnostics.php:88
-#, php-format
-msgid "PHP 8.1 or above required. Current version: %s."
-msgstr "PHP 8.1 以降が必要です。現在のバージョン: %s。"
-
-#: wext-static-publisher/includes/class-diagnostics.php:92
-msgid "Basic Auth"
-msgstr "基本認証"
-
-#: wext-static-publisher/includes/class-diagnostics.php:95
-msgid ""
-"Basic Auth appears to be enabled; static scan may stop at authentication."
-msgstr ""
-"基本認証が有効になっているようです。静的スキャンは認証時に停止する場合があり"
-"ます。"
-
-#: wext-static-publisher/includes/class-diagnostics.php:96
-msgid "Basic Auth is not enabled."
-msgstr "基本認証が有効になっていません。"
-
-#: wext-static-publisher/includes/class-diagnostics.php:100
-msgid "PHP-XML"
-msgstr "PHP-XML"
-
-#: wext-static-publisher/includes/class-diagnostics.php:102
-msgid "php-xml can be used."
-msgstr "php-xmlが使えます。"
-
-#: wext-static-publisher/includes/class-diagnostics.php:102
-msgid "php-xml unavailable; Enable the DOMDocument plugin."
-msgstr "php-xml は利用できません。 DOMDocument プラグインを有効にします。"
-
-#: wext-static-publisher/includes/class-diagnostics.php:106
-msgid "cURL"
-msgstr "カール"
-
-#: wext-static-publisher/includes/class-diagnostics.php:108
-msgid "cURL can be used."
-msgstr "cURLを使用できます。"
-
-#: wext-static-publisher/includes/class-diagnostics.php:108
-msgid "cURL unavailable; Enable the PHP cURL extension."
-msgstr "cURL は利用できません。 PHP cURL 拡張機能を有効にします。"
-
-#: wext-static-publisher/includes/class-diagnostics.php:112
-msgid "SFTP Client"
-msgstr ""
-
-#: wext-static-publisher/includes/class-diagnostics.php:115
-msgid "The bundled SFTP client is available."
-msgstr ""
-
-#: wext-static-publisher/includes/class-diagnostics.php:116
-msgid ""
-"No SFTP client is available. Reinstall the complete plugin package to use "
-"SFTP deploy."
-msgstr ""
-
-#: wext-static-publisher/includes/class-diagnostics.php:120
-msgid "Docker / Site URL"
-msgstr "Docker / サイト URL"
-
-#: wext-static-publisher/includes/class-diagnostics.php:125
-msgid "WordPress"
-msgstr "ワードプレス"
-
-#: wext-static-publisher/includes/class-diagnostics.php:128
-msgid "Permalinks"
-msgstr "パーマリンク"
-
-#: wext-static-publisher/includes/class-diagnostics.php:131
-msgid "WordPress permalink structure is set."
-msgstr "WordPressのパーマリンク構造が設定されました。"
-
-#: wext-static-publisher/includes/class-diagnostics.php:132
-msgid ""
-"Permanent links have a flat structure; Select a structure in Settings > "
-"Permalinks."
-msgstr ""
-"永久リンクはフラット構造です。 [設定] > [パーマリンク] で構造を選択します。"
-
-#: wext-static-publisher/includes/class-diagnostics.php:136
-msgid "Indexability"
-msgstr "インデックス可能性"
-
-#: wext-static-publisher/includes/class-diagnostics.php:139
-msgid ""
-"The setting that prevents search engines from indexing the site is turned "
-"off."
-msgstr ""
-"検索エンジンがサイトにインデックスを作成できないようにする設定がオフになって"
-"います。"
-
-#: wext-static-publisher/includes/class-diagnostics.php:140
-msgid "The setting that prevents search engines from indexing the site is on."
-msgstr ""
-"検索エンジンがサイトのインデックスを作成できないようにする設定がオンになって"
-"います。"
-
-#: wext-static-publisher/includes/class-diagnostics.php:144
-msgid "Cache"
-msgstr "キャッシュ"
-
-#: wext-static-publisher/includes/class-diagnostics.php:147
-msgid "WordPress page caching is disabled."
-msgstr "WordPress ページのキャッシュが無効になっています。"
-
-#: wext-static-publisher/includes/class-diagnostics.php:148
-msgid "WP_CACHE enabled; Verify that no stale content is served during export."
-msgstr ""
-"WP_CACHE が有効になっています。エクスポート中に古いコンテンツが提供されていな"
-"いことを確認します。"
-
-#: wext-static-publisher/includes/class-diagnostics.php:152
-msgid "WP-CRON"
-msgstr "WP-クロン"
-
-#: wext-static-publisher/includes/class-diagnostics.php:155
-msgid "WordPress cron is available."
-msgstr "WordPressのcronが利用可能になりました。"
-
-#: wext-static-publisher/includes/class-diagnostics.php:156
-msgid "WordPress cron disabled; Scheduled export jobs may not run."
-msgstr ""
-"WordPress cron が無効になっています。スケジュールされたエクスポート ジョブが"
-"実行されない場合があります。"
-
-#: wext-static-publisher/includes/class-diagnostics.php:159
-msgid "Plugins"
-msgstr "プラグイン"
-
-#: wext-static-publisher/includes/class-diagnostics.php:162
-msgid "Incompatible Plugins"
-msgstr "互換性のないプラグイン"
-
-#: wext-static-publisher/includes/class-diagnostics.php:165
-msgid "No active incompatible plugins found."
-msgstr "アクティブな互換性のないプラグインは見つかりませんでした。"
-
-#: wext-static-publisher/includes/class-diagnostics.php:166
-msgid "Active plugins that may block static scanning:"
-msgstr "静的スキャンをブロックする可能性のあるアクティブなプラグイン:"
-
-#: wext-static-publisher/includes/class-diagnostics.php:169
-msgid "File System"
-msgstr "ファイルシステム"
-
-#: wext-static-publisher/includes/class-diagnostics.php:172
-msgid "Temporary Directory Readable"
-msgstr "一時ディレクトリの読み取り可能"
-
-#: wext-static-publisher/includes/class-diagnostics.php:175
-#, php-format
-msgid "The web server is able to read the temporary directory: %s"
-msgstr "Web サーバーは一時ディレクトリ %s を読み取ることができます。"
-
-#: wext-static-publisher/includes/class-diagnostics.php:176
-#, php-format
-msgid "Web server cannot read temporary directory: %s"
-msgstr "Web サーバーが一時ディレクトリを読み取れません: %s"
-
-#: wext-static-publisher/includes/class-diagnostics.php:180
-msgid "Temporary Directory Writable"
-msgstr "書き込み可能な一時ディレクトリ"
-
-#: wext-static-publisher/includes/class-diagnostics.php:183
-#, php-format
-msgid "The web server is able to write to the temporary directory: %s"
-msgstr "Web サーバーは一時ディレクトリ %s に書き込むことができます。"
-
-#: wext-static-publisher/includes/class-diagnostics.php:184
-#, php-format
-msgid "Web server cannot write to temporary directory: %s"
-msgstr "Web サーバーが一時ディレクトリに書き込めません: %s"
-
-#: wext-static-publisher/includes/class-diagnostics.php:197
-#, php-format
-msgid "MySQL user has %s privilege."
-msgstr "MySQL ユーザーには %s 権限があります。"
-
-#: wext-static-publisher/includes/class-diagnostics.php:198
-#, php-format
-msgid "The MySQL user does not have the %s privilege."
-msgstr "MySQL ユーザーには %s 権限がありません。"
-
-#: wext-static-publisher/includes/class-aioseo-integration.php:160
-msgid "All in One SEO sitemap could not be exported."
-msgstr ""
-
-#: wext-static-publisher/includes/class-aioseo-integration.php:183
-msgid "All in One SEO robots.txt could not be exported."
-msgstr ""
-
-#: wext-static-publisher/includes/class-seopress-integration.php:161
-msgid "SEOPress sitemap could not be exported."
-msgstr ""
-
-#: wext-static-publisher/includes/class-seopress-integration.php:183
-msgid "SEOPress robots.txt could not be exported."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:792
-msgid "Publish your site with Easy Setup"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:793
-msgid ""
-"Connect Cloudflare once, then publish changes with one button. GitHub and "
-"technical keys stay hidden."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:795
-msgid "Start Easy Setup"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:973
-msgid "Easy Setup"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:985
-msgid ""
-"Use Easy Setup for one-click publishing. Technical deployment methods remain "
-"available under advanced options."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:991
-msgid "Advanced options"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1118
-msgid "Cloudflare is connected. Your site is ready for one-click publishing."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1120
-msgid "Cloudflare connection was removed from this site."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1122
-msgid "Cloudflare could not be connected. Try again."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1129
-msgid "Recommended"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1130
-msgid "Publish on Cloudflare in three steps"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1130
-msgid "Your site is ready to publish"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1131
-msgid ""
-"Prepare the site files and publish them without managing GitHub, webhooks, "
-"or API keys."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1131
-msgid ""
-"You only connect your Cloudflare account and choose the live address. Wext "
-"handles the technical deployment steps."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1138
-msgid "Site address"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1139
-msgid "Change"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1144
-msgid "Cloudflare account"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1145
-msgid "Connected"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1145
-msgid "Not connected yet"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1151
-msgid "Connect Cloudflare"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1158
-msgid "Publish the site"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1159
-msgid "Site files are prepared, checked, and uploaded automatically."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1168
-msgid "Easy Setup service is not active in this package yet."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1169
-msgid ""
-"The plugin owner must configure the Wext deployment service before customers "
-"can connect Cloudflare."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1170
-msgid "Technical setup"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1180
-msgid "Prepare and Publish Site"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1182
-msgid "View Live Site"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1186
-msgid "Disconnect"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1186
-msgid "Remove the Cloudflare connection from this site?"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1189
-msgid "Use Advanced Setup"
-msgstr ""
-
-#: wext-static-publisher/includes/class-managed-deployer.php:69
-msgid "Easy Setup service is not configured for this plugin package."
-msgstr ""
-
-#: wext-static-publisher/includes/class-managed-deployer.php:86
-msgid "The Cloudflare connection request has expired. Start Easy Setup again."
-msgstr ""
-
-#: wext-static-publisher/includes/class-managed-deployer.php:107
-msgid "Cloudflare connection could not be completed. Try connecting again."
-msgstr ""
-
-#: wext-static-publisher/includes/class-managed-deployer.php:114
-msgid "The deployment service returned an invalid connection response."
-msgstr ""
-
-#: wext-static-publisher/includes/class-managed-deployer.php:161
-msgid "The site package could not be verified before publishing."
-msgstr ""
-
-#: wext-static-publisher/includes/class-managed-deployer.php:198
-msgid ""
-"Cloudflare publishing could not be started. Check the connection and try "
-"again."
-msgstr ""
-
-#: wext-static-publisher/includes/class-secret-store.php:33
-msgid "The secret could not be encrypted. Enable Sodium or OpenSSL in PHP."
-msgstr ""
-
-#: wext-static-publisher/includes/class-secret-store.php:49
-#: wext-static-publisher/includes/class-secret-store.php:60
-#: wext-static-publisher/includes/class-secret-store.php:79
-msgid "The saved secret is invalid. Save the connection again."
-msgstr ""
-
-#: wext-static-publisher/includes/class-secret-store.php:55
-msgid "PHP Sodium is required to read the saved secret."
-msgstr ""
-
-#: wext-static-publisher/includes/class-secret-store.php:66
-#: wext-static-publisher/includes/class-secret-store.php:91
-msgid "The saved secret could not be decrypted. Save the connection again."
-msgstr ""
-
-#: wext-static-publisher/includes/class-secret-store.php:74
-msgid "PHP OpenSSL is required to read the saved secret."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:126
-msgid ""
-"A Live Site Address on a different origin than WordPress is required for "
-"redirect behavior. The 404 behavior was selected instead."
-msgstr "リダイレクトには、WordPress とは異なるオリジンのライブサイトアドレスが必要です。代わりに 404 動作が選択されました。"
-
-#: wext-static-publisher/includes/class-admin.php:1189
-msgid "Headless CMS"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1547
-#, fuzzy
-msgid "Headless + Static Publisher"
-msgstr "静的パブリッシャーセクション"
-
-#: wext-static-publisher/includes/class-admin.php:1548
-msgid ""
-"Visitors cannot open the WordPress theme frontend. Signed internal export "
-"requests can still render the homepage, pages, design assets, and menus for "
-"the static site."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1552
-msgid "Headless CMS Mode"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1553
-msgid "Protect the WordPress theme frontend"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1553
-msgid ""
-"WordPress Admin, REST API, media files, cron, and signed static export "
-"requests remain available."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1556
-msgid "Visitor Response"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1558
-msgid "404 Not Found (recommended)"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1559
-msgid "307 Redirect to frontend"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1560
-msgid "410 Gone"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1980
-msgid "307 redirects visitors to the Live Site Address configured in General."
-msgstr "307 は訪問者を「一般」で設定されたライブサイトアドレスへリダイレクトします。"
-
-#: wext-static-publisher/includes/class-admin.php:1568
-msgid "Redirect Paths"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1569
-msgid "Preserve the requested path when redirecting"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1569
-msgid ""
-"Example: /about/ redirects to the frontend /about/. Query parameters are not "
-"forwarded."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1572
-msgid "Editor Preview"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1573
-msgid "Allow signed-in editors to view the WordPress theme"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1576
-msgid "GraphQL"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1577
-msgid "Allow the /graphql endpoint when WPGraphQL is installed"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1580
-#, fuzzy
-msgid "CMS Indexing"
-msgstr "インデックスセレクター"
-
-#: wext-static-publisher/includes/class-admin.php:1581
-msgid "Block indexing on the WordPress CMS origin"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1581
-msgid ""
-"Returns noindex headers, disables the CMS sitemap, and disallows crawling "
-"through robots.txt without changing the generated static site."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1584
-msgid "Legacy Publishing"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1585
-#, fuzzy
-msgid "Disable XML-RPC requests"
-msgstr "XML-RPC リンクを無効にする"
-
-#: wext-static-publisher/includes/class-admin.php:1588
-msgid "Comments and Pingbacks"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1589
-msgid "Close comments and pingbacks on the CMS origin"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1592
-#, fuzzy
-msgid "Save Headless CMS Settings"
-msgstr "非表示設定を保存"
-
-#: wext-static-publisher/includes/class-headless-mode.php:94
-#, fuzzy
-msgid "This WordPress frontend is no longer available."
-msgstr "WordPressのcronが利用可能になりました。"
-
-#: wext-static-publisher/includes/class-headless-mode.php:95
-#, fuzzy
-msgid "This WordPress frontend is not available."
-msgstr "WordPressのcronが利用可能になりました。"
-
-#: wext-static-publisher/includes/class-headless-mode.php:169
-msgid "XML-RPC is disabled in Headless CMS mode."
-msgstr ""
-
-#: wext-static-publisher/includes/class-managed-deployer.php:69
-msgid "Managed deployment service is not configured for this plugin package."
-msgstr ""
-
-#: wext-static-publisher/includes/class-managed-deployer.php:86
-msgid ""
-"The Cloudflare connection request has expired. Start the connection again."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php
-#, php-format
-msgid "Pro v%s"
-msgstr "Pro v%s"
-
-#: wext-static-publisher/includes/class-admin.php
-msgid "Upgrade to Pro"
-msgstr "Upgrade to Pro"
-
-#: wext-static-publisher/includes/class-admin.php
-msgid "Support"
-msgstr "Support"
-
-#: wext-static-publisher/includes/class-admin.php
-msgid "About sections"
-msgstr "About sections"
-
-#: wext-static-publisher/includes/class-admin.php
-msgid "Wext Support"
-msgstr "Wext Support"
-
-#: wext-static-publisher/includes/class-admin.php
-msgid "Get help with licensing, static publishing, and deployment."
-msgstr "Get help with licensing, static publishing, and deployment."
-
-#: wext-static-publisher/includes/class-admin.php
-msgid "Revoke License"
-msgstr "Revoke License"
-
-#: wext-static-publisher/includes/class-admin.php
-msgid ""
-"Detach this license from this site? Cloudflare publishing will stop, but the "
-"remaining license term will stay available."
-msgstr ""
-"Detach this license from this site? Cloudflare publishing will stop, but the "
-"remaining license term will stay available."
-
-#: wext-static-publisher/includes/class-admin.php
-msgid ""
-"The Wext license was detached from this site. You can use it on this domain "
-"or another domain while it remains valid."
-msgstr ""
-"The Wext license was detached from this site. You can use it on this domain "
-"or another domain while it remains valid."
-
-#: wext-static-publisher/includes/class-managed-deployer.php
-msgid "Activate the license again before detaching it from this site."
-msgstr "Activate the license again before detaching it from this site."
-
-msgid "Connect Cloudflare before changing the deployment URL."
-msgstr ""
-
-msgid ""
-"Enter a public HTTPS deployment URL without a path, query, port, or "
-"credentials."
-msgstr ""
-
-msgid "The saved Wext service credential is invalid. Reconnect Cloudflare."
-msgstr ""
-
-msgid "The deployment service returned an invalid target response."
-msgstr ""
-
-msgid ""
-"Wait for the current Cloudflare deployment to finish before changing the "
-"deployment URL."
-msgstr ""
-
-msgid ""
-"The deployment URL must belong to an active domain in the connected "
-"Cloudflare account."
-msgstr ""
-
-msgid ""
-"The deployment URL already has a conflicting Cloudflare Worker or DNS record."
-msgstr ""
-
-msgid "Cloudflare could not attach the new deployment URL. Try again."
-msgstr ""
-
-msgid ""
-"Cloudflare could not detach the previous deployment URL. No target change "
-"was saved."
-msgstr ""
-
-msgid "Reconnect Cloudflare before changing the deployment URL."
-msgstr ""
-
-msgid ""
-"The deployment URL was changed. Publish again to rebuild the static site for "
-"this address."
-msgstr ""
-
-msgid "Confirm the deployment URL change before saving it."
-msgstr ""
-
-msgid "Change Deployment URL"
-msgstr ""
-
-msgid ""
-"I confirm that the new address belongs to this connected Cloudflare account. "
-"The previous Worker domain will be detached."
-msgstr ""
-
-msgid "Change the deployment URL and detach the previous Worker domain?"
-msgstr ""
-
-msgid "Easy Start"
-msgstr ""
-
-msgid ""
-"Connect Cloudflare, confirm the source and public static domains, then "
-"publish your site without API tokens or Account IDs."
-msgstr ""
-
-msgid "Easy Start progress"
-msgstr ""
-
-msgid "Activate Wext License"
-msgstr ""
-
-msgid "License is active."
-msgstr ""
-
-#, php-format
-msgid "Plan: %s"
-msgstr ""
-
-msgid ""
-"Managed Cloudflare deployment requires an active Wext license. The key is "
-"verified securely and is not stored as plain text."
-msgstr ""
-
-msgid "License key"
-msgstr ""
-
-msgid "Activate and Continue"
-msgstr ""
-
-msgid "Connect Cloudflare Account"
-msgstr ""
-
-#, fuzzy
-msgid "Cloudflare connected"
-msgstr "Cloudflare"
-
-msgid ""
-"Cloudflare credentials remain encrypted in the Wext deployment service and "
-"are never stored in WordPress."
-msgstr ""
-
-msgid ""
-"The secure Wext screen will ask you to authorize Cloudflare, choose the "
-"account, and select the zone and publication domain."
-msgstr ""
-
-msgid "Connect Cloudflare and Continue"
-msgstr ""
-
-msgid ""
-"Refresh the license connection from About > License, then return to Easy "
-"Start."
-msgstr ""
-
-msgid "Confirm Site Domains"
-msgstr ""
-
-msgid "Deployment source (WordPress)"
-msgstr ""
-
-msgid "Wext reads the site from this address during export."
-msgstr ""
-
-#, fuzzy
-msgid "Public static site domain"
-msgstr "静的サイトの自動生成を有効にする"
-
-msgid "Cloudflare serves the completed static site from this HTTPS address."
-msgstr ""
-
-msgid "Static site HTTPS address"
-msgstr ""
-
-msgid "I confirm that this domain belongs to the connected Cloudflare account."
-msgstr ""
-
-#, fuzzy
-msgid "Save Static Site Domain"
-msgstr "静的サイトの作成"
-
-msgid ""
-"The source address comes from WordPress. You will select the static domain "
-"while connecting Cloudflare."
-msgstr ""
-
-#, fuzzy
-msgid "Create and Deploy Static Site"
-msgstr "静的サイトの作成"
-
-msgid ""
-"Wext will create a fresh static ZIP, verify it, send it to the managed "
-"service, and publish it to the selected Cloudflare domain."
-msgstr ""
-
-#, fuzzy
-msgid "Deployment status"
-msgstr "デプロイ Webhook"
-
-msgid "Published address"
-msgstr ""
-
-#, fuzzy
-msgid "Create and Deploy"
-msgstr "作成日"
-
-#, fuzzy
-#~ msgid "Frontend Address"
-#~ msgstr "ライブサイトアドレス"
+msgid "Enter at least %d characters to search."
+msgstr "検索するには少なくとも %d 文字を入力してください。"
+
+#: wext-static-publisher/includes/class-static-search.php:118
+msgid "The search index could not be loaded. Please try again later."
+msgstr "検索インデックスをロードできませんでした。後でもう一度試してください。"
+
+#: wext-static-publisher/includes/class-static-search.php:251
+msgid "Home"
+msgstr "家"
+
+#: wext-static-publisher/includes/class-static-search.php:252
+msgid "Search This Site"
+msgstr "このサイトを検索"
+
+#: wext-static-publisher/includes/class-static-search.php:253
+msgid "Enter a search term..."
+msgstr "検索語を入力してください..."

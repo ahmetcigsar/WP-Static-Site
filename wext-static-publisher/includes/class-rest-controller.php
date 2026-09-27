@@ -27,7 +27,7 @@ final class REST_Controller
         register_rest_route('wext-static/v1', '/exports', [
             'methods' => 'POST',
             'callback' => [self::class, 'create'],
-            'permission_callback' => [self::class, 'can_use_github'],
+            'permission_callback' => [self::class, 'can_export'],
         ]);
         register_rest_route('wext-static/v1', '/exports/latest', [
             'methods' => 'GET',
@@ -42,51 +42,18 @@ final class REST_Controller
         register_rest_route('wext-static/v1', '/exports/(?P<job_id>[A-Za-z0-9-]+)/artifact', [
             'methods' => 'GET',
             'callback' => [self::class, 'job_artifact'],
-            'permission_callback' => [self::class, 'can_use_github'],
-        ]);
-        register_rest_route('wext-static/v1', '/exports/(?P<job_id>[A-Za-z0-9-]+)/managed-artifact', [
-            'methods' => 'GET',
-            'callback' => [self::class, 'job_artifact'],
-            'permission_callback' => [self::class, 'can_download_managed_artifact'],
+            'permission_callback' => [self::class, 'can_export'],
         ]);
         register_rest_route('wext-static/v1', '/deployments/callback', [
             'methods' => 'POST',
             'callback' => [self::class, 'deployment_callback'],
-            'permission_callback' => [self::class, 'can_use_github'],
-        ]);
-        register_rest_route('wext-static/v1', '/managed-deployments/callback', [
-            'methods' => 'POST',
-            'callback' => [self::class, 'deployment_callback'],
-            'permission_callback' => [self::class, 'can_receive_managed_callback'],
+            'permission_callback' => [self::class, 'can_export'],
         ]);
     }
 
     public static function can_export(): bool
     {
         return current_user_can(Plugin::EXPORT_CAPABILITY);
-    }
-
-    public static function can_use_github(): bool
-    {
-        return Plugin::license_active() && self::can_export();
-    }
-
-    public static function can_download_managed_artifact(WP_REST_Request $request): bool
-    {
-        return Managed_Deployer::verify_artifact(
-            sanitize_file_name((string) $request['job_id']),
-            absint($request->get_param('expires')),
-            sanitize_text_field((string) $request->get_param('signature'))
-        );
-    }
-
-    public static function can_receive_managed_callback(WP_REST_Request $request): bool
-    {
-        return Managed_Deployer::verify_callback(
-            sanitize_text_field((string) $request->get_header('x-wext-timestamp')),
-            sanitize_text_field((string) $request->get_header('x-wext-signature')),
-            (string) $request->get_body()
-        );
     }
 
     public static function create(WP_REST_Request $request): WP_REST_Response
@@ -130,7 +97,6 @@ final class REST_Controller
         $job_id = sanitize_file_name((string) $request->get_param('job_id'));
         $state = sanitize_key((string) ($request->get_param('status') ?: $request->get_param('state')));
         $build_sha256 = strtolower(sanitize_text_field((string) $request->get_param('build_sha256')));
-        $delivery_id = sanitize_text_field((string) $request->get_param('delivery_id'));
         $archive = $job_id === '' ? null : Archive_Manager::find($job_id);
 
         if ($archive === null) {
@@ -143,11 +109,6 @@ final class REST_Controller
             || ! hash_equals((string) $archive['build_sha256'], $build_sha256)) {
             return new WP_REST_Response(['message' => __('The deployment build checksum does not match the export.', 'wext-static-publisher')], 409);
         }
-        if (str_contains($request->get_route(), '/managed-deployments/')
-            && ! Managed_Deployer::claim_callback_delivery($delivery_id)) {
-            return new WP_REST_Response(['message' => __('The deployment callback was already processed.', 'wext-static-publisher')], 409);
-        }
-
         $deployment_url = esc_url_raw((string) $request->get_param('deployment_url'));
         $error = sanitize_text_field((string) ($request->get_param('error_code') ?: $request->get_param('error')));
         Plugin::record_deployment_status($job_id, $state, [

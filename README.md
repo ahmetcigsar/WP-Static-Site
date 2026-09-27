@@ -20,8 +20,8 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 - SureRank SEO, The SEO Framework ve Yoast SEO için içerik türü bazlı metadata, Schema, XML sitemap ve robots.txt entegrasyonları
 - WordPress yönetici/site dilini otomatik izleyen Türkçe, İngilizce, İspanyolca, Fransızca, Basitleştirilmiş Çince, Japonca, Arapça ve Portekizce arayüz paketleri
 - Deploy sekmesinin sol dikey menüsünde ZIP File, GitHub, Cloudflare, SFTP ve Auto Deploy seçenekleri
-- Wext lisans aktivasyonu, kısa ömürlü bağlantı bileti ve siteye bağlı Cloudflare OAuth hesabı seçimi
-- Servis tokenı ile export sonrasında yönetilen Cloudflare Workers Static Assets deployment isteği
+- Kullanıcının kendi Cloudflare Account ID ve API tokenı ile doğrudan Workers Static Assets yayını
+- Tokenın WordPress güvenlik anahtarlarıyla şifreli saklanması; bağlantıyı yönetme ve kaldırma
 - Cloudflare yapılandırıldığında statik üretimi ve Cloudflare yayınını tek butonda başlatan, export ile deploy durumlarını ayrı gösteren akış
 - GitHub Actions sonucunu WordPress'e geri bildiren; belirli job ID ve SHA-256 doğrulamalı Cloudflare deploy durumu
 - Deploy > ZIP File kartında indirme/silme işlemleri ve 10 kayıtlık sayfalama ile ZIP dosya yönetimi; kartın altında arşiv saklama ayarı
@@ -39,7 +39,7 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 - Main sekmesinde iki saniyede bir yenilenen canlı export durumu, aşamalı ilerleme ve takılan WP-Cron işi uyarısı
 - Diagnostics sekmesinde PHP, Basic Auth, php-xml, cURL, site URL erişimi, kalıcı bağlantılar, indexlenebilirlik, önbellek ve WP-Cron kontrolleri
 - İlk kurulumda ve isteğe bağlı yeniden kontrolde çalışan uyumsuz eklenti, geçici dizin ve MySQL yetki kontrolleri
-- About sekmesinde solda About, License ve Support dikey alt menüsü; sürüm, lisans ve destek bilgileri için ayrı sayfalar
+- About sekmesinde sürüm ve destek bilgileri
 - Modern yönetim arayüzü, kart tabanlı içerik alanları, yenilenmiş sekmeler ve butonlar
 - Activity Logs kayıtlarında arama ve ortalanmış modern sayfalama
 - Activity Logs kayıtlarında WordPress ayarlarına bağlı tarih/saat biçimi
@@ -77,28 +77,26 @@ wp wext-static export --format=json
 - `WP_ORIGIN`: WordPress origin adresi, örneğin `https://cms.example.com`
 - `WP_USER`: `Static Publisher Deploy` rolündeki otomasyon kullanıcısı
 - `WP_APP_PASSWORD`: Kullanıcının Application Password değeri
-- `CLOUDFLARE_API_TOKEN`: `wp-statik-deneme` Worker deployment'ı için en düşük gerekli yetkilere sahip Cloudflare API token
+- `CLOUDFLARE_API_TOKEN`: kendi Worker deployment hedefiniz için en düşük gerekli yetkilere sahip Cloudflare API token
 - `CLOUDFLARE_ACCOUNT_ID`: Cloudflare hesap kimliği
 
-Örnek workflow `.github/workflows/deploy-example.yml` içindedir. Worker adı ve asset ayarları `wrangler.jsonc` içinde tutulur; Custom Domain dashboard tarafından yönetilmeye devam eder. CI kullanıcısına yönetici rolü vermeyin; eklentinin oluşturduğu `Static Publisher Deploy` rolünü seçin ve bu kullanıcıya ayrı bir Application Password üretin.
+Örnek workflow `.github/workflows/deploy-example.yml` içindedir. GitHub yolunda Worker adı ve asset ayarları `wrangler.jsonc` içinde tutulur; Custom Domain dashboard tarafından yönetilmeye devam eder. CI kullanıcısına yönetici rolü vermeyin; eklentinin oluşturduğu `Static Publisher Deploy` rolünü seçin ve bu kullanıcıya ayrı bir Application Password üretin.
 
-Tam otomatik akış için eklenti ayarlarında deployment webhook alanını `https://api.github.com/repos/SAHIP/REPO/dispatches` olarak girin. Fine-grained bearer token yalnızca ilgili repository için `Contents: write` yetkisiyle oluşturulmalıdır. Workflow dosyası repository'nin varsayılan branch'inde bulunmalıdır. Cloudflare token hiçbir zaman WordPress'e girilmez.
+Tam otomatik akış için eklenti ayarlarında deployment webhook alanını `https://api.github.com/repos/SAHIP/REPO/dispatches` olarak girin. Fine-grained bearer token yalnızca ilgili repository için `Contents: write` yetkisiyle oluşturulmalıdır. Workflow dosyası repository'nin varsayılan branch'inde bulunmalıdır. Bu GitHub seçeneğinde Cloudflare tokenı yalnızca GitHub secrets içinde tutulur; doğrudan yayın seçeneğinde token WordPress içinde şifrelenerek saklanır.
 
 Webhook yapılandırıldığında Main ekranındaki **Create Static Site** işlemi **Deploy to Cloudflare** olarak görünür. Buton önce statik snapshot'ı oluşturur; export başarılı olursa GitHub Actions yalnızca o işe ait `/exports/{job_id}/artifact` dosyasını indirir, manifestteki job ID ve SHA-256 değerini doğrular, Wrangler ile Cloudflare'a yükler ve canlı adresi kontrol eder. Workflow sonucu `/deployments/callback` üzerinden WordPress'e bildirilir; Main ve **Deploy > Cloudflare** ekranlarında export ve Cloudflare deploy durumları ayrı gösterilir.
 
 Callback ve job-specific artifact uçları da `Static Publisher Deploy` rolü ile Application Password kimlik doğrulaması ister. GitHub Actions için `WP_USER` olarak yönetici hesabı yerine bu sınırlı rol kullanılmalıdır.
 
-## Yönetilen Cloudflare deployment
+## Kendi Cloudflare hesabınızla doğrudan yayın
 
-Yeni kurulumlarda **Deploy > Easy Start** sihirbazı kullanılır. Sihirbaz lisansı etkinleştirir; güvenli Wext OAuth ekranında Cloudflare hesabı ile zone/yayın domainini seçtirir; WordPress kaynak domaini ile herkese açık statik site domainini birlikte doğrulatır ve son adımda yeni export + yönetilen deployment işini başlatır. API tokenı veya Cloudflare Account ID WordPress'e girilmez. İleri seviye ZIP, GitHub, Cloudflare, SFTP ve Auto Deploy ekranları ayrıca korunur.
+Eklenti ücretsiz ve GPL-2.0-or-later lisanslıdır; SEO, otomatik export, GitHub ve Cloudflare yayını için Wext lisansı gerekmez. **Static Site > General** bölümünde herkese açık HTTPS adresini ayarlayın. **Deploy > Cloudflare** bölümünde [Cloudflare Account ID](https://developers.cloudflare.com/fundamentals/account/find-account-and-zone-ids/), benzersiz Worker adı ve ilgili hesaba `Workers Scripts Write` yetkisi veren [bir API tokenı](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/) girin. Kullanıcı veya hesap API tokenı kullanılabilir. Token WordPress güvenlik anahtarlarından türetilen anahtarla şifrelenir ve arayüzde tekrar gösterilmez. Bağlantıyı kaldırmak tokenı WordPress'ten siler; Cloudflare hesabındaki tokenı iptal etmek için Cloudflare panelini kullanın.
 
-Alternatif olarak Wext lisansı **About > License** alanında etkinleştirilip **Deploy > Cloudflare** ekranından bağlantı yönetilebilir. Varsayılan servis adresi `https://deploy.wext.io` değeridir; self-hosted veya staging servis için `WEXTSTAT_DEPLOY_SERVICE_URL` sabiti ya da `wext_static_deploy_service_url` filtresi kullanılabilir. Üretim servis adresi HTTPS olmalıdır.
+**Deploy to Cloudflare** önce yeni statik ZIP ve build klasörü oluşturur, ardından Cloudflare'ın [Direct Upload API](https://developers.cloudflare.com/workers/static-assets/direct-upload/) akışıyla asset manifestini, eksik dosyaları ve Worker modülünü doğrudan kullanıcının hesabına gönderir. `_headers` ve `_redirects` kuralları Worker asset yapılandırmasına aktarılır. Wext dağıtım servisi, OAuth uygulaması veya lisans sunucusu kullanılmaz.
 
-Eklenti Free ve lisanslı kullanım sunar. Lisans etkin değilken manuel statik export, ZIP indirme, SFTP ve temel ayarlar kullanılabilir; GitHub deployment, yönetilen Cloudflare deployment, Auto Deploy ve Wext SEO özellikleri kilitlidir. Mevcut premium ayarlar lisans pasifleştiğinde silinmez, fakat arayüzden değiştirilemez ve çalışma zamanında yürütülmez. Lisans yeniden etkinleştirildiğinde bu ayarlar tekrar kullanılabilir.
+Worker'ın herkese açık olması için kendi Cloudflare panelinizde `workers.dev` alt alanını ya da özel domaini yapılandırın. **Static Site > General** içindeki hedef adres bu domainle eşleşmelidir; eklenti custom domain oluşturmuyor veya DNS kaydını değiştirmiyor. Yeni bağlantı, eski Wext servis bağlantısından otomatik aktarılmaz; bir kez kendi tokenınızla bağlanmanız gerekir.
 
-Lisans anahtarı kaydedilmez. Kalıcı installation ID, kısa ömürlü aktivasyon credential'ı, siteye bağlı servis tokenı ve callback secret WordPress güvenlik anahtarlarıyla şifrelenir. Cloudflare provider tokenları WordPress'e dönmez. Bağlantı tamamlandıktan sonra **Deploy to Cloudflare** önce statik ZIP'i üretir, ardından servise imzalı ve 15 dakika geçerli artifact adresiyle `POST /v1/deployments` isteği gönderir. Yalnız `202 Accepted` yanıtı işi kuyruğa alınmış sayar; export ve deployment durumları ayrı gösterilir.
-
-Yıllık ve lifetime lisanslar Wext'in dış satın alma akışından edinilir; WordPress yalnızca verilen lisans anahtarını etkinleştirir. Stripe Checkout/Portal çağrıları ile billing, Stripe ve webhook secret'ları deployment servisinde kalır ve eklentiye girilmez.
+GitHub Actions ile yayın, ZIP indirme ve SFTP alternatifleri korunur. GitHub akışında Cloudflare tokenını GitHub secrets içinde tutun; doğrudan yayın için GitHub gerekmez.
 
 ## SFTP deployment
 

@@ -2,8 +2,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Wext Static Publisher 2.0.0\n"
-"Report-Msgid-Bugs-To: info@wext.co\n"
-"POT-Creation-Date: 2026-08-15 21:39+0300\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-27 12:33+0300\n"
 "PO-Revision-Date: 2026-08-12 22:57+0300\n"
 "Last-Translator: Wext <info@wext.co>\n"
 "Language-Team: Arabic\n"
@@ -15,12 +15,2013 @@ msgstr ""
 "&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
 "X-Generator: Wext translation build\n"
 
-#: wext-static-publisher/includes/class-rank-math-integration.php:140
-msgid "Rank Math sitemap could not be exported."
+#: wext-static-publisher/includes/class-admin.php:89
+#: wext-static-publisher/includes/class-admin.php:820
+#: wext-static-publisher/includes/class-admin.php:837
+msgid "Queued"
+msgstr "في قائمة الانتظار"
+
+#: wext-static-publisher/includes/class-admin.php:90
+#: wext-static-publisher/includes/class-admin.php:821
+#: wext-static-publisher/includes/class-admin.php:838
+msgid "Running"
+msgstr "عمل"
+
+#: wext-static-publisher/includes/class-admin.php:91
+#: wext-static-publisher/includes/class-admin.php:822
+#: wext-static-publisher/includes/class-admin.php:839
+#: wext-static-publisher/includes/class-admin.php:853
+msgid "Completed"
+msgstr "مكتمل"
+
+#: wext-static-publisher/includes/class-admin.php:92
+#: wext-static-publisher/includes/class-admin.php:823
+#: wext-static-publisher/includes/class-admin.php:840
+#: wext-static-publisher/includes/class-admin.php:855
+#: wext-static-publisher/includes/class-admin.php:2198
+msgid "Failed"
+msgstr "غير ناجح"
+
+#: wext-static-publisher/includes/class-admin.php:93
+#: wext-static-publisher/includes/class-admin.php:848
+msgid "Not run yet"
+msgstr "لا تعمل بعد"
+
+#: wext-static-publisher/includes/class-admin.php:94
+#: wext-static-publisher/includes/class-admin.php:857
+msgid "Static rendering progress"
+msgstr "تقدم العرض الثابت"
+
+#: wext-static-publisher/includes/class-admin.php:95
+msgid "Retry"
+msgstr "حاول ثانية"
+
+#: wext-static-publisher/includes/class-admin.php:96
+#: wext-static-publisher/includes/class-admin.php:889
+msgid "Create Static Site"
+msgstr "إنشاء موقع ثابت"
+
+#: wext-static-publisher/includes/class-admin.php:97
+#: wext-static-publisher/includes/class-admin.php:889
+#: wext-static-publisher/includes/class-admin.php:1208
+msgid "Deploy to Cloudflare"
 msgstr ""
 
-#: wext-static-publisher/includes/class-rank-math-integration.php:163
-msgid "Rank Math robots.txt could not be exported."
+#: wext-static-publisher/includes/class-admin.php:98
+#: wext-static-publisher/includes/class-admin.php:836
+msgid "Waiting"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:99
+#: wext-static-publisher/includes/class-admin.php:877
+#: wext-static-publisher/includes/class-admin.php:1198
+msgid "Not deployed yet"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:100
+msgid ""
+"Progress information is unavailable. Check your internet connection or "
+"WordPress REST API access."
+msgstr ""
+"معلومات التقدم غير متوفرة. تحقق من اتصالك بالإنترنت أو الوصول إلى WordPress "
+"REST API."
+
+#: wext-static-publisher/includes/class-admin.php:126
+msgid ""
+"A Live Site Address on a different origin than WordPress is required for "
+"redirect behavior. The 404 behavior was selected instead."
+msgstr ""
+"يتطلب سلوك إعادة التوجيه عنوان موقع مباشر من أصل مختلف عن WordPress. تم "
+"اختيار سلوك 404 بدلًا منه."
+
+#: wext-static-publisher/includes/class-admin.php:164
+msgid "The SFTP remote directory cannot contain .. path segments."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:172
+msgid "Enter the SFTP server fingerprint as 32 hexadecimal MD5 characters."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:192
+msgid ""
+"Complete the SFTP connection information before enabling automatic upload."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:266
+msgid ""
+"IndexNow key must be 8–128 characters and contain only letters, numbers, or "
+"hyphens."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:370
+#: wext-static-publisher/includes/class-admin.php:408
+#: wext-static-publisher/includes/class-admin.php:423
+#: wext-static-publisher/includes/class-admin.php:452
+#: wext-static-publisher/includes/class-admin.php:511
+#: wext-static-publisher/includes/class-admin.php:537
+#: wext-static-publisher/includes/class-admin.php:551
+#: wext-static-publisher/includes/class-admin.php:567
+#: wext-static-publisher/includes/class-admin.php:654
+msgid "You are not authorized for this operation."
+msgstr "أنت غير مصرح لك بهذه العملية."
+
+#: wext-static-publisher/includes/class-admin.php:414
+#: wext-static-publisher/includes/class-rest-controller.php:78
+msgid "No downloadable exports found."
+msgstr "لم يتم العثور على عمليات تصدير قابلة للتنزيل."
+
+#: wext-static-publisher/includes/class-admin.php:433
+#: wext-static-publisher/includes/class-rest-controller.php:62
+msgid "The export process is already running."
+msgstr "عملية التصدير قيد التشغيل بالفعل."
+
+#: wext-static-publisher/includes/class-admin.php:495
+#: wext-static-publisher/includes/class-admin.php:1128
+msgid "Cloudflare account connected."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:505
+msgid "Cloudflare connection removed from this site."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:558
+msgid "No downloadable ZIP file found."
+msgstr "لم يتم العثور على ملف ZIP قابل للتنزيل."
+
+#: wext-static-publisher/includes/class-admin.php:704
+msgid "Main"
+msgstr "الرئيسية"
+
+#: wext-static-publisher/includes/class-admin.php:705
+#: wext-static-publisher/includes/class-admin.php:1030
+#: wext-static-publisher/includes/class-admin.php:1034
+msgid "Deploy"
+msgstr "نشر"
+
+#: wext-static-publisher/includes/class-admin.php:706
+#: wext-static-publisher/includes/class-admin.php:1318
+msgid "Static Site"
+msgstr "الموقع الثابت"
+
+#: wext-static-publisher/includes/class-admin.php:707
+#: wext-static-publisher/includes/class-admin.php:1353
+#: wext-static-publisher/includes/class-admin.php:1357
+msgid "SEO"
+msgstr "SEO"
+
+#: wext-static-publisher/includes/class-admin.php:708
+#: wext-static-publisher/includes/class-admin.php:1254
+#: wext-static-publisher/includes/class-admin.php:1929
+#: wext-static-publisher/includes/class-admin.php:1935
+#: wext-static-publisher/includes/class-static-search.php:250
+msgid "Search"
+msgstr "بحث"
+
+#: wext-static-publisher/includes/class-admin.php:709
+#: wext-static-publisher/includes/class-admin.php:2023
+#: wext-static-publisher/includes/class-admin.php:2026
+msgid "Hide"
+msgstr "الإخفاء"
+
+#: wext-static-publisher/includes/class-admin.php:710
+#: wext-static-publisher/includes/class-admin.php:2175
+msgid "Diagnostics"
+msgstr "التشخيص"
+
+#: wext-static-publisher/includes/class-admin.php:711
+#: wext-static-publisher/includes/class-admin.php:1241
+msgid "Activity Logs"
+msgstr "سجلات النشاط"
+
+#: wext-static-publisher/includes/class-admin.php:712
+#: wext-static-publisher/includes/class-admin.php:2216
+#: wext-static-publisher/includes/class-admin.php:2229
+msgid "About"
+msgstr "حول"
+
+#: wext-static-publisher/includes/class-admin.php:724
+msgid ""
+"Generate a static copy of your WordPress site and publish it to your own "
+"Cloudflare account."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:727
+msgid "Static Publisher sections"
+msgstr "أقسام الناشر الثابتة"
+
+#: wext-static-publisher/includes/class-admin.php:767
+msgid "Confirm Transaction"
+msgstr "تأكيد المعاملة"
+
+#: wext-static-publisher/includes/class-admin.php:771
+msgid "Cancel"
+msgstr "يلغي"
+
+#: wext-static-publisher/includes/class-admin.php:772
+#: wext-static-publisher/includes/class-admin.php:970
+msgid "Delete"
+msgstr "سيل"
+
+#: wext-static-publisher/includes/class-admin.php:844
+msgid "Publishing Status"
+msgstr "حالة النشر"
+
+#: wext-static-publisher/includes/class-admin.php:848
+#: wext-static-publisher/includes/class-admin.php:877
+#: wext-static-publisher/includes/class-admin.php:1198
+msgid "Status"
+msgstr "حالة"
+
+#: wext-static-publisher/includes/class-admin.php:850
+msgid "Progress"
+msgstr "تقدم"
+
+#: wext-static-publisher/includes/class-admin.php:864
+msgid "Stage"
+msgstr "منصة"
+
+#: wext-static-publisher/includes/class-admin.php:865
+#: wext-static-publisher/includes/class-admin.php:878
+#: wext-static-publisher/includes/class-admin.php:953
+#: wext-static-publisher/includes/class-admin.php:1199
+msgid "Job ID"
+msgstr "معرف الوظيفة"
+
+#: wext-static-publisher/includes/class-admin.php:866
+#: wext-static-publisher/includes/class-admin.php:953
+msgid "URL Count"
+msgstr "عدد عناوين URL"
+
+#: wext-static-publisher/includes/class-admin.php:867
+msgid "Current URL"
+msgstr "عنوان URL الحالي"
+
+#: wext-static-publisher/includes/class-admin.php:868
+msgid "Last Static Build"
+msgstr "آخر بناء ثابت"
+
+#: wext-static-publisher/includes/class-admin.php:869
+#: wext-static-publisher/includes/class-admin.php:881
+#: wext-static-publisher/includes/class-admin.php:1201
+msgid "Error"
+msgstr "خطأ"
+
+#: wext-static-publisher/includes/class-admin.php:874
+#: wext-static-publisher/includes/class-admin.php:1196
+msgid "Cloudflare Deploy"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:879
+#: wext-static-publisher/includes/class-admin.php:1200
+msgid "Last Cloudflare Deploy"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:880
+msgid "Deployment URL"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:890
+#: wext-static-publisher/includes/class-admin.php:970
+msgid "Download"
+msgstr "تحميل"
+
+#: wext-static-publisher/includes/class-admin.php:908
+#: wext-static-publisher/includes/class-admin.php:994
+msgid "ZIP Files"
+msgstr "ملفات مضغوطة"
+
+#: wext-static-publisher/includes/class-admin.php:910
+#, php-format
+msgid "The old ZIP file %d has been deleted."
+msgstr "تم حذف ملف ZIP القديم %d."
+
+#: wext-static-publisher/includes/class-admin.php:912
+#, php-format
+msgid "%1$d old ZIP file was deleted, %2$d file could not be deleted."
+msgstr "تم حذف ملف %1$d المضغوط القديم، ولا يمكن حذف ملف %2$d."
+
+#: wext-static-publisher/includes/class-admin.php:914
+msgid "Old files cannot be deleted while export is in progress."
+msgstr "لا يمكن حذف الملفات القديمة أثناء عملية التصدير."
+
+#: wext-static-publisher/includes/class-admin.php:918
+#, php-format
+msgid "%d ZIP file has been deleted."
+msgstr "تم حذف ملف %d ZIP."
+
+#: wext-static-publisher/includes/class-admin.php:920
+#, php-format
+msgid "ZIP file %1$d was deleted, file %2$d could not be deleted."
+msgstr "تم حذف الملف المضغوط %1$d، ولا يمكن حذف الملف %2$d."
+
+#: wext-static-publisher/includes/class-admin.php:922
+msgid "Select at least one ZIP file to process."
+msgstr "حدد ملف ZIP واحدًا على الأقل لمعالجته."
+
+#: wext-static-publisher/includes/class-admin.php:924
+msgid "Select a valid batch action."
+msgstr "حدد إجراءً دفعيًا صالحًا."
+
+#: wext-static-publisher/includes/class-admin.php:926
+msgid "ZIP files cannot be deleted while export is in progress."
+msgstr "لا يمكن حذف ملفات ZIP أثناء عملية التصدير."
+
+#: wext-static-publisher/includes/class-admin.php:930
+msgid "There is no ZIP file created yet."
+msgstr "لم يتم إنشاء ملف ZIP بعد."
+
+#: wext-static-publisher/includes/class-admin.php:938
+msgid "Select Batch Action"
+msgstr "حدد الإجراء الدفعي"
+
+#: wext-static-publisher/includes/class-admin.php:940
+msgid "Batch Process"
+msgstr "عملية الدفعة"
+
+#: wext-static-publisher/includes/class-admin.php:941
+msgid "Download Selected"
+msgstr "تحميل المحدد"
+
+#: wext-static-publisher/includes/class-admin.php:942
+msgid "Delete Selected"
+msgstr "حذف المحدد"
+
+#: wext-static-publisher/includes/class-admin.php:944
+msgid "Apply"
+msgstr "يتقدم"
+
+#: wext-static-publisher/includes/class-admin.php:945
+msgid "The selected ZIP files will be permanently deleted. Should we continue?"
+msgstr "سيتم حذف ملفات ZIP المحددة نهائيًا. هل يجب أن نستمر؟"
+
+#: wext-static-publisher/includes/class-admin.php:953
+msgid "Actions"
+msgstr "الإجراءات"
+
+#: wext-static-publisher/includes/class-admin.php:953
+msgid "Creation Date"
+msgstr "تاريخ الإنشاء"
+
+#: wext-static-publisher/includes/class-admin.php:953
+msgid "Creation Time"
+msgstr "وقت الخلق"
+
+#: wext-static-publisher/includes/class-admin.php:953
+msgid "Order"
+msgstr "طلب"
+
+#: wext-static-publisher/includes/class-admin.php:953
+msgid "Select All"
+msgstr "حدد الكل"
+
+#: wext-static-publisher/includes/class-admin.php:964
+#, php-format
+msgid "Select %s"
+msgstr "حدد %s"
+
+#: wext-static-publisher/includes/class-admin.php:970
+msgid "This ZIP file will be permanently deleted. Do you want to continue?"
+msgstr "سيتم حذف ملف ZIP هذا نهائيًا. هل تريد الاستمرار؟"
+
+#: wext-static-publisher/includes/class-admin.php:989
+#: wext-static-publisher/includes/class-admin.php:1297
+msgid "‹ Previous"
+msgstr "< سابق"
+
+#: wext-static-publisher/includes/class-admin.php:990
+#: wext-static-publisher/includes/class-admin.php:1298
+msgid "Next ›"
+msgstr "التالي >"
+
+#: wext-static-publisher/includes/class-admin.php:1005
+msgid "Delete Old Files"
+msgstr "حذف الملفات القديمة"
+
+#: wext-static-publisher/includes/class-admin.php:1006
+msgid ""
+"All old ZIP files except the latest ZIP will be deleted. Should we continue?"
+msgstr ""
+"سيتم حذف جميع ملفات ZIP القديمة باستثناء أحدث ملفات ZIP. هل يجب أن نستمر؟"
+
+#: wext-static-publisher/includes/class-admin.php:1008
+msgid ""
+"The latest ZIP file is preserved; Previous ZIP files and their temporary "
+"build folders are permanently deleted."
+msgstr ""
+"يتم الاحتفاظ بأحدث ملف مضغوط؛ يتم حذف ملفات ZIP السابقة ومجلدات البناء "
+"المؤقتة الخاصة بها نهائيًا."
+
+#: wext-static-publisher/includes/class-admin.php:1019
+#: wext-static-publisher/includes/class-admin.php:1111
+msgid "Easy Start"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1020
+#: wext-static-publisher/includes/class-admin.php:1055
+msgid "ZIP File"
+msgstr "ملف مضغوط"
+
+#: wext-static-publisher/includes/class-admin.php:1021
+#: wext-static-publisher/includes/class-admin.php:1072
+msgid "GitHub"
+msgstr "GitHub"
+
+#: wext-static-publisher/includes/class-admin.php:1022
+msgid "Cloudflare"
+msgstr "Cloudflare"
+
+#: wext-static-publisher/includes/class-admin.php:1023
+#: wext-static-publisher/includes/class-admin.php:1086
+msgid "SFTP"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1024
+msgid "Auto Deploy"
+msgstr "النشر التلقائي"
+
+#: wext-static-publisher/includes/class-admin.php:1056
+msgid ""
+"Download the created static site package and manually install it on the "
+"desired server."
+msgstr ""
+"قم بتنزيل حزمة الموقع الثابتة التي تم إنشاؤها وتثبيتها يدويًا على الخادم "
+"المطلوب."
+
+#: wext-static-publisher/includes/class-admin.php:1059
+msgid "Create static site first"
+msgstr "قم بإنشاء موقع ثابت أولاً"
+
+#: wext-static-publisher/includes/class-admin.php:1059
+msgid "ZIP ready"
+msgstr "الرمز البريدي جاهز"
+
+#: wext-static-publisher/includes/class-admin.php:1073
+msgid ""
+"Automatically trigger the GitHub Actions flow via webhook when the export is "
+"complete."
+msgstr ""
+"قم بتشغيل تدفق إجراءات GitHub تلقائيًا عبر خطاف الويب عند اكتمال التصدير."
+
+#: wext-static-publisher/includes/class-admin.php:1076
+#: wext-static-publisher/includes/class-admin.php:1091
+msgid "Configuration required"
+msgstr "التكوين مطلوب"
+
+#: wext-static-publisher/includes/class-admin.php:1076
+msgid "Webhook configured"
+msgstr "تم تكوين الرد التلقائي على الويب"
+
+#: wext-static-publisher/includes/class-admin.php:1087
+msgid ""
+"Upload the generated static files directly to a remote server over an "
+"encrypted SFTP connection."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1091
+#, fuzzy
+msgid "SFTP configured"
+msgstr "تم تكوين الرد التلقائي على الويب"
+
+#: wext-static-publisher/includes/class-admin.php:1091
+msgid "SFTP unavailable on this server"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1112
+msgid ""
+"Set your public site address, connect your Cloudflare account, then create "
+"and deploy the static site."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1119
+msgid "Set your public site address"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1121
+msgid "Open Static Site Settings"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1127
+msgid "Connect your Cloudflare account"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1128
+msgid "Enter your own Account ID and API token in the Cloudflare tab."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1129
+msgid "Open Cloudflare Settings"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1135
+#, fuzzy
+msgid "Create and Deploy Static Site"
+msgstr "إنشاء موقع ثابت"
+
+#: wext-static-publisher/includes/class-admin.php:1140
+#, fuzzy
+msgid "Create and Deploy"
+msgstr "تاريخ الإنشاء"
+
+#: wext-static-publisher/includes/class-admin.php:1165
+msgid "Cloudflare Connection"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1166
+msgid ""
+"Use an API token from your own Cloudflare account with Workers Scripts Write "
+"permission. The token is encrypted in WordPress and is never shown again."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1168
+msgid "Find your Account ID"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1170
+msgid "Create an API token"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1175
+msgid "Account ID"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1177
+msgid "Worker name"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1179
+msgid "API token"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1181
+msgid "Leave blank to keep the saved token."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1182
+msgid "Save Cloudflare Connection"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1188
+msgid "Disconnect Cloudflare"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1188
+msgid "Remove the Cloudflare connection from this site?"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1191
+msgid ""
+"Set the public address in Static Site settings. Configure its custom domain "
+"or workers.dev subdomain for this Worker in your Cloudflare dashboard before "
+"publishing."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1244
+msgid "Records of the last static transaction:"
+msgstr "سجلات آخر معاملة ثابتة:"
+
+#: wext-static-publisher/includes/class-admin.php:1245
+msgid "Number of Records:"
+msgstr "عدد السجلات:"
+
+#: wext-static-publisher/includes/class-admin.php:1251
+msgid "Search Log Records"
+msgstr "البحث في سجلات السجل"
+
+#: wext-static-publisher/includes/class-admin.php:1253
+msgid "Search source or static URL..."
+msgstr "مصدر البحث أو عنوان URL الثابت..."
+
+#: wext-static-publisher/includes/class-admin.php:1256
+msgid "Clear Search"
+msgstr "مسح البحث"
+
+#: wext-static-publisher/includes/class-admin.php:1262
+msgid "No export activity has been recorded yet."
+msgstr "لم يتم تسجيل أي نشاط تصدير حتى الآن."
+
+#: wext-static-publisher/includes/class-admin.php:1262
+msgid "No log entries matched your search."
+msgstr "لا توجد إدخالات سجل تطابق بحثك."
+
+#: wext-static-publisher/includes/class-admin.php:1266
+msgid "Date"
+msgstr "تاريخ"
+
+#: wext-static-publisher/includes/class-admin.php:1266
+msgid "Source URL"
+msgstr "عنوان URL المصدر"
+
+#: wext-static-publisher/includes/class-admin.php:1266
+msgid "Static URL"
+msgstr "عنوان URL ثابت"
+
+#: wext-static-publisher/includes/class-admin.php:1266
+msgid "Time"
+msgstr "وقت"
+
+#: wext-static-publisher/includes/class-admin.php:1287
+msgid "Activity log pages"
+msgstr "صفحات سجل النشاط"
+
+#: wext-static-publisher/includes/class-admin.php:1288
+#, php-format
+msgid "%d records"
+msgstr "%d السجلات"
+
+#: wext-static-publisher/includes/class-admin.php:1311
+msgid "General"
+msgstr "عام"
+
+#: wext-static-publisher/includes/class-admin.php:1312
+msgid "Headless CMS"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1313
+msgid "Multilingual"
+msgstr "متعدد اللغات"
+
+#: wext-static-publisher/includes/class-admin.php:1319
+msgid "Manage static generation settings."
+msgstr "إدارة إعدادات الإنشاء الثابت."
+
+#: wext-static-publisher/includes/class-admin.php:1322
+msgid "Static Site subsections"
+msgstr "الأقسام الفرعية للموقع الثابت"
+
+#: wext-static-publisher/includes/class-admin.php:1343
+msgid "SEO Plugins"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1344
+#: wext-static-publisher/includes/class-admin.php:1380
+msgid "SEO Audit"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1345
+msgid "Sitemaps"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1346
+#: wext-static-publisher/includes/class-admin.php:1382
+msgid "Redirects"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1347
+#, fuzzy
+msgid "Indexing"
+msgstr "محددات الفهرسة"
+
+#: wext-static-publisher/includes/class-admin.php:1348
+msgid "Performance"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1354
+msgid ""
+"Manage SEO plugin output and multilingual search engine signals in the "
+"static site."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1380
+msgid ""
+"Validate metadata, canonical URLs, structured data, images, links, and "
+"multilingual signals after every export."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1381
+msgid "Advanced Sitemaps"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1381
+msgid ""
+"Generate an indexable canonical sitemap with reliable modification dates, "
+"images, and language alternatives."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1382
+msgid ""
+"Export custom redirects and WordPress old slugs while reporting redirect "
+"chains and loops."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1383
+msgid ""
+"Control indexing for HTML and non-HTML files and optionally notify IndexNow "
+"after automatic deployment."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1383
+#, fuzzy
+msgid "Indexing Controls"
+msgstr "محددات الفهرسة"
+
+#: wext-static-publisher/includes/class-admin.php:1384
+msgid "Performance Audit"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1384
+msgid ""
+"Report large files, large HTML documents, and render-blocking resources in "
+"the static package."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1395
+msgid "Create SEO audit report"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1395
+msgid "Writes JSON and export diagnostics for every generated page."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1396
+msgid "Adds wext-seo-report.html to the ZIP with noindex protection."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1396
+msgid "Include readable HTML report"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1397
+msgid "Add missing canonical URLs"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1397
+msgid "Uses the final static URL only when the page has no canonical element."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1398
+msgid "Reports invalid JSON-LD without inventing content or schema properties."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1398
+msgid "Validate JSON-LD structured data"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1399
+msgid "Checks missing and non-reciprocal hreflang targets."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1399
+msgid "Validate multilingual signals"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1400
+msgid "Audit image SEO"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1400
+msgid "Reports missing alt attributes and explicit image dimensions."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1402
+msgid "Creates wext-sitemap.xml and adds it to robots.txt."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1402
+msgid "Generate Wext sitemap"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1403
+msgid "Include accurate last modified dates"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1403
+msgid "Uses the WordPress content modification time when available."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1404
+msgid "Adds discoverable page images with absolute static URLs."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1404
+msgid "Include images"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1405
+msgid "Adds existing hreflang relationships to sitemap entries."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1405
+msgid "Include language alternatives"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1406
+msgid ""
+"Creates a separate sitemap only for videos with complete title, description, "
+"thumbnail, and upload date metadata."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1406
+msgid "Generate video sitemap"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1407
+msgid ""
+"Creates a separate sitemap for posts published during the last two days. "
+"Enable only for eligible news sites."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1407
+msgid "Generate Google News sitemap"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1409
+msgid "Creates permanent redirects for published content with saved old slugs."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1409
+msgid "Redirect WordPress old slugs"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1410
+msgid "Import redirect plugin rules"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1410
+msgid "Imports compatible non-regex redirects from Redirection and Rank Math."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1411
+msgid "Custom Redirect Rules"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1411
+msgid ""
+"Enter one source, target, and optional status code per line. Supported "
+"codes: 301, 302, 303, 307, 308."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1413
+#, fuzzy
+msgid "Noindex the entire static output"
+msgstr "في المخرجات الثابتة"
+
+#: wext-static-publisher/includes/class-admin.php:1413
+msgid ""
+"Use only for staging or private static deployments. This blocks indexing "
+"through HTML and response headers."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1414
+msgid "Noindex Paths"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1414
+#, fuzzy
+msgid "One path prefix or wildcard pattern per line."
+msgstr "بادئة مسار واحدة لكل سطر."
+
+#: wext-static-publisher/includes/class-admin.php:1415
+msgid "Use pattern|directives format for non-HTML files."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1415
+msgid "X-Robots-Tag Rules"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1416
+msgid "Notify IndexNow after automatic deployment"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1416
+msgid ""
+"Submits only added, changed, or deleted URLs after webhook or automatic SFTP "
+"deployment."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1417
+msgid "Configured — leave blank to keep"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1417
+msgid "IndexNow Key"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1417
+msgid "Use an 8–128 character key containing letters, numbers, or hyphens."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1419
+msgid "Adds wext-performance-report.json to the static package."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1419
+msgid "Create performance report"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1421
+msgid "Large HTML Threshold (KB)"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1422
+msgid "Large Asset Threshold (KB)"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1427
+#, fuzzy
+msgid "Save SEO Settings"
+msgstr "حفظ إعدادات البحث"
+
+#: wext-static-publisher/includes/class-admin.php:1448
+msgid "Keep SEO metadata on WordPress pages."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1448
+msgid "Page Metadata"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1449
+msgid "Keep SEO metadata on WordPress posts."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1449
+msgid "Post Metadata"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1450
+msgid "Custom Post Type Metadata"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1450
+msgid ""
+"Keep SEO metadata on public custom post types such as products and "
+"portfolios."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1451
+msgid "Archive & Taxonomy Metadata"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1451
+msgid ""
+"Keep SEO metadata on the posts page, archives, categories, tags, author "
+"pages and other listing views."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1456
+#, php-format
+msgid ""
+"Keep %s JSON-LD data, convert its URLs to the live domain, and adapt "
+"SearchAction to static search."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1456
+#: wext-static-publisher/includes/class-admin.php:1470
+#: wext-static-publisher/includes/class-admin.php:1483
+#: wext-static-publisher/includes/class-admin.php:1496
+msgid "Schema Structured Data"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1457
+#, php-format
+msgid "Copy %s sitemap and its linked sitemap files into the static package."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1457
+#: wext-static-publisher/includes/class-admin.php:1471
+#: wext-static-publisher/includes/class-admin.php:1484
+#: wext-static-publisher/includes/class-admin.php:1497
+msgid "XML Sitemaps"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1458
+#, php-format
+msgid ""
+"Copy %s robots.txt rules and point sitemap declarations to the live static "
+"domain."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1458
+#: wext-static-publisher/includes/class-admin.php:1472
+#: wext-static-publisher/includes/class-admin.php:1485
+#: wext-static-publisher/includes/class-admin.php:1498
+msgid "Robots.txt"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1468
+msgid ""
+"Choose which Rank Math outputs will be included in the generated static site."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1470
+msgid ""
+"Keep Rank Math JSON-LD data, convert its URLs to the live domain, and adapt "
+"SearchAction to static search."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1471
+msgid ""
+"Copy the Rank Math sitemap index, child sitemaps and sitemap stylesheet into "
+"the static package."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1472
+msgid ""
+"Copy Rank Math robots.txt rules and point the sitemap declaration to the "
+"live static domain."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1481
+msgid ""
+"Choose which All in One SEO outputs will be included in the generated static "
+"site."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1483
+msgid ""
+"Keep All in One SEO JSON-LD data, convert its URLs to the live domain, and "
+"adapt SearchAction to static search."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1484
+msgid ""
+"Copy the All in One SEO sitemap index, child sitemaps and sitemap stylesheet "
+"into the static package."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1485
+msgid ""
+"Copy All in One SEO robots.txt rules and point sitemap declarations to the "
+"live static domain."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1494
+msgid ""
+"Choose which SEOPress outputs will be included in the generated static site."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1496
+msgid ""
+"Keep SEOPress JSON-LD data, convert its URLs to the live domain, and adapt "
+"SearchAction to static search."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1497
+msgid ""
+"Copy the SEOPress sitemap index, child sitemaps and sitemap stylesheets into "
+"the static package."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1498
+msgid ""
+"Copy SEOPress robots.txt rules and point sitemap declarations to the live "
+"static domain."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1507
+#: wext-static-publisher/includes/class-admin.php:1516
+#: wext-static-publisher/includes/class-admin.php:1525
+#, php-format
+msgid "Choose which %s outputs will be included in the generated static site."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1540
+msgid "Detected SEO plugin:"
+msgstr "إضافة SEO المكتشفة:"
+
+#: wext-static-publisher/includes/class-admin.php:1545
+msgid ""
+"Multiple active SEO plugins were detected. Review their output settings to "
+"prevent duplicate metadata."
+msgstr ""
+"تم اكتشاف عدة إضافات SEO نشطة. راجع إعدادات المخرجات لمنع تكرار البيانات "
+"الوصفية."
+
+#: wext-static-publisher/includes/class-admin.php:1550
+msgid ""
+"No active SEO plugin was detected. Saved settings will be used when a "
+"supported plugin is activated."
+msgstr ""
+"لم يتم اكتشاف إضافة SEO نشطة. سيتم استخدام الإعدادات المحفوظة عند تفعيل "
+"إضافة مدعومة."
+
+#: wext-static-publisher/includes/class-admin.php:1557
+msgid "Save SEO Plugin Settings"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1590
+msgid "Active"
+msgstr "نشط"
+
+#: wext-static-publisher/includes/class-admin.php:1590
+#, php-format
+msgid "Active — version %s"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1590
+msgid "Not active"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1595
+#, php-format
+msgid "Include %s outputs in the static site"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1600
+#, php-format
+msgid ""
+"When disabled, %s metadata and schema outputs are removed and its sitemap "
+"and robots files are not exported."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1601
+msgid "Metadata"
+msgstr "البيانات الوصفية"
+
+#: wext-static-publisher/includes/class-admin.php:1602
+msgid "Technical SEO"
+msgstr "تحسين محركات البحث التقني"
+
+#: wext-static-publisher/includes/class-admin.php:1604
+#, php-format
+msgid ""
+"These settings are preserved, but no %s output will be exported until the "
+"plugin is active."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1653
+msgid "CMS Address"
+msgstr "عنوان نظام إدارة المحتوى"
+
+#: wext-static-publisher/includes/class-admin.php:1653
+msgid "Detected automatically from the WordPress site address."
+msgstr "يتم اكتشافه تلقائيًا من عنوان موقع WordPress."
+
+#: wext-static-publisher/includes/class-admin.php:1654
+msgid "Example: https://example.com"
+msgstr "مثال: https://example.com"
+
+#: wext-static-publisher/includes/class-admin.php:1654
+msgid "Live Site Address"
+msgstr "عنوان الموقع المباشر"
+
+#: wext-static-publisher/includes/class-admin.php:1655
+msgid "Most URLs"
+msgstr "معظم عناوين URL"
+
+#: wext-static-publisher/includes/class-admin.php:1656
+msgid "Excluded Paths"
+msgstr "المسارات المستبعدة"
+
+#: wext-static-publisher/includes/class-admin.php:1656
+msgid "One path prefix per line."
+msgstr "بادئة مسار واحدة لكل سطر."
+
+#: wext-static-publisher/includes/class-admin.php:1658
+msgid "Save General Settings"
+msgstr "حفظ الإعدادات العامة"
+
+#: wext-static-publisher/includes/class-admin.php:1671
+#, fuzzy
+msgid "Headless + Static Publisher"
+msgstr "أقسام الناشر الثابتة"
+
+#: wext-static-publisher/includes/class-admin.php:1672
+msgid ""
+"Visitors cannot open the WordPress theme frontend. Signed internal export "
+"requests can still render the homepage, pages, design assets, and menus for "
+"the static site."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1676
+msgid "Headless CMS Mode"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1677
+msgid "Protect the WordPress theme frontend"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1677
+msgid ""
+"WordPress Admin, REST API, media files, cron, and signed static export "
+"requests remain available."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1680
+msgid "Visitor Response"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1682
+msgid "404 Not Found (recommended)"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1683
+msgid "307 Redirect to frontend"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1684
+msgid "410 Gone"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1685
+msgid "307 redirects visitors to the Live Site Address configured in General."
+msgstr ""
+"يعيد 307 توجيه الزوار إلى عنوان الموقع المباشر المضبوط في الإعدادات العامة."
+
+#: wext-static-publisher/includes/class-admin.php:1688
+msgid "Redirect Paths"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1689
+msgid ""
+"Example: /about/ redirects to the frontend /about/. Query parameters are not "
+"forwarded."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1689
+msgid "Preserve the requested path when redirecting"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1692
+msgid "Editor Preview"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1693
+msgid "Allow signed-in editors to view the WordPress theme"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1696
+msgid "GraphQL"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1697
+msgid "Allow the /graphql endpoint when WPGraphQL is installed"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1700
+#, fuzzy
+msgid "CMS Indexing"
+msgstr "محددات الفهرسة"
+
+#: wext-static-publisher/includes/class-admin.php:1701
+msgid "Block indexing on the WordPress CMS origin"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1701
+msgid ""
+"Returns noindex headers, disables the CMS sitemap, and disallows crawling "
+"through robots.txt without changing the generated static site."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1704
+msgid "Legacy Publishing"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1705
+#, fuzzy
+msgid "Disable XML-RPC requests"
+msgstr "تعطيل روابط XML-RPC"
+
+#: wext-static-publisher/includes/class-admin.php:1708
+msgid "Comments and Pingbacks"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1709
+msgid "Close comments and pingbacks on the CMS origin"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1712
+#, fuzzy
+msgid "Save Headless CMS Settings"
+msgstr "حفظ إخفاء الإعدادات"
+
+#: wext-static-publisher/includes/class-admin.php:1724
+msgid ""
+"Determines how many last successful export archives will be stored. Default: "
+"5."
+msgstr ""
+"يحدد عدد أرشيفات التصدير الناجحة الأخيرة التي سيتم تخزينها. الافتراضي: 5."
+
+#: wext-static-publisher/includes/class-admin.php:1724
+msgid "Number of ZIPs to Store"
+msgstr "عدد ملفات ZIP المراد تخزينها"
+
+#: wext-static-publisher/includes/class-admin.php:1726
+msgid "Save ZIP Settings"
+msgstr "حفظ إعدادات ZIP"
+
+#: wext-static-publisher/includes/class-admin.php:1734
+#: wext-static-publisher/includes/class-admin.php:1991
+msgid "Contents"
+msgstr "محتويات"
+
+#: wext-static-publisher/includes/class-admin.php:1735
+msgid "When a new article is published"
+msgstr "عندما يتم نشر مقال جديد"
+
+#: wext-static-publisher/includes/class-admin.php:1735
+msgid "When a new blog post is published for the first time."
+msgstr "عندما يتم نشر منشور مدونة جديد لأول مرة."
+
+#: wext-static-publisher/includes/class-admin.php:1736
+msgid "When a live blog post is changed or removed."
+msgstr "عند تغيير منشور مدونة مباشر أو إزالته."
+
+#: wext-static-publisher/includes/class-admin.php:1736
+msgid "When the current post is updated"
+msgstr "عندما يتم تحديث المنشور الحالي"
+
+#: wext-static-publisher/includes/class-admin.php:1737
+msgid "When a new page is published for the first time."
+msgstr "عند نشر صفحة جديدة لأول مرة."
+
+#: wext-static-publisher/includes/class-admin.php:1737
+msgid "When the new page is published"
+msgstr "عندما يتم نشر الصفحة الجديدة"
+
+#: wext-static-publisher/includes/class-admin.php:1738
+msgid "When a published page is changed or removed."
+msgstr "عندما يتم تغيير أو إزالة صفحة منشورة."
+
+#: wext-static-publisher/includes/class-admin.php:1738
+msgid "When the current page is updated"
+msgstr "عندما يتم تحديث الصفحة الحالية"
+
+#: wext-static-publisher/includes/class-admin.php:1739
+msgid "When custom content types change"
+msgstr "عندما تتغير أنواع المحتوى المخصص"
+
+#: wext-static-publisher/includes/class-admin.php:1739
+msgid ""
+"When product, portfolio, etc. special content in the publication changes."
+msgstr "عندما يتغير المحتوى الخاص بالمنتج أو المحفظة وما إلى ذلك في المنشور."
+
+#: wext-static-publisher/includes/class-admin.php:1741
+msgid "Structure and Design"
+msgstr "الهيكل والتصميم"
+
+#: wext-static-publisher/includes/class-admin.php:1742
+msgid "When categories, tags, or custom classifications are changed."
+msgstr "عندما يتم تغيير الفئات أو العلامات أو التصنيفات المخصصة."
+
+#: wext-static-publisher/includes/class-admin.php:1742
+msgid "When the category or tag changes"
+msgstr "عندما تتغير الفئة أو العلامة"
+
+#: wext-static-publisher/includes/class-admin.php:1743
+msgid "When an image or other media file is added, updated, or deleted."
+msgstr "عند إضافة صورة أو ملف وسائط آخر أو تحديثه أو حذفه."
+
+#: wext-static-publisher/includes/class-admin.php:1743
+msgid "When the media changes"
+msgstr "عندما يتغير الاعلام"
+
+#: wext-static-publisher/includes/class-admin.php:1744
+msgid "When the menu changes"
+msgstr "عندما تتغير القائمة"
+
+#: wext-static-publisher/includes/class-admin.php:1744
+msgid "When the structure or links of navigation menus are changed."
+msgstr "عند تغيير بنية أو روابط قوائم التنقل."
+
+#: wext-static-publisher/includes/class-admin.php:1745
+msgid "When components change"
+msgstr "عندما تتغير المكونات"
+
+#: wext-static-publisher/includes/class-admin.php:1745
+msgid "When widget and widget layouts are updated."
+msgstr "عندما يتم تحديث تخطيطات القطعة والقطعة."
+
+#: wext-static-publisher/includes/class-admin.php:1746
+msgid "When the theme changes"
+msgstr "عندما يتغير الموضوع"
+
+#: wext-static-publisher/includes/class-admin.php:1746
+msgid "When the theme is changed, updated, or customizer settings are saved."
+msgstr "عند تغيير السمة، يتم حفظ إعدادات التخصيص أو التحديث."
+
+#: wext-static-publisher/includes/class-admin.php:1747
+msgid "When site settings change"
+msgstr "عندما تتغير إعدادات الموقع"
+
+#: wext-static-publisher/includes/class-admin.php:1747
+msgid ""
+"When the site name, description, homepage, reading or permalink settings are "
+"changed."
+msgstr ""
+"عندما يتم تغيير إعدادات اسم الموقع أو الوصف أو الصفحة الرئيسية أو القراءة أو "
+"الرابط الثابت."
+
+#: wext-static-publisher/includes/class-admin.php:1758
+msgid "Automatic Static Site Creation and Deploy"
+msgstr "إنشاء ونشر الموقع الثابت تلقائيًا"
+
+#: wext-static-publisher/includes/class-admin.php:1759
+msgid ""
+"After the selected changes, the static site is created; If the deployment "
+"webhook is set, the deploy flow is triggered automatically."
+msgstr ""
+"بعد التغييرات المحددة، يتم إنشاء الموقع الثابت؛ إذا تم تعيين خطاف الويب "
+"للنشر، فسيتم تشغيل تدفق النشر تلقائيًا."
+
+#: wext-static-publisher/includes/class-admin.php:1761
+msgid "Enable automatic static site generation"
+msgstr "تمكين إنشاء موقع ثابت تلقائيًا"
+
+#: wext-static-publisher/includes/class-admin.php:1779
+msgid ""
+"Changes made consecutively are combined for 60 seconds and run as a single "
+"export and deploy."
+msgstr ""
+"يتم دمج التغييرات التي تم إجراؤها على التوالي لمدة 60 ثانية وتشغيلها كعملية "
+"تصدير ونشر واحدة."
+
+#: wext-static-publisher/includes/class-admin.php:1781
+msgid "Save Auto Deploy Settings"
+msgstr "حفظ إعدادات النشر التلقائي"
+
+#: wext-static-publisher/includes/class-admin.php:1792
+msgid "GitHub Deployment Webhook"
+msgstr "خطاف ويب لنشر GitHub"
+
+#: wext-static-publisher/includes/class-admin.php:1794
+msgid "Deployment Webhook"
+msgstr "خطاف الويب للنشر"
+
+#: wext-static-publisher/includes/class-admin.php:1794
+msgid "For GitHub: https://api.github.com/repos/OWNER/REPOSITORY/dispatches"
+msgstr ""
+"بالنسبة إلى GitHub: https://api.github.com/repos/OWNER/REPOSITORY/dispatches"
+
+#: wext-static-publisher/includes/class-admin.php:1795
+msgid ""
+"If using GitHub, use a fine-grained token limited to this repository with "
+"Contents: write permission."
+msgstr ""
+"إذا كنت تستخدم GitHub، فاستخدم رمزًا مميزًا يقتصر على هذا المستودع مع إذن "
+"المحتويات: الكتابة."
+
+#: wext-static-publisher/includes/class-admin.php:1795
+msgid "Leave blank to keep the saved token"
+msgstr "اتركه فارغًا للاحتفاظ بالرمز المحفوظ"
+
+#: wext-static-publisher/includes/class-admin.php:1795
+msgid "Webhook Bearer Token"
+msgstr "رمز حامل الخطاف على الويب"
+
+#: wext-static-publisher/includes/class-admin.php:1797
+msgid "Save Deploy Settings"
+msgstr "حفظ إعدادات النشر"
+
+#: wext-static-publisher/includes/class-admin.php:1815
+msgid ""
+"The SFTP client is unavailable. Reinstall the complete plugin package before "
+"using this deployment method."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1821
+msgid "SFTP Connection"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1824
+msgid "SFTP Host"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1825
+msgid "Enter only the hostname or IP address; do not include sftp://."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1828
+msgid "Port"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1832
+msgid "Username"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1836
+#, fuzzy
+msgid "Password"
+msgstr "اجتاز"
+
+#: wext-static-publisher/includes/class-admin.php:1837
+msgid "Delete saved password"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1837
+#, fuzzy
+msgid "Leave blank to keep the saved password"
+msgstr "اتركه فارغًا للاحتفاظ بالرمز المحفوظ"
+
+#: wext-static-publisher/includes/class-admin.php:1837
+msgid ""
+"The password is encrypted using the WordPress security keys and is never "
+"shown again."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1840
+#, fuzzy
+msgid "Remote Directory"
+msgstr "دليل المواضيع"
+
+#: wext-static-publisher/includes/class-admin.php:1841
+msgid ""
+"Static files are uploaded into this directory. Existing files with the same "
+"path are overwritten; unrelated remote files are preserved."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1844
+msgid "Server MD5 Fingerprint"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1845
+msgid ""
+"Recommended. Verify this value with your hosting provider to prevent "
+"connecting to the wrong server."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1848
+msgid "Per-file Timeout"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1849
+msgid "seconds"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1852
+msgid ""
+"An SFTP failure is recorded separately and does not delete the successfully "
+"generated ZIP file."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1852
+msgid "Upload automatically after every successful export"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1853
+#, fuzzy
+msgid "Save SFTP Settings"
+msgstr "حفظ إعدادات البحث"
+
+#: wext-static-publisher/includes/class-admin.php:1860
+msgid "Test Connection"
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:1865
+#, fuzzy
+msgid "Upload Latest Static Site"
+msgstr "إنشاء موقع ثابت"
+
+#: wext-static-publisher/includes/class-admin.php:1869
+#, fuzzy
+msgid "Last SFTP Status"
+msgstr "آخر بناء ثابت"
+
+#: wext-static-publisher/includes/class-admin.php:1883
+msgid "Redirection by Browser Language"
+msgstr "إعادة التوجيه حسب لغة المتصفح"
+
+#: wext-static-publisher/includes/class-admin.php:1884
+msgid ""
+"When the visitor arrives at the main address, first the saved preference is "
+"used, then the language sequence of the browser."
+msgstr ""
+"عندما يصل الزائر إلى العنوان الرئيسي، يتم أولاً استخدام التفضيلات المحفوظة، "
+"ثم تسلسل لغة المتصفح."
+
+#: wext-static-publisher/includes/class-admin.php:1886
+msgid "Enable browser language redirection"
+msgstr "تمكين إعادة توجيه لغة المتصفح"
+
+#: wext-static-publisher/includes/class-admin.php:1893
+msgid "Supported Language Codes"
+msgstr "رموز اللغات المدعومة"
+
+#: wext-static-publisher/includes/class-admin.php:1895
+msgid "There should be equivalents like this."
+msgstr "يجب أن يكون هناك معادلات مثل هذا."
+
+#: wext-static-publisher/includes/class-admin.php:1895
+msgid "Write one language per line. These codes in WordPress"
+msgstr "اكتب لغة واحدة في كل سطر. هذه الرموز في ووردبريس"
+
+#: wext-static-publisher/includes/class-admin.php:1898
+msgid "Default Language"
+msgstr "اللغة الافتراضية"
+
+#: wext-static-publisher/includes/class-admin.php:1900
+msgid "If the browser language is not supported, this language is opened."
+msgstr "إذا كانت لغة المتصفح غير مدعومة، فسيتم فتح هذه اللغة."
+
+#: wext-static-publisher/includes/class-admin.php:1902
+msgid "Language Preference Period"
+msgstr "فترة تفضيل اللغة"
+
+#: wext-static-publisher/includes/class-admin.php:1905
+msgid "day"
+msgstr "يوم"
+
+#: wext-static-publisher/includes/class-admin.php:1907
+msgid ""
+"The language that the user explicitly visited is preserved for subsequent "
+"logins."
+msgstr ""
+"يتم الاحتفاظ باللغة التي زارها المستخدم بشكل صريح لعمليات تسجيل الدخول "
+"اللاحقة."
+
+#: wext-static-publisher/includes/class-admin.php:1910
+msgid "It works at. Direct links containing languages ​​are not changed."
+msgstr "يعمل لدى. الروابط المباشرة التي تحتوي على اللغات لا تتغير."
+
+#: wext-static-publisher/includes/class-admin.php:1910
+msgid "The redirect is only for the site"
+msgstr "إعادة التوجيه للموقع فقط"
+
+#: wext-static-publisher/includes/class-admin.php:1912
+msgid "Save Language Settings"
+msgstr "حفظ إعدادات اللغة"
+
+#: wext-static-publisher/includes/class-admin.php:1921
+#: wext-static-publisher/includes/class-admin.php:1952
+msgid "Static Search"
+msgstr "بحث ثابت"
+
+#: wext-static-publisher/includes/class-admin.php:1922
+#: wext-static-publisher/includes/class-admin.php:1971
+msgid "Indexing Selectors"
+msgstr "محددات الفهرسة"
+
+#: wext-static-publisher/includes/class-admin.php:1923
+#: wext-static-publisher/includes/class-admin.php:1984
+msgid "Fuse.js"
+msgstr "Fuse.js"
+
+#: wext-static-publisher/includes/class-admin.php:1930
+msgid ""
+"Configure static site search that doesn't require a server, powered by "
+"Fuse.js."
+msgstr "قم بتكوين بحث موقع ثابت لا يتطلب خادمًا، مدعومًا بـ Fuse.js."
+
+#: wext-static-publisher/includes/class-admin.php:1952
+msgid ""
+"The search page, index and necessary Fuse.js files are added to the export "
+"ZIP."
+msgstr ""
+"تتم إضافة صفحة البحث والفهرس وملفات Fuse.js الضرورية إلى ملف ZIP للتصدير."
+
+#: wext-static-publisher/includes/class-admin.php:1953
+msgid "Enable static search"
+msgstr "تمكين البحث الثابت"
+
+#: wext-static-publisher/includes/class-admin.php:1959
+#: wext-static-publisher/includes/class-admin.php:1974
+#: wext-static-publisher/includes/class-admin.php:1975
+msgid "Example:"
+msgstr "مثال:"
+
+#: wext-static-publisher/includes/class-admin.php:1959
+msgid "Search Page Path"
+msgstr "مسار صفحة البحث"
+
+#: wext-static-publisher/includes/class-admin.php:1960
+msgid "Number of Results to Show"
+msgstr "عدد النتائج المراد عرضها"
+
+#: wext-static-publisher/includes/class-admin.php:1961
+msgid "Minimum Search Characters"
+msgstr "الحد الأدنى من أحرف البحث"
+
+#: wext-static-publisher/includes/class-admin.php:1962
+msgid "Content Character Limit"
+msgstr "الحد الأقصى لعدد أحرف المحتوى"
+
+#: wext-static-publisher/includes/class-admin.php:1962
+msgid "Maximum text length to be indexed from each page."
+msgstr "الحد الأقصى لطول النص الذي سيتم فهرسته من كل صفحة."
+
+#: wext-static-publisher/includes/class-admin.php:1963
+msgid ""
+"A lower value gives a more precise result, a higher value gives a more "
+"tolerant result."
+msgstr ""
+"القيمة المنخفضة تعطي نتيجة أكثر دقة، والقيمة الأعلى تعطي نتيجة أكثر تسامحًا."
+
+#: wext-static-publisher/includes/class-admin.php:1963
+msgid "Blur Threshold"
+msgstr "عتبة طمس"
+
+#: wext-static-publisher/includes/class-admin.php:1964
+msgid "Match all words"
+msgstr "تطابق جميع الكلمات"
+
+#: wext-static-publisher/includes/class-admin.php:1964
+msgid "Match any word"
+msgstr "تطابق أي كلمة"
+
+#: wext-static-publisher/includes/class-admin.php:1964
+msgid "Word Matching"
+msgstr "مطابقة الكلمات"
+
+#: wext-static-publisher/includes/class-admin.php:1971
+msgid ""
+"Determine which fields to take from the page and post HTML with the CSS "
+"selector."
+msgstr "حدد الحقول التي سيتم أخذها من الصفحة ونشر HTML باستخدام محدد CSS."
+
+#: wext-static-publisher/includes/class-admin.php:1974
+msgid "CSS Selector For Title"
+msgstr "محدد CSS للعنوان"
+
+#: wext-static-publisher/includes/class-admin.php:1974
+#: wext-static-publisher/includes/class-admin.php:1975
+msgid "or"
+msgstr "أو"
+
+#: wext-static-publisher/includes/class-admin.php:1975
+msgid "CSS Selector for Content"
+msgstr "محدد CSS للمحتوى"
+
+#: wext-static-publisher/includes/class-admin.php:1976
+msgid "CSS Selector for Summary"
+msgstr "محدد CSS للملخص"
+
+#: wext-static-publisher/includes/class-admin.php:1976
+msgid ""
+"If the field is not found, a short summary is automatically generated from "
+"the content."
+msgstr "إذا لم يتم العثور على الحقل، فسيتم إنشاء ملخص قصير تلقائيًا من المحتوى."
+
+#: wext-static-publisher/includes/class-admin.php:1977
+msgid "URLs to Exclude from Indexing"
+msgstr "عناوين URL المطلوب استبعادها من الفهرسة"
+
+#: wext-static-publisher/includes/class-admin.php:1977
+msgid "You can type the full URL, URL fragment, or word per line."
+msgstr "يمكنك كتابة عنوان URL الكامل أو جزء عنوان URL أو كلمة في كل سطر."
+
+#: wext-static-publisher/includes/class-admin.php:1984
+msgid ""
+"Select the fields to search and determine their impact on the result ranking."
+msgstr "حدد الحقول المراد البحث فيها وحدد تأثيرها على تصنيف النتائج."
+
+#: wext-static-publisher/includes/class-admin.php:1989
+msgid "Shows title matches at the top."
+msgstr "يظهر تطابقات العنوان في الأعلى."
+
+#: wext-static-publisher/includes/class-admin.php:1989
+msgid "Title"
+msgstr "عنوان"
+
+#: wext-static-publisher/includes/class-admin.php:1990
+msgid "Searches in the text of the tagline and summary."
+msgstr "البحث في نص الشعار والملخص."
+
+#: wext-static-publisher/includes/class-admin.php:1990
+msgid "Summary"
+msgstr "ملخص"
+
+#: wext-static-publisher/includes/class-admin.php:1991
+msgid "It searches in the main text of the page and article."
+msgstr "يقوم بالبحث في النص الرئيسي للصفحة والمقال."
+
+#: wext-static-publisher/includes/class-admin.php:1992
+msgid "Category and Tags"
+msgstr "الفئة والعلامات"
+
+#: wext-static-publisher/includes/class-admin.php:1992
+msgid "WordPress adds category and tag names to the index."
+msgstr "يضيف WordPress أسماء الفئات والعلامات إلى الفهرس."
+
+#: wext-static-publisher/includes/class-admin.php:1999
+msgid "Weight"
+msgstr "وزن"
+
+#: wext-static-publisher/includes/class-admin.php:2006
+msgid "Save Search Settings"
+msgstr "حفظ إعدادات البحث"
+
+#: wext-static-publisher/includes/class-admin.php:2017
+msgid "Directory"
+msgstr "الدليل"
+
+#: wext-static-publisher/includes/class-admin.php:2018
+#: wext-static-publisher/includes/class-admin.php:2088
+msgid "Traces"
+msgstr "الآثار"
+
+#: wext-static-publisher/includes/class-admin.php:2019
+#: wext-static-publisher/includes/class-admin.php:2121
+msgid "Static Outputs"
+msgstr "المخرجات الثابتة"
+
+#: wext-static-publisher/includes/class-admin.php:2024
+msgid ""
+"Specify which WordPress-specific directory and path names will be used in "
+"static output. Source WordPress files are not modified."
+msgstr ""
+"حدد أسماء الدليل والمسارات الخاصة بـ WordPress والتي سيتم استخدامها في "
+"الإخراج الثابت. لا يتم تعديل ملفات WordPress المصدر."
+
+#: wext-static-publisher/includes/class-admin.php:2041
+msgid "WP-Content Directory"
+msgstr "دليل محتوى WP"
+
+#: wext-static-publisher/includes/class-admin.php:2043
+#: wext-static-publisher/includes/class-admin.php:2049
+#: wext-static-publisher/includes/class-admin.php:2055
+#: wext-static-publisher/includes/class-admin.php:2061
+#: wext-static-publisher/includes/class-admin.php:2067
+#: wext-static-publisher/includes/class-admin.php:2079
+msgid "In the static output"
+msgstr "في المخرجات الثابتة"
+
+#: wext-static-publisher/includes/class-admin.php:2043
+#: wext-static-publisher/includes/class-admin.php:2049
+msgid "The name to replace the directory."
+msgstr "الاسم الذي سيحل محل الدليل."
+
+#: wext-static-publisher/includes/class-admin.php:2047
+msgid "WP-Includes Directory"
+msgstr "WP-يتضمن الدليل"
+
+#: wext-static-publisher/includes/class-admin.php:2053
+msgid "Uploads Directory"
+msgstr "دليل التحميلات"
+
+#: wext-static-publisher/includes/class-admin.php:2055
+#: wext-static-publisher/includes/class-admin.php:2061
+#: wext-static-publisher/includes/class-admin.php:2067
+msgid "The subdirectory to use in place of the path."
+msgstr "الدليل الفرعي الذي سيتم استخدامه بدلاً من المسار."
+
+#: wext-static-publisher/includes/class-admin.php:2059
+msgid "Plugins Directory"
+msgstr "دليل الإضافات"
+
+#: wext-static-publisher/includes/class-admin.php:2065
+msgid "Themes Directory"
+msgstr "دليل المواضيع"
+
+#: wext-static-publisher/includes/class-admin.php:2071
+msgid "Theme Style File"
+msgstr "ملف نمط الموضوع"
+
+#: wext-static-publisher/includes/class-admin.php:2073
+msgid "The name of the file in the static output."
+msgstr "اسم الملف في الإخراج الثابت."
+
+#: wext-static-publisher/includes/class-admin.php:2073
+msgid "in active theme"
+msgstr "في الموضوع النشط"
+
+#: wext-static-publisher/includes/class-admin.php:2077
+msgid "Author URL"
+msgstr "عنوان URL للمؤلف"
+
+#: wext-static-publisher/includes/class-admin.php:2079
+msgid "The path to be used instead of the path."
+msgstr "المسار الذي سيتم استخدامه بدلاً من المسار."
+
+#: wext-static-publisher/includes/class-admin.php:2089
+msgid "Removes selected WordPress identifiers from static HTML output."
+msgstr "يزيل معرفات WordPress المحددة من مخرجات HTML الثابتة."
+
+#: wext-static-publisher/includes/class-admin.php:2094
+msgid "Hide WordPress Version"
+msgstr "إخفاء نسخة ووردبريس"
+
+#: wext-static-publisher/includes/class-admin.php:2094
+msgid ""
+"Removes asset version parameters that specify the WordPress core version."
+msgstr "يزيل معلمات إصدار الأصول التي تحدد الإصدار الأساسي لـ WordPress."
+
+#: wext-static-publisher/includes/class-admin.php:2095
+msgid "Hide WordPress Generator Meta Tag"
+msgstr "إخفاء العلامة التعريفية لمولد WordPress"
+
+#: wext-static-publisher/includes/class-admin.php:2095
+msgid "It removes the generator meta tag that describes the WordPress version."
+msgstr "يقوم بإزالة علامة تعريف المولد التي تصف إصدار WordPress."
+
+#: wext-static-publisher/includes/class-admin.php:2096
+msgid "Hide WordPress DNS Prefetch Connection"
+msgstr "إخفاء اتصال الجلب المسبق لـ DNS في WordPress"
+
+#: wext-static-publisher/includes/class-admin.php:2096
+msgid "Removes DNS prefetch connections for WordPress services."
+msgstr "يزيل اتصالات الجلب المسبق لـ DNS لخدمات WordPress."
+
+#: wext-static-publisher/includes/class-admin.php:2097
+msgid "Hide RSD Header Link"
+msgstr "إخفاء رابط رأس RSD"
+
+#: wext-static-publisher/includes/class-admin.php:2097
+msgid "Really Simple Removes the Discovery link from static HTML."
+msgstr "حقا بسيط يزيل رابط الاكتشاف من HTML الثابت."
+
+#: wext-static-publisher/includes/class-admin.php:2122
+msgid "Cleans up unused WordPress links and scripts on the static site."
+msgstr "ينظف روابط ونصوص WordPress غير المستخدمة على الموقع الثابت."
+
+#: wext-static-publisher/includes/class-admin.php:2127
+msgid "Disable XML-RPC Links"
+msgstr "تعطيل روابط XML-RPC"
+
+#: wext-static-publisher/includes/class-admin.php:2127
+msgid "Removes XML-RPC and pingback discovery connections."
+msgstr "يزيل اتصالات اكتشاف XML-RPC وpingback."
+
+#: wext-static-publisher/includes/class-admin.php:2128
+msgid "Disable Embed Scripts"
+msgstr "تعطيل تضمين البرامج النصية"
+
+#: wext-static-publisher/includes/class-admin.php:2128
+msgid "Removes WordPress embed scripts from static HTML."
+msgstr "يزيل البرامج النصية المضمنة في WordPress من HTML الثابت."
+
+#: wext-static-publisher/includes/class-admin.php:2129
+msgid "Disable Frontend DB Debug Information"
+msgstr "تعطيل معلومات تصحيح قاعدة بيانات الواجهة الأمامية"
+
+#: wext-static-publisher/includes/class-admin.php:2129
+msgid ""
+"It only prevents database error details from being shown in export requests."
+msgstr "إنه يمنع فقط ظهور تفاصيل خطأ قاعدة البيانات في طلبات التصدير."
+
+#: wext-static-publisher/includes/class-admin.php:2130
+msgid "Disable WLW Manifest Link"
+msgstr "تعطيل رابط بيان WLW"
+
+#: wext-static-publisher/includes/class-admin.php:2130
+msgid "Windows Live Writer removes the manifest link."
+msgstr "يقوم Windows Live Writer بإزالة رابط البيان."
+
+#: wext-static-publisher/includes/class-admin.php:2131
+msgid "Disable Emoji Scripts"
+msgstr "تعطيل البرامج النصية للرموز التعبيرية"
+
+#: wext-static-publisher/includes/class-admin.php:2131
+msgid "Removes WordPress emoji scripts and styles from static HTML."
+msgstr "يزيل نصوص وأنماط WordPress emoji من HTML الثابت."
+
+#: wext-static-publisher/includes/class-admin.php:2150
+msgid "Save Hide Settings"
+msgstr "حفظ إخفاء الإعدادات"
+
+#: wext-static-publisher/includes/class-admin.php:2176
+#, php-format
+msgid "%1$d of %2$d checks passed."
+msgstr "تم اجتياز اختبارات %1$d من %2$d."
+
+#: wext-static-publisher/includes/class-admin.php:2176
+msgid "Last checked:"
+msgstr "آخر فحص:"
+
+#: wext-static-publisher/includes/class-admin.php:2181
+msgid "Check Again"
+msgstr "تحقق مرة أخرى"
+
+#: wext-static-publisher/includes/class-admin.php:2187
+msgid "Diagnostics checks have been updated."
+msgstr "تم تحديث عمليات التحقق من التشخيص."
+
+#: wext-static-publisher/includes/class-admin.php:2198
+msgid "Passed"
+msgstr "اجتاز"
+
+#: wext-static-publisher/includes/class-admin.php:2217
+#: wext-static-publisher/includes/class-admin.php:2255
+msgid "Support"
+msgstr "Support"
+
+#: wext-static-publisher/includes/class-admin.php:2222
+msgid "About sections"
+msgstr "About sections"
+
+#: wext-static-publisher/includes/class-admin.php:2235
+msgid ""
+"It was developed to convert your WordPress site into static files and "
+"prepare them for publication processes."
+msgstr ""
+"تم تطويره لتحويل موقع WordPress الخاص بك إلى ملفات ثابتة وإعدادها لعمليات "
+"النشر."
+
+#: wext-static-publisher/includes/class-admin.php:2240
+msgid "Version Number"
+msgstr "رقم الإصدار"
+
+#: wext-static-publisher/includes/class-admin.php:2244
+#: wext-static-publisher/includes/class-admin.php:2270
+msgid "Plugin Website"
+msgstr "موقع البرنامج المساعد"
+
+#: wext-static-publisher/includes/class-admin.php:2260
+msgid "Wext Support"
+msgstr "Wext Support"
+
+#: wext-static-publisher/includes/class-admin.php:2261
+msgid "Get help with static publishing and deployment."
+msgstr ""
+
+#: wext-static-publisher/includes/class-admin.php:2266
+msgid "Support Email"
+msgstr "دعم البريد الإلكتروني"
+
+#: wext-static-publisher/includes/class-aioseo-integration.php:160
+msgid "All in One SEO sitemap could not be exported."
+msgstr ""
+
+#: wext-static-publisher/includes/class-aioseo-integration.php:183
+msgid "All in One SEO robots.txt could not be exported."
 msgstr ""
 
 #: wext-static-publisher/includes/class-archive-manager.php:119
@@ -28,7 +2029,7 @@ msgid "No ZIP file found to download."
 msgstr "لم يتم العثور على ملف ZIP للتنزيل."
 
 #: wext-static-publisher/includes/class-archive-manager.php:122
-#: wext-static-publisher/includes/class-exporter.php:721
+#: wext-static-publisher/includes/class-exporter.php:728
 msgid "PHP ZipArchive extension is not installed."
 msgstr "ملحق PHP ZipArchive غير مثبت."
 
@@ -40,1870 +2041,430 @@ msgstr "لا يمكن إنشاء حزمة التنزيل المؤقتة."
 msgid "The bulk download package could not be created."
 msgstr "لا يمكن إنشاء حزمة التنزيل المجمعة."
 
-#: wext-static-publisher/includes/class-exporter.php:80
+#: wext-static-publisher/includes/class-block-seo-integration.php:158
+#, php-format
+msgid "%s sitemap could not be exported."
+msgstr ""
+
+#: wext-static-publisher/includes/class-block-seo-integration.php:180
+#, php-format
+msgid "%s robots.txt could not be exported."
+msgstr ""
+
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:52
+msgid "Enter a valid Cloudflare Account ID and Worker name."
+msgstr ""
+
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:56
+msgid "Enter a Cloudflare API token."
+msgstr ""
+
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:59
+msgid "Enter a valid Cloudflare API token."
+msgstr ""
+
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:75
+msgid "The Cloudflare API token is not active."
+msgstr ""
+
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:127
+msgid "The completed export folder is unavailable."
+msgstr ""
+
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:146
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:173
+msgid "An export file could not be read."
+msgstr ""
+
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:153
+msgid "The export contains no files to publish."
+msgstr ""
+
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:159
+msgid "Cloudflare returned an invalid asset upload session."
+msgstr ""
+
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:164
+msgid "Cloudflare returned an invalid upload bucket."
+msgstr ""
+
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:169
+msgid "Cloudflare requested an unknown asset."
+msgstr ""
+
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:183
+msgid "Cloudflare did not confirm the asset upload."
+msgstr ""
+
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:187
+msgid "The bundled Cloudflare Worker is missing."
+msgstr ""
+
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:203
+msgid "A Cloudflare configuration file could not be read."
+msgstr ""
+
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:246
+#, php-format
+msgid "Cloudflare API request failed (HTTP %d): %s"
+msgstr ""
+
+#: wext-static-publisher/includes/class-cloudflare-deployer.php:246
+msgid "Unknown error"
+msgstr ""
+
+#: wext-static-publisher/includes/class-diagnostics.php:76
+#, php-format
+msgid "Site URL accessible (HTTP %d): %s"
+msgstr "يمكن الوصول إلى عنوان URL للموقع (HTTP %d): %s"
+
+#: wext-static-publisher/includes/class-diagnostics.php:78
+msgid "Site URL unreachable:"
+msgstr "لا يمكن الوصول إلى عنوان URL للموقع:"
+
+#: wext-static-publisher/includes/class-diagnostics.php:79
+#, php-format
+msgid "Site URL returned an unexpected HTTP %d response: %s"
+msgstr "عرض عنوان URL للموقع استجابة HTTP %d غير متوقعة: %s"
+
+#: wext-static-publisher/includes/class-diagnostics.php:82
+msgid "Server"
+msgstr "الخادم"
+
+#: wext-static-publisher/includes/class-diagnostics.php:85
+msgid "PHP Version"
+msgstr "نسخة PHP"
+
+#: wext-static-publisher/includes/class-diagnostics.php:88
+#, php-format
+msgid "PHP 8.1 or above can be used. Current version: %s."
+msgstr "يمكن استخدام PHP 8.1 أو أعلى. الإصدار الحالي: %s."
+
+#: wext-static-publisher/includes/class-diagnostics.php:89
+#, php-format
+msgid "PHP 8.1 or above required. Current version: %s."
+msgstr "مطلوب PHP 8.1 أو أعلى. الإصدار الحالي: %s."
+
+#: wext-static-publisher/includes/class-diagnostics.php:93
+msgid "Basic Auth"
+msgstr "المصادقة الأساسية"
+
+#: wext-static-publisher/includes/class-diagnostics.php:96
+msgid ""
+"Basic Auth appears to be enabled; static scan may stop at authentication."
+msgstr "يبدو أن المصادقة الأساسية ممكّنة؛ قد يتوقف الفحص الثابت عند المصادقة."
+
+#: wext-static-publisher/includes/class-diagnostics.php:97
+msgid "Basic Auth is not enabled."
+msgstr "لم يتم تمكين المصادقة الأساسية."
+
+#: wext-static-publisher/includes/class-diagnostics.php:101
+msgid "PHP-XML"
+msgstr "PHP-XML"
+
+#: wext-static-publisher/includes/class-diagnostics.php:103
+msgid "php-xml can be used."
+msgstr "يمكن استخدام php-xml."
+
+#: wext-static-publisher/includes/class-diagnostics.php:103
+msgid "php-xml unavailable; Enable the DOMDocument plugin."
+msgstr "PHP-XML غير متوفر؛ تمكين البرنامج المساعد DOMDocument."
+
+#: wext-static-publisher/includes/class-diagnostics.php:107
+msgid "cURL"
+msgstr "حليقة"
+
+#: wext-static-publisher/includes/class-diagnostics.php:109
+msgid "cURL can be used."
+msgstr "يمكن استخدام الضفيرة."
+
+#: wext-static-publisher/includes/class-diagnostics.php:109
+msgid "cURL unavailable; Enable the PHP cURL extension."
+msgstr "الضفيرة غير متوفرة؛ قم بتمكين ملحق PHP cURL."
+
+#: wext-static-publisher/includes/class-diagnostics.php:113
+msgid "SFTP Client"
+msgstr ""
+
+#: wext-static-publisher/includes/class-diagnostics.php:116
+msgid "The bundled SFTP client is available."
+msgstr ""
+
+#: wext-static-publisher/includes/class-diagnostics.php:117
+msgid ""
+"No SFTP client is available. Reinstall the complete plugin package to use "
+"SFTP deploy."
+msgstr ""
+
+#: wext-static-publisher/includes/class-diagnostics.php:121
+msgid "Docker / Site URL"
+msgstr "عامل الميناء / عنوان URL للموقع"
+
+#: wext-static-publisher/includes/class-diagnostics.php:126
+msgid "WordPress"
+msgstr "ووردبريس"
+
+#: wext-static-publisher/includes/class-diagnostics.php:129
+msgid "Permalinks"
+msgstr "الروابط الدائمة"
+
+#: wext-static-publisher/includes/class-diagnostics.php:132
+msgid "WordPress permalink structure is set."
+msgstr "تم تعيين بنية الرابط الثابت في WordPress."
+
+#: wext-static-publisher/includes/class-diagnostics.php:133
+msgid ""
+"Permanent links have a flat structure; Select a structure in Settings > "
+"Permalinks."
+msgstr ""
+"الروابط الدائمة لها بنية مسطحة؛ حدد بنية في الإعدادات > الروابط الدائمة."
+
+#: wext-static-publisher/includes/class-diagnostics.php:137
+msgid "Indexability"
+msgstr "الفهرسة"
+
+#: wext-static-publisher/includes/class-diagnostics.php:140
+msgid ""
+"The setting that prevents search engines from indexing the site is turned "
+"off."
+msgstr "تم إيقاف الإعداد الذي يمنع محركات البحث من فهرسة الموقع."
+
+#: wext-static-publisher/includes/class-diagnostics.php:141
+msgid "The setting that prevents search engines from indexing the site is on."
+msgstr "تم تفعيل الإعداد الذي يمنع محركات البحث من فهرسة الموقع."
+
+#: wext-static-publisher/includes/class-diagnostics.php:145
+msgid "Cache"
+msgstr "مخبأ"
+
+#: wext-static-publisher/includes/class-diagnostics.php:148
+msgid "WordPress page caching is disabled."
+msgstr "تم تعطيل التخزين المؤقت لصفحة WordPress."
+
+#: wext-static-publisher/includes/class-diagnostics.php:149
+msgid "WP_CACHE enabled; Verify that no stale content is served during export."
+msgstr "تم تمكين WP_CACHE؛ تأكد من عدم تقديم أي محتوى قديم أثناء التصدير."
+
+#: wext-static-publisher/includes/class-diagnostics.php:153
+msgid "WP-CRON"
+msgstr "الفسفور الأبيض-كرون"
+
+#: wext-static-publisher/includes/class-diagnostics.php:156
+msgid "WordPress cron is available."
+msgstr "وورد كرون متاح."
+
+#: wext-static-publisher/includes/class-diagnostics.php:157
+msgid "WordPress cron disabled; Scheduled export jobs may not run."
+msgstr "تم تعطيل WordPress cron؛ قد لا يتم تشغيل مهام التصدير المجدولة."
+
+#: wext-static-publisher/includes/class-diagnostics.php:160
+msgid "Plugins"
+msgstr "الإضافات"
+
+#: wext-static-publisher/includes/class-diagnostics.php:163
+msgid "Incompatible Plugins"
+msgstr "الإضافات غير المتوافقة"
+
+#: wext-static-publisher/includes/class-diagnostics.php:166
+msgid "No active incompatible plugins found."
+msgstr "لم يتم العثور على مكونات إضافية نشطة غير متوافقة."
+
+#: wext-static-publisher/includes/class-diagnostics.php:167
+msgid "Active plugins that may block static scanning:"
+msgstr "المكونات الإضافية النشطة التي قد تمنع المسح الثابت:"
+
+#: wext-static-publisher/includes/class-diagnostics.php:170
+msgid "File System"
+msgstr "نظام الملفات"
+
+#: wext-static-publisher/includes/class-diagnostics.php:173
+msgid "Temporary Directory Readable"
+msgstr "دليل مؤقت قابل للقراءة"
+
+#: wext-static-publisher/includes/class-diagnostics.php:176
+#, php-format
+msgid "The web server is able to read the temporary directory: %s"
+msgstr "خادم الويب قادر على قراءة الدليل المؤقت: %s"
+
+#: wext-static-publisher/includes/class-diagnostics.php:177
+#, php-format
+msgid "Web server cannot read temporary directory: %s"
+msgstr "لا يمكن لخادم الويب قراءة الدليل المؤقت: %s"
+
+#: wext-static-publisher/includes/class-diagnostics.php:181
+msgid "Temporary Directory Writable"
+msgstr "دليل مؤقت قابل للكتابة"
+
+#: wext-static-publisher/includes/class-diagnostics.php:184
+#, php-format
+msgid "The web server is able to write to the temporary directory: %s"
+msgstr "خادم الويب قادر على الكتابة إلى الدليل المؤقت: %s"
+
+#: wext-static-publisher/includes/class-diagnostics.php:185
+#, php-format
+msgid "Web server cannot write to temporary directory: %s"
+msgstr "لا يمكن لخادم الويب الكتابة إلى الدليل المؤقت: %s"
+
+#: wext-static-publisher/includes/class-diagnostics.php:198
+#, php-format
+msgid "MySQL user has %s privilege."
+msgstr "يتمتع مستخدم MySQL بامتياز %s."
+
+#: wext-static-publisher/includes/class-diagnostics.php:199
+#, php-format
+msgid "The MySQL user does not have the %s privilege."
+msgstr "مستخدم MySQL ليس لديه امتياز %s."
+
+#: wext-static-publisher/includes/class-exporter.php:82
 msgid "Another export process is still running."
 msgstr "لا تزال هناك عملية تصدير أخرى قيد التشغيل."
 
-#: wext-static-publisher/includes/class-exporter.php:93
+#: wext-static-publisher/includes/class-exporter.php:95
 msgid "Export folder is being prepared."
 msgstr "مجلد التصدير قيد الإعداد."
 
-#: wext-static-publisher/includes/class-exporter.php:122
+#: wext-static-publisher/includes/class-exporter.php:124
 msgid "Fuse.js search index is being prepared."
 msgstr "يتم الآن إعداد فهرس البحث Fuse.js."
 
-#: wext-static-publisher/includes/class-exporter.php:129
+#: wext-static-publisher/includes/class-exporter.php:131
 #, fuzzy
 msgid "SEO reports and advanced sitemap are being prepared."
 msgstr "جارٍ إعداد بيان التصدير."
 
-#: wext-static-publisher/includes/class-exporter.php:138
+#: wext-static-publisher/includes/class-exporter.php:140
 msgid "Cloudflare configuration files are being prepared."
 msgstr "يتم الآن إعداد ملفات تكوين Cloudflare."
 
-#: wext-static-publisher/includes/class-exporter.php:144
+#: wext-static-publisher/includes/class-exporter.php:146
 msgid "Export manifest is being prepared."
 msgstr "جارٍ إعداد بيان التصدير."
 
-#: wext-static-publisher/includes/class-exporter.php:149
+#: wext-static-publisher/includes/class-exporter.php:151
 msgid "ZIP archive is being created."
 msgstr "يتم الآن إنشاء أرشيف ZIP."
 
-#: wext-static-publisher/includes/class-exporter.php:161
+#: wext-static-publisher/includes/class-exporter.php:163
 msgid "The static site has been created successfully."
 msgstr "تم إنشاء الموقع الثابت بنجاح."
 
-#: wext-static-publisher/includes/class-exporter.php:175
+#: wext-static-publisher/includes/class-exporter.php:177
 msgid "Failed to create static site."
 msgstr "فشل في إنشاء موقع ثابت."
 
-#: wext-static-publisher/includes/class-exporter.php:193
+#: wext-static-publisher/includes/class-exporter.php:195
 msgid "Failed to create export folder."
 msgstr "فشل إنشاء مجلد التصدير."
 
-#: wext-static-publisher/includes/class-exporter.php:271
+#: wext-static-publisher/includes/class-exporter.php:273
 msgid "Unsafe file path skipped."
 msgstr "تم تخطي مسار الملف غير الآمن."
 
-#: wext-static-publisher/includes/class-exporter.php:291
+#: wext-static-publisher/includes/class-exporter.php:293
 msgid "The source has been converted to static file."
 msgstr "تم تحويل المصدر إلى ملف ثابت."
 
-#: wext-static-publisher/includes/class-exporter.php:303
+#: wext-static-publisher/includes/class-exporter.php:305
 msgid "Site scan completed."
 msgstr "تم الانتهاء من فحص الموقع."
 
-#: wext-static-publisher/includes/class-exporter.php:309
+#: wext-static-publisher/includes/class-exporter.php:311
 msgid "URL limit reached; Some resources were excluded from export."
 msgstr ""
 "تم الوصول إلى الحد الأقصى لعنوان URL؛ تم استبعاد بعض الموارد من التصدير."
 
-#: wext-static-publisher/includes/class-exporter.php:322
+#: wext-static-publisher/includes/class-exporter.php:324
 msgid "Site addresses are converted to static files."
 msgstr "يتم تحويل عناوين المواقع إلى ملفات ثابتة."
 
-#: wext-static-publisher/includes/class-exporter.php:654
+#: wext-static-publisher/includes/class-exporter.php:661
 msgid "Failed to write file:"
 msgstr "فشل في كتابة الملف:"
 
-#: wext-static-publisher/includes/class-exporter.php:667
+#: wext-static-publisher/includes/class-exporter.php:674
 #, php-format
 msgid "Could not export language root: /%s/"
 msgstr "تعذر تصدير جذر اللغة: /%s/"
 
-#: wext-static-publisher/includes/class-exporter.php:705
+#: wext-static-publisher/includes/class-exporter.php:712
 msgid "Page Not Found"
 msgstr "لم يتم العثور على الصفحة"
 
-#: wext-static-publisher/includes/class-exporter.php:706
+#: wext-static-publisher/includes/class-exporter.php:713
 msgid "The page you requested could not be found."
 msgstr "لا يمكن العثور على الصفحة التي طلبتها."
 
-#: wext-static-publisher/includes/class-exporter.php:727
+#: wext-static-publisher/includes/class-exporter.php:734
 msgid "Could not create ZIP archive."
 msgstr "تعذر إنشاء أرشيف ZIP."
 
-#: wext-static-publisher/includes/class-admin.php:84
-#: wext-static-publisher/includes/class-admin.php:711
-#: wext-static-publisher/includes/class-admin.php:728
-#: wext-static-publisher/includes/class-admin.php:975
-msgid "Queued"
-msgstr "في قائمة الانتظار"
-
-#: wext-static-publisher/includes/class-admin.php:85
-#: wext-static-publisher/includes/class-admin.php:712
-#: wext-static-publisher/includes/class-admin.php:729
-#: wext-static-publisher/includes/class-admin.php:976
-msgid "Running"
-msgstr "عمل"
-
-#: wext-static-publisher/includes/class-admin.php:86
-#: wext-static-publisher/includes/class-admin.php:713
-#: wext-static-publisher/includes/class-admin.php:730
-#: wext-static-publisher/includes/class-admin.php:744
-#: wext-static-publisher/includes/class-admin.php:977
-msgid "Completed"
-msgstr "مكتمل"
-
-#: wext-static-publisher/includes/class-admin.php:87
-#: wext-static-publisher/includes/class-admin.php:714
-#: wext-static-publisher/includes/class-admin.php:731
-#: wext-static-publisher/includes/class-admin.php:746
-#: wext-static-publisher/includes/class-admin.php:978
-#: wext-static-publisher/includes/class-admin.php:1964
-msgid "Failed"
-msgstr "غير ناجح"
-
-#: wext-static-publisher/includes/class-admin.php:88
-#: wext-static-publisher/includes/class-admin.php:739
-msgid "Not run yet"
-msgstr "لا تعمل بعد"
-
-#: wext-static-publisher/includes/class-admin.php:89
-#: wext-static-publisher/includes/class-admin.php:748
-msgid "Static rendering progress"
-msgstr "تقدم العرض الثابت"
-
-#: wext-static-publisher/includes/class-admin.php:90
-msgid "Retry"
-msgstr "حاول ثانية"
-
-#: wext-static-publisher/includes/class-admin.php:91
-#: wext-static-publisher/includes/class-admin.php:780
-msgid "Create Static Site"
-msgstr "إنشاء موقع ثابت"
-
-#: wext-static-publisher/includes/class-admin.php:92
-#: wext-static-publisher/includes/class-admin.php:780
-#: wext-static-publisher/includes/class-admin.php:1013
-msgid "Deploy to Cloudflare"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:93
-#: wext-static-publisher/includes/class-admin.php:727
-#: wext-static-publisher/includes/class-admin.php:974
-msgid "Waiting"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:94
-#: wext-static-publisher/includes/class-admin.php:768
-#: wext-static-publisher/includes/class-admin.php:1001
-msgid "Not deployed yet"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:95
-msgid ""
-"Progress information is unavailable. Check your internet connection or "
-"WordPress REST API access."
-msgstr ""
-"معلومات التقدم غير متوفرة. تحقق من اتصالك بالإنترنت أو الوصول إلى WordPress "
-"REST API."
-
-#: wext-static-publisher/includes/class-admin.php:138
-msgid "The SFTP remote directory cannot contain .. path segments."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:146
-msgid "Enter the SFTP server fingerprint as 32 hexadecimal MD5 characters."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:166
-msgid ""
-"Complete the SFTP connection information before enabling automatic upload."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:216
-msgid ""
-"IndexNow key must be 8–128 characters and contain only letters, numbers, or "
-"hyphens."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:320
-#: wext-static-publisher/includes/class-admin.php:352
-#: wext-static-publisher/includes/class-admin.php:367
-#: wext-static-publisher/includes/class-admin.php:396
-#: wext-static-publisher/includes/class-admin.php:434
-#: wext-static-publisher/includes/class-admin.php:448
-#: wext-static-publisher/includes/class-admin.php:464
-#: wext-static-publisher/includes/class-admin.php:551
-msgid "You are not authorized for this operation."
-msgstr "أنت غير مصرح لك بهذه العملية."
-
-#: wext-static-publisher/includes/class-admin.php:358
-#: wext-static-publisher/includes/class-rest-controller.php:78
-msgid "No downloadable exports found."
-msgstr "لم يتم العثور على عمليات تصدير قابلة للتنزيل."
-
-#: wext-static-publisher/includes/class-admin.php:377
-#: wext-static-publisher/includes/class-rest-controller.php:62
-msgid "The export process is already running."
-msgstr "عملية التصدير قيد التشغيل بالفعل."
-
-#: wext-static-publisher/includes/class-admin.php:455
-msgid "No downloadable ZIP file found."
-msgstr "لم يتم العثور على ملف ZIP قابل للتنزيل."
-
-#: wext-static-publisher/includes/class-admin.php:600
-msgid "Main"
-msgstr "الرئيسية"
-
-#: wext-static-publisher/includes/class-admin.php:601
-#: wext-static-publisher/includes/class-admin.php:920
-#: wext-static-publisher/includes/class-admin.php:925
-msgid "Deploy"
-msgstr "نشر"
-
-#: wext-static-publisher/includes/class-admin.php:602
-#: wext-static-publisher/includes/class-admin.php:1141
-msgid "Static Site"
-msgstr "الموقع الثابت"
-
-#: wext-static-publisher/includes/class-admin.php:603
-#: wext-static-publisher/includes/class-admin.php:1174
-#: wext-static-publisher/includes/class-admin.php:1178
-msgid "SEO"
-msgstr "SEO"
-
-#: wext-static-publisher/includes/class-admin.php:604
-#: wext-static-publisher/includes/class-admin.php:1078
-#: wext-static-publisher/includes/class-admin.php:1695
-#: wext-static-publisher/includes/class-admin.php:1701
-#: wext-static-publisher/includes/class-static-search.php:250
-msgid "Search"
-msgstr "بحث"
-
-#: wext-static-publisher/includes/class-admin.php:605
-#: wext-static-publisher/includes/class-admin.php:1789
-#: wext-static-publisher/includes/class-admin.php:1792
-msgid "Hide"
-msgstr "الإخفاء"
-
-#: wext-static-publisher/includes/class-admin.php:606
-#: wext-static-publisher/includes/class-admin.php:1941
-msgid "Diagnostics"
-msgstr "التشخيص"
-
-#: wext-static-publisher/includes/class-admin.php:607
-#: wext-static-publisher/includes/class-admin.php:1065
-msgid "Activity Logs"
-msgstr "سجلات النشاط"
-
-#: wext-static-publisher/includes/class-admin.php:608
-#: wext-static-publisher/includes/class-admin.php:1982
-msgid "About"
-msgstr "حول"
-
-#: wext-static-publisher/includes/class-admin.php:620
-msgid ""
-"Generate a static copy of your WordPress site. Cloudflare credentials are "
-"not kept in this plugin."
-msgstr ""
-"قم بإنشاء نسخة ثابتة من موقع WordPress الخاص بك. لا يتم الاحتفاظ ببيانات "
-"اعتماد Cloudflare في هذا البرنامج المساعد."
-
-#: wext-static-publisher/includes/class-admin.php:623
-msgid "Static Publisher sections"
-msgstr "أقسام الناشر الثابتة"
-
-#: wext-static-publisher/includes/class-admin.php:663
-msgid "Confirm Transaction"
-msgstr "تأكيد المعاملة"
-
-#: wext-static-publisher/includes/class-admin.php:667
-msgid "Cancel"
-msgstr "يلغي"
-
-#: wext-static-publisher/includes/class-admin.php:668
-#: wext-static-publisher/includes/class-admin.php:861
-msgid "Delete"
-msgstr "سيل"
-
-#: wext-static-publisher/includes/class-admin.php:735
-msgid "Publishing Status"
-msgstr "حالة النشر"
-
-#: wext-static-publisher/includes/class-admin.php:739
-#: wext-static-publisher/includes/class-admin.php:768
-#: wext-static-publisher/includes/class-admin.php:1001
-msgid "Status"
-msgstr "حالة"
-
-#: wext-static-publisher/includes/class-admin.php:741
-msgid "Progress"
-msgstr "تقدم"
-
-#: wext-static-publisher/includes/class-admin.php:755
-msgid "Stage"
-msgstr "منصة"
-
-#: wext-static-publisher/includes/class-admin.php:756
-#: wext-static-publisher/includes/class-admin.php:769
-#: wext-static-publisher/includes/class-admin.php:844
-#: wext-static-publisher/includes/class-admin.php:1002
-msgid "Job ID"
-msgstr "معرف الوظيفة"
-
-#: wext-static-publisher/includes/class-admin.php:757
-#: wext-static-publisher/includes/class-admin.php:844
-msgid "URL Count"
-msgstr "عدد عناوين URL"
-
-#: wext-static-publisher/includes/class-admin.php:758
-msgid "Current URL"
-msgstr "عنوان URL الحالي"
-
-#: wext-static-publisher/includes/class-admin.php:759
-msgid "Last Static Build"
-msgstr "آخر بناء ثابت"
-
-#: wext-static-publisher/includes/class-admin.php:760
-#: wext-static-publisher/includes/class-admin.php:772
-#: wext-static-publisher/includes/class-admin.php:1005
-msgid "Error"
-msgstr "خطأ"
-
-#: wext-static-publisher/includes/class-admin.php:765
-#: wext-static-publisher/includes/class-admin.php:998
-msgid "Cloudflare Deploy"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:770
-#: wext-static-publisher/includes/class-admin.php:1003
-msgid "Last Cloudflare Deploy"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:771
-#: wext-static-publisher/includes/class-admin.php:1004
-msgid "Deployment URL"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:781
-#: wext-static-publisher/includes/class-admin.php:861
-msgid "Download"
-msgstr "تحميل"
-
-#: wext-static-publisher/includes/class-admin.php:799
-#: wext-static-publisher/includes/class-admin.php:885
-msgid "ZIP Files"
-msgstr "ملفات مضغوطة"
-
-#: wext-static-publisher/includes/class-admin.php:801
-#, php-format
-msgid "The old ZIP file %d has been deleted."
-msgstr "تم حذف ملف ZIP القديم %d."
-
-#: wext-static-publisher/includes/class-admin.php:803
-#, php-format
-msgid "%1$d old ZIP file was deleted, %2$d file could not be deleted."
-msgstr "تم حذف ملف %1$d المضغوط القديم، ولا يمكن حذف ملف %2$d."
-
-#: wext-static-publisher/includes/class-admin.php:805
-msgid "Old files cannot be deleted while export is in progress."
-msgstr "لا يمكن حذف الملفات القديمة أثناء عملية التصدير."
-
-#: wext-static-publisher/includes/class-admin.php:809
-#, php-format
-msgid "%d ZIP file has been deleted."
-msgstr "تم حذف ملف %d ZIP."
-
-#: wext-static-publisher/includes/class-admin.php:811
-#, php-format
-msgid "ZIP file %1$d was deleted, file %2$d could not be deleted."
-msgstr "تم حذف الملف المضغوط %1$d، ولا يمكن حذف الملف %2$d."
-
-#: wext-static-publisher/includes/class-admin.php:813
-msgid "Select at least one ZIP file to process."
-msgstr "حدد ملف ZIP واحدًا على الأقل لمعالجته."
-
-#: wext-static-publisher/includes/class-admin.php:815
-msgid "Select a valid batch action."
-msgstr "حدد إجراءً دفعيًا صالحًا."
-
-#: wext-static-publisher/includes/class-admin.php:817
-msgid "ZIP files cannot be deleted while export is in progress."
-msgstr "لا يمكن حذف ملفات ZIP أثناء عملية التصدير."
-
-#: wext-static-publisher/includes/class-admin.php:821
-msgid "There is no ZIP file created yet."
-msgstr "لم يتم إنشاء ملف ZIP بعد."
-
-#: wext-static-publisher/includes/class-admin.php:829
-msgid "Select Batch Action"
-msgstr "حدد الإجراء الدفعي"
-
-#: wext-static-publisher/includes/class-admin.php:831
-msgid "Batch Process"
-msgstr "عملية الدفعة"
-
-#: wext-static-publisher/includes/class-admin.php:832
-msgid "Download Selected"
-msgstr "تحميل المحدد"
-
-#: wext-static-publisher/includes/class-admin.php:833
-msgid "Delete Selected"
-msgstr "حذف المحدد"
-
-#: wext-static-publisher/includes/class-admin.php:835
-msgid "Apply"
-msgstr "يتقدم"
-
-#: wext-static-publisher/includes/class-admin.php:836
-msgid "The selected ZIP files will be permanently deleted. Should we continue?"
-msgstr "سيتم حذف ملفات ZIP المحددة نهائيًا. هل يجب أن نستمر؟"
-
-#: wext-static-publisher/includes/class-admin.php:844
-msgid "Select All"
-msgstr "حدد الكل"
-
-#: wext-static-publisher/includes/class-admin.php:844
-msgid "Order"
-msgstr "طلب"
-
-#: wext-static-publisher/includes/class-admin.php:844
-msgid "Creation Date"
-msgstr "تاريخ الإنشاء"
-
-#: wext-static-publisher/includes/class-admin.php:844
-msgid "Creation Time"
-msgstr "وقت الخلق"
-
-#: wext-static-publisher/includes/class-admin.php:844
-msgid "Actions"
-msgstr "الإجراءات"
-
-#: wext-static-publisher/includes/class-admin.php:855
-#, php-format
-msgid "Select %s"
-msgstr "حدد %s"
-
-#: wext-static-publisher/includes/class-admin.php:861
-msgid "This ZIP file will be permanently deleted. Do you want to continue?"
-msgstr "سيتم حذف ملف ZIP هذا نهائيًا. هل تريد الاستمرار؟"
-
-#: wext-static-publisher/includes/class-admin.php:880
-#: wext-static-publisher/includes/class-admin.php:1121
-msgid "‹ Previous"
-msgstr "< سابق"
-
-#: wext-static-publisher/includes/class-admin.php:881
-#: wext-static-publisher/includes/class-admin.php:1122
-msgid "Next ›"
-msgstr "التالي >"
-
-#: wext-static-publisher/includes/class-admin.php:896
-msgid "Delete Old Files"
-msgstr "حذف الملفات القديمة"
-
-#: wext-static-publisher/includes/class-admin.php:897
-msgid ""
-"All old ZIP files except the latest ZIP will be deleted. Should we continue?"
-msgstr ""
-"سيتم حذف جميع ملفات ZIP القديمة باستثناء أحدث ملفات ZIP. هل يجب أن نستمر؟"
-
-#: wext-static-publisher/includes/class-admin.php:899
-msgid ""
-"The latest ZIP file is preserved; Previous ZIP files and their temporary "
-"build folders are permanently deleted."
-msgstr ""
-"يتم الاحتفاظ بأحدث ملف مضغوط؛ يتم حذف ملفات ZIP السابقة ومجلدات البناء "
-"المؤقتة الخاصة بها نهائيًا."
-
-#: wext-static-publisher/includes/class-admin.php:910
-#: wext-static-publisher/includes/class-admin.php:944
-msgid "ZIP File"
-msgstr "ملف مضغوط"
-
-#: wext-static-publisher/includes/class-admin.php:911
-#: wext-static-publisher/includes/class-admin.php:961
-msgid "GitHub"
-msgstr "GitHub"
-
-#: wext-static-publisher/includes/class-admin.php:912
-#: wext-static-publisher/includes/class-admin.php:988
-msgid "Cloudflare"
-msgstr "Cloudflare"
-
-#: wext-static-publisher/includes/class-admin.php:913
-#: wext-static-publisher/includes/class-admin.php:1021
-msgid "SFTP"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:914
-msgid "Auto Deploy"
-msgstr "النشر التلقائي"
-
-#: wext-static-publisher/includes/class-admin.php:945
-msgid ""
-"Download the created static site package and manually install it on the "
-"desired server."
-msgstr ""
-"قم بتنزيل حزمة الموقع الثابتة التي تم إنشاؤها وتثبيتها يدويًا على الخادم "
-"المطلوب."
-
-#: wext-static-publisher/includes/class-admin.php:948
-msgid "ZIP ready"
-msgstr "الرمز البريدي جاهز"
-
-#: wext-static-publisher/includes/class-admin.php:948
-msgid "Create static site first"
-msgstr "قم بإنشاء موقع ثابت أولاً"
-
-#: wext-static-publisher/includes/class-admin.php:962
-msgid ""
-"Automatically trigger the GitHub Actions flow via webhook when the export is "
-"complete."
-msgstr ""
-"قم بتشغيل تدفق إجراءات GitHub تلقائيًا عبر خطاف الويب عند اكتمال التصدير."
-
-#: wext-static-publisher/includes/class-admin.php:965
-msgid "Webhook configured"
-msgstr "تم تكوين الرد التلقائي على الويب"
-
-#: wext-static-publisher/includes/class-admin.php:965
-#: wext-static-publisher/includes/class-admin.php:992
-#: wext-static-publisher/includes/class-admin.php:1026
-msgid "Configuration required"
-msgstr "التكوين مطلوب"
-
-#: wext-static-publisher/includes/class-admin.php:989
-msgid ""
-"Publish static files to Cloudflare Workers Static Assets with a GitHub "
-"Actions workflow."
-msgstr ""
-"انشر الملفات الثابتة إلى Cloudflare Workers Static Assets باستخدام سير عمل "
-"GitHub Actions."
-
-#: wext-static-publisher/includes/class-admin.php:992
-msgid "Ready to deploy"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:993
-msgid "Open Cloudflare"
-msgstr "افتح كلاود فلير"
-
-#: wext-static-publisher/includes/class-admin.php:1013
-msgid "Deploy Again"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1022
-msgid ""
-"Upload the generated static files directly to a remote server over an "
-"encrypted SFTP connection."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1026
+#: wext-static-publisher/includes/class-headless-mode.php:94
 #, fuzzy
-msgid "SFTP configured"
-msgstr "تم تكوين الرد التلقائي على الويب"
+msgid "This WordPress frontend is no longer available."
+msgstr "وورد كرون متاح."
 
-#: wext-static-publisher/includes/class-admin.php:1026
-msgid "SFTP unavailable on this server"
+#: wext-static-publisher/includes/class-headless-mode.php:95
+#, fuzzy
+msgid "This WordPress frontend is not available."
+msgstr "وورد كرون متاح."
+
+#: wext-static-publisher/includes/class-headless-mode.php:169
+msgid "XML-RPC is disabled in Headless CMS mode."
 msgstr ""
 
-#: wext-static-publisher/includes/class-admin.php:1068
-msgid "Records of the last static transaction:"
-msgstr "سجلات آخر معاملة ثابتة:"
+#: wext-static-publisher/includes/class-plugin.php:512
+msgid "Export job queued."
+msgstr "مهمة التصدير في قائمة الانتظار."
 
-#: wext-static-publisher/includes/class-admin.php:1069
-msgid "Number of Records:"
-msgstr "عدد السجلات:"
+#: wext-static-publisher/includes/class-plugin.php:586
+msgid ""
+"The export job has been in the queue for more than 90 seconds. Check WP-Cron "
+"or server loopback requests."
+msgstr ""
+"ظلت مهمة التصدير في قائمة الانتظار لأكثر من 90 ثانية. تحقق من طلبات استرجاع "
+"WP-Cron أو الخادم."
 
-#: wext-static-publisher/includes/class-admin.php:1075
-msgid "Search Log Records"
-msgstr "البحث في سجلات السجل"
+#: wext-static-publisher/includes/class-plugin.php:592
+msgid ""
+"The export job has been running longer than expected. Check server error "
+"logs and PHP uptime limit."
+msgstr ""
+"تم تشغيل مهمة التصدير لفترة أطول من المتوقع. تحقق من سجلات أخطاء الخادم "
+"والحد الأقصى لوقت تشغيل PHP."
 
-#: wext-static-publisher/includes/class-admin.php:1077
-msgid "Search source or static URL..."
-msgstr "مصدر البحث أو عنوان URL الثابت..."
+#: wext-static-publisher/includes/class-plugin.php:747
+msgid "The automatic export job is queued."
+msgstr "تم وضع مهمة التصدير التلقائية في قائمة الانتظار."
 
-#: wext-static-publisher/includes/class-admin.php:1080
-msgid "Clear Search"
-msgstr "مسح البحث"
+#: wext-static-publisher/includes/class-plugin.php:780
+#, fuzzy, php-format
+msgid "[Wext Static Publisher] Automatic SFTP upload failed: %s"
+msgstr "[ناشر Wext Static] تعذر إرسال خطاف الويب الخاص بالنشر."
 
-#: wext-static-publisher/includes/class-admin.php:1086
-msgid "No export activity has been recorded yet."
-msgstr "لم يتم تسجيل أي نشاط تصدير حتى الآن."
+#: wext-static-publisher/includes/class-plugin.php:864
+msgid "[Wext Static Publisher] Some old export archives could not be deleted."
+msgstr "[ناشر Wext Static] لا يمكن حذف بعض أرشيفات التصدير القديمة."
 
-#: wext-static-publisher/includes/class-admin.php:1086
-msgid "No log entries matched your search."
-msgstr "لا توجد إدخالات سجل تطابق بحثك."
+#: wext-static-publisher/includes/class-plugin.php:908
+msgid "Deployment workflow could not be started."
+msgstr ""
 
-#: wext-static-publisher/includes/class-admin.php:1090
-msgid "Date"
-msgstr "تاريخ"
+#: wext-static-publisher/includes/class-plugin.php:910
+msgid "[Wext Static Publisher] Deployment webhook could not be sent."
+msgstr "[ناشر Wext Static] تعذر إرسال خطاف الويب الخاص بالنشر."
 
-#: wext-static-publisher/includes/class-admin.php:1090
-msgid "Time"
-msgstr "وقت"
-
-#: wext-static-publisher/includes/class-admin.php:1090
-msgid "Source URL"
-msgstr "عنوان URL المصدر"
-
-#: wext-static-publisher/includes/class-admin.php:1090
-msgid "Static URL"
-msgstr "عنوان URL ثابت"
-
-#: wext-static-publisher/includes/class-admin.php:1111
-msgid "Activity log pages"
-msgstr "صفحات سجل النشاط"
-
-#: wext-static-publisher/includes/class-admin.php:1112
+#: wext-static-publisher/includes/class-plugin.php:934
 #, php-format
-msgid "%d records"
-msgstr "%d السجلات"
+msgid "Export completed: %d URL"
+msgstr "اكتمل التصدير: عنوان URL لـ %d"
 
-#: wext-static-publisher/includes/class-admin.php:1135
-msgid "General"
-msgstr "عام"
-
-#: wext-static-publisher/includes/class-admin.php:1136
-msgid "Multilingual"
-msgstr "متعدد اللغات"
-
-#: wext-static-publisher/includes/class-admin.php:1142
-msgid "Manage static generation settings."
-msgstr "إدارة إعدادات الإنشاء الثابت."
-
-#: wext-static-publisher/includes/class-admin.php:1145
-msgid "Static Site subsections"
-msgstr "الأقسام الفرعية للموقع الثابت"
-
-#: wext-static-publisher/includes/class-admin.php:1164
-msgid "SEO Plugins"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1165
-#: wext-static-publisher/includes/class-admin.php:1201
-msgid "SEO Audit"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1166
-msgid "Sitemaps"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1167
-#: wext-static-publisher/includes/class-admin.php:1203
-msgid "Redirects"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1168
-#, fuzzy
-msgid "Indexing"
-msgstr "محددات الفهرسة"
-
-#: wext-static-publisher/includes/class-admin.php:1169
-msgid "Performance"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1175
-msgid ""
-"Manage SEO plugin output and multilingual search engine signals in the "
-"static site."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1201
-msgid ""
-"Validate metadata, canonical URLs, structured data, images, links, and "
-"multilingual signals after every export."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1202
-msgid "Advanced Sitemaps"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1202
-msgid ""
-"Generate an indexable canonical sitemap with reliable modification dates, "
-"images, and language alternatives."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1203
-msgid ""
-"Export custom redirects and WordPress old slugs while reporting redirect "
-"chains and loops."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1204
-#, fuzzy
-msgid "Indexing Controls"
-msgstr "محددات الفهرسة"
-
-#: wext-static-publisher/includes/class-admin.php:1204
-msgid ""
-"Control indexing for HTML and non-HTML files and optionally notify IndexNow "
-"after automatic deployment."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1205
-msgid "Performance Audit"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1205
-msgid ""
-"Report large files, large HTML documents, and render-blocking resources in "
-"the static package."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1216
-msgid "Create SEO audit report"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1216
-msgid "Writes JSON and export diagnostics for every generated page."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1217
-msgid "Include readable HTML report"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1217
-msgid "Adds wext-seo-report.html to the ZIP with noindex protection."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1218
-msgid "Add missing canonical URLs"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1218
-msgid "Uses the final static URL only when the page has no canonical element."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1219
-msgid "Validate JSON-LD structured data"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1219
-msgid "Reports invalid JSON-LD without inventing content or schema properties."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1220
-msgid "Validate multilingual signals"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1220
-msgid "Checks missing and non-reciprocal hreflang targets."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1221
-msgid "Audit image SEO"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1221
-msgid "Reports missing alt attributes and explicit image dimensions."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1223
-msgid "Generate Wext sitemap"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1223
-msgid "Creates wext-sitemap.xml and adds it to robots.txt."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1224
-msgid "Include accurate last modified dates"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1224
-msgid "Uses the WordPress content modification time when available."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1225
-msgid "Include images"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1225
-msgid "Adds discoverable page images with absolute static URLs."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1226
-msgid "Include language alternatives"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1226
-msgid "Adds existing hreflang relationships to sitemap entries."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1227
-msgid "Generate video sitemap"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1227
-msgid ""
-"Creates a separate sitemap only for videos with complete title, description, "
-"thumbnail, and upload date metadata."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1228
-msgid "Generate Google News sitemap"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1228
-msgid ""
-"Creates a separate sitemap for posts published during the last two days. "
-"Enable only for eligible news sites."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1230
-msgid "Redirect WordPress old slugs"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1230
-msgid "Creates permanent redirects for published content with saved old slugs."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1231
-msgid "Import redirect plugin rules"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1231
-msgid "Imports compatible non-regex redirects from Redirection and Rank Math."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1232
-msgid "Custom Redirect Rules"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1232
-msgid ""
-"Enter one source, target, and optional status code per line. Supported "
-"codes: 301, 302, 303, 307, 308."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1234
-#, fuzzy
-msgid "Noindex the entire static output"
-msgstr "في المخرجات الثابتة"
-
-#: wext-static-publisher/includes/class-admin.php:1234
-msgid ""
-"Use only for staging or private static deployments. This blocks indexing "
-"through HTML and response headers."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1235
-msgid "Noindex Paths"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1235
-#, fuzzy
-msgid "One path prefix or wildcard pattern per line."
-msgstr "بادئة مسار واحدة لكل سطر."
-
-#: wext-static-publisher/includes/class-admin.php:1236
-msgid "X-Robots-Tag Rules"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1236
-msgid "Use pattern|directives format for non-HTML files."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1237
-msgid "Notify IndexNow after automatic deployment"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1237
-msgid ""
-"Submits only added, changed, or deleted URLs after webhook or automatic SFTP "
-"deployment."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1238
-msgid "IndexNow Key"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1238
-msgid "Configured — leave blank to keep"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1238
-msgid "Use an 8–128 character key containing letters, numbers, or hyphens."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1240
-msgid "Create performance report"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1240
-msgid "Adds wext-performance-report.json to the static package."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1242
-msgid "Large HTML Threshold (KB)"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1243
-msgid "Large Asset Threshold (KB)"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1248
-#, fuzzy
-msgid "Save SEO Settings"
-msgstr "حفظ إعدادات البحث"
-
-#: wext-static-publisher/includes/class-admin.php:1269
-msgid "Page Metadata"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1269
-msgid "Keep SEO metadata on WordPress pages."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1270
-msgid "Post Metadata"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1270
-msgid "Keep SEO metadata on WordPress posts."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1271
-msgid "Custom Post Type Metadata"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1271
-msgid ""
-"Keep SEO metadata on public custom post types such as products and "
-"portfolios."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1272
-msgid "Archive & Taxonomy Metadata"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1272
-msgid ""
-"Keep SEO metadata on the posts page, archives, categories, tags, author "
-"pages and other listing views."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1277
-#: wext-static-publisher/includes/class-admin.php:1291
-#: wext-static-publisher/includes/class-admin.php:1304
-#: wext-static-publisher/includes/class-admin.php:1317
-msgid "Schema Structured Data"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1277
-#, php-format
-msgid ""
-"Keep %s JSON-LD data, convert its URLs to the live domain, and adapt "
-"SearchAction to static search."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1278
-#: wext-static-publisher/includes/class-admin.php:1292
-#: wext-static-publisher/includes/class-admin.php:1305
-#: wext-static-publisher/includes/class-admin.php:1318
-msgid "XML Sitemaps"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1278
-#, php-format
-msgid "Copy %s sitemap and its linked sitemap files into the static package."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1279
-#: wext-static-publisher/includes/class-admin.php:1293
-#: wext-static-publisher/includes/class-admin.php:1306
-#: wext-static-publisher/includes/class-admin.php:1319
-msgid "Robots.txt"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1279
-#, php-format
-msgid ""
-"Copy %s robots.txt rules and point sitemap declarations to the live static "
-"domain."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1289
-msgid ""
-"Choose which Rank Math outputs will be included in the generated static site."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1291
-msgid ""
-"Keep Rank Math JSON-LD data, convert its URLs to the live domain, and adapt "
-"SearchAction to static search."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1292
-msgid ""
-"Copy the Rank Math sitemap index, child sitemaps and sitemap stylesheet into "
-"the static package."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1293
-msgid ""
-"Copy Rank Math robots.txt rules and point the sitemap declaration to the "
-"live static domain."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1302
-msgid ""
-"Choose which All in One SEO outputs will be included in the generated static "
-"site."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1304
-msgid ""
-"Keep All in One SEO JSON-LD data, convert its URLs to the live domain, and "
-"adapt SearchAction to static search."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1305
-msgid ""
-"Copy the All in One SEO sitemap index, child sitemaps and sitemap stylesheet "
-"into the static package."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1306
-msgid ""
-"Copy All in One SEO robots.txt rules and point sitemap declarations to the "
-"live static domain."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1315
-msgid ""
-"Choose which SEOPress outputs will be included in the generated static site."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1317
-msgid ""
-"Keep SEOPress JSON-LD data, convert its URLs to the live domain, and adapt "
-"SearchAction to static search."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1318
-msgid ""
-"Copy the SEOPress sitemap index, child sitemaps and sitemap stylesheets into "
-"the static package."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1319
-msgid ""
-"Copy SEOPress robots.txt rules and point sitemap declarations to the live "
-"static domain."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1328
-#: wext-static-publisher/includes/class-admin.php:1337
-#: wext-static-publisher/includes/class-admin.php:1346
-#, php-format
-msgid "Choose which %s outputs will be included in the generated static site."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1361
-msgid "Detected SEO plugin:"
-msgstr "إضافة SEO المكتشفة:"
-
-#: wext-static-publisher/includes/class-admin.php:1366
-msgid ""
-"Multiple active SEO plugins were detected. Review their output settings to "
-"prevent duplicate metadata."
-msgstr ""
-"تم اكتشاف عدة إضافات SEO نشطة. راجع إعدادات المخرجات لمنع تكرار البيانات "
-"الوصفية."
-
-#: wext-static-publisher/includes/class-admin.php:1371
-msgid ""
-"No active SEO plugin was detected. Saved settings will be used when a "
-"supported plugin is activated."
-msgstr ""
-"لم يتم اكتشاف إضافة SEO نشطة. سيتم استخدام الإعدادات المحفوظة عند تفعيل "
-"إضافة مدعومة."
-
-#: wext-static-publisher/includes/class-admin.php:1378
-msgid "Save SEO Plugin Settings"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1411
-#, php-format
-msgid "Active — version %s"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1411
-msgid "Active"
-msgstr "نشط"
-
-#: wext-static-publisher/includes/class-admin.php:1411
-msgid "Not active"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1416
-#, php-format
-msgid "Include %s outputs in the static site"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1421
-#, php-format
-msgid ""
-"When disabled, %s metadata and schema outputs are removed and its sitemap "
-"and robots files are not exported."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1422
-msgid "Metadata"
-msgstr "البيانات الوصفية"
-
-#: wext-static-publisher/includes/class-admin.php:1423
-msgid "Technical SEO"
-msgstr "تحسين محركات البحث التقني"
-
-#: wext-static-publisher/includes/class-admin.php:1425
-#, php-format
-msgid ""
-"These settings are preserved, but no %s output will be exported until the "
-"plugin is active."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1948
-msgid "CMS Address"
-msgstr "عنوان نظام إدارة المحتوى"
-
-#: wext-static-publisher/includes/class-admin.php:1948
-msgid "Detected automatically from the WordPress site address."
-msgstr "يتم اكتشافه تلقائيًا من عنوان موقع WordPress."
-
-#: wext-static-publisher/includes/class-admin.php:1949
-msgid "Live Site Address"
-msgstr "عنوان الموقع المباشر"
-
-#: wext-static-publisher/includes/class-admin.php:1949
-msgid "Example: https://example.com"
-msgstr "مثال: https://example.com"
-
-#: wext-static-publisher/includes/class-admin.php:1475
-msgid "Most URLs"
-msgstr "معظم عناوين URL"
-
-#: wext-static-publisher/includes/class-admin.php:1476
-msgid "Excluded Paths"
-msgstr "المسارات المستبعدة"
-
-#: wext-static-publisher/includes/class-admin.php:1476
-msgid "One path prefix per line."
-msgstr "بادئة مسار واحدة لكل سطر."
-
-#: wext-static-publisher/includes/class-admin.php:1478
-msgid "Save General Settings"
-msgstr "حفظ الإعدادات العامة"
-
-#: wext-static-publisher/includes/class-admin.php:1490
-msgid "Number of ZIPs to Store"
-msgstr "عدد ملفات ZIP المراد تخزينها"
-
-#: wext-static-publisher/includes/class-admin.php:1490
-msgid ""
-"Determines how many last successful export archives will be stored. Default: "
-"5."
-msgstr ""
-"يحدد عدد أرشيفات التصدير الناجحة الأخيرة التي سيتم تخزينها. الافتراضي: 5."
-
-#: wext-static-publisher/includes/class-admin.php:1492
-msgid "Save ZIP Settings"
-msgstr "حفظ إعدادات ZIP"
-
-#: wext-static-publisher/includes/class-admin.php:1500
-#: wext-static-publisher/includes/class-admin.php:1757
-msgid "Contents"
-msgstr "محتويات"
-
-#: wext-static-publisher/includes/class-admin.php:1501
-msgid "When a new article is published"
-msgstr "عندما يتم نشر مقال جديد"
-
-#: wext-static-publisher/includes/class-admin.php:1501
-msgid "When a new blog post is published for the first time."
-msgstr "عندما يتم نشر منشور مدونة جديد لأول مرة."
-
-#: wext-static-publisher/includes/class-admin.php:1502
-msgid "When the current post is updated"
-msgstr "عندما يتم تحديث المنشور الحالي"
-
-#: wext-static-publisher/includes/class-admin.php:1502
-msgid "When a live blog post is changed or removed."
-msgstr "عند تغيير منشور مدونة مباشر أو إزالته."
-
-#: wext-static-publisher/includes/class-admin.php:1503
-msgid "When the new page is published"
-msgstr "عندما يتم نشر الصفحة الجديدة"
-
-#: wext-static-publisher/includes/class-admin.php:1503
-msgid "When a new page is published for the first time."
-msgstr "عند نشر صفحة جديدة لأول مرة."
-
-#: wext-static-publisher/includes/class-admin.php:1504
-msgid "When the current page is updated"
-msgstr "عندما يتم تحديث الصفحة الحالية"
-
-#: wext-static-publisher/includes/class-admin.php:1504
-msgid "When a published page is changed or removed."
-msgstr "عندما يتم تغيير أو إزالة صفحة منشورة."
-
-#: wext-static-publisher/includes/class-admin.php:1505
-msgid "When custom content types change"
-msgstr "عندما تتغير أنواع المحتوى المخصص"
-
-#: wext-static-publisher/includes/class-admin.php:1505
-msgid ""
-"When product, portfolio, etc. special content in the publication changes."
-msgstr "عندما يتغير المحتوى الخاص بالمنتج أو المحفظة وما إلى ذلك في المنشور."
-
-#: wext-static-publisher/includes/class-admin.php:1507
-msgid "Structure and Design"
-msgstr "الهيكل والتصميم"
-
-#: wext-static-publisher/includes/class-admin.php:1508
-msgid "When the category or tag changes"
-msgstr "عندما تتغير الفئة أو العلامة"
-
-#: wext-static-publisher/includes/class-admin.php:1508
-msgid "When categories, tags, or custom classifications are changed."
-msgstr "عندما يتم تغيير الفئات أو العلامات أو التصنيفات المخصصة."
-
-#: wext-static-publisher/includes/class-admin.php:1509
-msgid "When the media changes"
-msgstr "عندما يتغير الاعلام"
-
-#: wext-static-publisher/includes/class-admin.php:1509
-msgid "When an image or other media file is added, updated, or deleted."
-msgstr "عند إضافة صورة أو ملف وسائط آخر أو تحديثه أو حذفه."
-
-#: wext-static-publisher/includes/class-admin.php:1510
-msgid "When the menu changes"
-msgstr "عندما تتغير القائمة"
-
-#: wext-static-publisher/includes/class-admin.php:1510
-msgid "When the structure or links of navigation menus are changed."
-msgstr "عند تغيير بنية أو روابط قوائم التنقل."
-
-#: wext-static-publisher/includes/class-admin.php:1511
-msgid "When components change"
-msgstr "عندما تتغير المكونات"
-
-#: wext-static-publisher/includes/class-admin.php:1511
-msgid "When widget and widget layouts are updated."
-msgstr "عندما يتم تحديث تخطيطات القطعة والقطعة."
-
-#: wext-static-publisher/includes/class-admin.php:1512
-msgid "When the theme changes"
-msgstr "عندما يتغير الموضوع"
-
-#: wext-static-publisher/includes/class-admin.php:1512
-msgid "When the theme is changed, updated, or customizer settings are saved."
-msgstr "عند تغيير السمة، يتم حفظ إعدادات التخصيص أو التحديث."
-
-#: wext-static-publisher/includes/class-admin.php:1513
-msgid "When site settings change"
-msgstr "عندما تتغير إعدادات الموقع"
-
-#: wext-static-publisher/includes/class-admin.php:1513
-msgid ""
-"When the site name, description, homepage, reading or permalink settings are "
-"changed."
-msgstr ""
-"عندما يتم تغيير إعدادات اسم الموقع أو الوصف أو الصفحة الرئيسية أو القراءة أو "
-"الرابط الثابت."
-
-#: wext-static-publisher/includes/class-admin.php:1524
-msgid "Automatic Static Site Creation and Deploy"
-msgstr "إنشاء ونشر الموقع الثابت تلقائيًا"
-
-#: wext-static-publisher/includes/class-admin.php:1525
-msgid ""
-"After the selected changes, the static site is created; If the deployment "
-"webhook is set, the deploy flow is triggered automatically."
-msgstr ""
-"بعد التغييرات المحددة، يتم إنشاء الموقع الثابت؛ إذا تم تعيين خطاف الويب "
-"للنشر، فسيتم تشغيل تدفق النشر تلقائيًا."
-
-#: wext-static-publisher/includes/class-admin.php:1527
-msgid "Enable automatic static site generation"
-msgstr "تمكين إنشاء موقع ثابت تلقائيًا"
-
-#: wext-static-publisher/includes/class-admin.php:1545
-msgid ""
-"Changes made consecutively are combined for 60 seconds and run as a single "
-"export and deploy."
-msgstr ""
-"يتم دمج التغييرات التي تم إجراؤها على التوالي لمدة 60 ثانية وتشغيلها كعملية "
-"تصدير ونشر واحدة."
-
-#: wext-static-publisher/includes/class-admin.php:1547
-msgid "Save Auto Deploy Settings"
-msgstr "حفظ إعدادات النشر التلقائي"
-
-#: wext-static-publisher/includes/class-admin.php:1558
-msgid "GitHub Deployment Webhook"
-msgstr "خطاف ويب لنشر GitHub"
-
-#: wext-static-publisher/includes/class-admin.php:1560
-msgid "Deployment Webhook"
-msgstr "خطاف الويب للنشر"
-
-#: wext-static-publisher/includes/class-admin.php:1560
-msgid "For GitHub: https://api.github.com/repos/OWNER/REPOSITORY/dispatches"
-msgstr ""
-"بالنسبة إلى GitHub: https://api.github.com/repos/OWNER/REPOSITORY/dispatches"
-
-#: wext-static-publisher/includes/class-admin.php:1561
-msgid "Webhook Bearer Token"
-msgstr "رمز حامل الخطاف على الويب"
-
-#: wext-static-publisher/includes/class-admin.php:1561
-msgid "Leave blank to keep the saved token"
-msgstr "اتركه فارغًا للاحتفاظ بالرمز المحفوظ"
-
-#: wext-static-publisher/includes/class-admin.php:1561
-msgid ""
-"If using GitHub, use a fine-grained token limited to this repository with "
-"Contents: write permission."
-msgstr ""
-"إذا كنت تستخدم GitHub، فاستخدم رمزًا مميزًا يقتصر على هذا المستودع مع إذن "
-"المحتويات: الكتابة."
-
-#: wext-static-publisher/includes/class-admin.php:1563
-msgid "Save Deploy Settings"
-msgstr "حفظ إعدادات النشر"
-
-#: wext-static-publisher/includes/class-admin.php:1581
-msgid ""
-"The SFTP client is unavailable. Reinstall the complete plugin package before "
-"using this deployment method."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1587
-msgid "SFTP Connection"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1590
-msgid "SFTP Host"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1591
-msgid "Enter only the hostname or IP address; do not include sftp://."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1594
-msgid "Port"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1598
-msgid "Username"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1602
-#, fuzzy
-msgid "Password"
-msgstr "اجتاز"
-
-#: wext-static-publisher/includes/class-admin.php:1603
-#, fuzzy
-msgid "Leave blank to keep the saved password"
-msgstr "اتركه فارغًا للاحتفاظ بالرمز المحفوظ"
-
-#: wext-static-publisher/includes/class-admin.php:1603
-msgid ""
-"The password is encrypted using the WordPress security keys and is never "
-"shown again."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1603
-msgid "Delete saved password"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1606
-#, fuzzy
-msgid "Remote Directory"
-msgstr "دليل المواضيع"
-
-#: wext-static-publisher/includes/class-admin.php:1607
-msgid ""
-"Static files are uploaded into this directory. Existing files with the same "
-"path are overwritten; unrelated remote files are preserved."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1610
-msgid "Server MD5 Fingerprint"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1611
-msgid ""
-"Recommended. Verify this value with your hosting provider to prevent "
-"connecting to the wrong server."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1614
-msgid "Per-file Timeout"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1615
-msgid "seconds"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1618
-msgid "Upload automatically after every successful export"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1618
-msgid ""
-"An SFTP failure is recorded separately and does not delete the successfully "
-"generated ZIP file."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1619
-#, fuzzy
-msgid "Save SFTP Settings"
-msgstr "حفظ إعدادات البحث"
-
-#: wext-static-publisher/includes/class-admin.php:1626
-msgid "Test Connection"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1631
-#, fuzzy
-msgid "Upload Latest Static Site"
-msgstr "إنشاء موقع ثابت"
-
-#: wext-static-publisher/includes/class-admin.php:1635
-#, fuzzy
-msgid "Last SFTP Status"
-msgstr "آخر بناء ثابت"
-
-#: wext-static-publisher/includes/class-admin.php:1649
-msgid "Redirection by Browser Language"
-msgstr "إعادة التوجيه حسب لغة المتصفح"
-
-#: wext-static-publisher/includes/class-admin.php:1650
-msgid ""
-"When the visitor arrives at the main address, first the saved preference is "
-"used, then the language sequence of the browser."
-msgstr ""
-"عندما يصل الزائر إلى العنوان الرئيسي، يتم أولاً استخدام التفضيلات المحفوظة، "
-"ثم تسلسل لغة المتصفح."
-
-#: wext-static-publisher/includes/class-admin.php:1652
-msgid "Enable browser language redirection"
-msgstr "تمكين إعادة توجيه لغة المتصفح"
-
-#: wext-static-publisher/includes/class-admin.php:1659
-msgid "Supported Language Codes"
-msgstr "رموز اللغات المدعومة"
-
-#: wext-static-publisher/includes/class-admin.php:1661
-msgid "Write one language per line. These codes in WordPress"
-msgstr "اكتب لغة واحدة في كل سطر. هذه الرموز في ووردبريس"
-
-#: wext-static-publisher/includes/class-admin.php:1661
-msgid "There should be equivalents like this."
-msgstr "يجب أن يكون هناك معادلات مثل هذا."
-
-#: wext-static-publisher/includes/class-admin.php:1664
-msgid "Default Language"
-msgstr "اللغة الافتراضية"
-
-#: wext-static-publisher/includes/class-admin.php:1666
-msgid "If the browser language is not supported, this language is opened."
-msgstr "إذا كانت لغة المتصفح غير مدعومة، فسيتم فتح هذه اللغة."
-
-#: wext-static-publisher/includes/class-admin.php:1668
-msgid "Language Preference Period"
-msgstr "فترة تفضيل اللغة"
-
-#: wext-static-publisher/includes/class-admin.php:1671
-msgid "day"
-msgstr "يوم"
-
-#: wext-static-publisher/includes/class-admin.php:1673
-msgid ""
-"The language that the user explicitly visited is preserved for subsequent "
-"logins."
-msgstr ""
-"يتم الاحتفاظ باللغة التي زارها المستخدم بشكل صريح لعمليات تسجيل الدخول "
-"اللاحقة."
-
-#: wext-static-publisher/includes/class-admin.php:1676
-msgid "The redirect is only for the site"
-msgstr "إعادة التوجيه للموقع فقط"
-
-#: wext-static-publisher/includes/class-admin.php:1676
-msgid "It works at. Direct links containing languages ​​are not changed."
-msgstr "يعمل لدى. الروابط المباشرة التي تحتوي على اللغات لا تتغير."
-
-#: wext-static-publisher/includes/class-admin.php:1678
-msgid "Save Language Settings"
-msgstr "حفظ إعدادات اللغة"
-
-#: wext-static-publisher/includes/class-admin.php:1687
-#: wext-static-publisher/includes/class-admin.php:1718
-msgid "Static Search"
-msgstr "بحث ثابت"
-
-#: wext-static-publisher/includes/class-admin.php:1688
-#: wext-static-publisher/includes/class-admin.php:1737
-msgid "Indexing Selectors"
-msgstr "محددات الفهرسة"
-
-#: wext-static-publisher/includes/class-admin.php:1689
-#: wext-static-publisher/includes/class-admin.php:1750
-msgid "Fuse.js"
-msgstr "Fuse.js"
-
-#: wext-static-publisher/includes/class-admin.php:1696
-msgid ""
-"Configure static site search that doesn't require a server, powered by "
-"Fuse.js."
-msgstr "قم بتكوين بحث موقع ثابت لا يتطلب خادمًا، مدعومًا بـ Fuse.js."
-
-#: wext-static-publisher/includes/class-admin.php:1718
-msgid ""
-"The search page, index and necessary Fuse.js files are added to the export "
-"ZIP."
-msgstr ""
-"تتم إضافة صفحة البحث والفهرس وملفات Fuse.js الضرورية إلى ملف ZIP للتصدير."
-
-#: wext-static-publisher/includes/class-admin.php:1719
-msgid "Enable static search"
-msgstr "تمكين البحث الثابت"
-
-#: wext-static-publisher/includes/class-admin.php:1725
-msgid "Search Page Path"
-msgstr "مسار صفحة البحث"
-
-#: wext-static-publisher/includes/class-admin.php:1725
-#: wext-static-publisher/includes/class-admin.php:1740
-#: wext-static-publisher/includes/class-admin.php:1741
-msgid "Example:"
-msgstr "مثال:"
-
-#: wext-static-publisher/includes/class-admin.php:1726
-msgid "Number of Results to Show"
-msgstr "عدد النتائج المراد عرضها"
-
-#: wext-static-publisher/includes/class-admin.php:1727
-msgid "Minimum Search Characters"
-msgstr "الحد الأدنى من أحرف البحث"
-
-#: wext-static-publisher/includes/class-admin.php:1728
-msgid "Content Character Limit"
-msgstr "الحد الأقصى لعدد أحرف المحتوى"
-
-#: wext-static-publisher/includes/class-admin.php:1728
-msgid "Maximum text length to be indexed from each page."
-msgstr "الحد الأقصى لطول النص الذي سيتم فهرسته من كل صفحة."
-
-#: wext-static-publisher/includes/class-admin.php:1729
-msgid "Blur Threshold"
-msgstr "عتبة طمس"
-
-#: wext-static-publisher/includes/class-admin.php:1729
-msgid ""
-"A lower value gives a more precise result, a higher value gives a more "
-"tolerant result."
-msgstr ""
-"القيمة المنخفضة تعطي نتيجة أكثر دقة، والقيمة الأعلى تعطي نتيجة أكثر تسامحًا."
-
-#: wext-static-publisher/includes/class-admin.php:1730
-msgid "Word Matching"
-msgstr "مطابقة الكلمات"
-
-#: wext-static-publisher/includes/class-admin.php:1730
-msgid "Match all words"
-msgstr "تطابق جميع الكلمات"
-
-#: wext-static-publisher/includes/class-admin.php:1730
-msgid "Match any word"
-msgstr "تطابق أي كلمة"
-
-#: wext-static-publisher/includes/class-admin.php:1737
-msgid ""
-"Determine which fields to take from the page and post HTML with the CSS "
-"selector."
-msgstr "حدد الحقول التي سيتم أخذها من الصفحة ونشر HTML باستخدام محدد CSS."
-
-#: wext-static-publisher/includes/class-admin.php:1740
-msgid "CSS Selector For Title"
-msgstr "محدد CSS للعنوان"
-
-#: wext-static-publisher/includes/class-admin.php:1740
-#: wext-static-publisher/includes/class-admin.php:1741
-msgid "or"
-msgstr "أو"
-
-#: wext-static-publisher/includes/class-admin.php:1741
-msgid "CSS Selector for Content"
-msgstr "محدد CSS للمحتوى"
-
-#: wext-static-publisher/includes/class-admin.php:1742
-msgid "CSS Selector for Summary"
-msgstr "محدد CSS للملخص"
-
-#: wext-static-publisher/includes/class-admin.php:1742
-msgid ""
-"If the field is not found, a short summary is automatically generated from "
-"the content."
-msgstr "إذا لم يتم العثور على الحقل، فسيتم إنشاء ملخص قصير تلقائيًا من المحتوى."
-
-#: wext-static-publisher/includes/class-admin.php:1743
-msgid "URLs to Exclude from Indexing"
-msgstr "عناوين URL المطلوب استبعادها من الفهرسة"
-
-#: wext-static-publisher/includes/class-admin.php:1743
-msgid "You can type the full URL, URL fragment, or word per line."
-msgstr "يمكنك كتابة عنوان URL الكامل أو جزء عنوان URL أو كلمة في كل سطر."
-
-#: wext-static-publisher/includes/class-admin.php:1750
-msgid ""
-"Select the fields to search and determine their impact on the result ranking."
-msgstr "حدد الحقول المراد البحث فيها وحدد تأثيرها على تصنيف النتائج."
-
-#: wext-static-publisher/includes/class-admin.php:1755
-msgid "Title"
-msgstr "عنوان"
-
-#: wext-static-publisher/includes/class-admin.php:1755
-msgid "Shows title matches at the top."
-msgstr "يظهر تطابقات العنوان في الأعلى."
-
-#: wext-static-publisher/includes/class-admin.php:1756
-msgid "Summary"
-msgstr "ملخص"
-
-#: wext-static-publisher/includes/class-admin.php:1756
-msgid "Searches in the text of the tagline and summary."
-msgstr "البحث في نص الشعار والملخص."
-
-#: wext-static-publisher/includes/class-admin.php:1757
-msgid "It searches in the main text of the page and article."
-msgstr "يقوم بالبحث في النص الرئيسي للصفحة والمقال."
-
-#: wext-static-publisher/includes/class-admin.php:1758
-msgid "Category and Tags"
-msgstr "الفئة والعلامات"
-
-#: wext-static-publisher/includes/class-admin.php:1758
-msgid "WordPress adds category and tag names to the index."
-msgstr "يضيف WordPress أسماء الفئات والعلامات إلى الفهرس."
-
-#: wext-static-publisher/includes/class-admin.php:1765
-msgid "Weight"
-msgstr "وزن"
-
-#: wext-static-publisher/includes/class-admin.php:1772
-msgid "Save Search Settings"
-msgstr "حفظ إعدادات البحث"
-
-#: wext-static-publisher/includes/class-admin.php:1783
-msgid "Directory"
-msgstr "الدليل"
-
-#: wext-static-publisher/includes/class-admin.php:1784
-#: wext-static-publisher/includes/class-admin.php:1854
-msgid "Traces"
-msgstr "الآثار"
-
-#: wext-static-publisher/includes/class-admin.php:1785
-#: wext-static-publisher/includes/class-admin.php:1887
-msgid "Static Outputs"
-msgstr "المخرجات الثابتة"
-
-#: wext-static-publisher/includes/class-admin.php:1790
-msgid ""
-"Specify which WordPress-specific directory and path names will be used in "
-"static output. Source WordPress files are not modified."
+#: wext-static-publisher/includes/class-rank-math-integration.php:140
+msgid "Rank Math sitemap could not be exported."
 msgstr ""
-"حدد أسماء الدليل والمسارات الخاصة بـ WordPress والتي سيتم استخدامها في "
-"الإخراج الثابت. لا يتم تعديل ملفات WordPress المصدر."
-
-#: wext-static-publisher/includes/class-admin.php:1807
-msgid "WP-Content Directory"
-msgstr "دليل محتوى WP"
-
-#: wext-static-publisher/includes/class-admin.php:1809
-#: wext-static-publisher/includes/class-admin.php:1815
-#: wext-static-publisher/includes/class-admin.php:1821
-#: wext-static-publisher/includes/class-admin.php:1827
-#: wext-static-publisher/includes/class-admin.php:1833
-#: wext-static-publisher/includes/class-admin.php:1845
-msgid "In the static output"
-msgstr "في المخرجات الثابتة"
-
-#: wext-static-publisher/includes/class-admin.php:1809
-#: wext-static-publisher/includes/class-admin.php:1815
-msgid "The name to replace the directory."
-msgstr "الاسم الذي سيحل محل الدليل."
-
-#: wext-static-publisher/includes/class-admin.php:1813
-msgid "WP-Includes Directory"
-msgstr "WP-يتضمن الدليل"
-
-#: wext-static-publisher/includes/class-admin.php:1819
-msgid "Uploads Directory"
-msgstr "دليل التحميلات"
-
-#: wext-static-publisher/includes/class-admin.php:1821
-#: wext-static-publisher/includes/class-admin.php:1827
-#: wext-static-publisher/includes/class-admin.php:1833
-msgid "The subdirectory to use in place of the path."
-msgstr "الدليل الفرعي الذي سيتم استخدامه بدلاً من المسار."
-
-#: wext-static-publisher/includes/class-admin.php:1825
-msgid "Plugins Directory"
-msgstr "دليل الإضافات"
-
-#: wext-static-publisher/includes/class-admin.php:1831
-msgid "Themes Directory"
-msgstr "دليل المواضيع"
-
-#: wext-static-publisher/includes/class-admin.php:1837
-msgid "Theme Style File"
-msgstr "ملف نمط الموضوع"
-
-#: wext-static-publisher/includes/class-admin.php:1839
-msgid "in active theme"
-msgstr "في الموضوع النشط"
-
-#: wext-static-publisher/includes/class-admin.php:1839
-msgid "The name of the file in the static output."
-msgstr "اسم الملف في الإخراج الثابت."
-
-#: wext-static-publisher/includes/class-admin.php:1843
-msgid "Author URL"
-msgstr "عنوان URL للمؤلف"
-
-#: wext-static-publisher/includes/class-admin.php:1845
-msgid "The path to be used instead of the path."
-msgstr "المسار الذي سيتم استخدامه بدلاً من المسار."
-
-#: wext-static-publisher/includes/class-admin.php:1855
-msgid "Removes selected WordPress identifiers from static HTML output."
-msgstr "يزيل معرفات WordPress المحددة من مخرجات HTML الثابتة."
-
-#: wext-static-publisher/includes/class-admin.php:1860
-msgid "Hide WordPress Version"
-msgstr "إخفاء نسخة ووردبريس"
-
-#: wext-static-publisher/includes/class-admin.php:1860
-msgid ""
-"Removes asset version parameters that specify the WordPress core version."
-msgstr "يزيل معلمات إصدار الأصول التي تحدد الإصدار الأساسي لـ WordPress."
-
-#: wext-static-publisher/includes/class-admin.php:1861
-msgid "Hide WordPress Generator Meta Tag"
-msgstr "إخفاء العلامة التعريفية لمولد WordPress"
-
-#: wext-static-publisher/includes/class-admin.php:1861
-msgid "It removes the generator meta tag that describes the WordPress version."
-msgstr "يقوم بإزالة علامة تعريف المولد التي تصف إصدار WordPress."
 
-#: wext-static-publisher/includes/class-admin.php:1862
-msgid "Hide WordPress DNS Prefetch Connection"
-msgstr "إخفاء اتصال الجلب المسبق لـ DNS في WordPress"
-
-#: wext-static-publisher/includes/class-admin.php:1862
-msgid "Removes DNS prefetch connections for WordPress services."
-msgstr "يزيل اتصالات الجلب المسبق لـ DNS لخدمات WordPress."
-
-#: wext-static-publisher/includes/class-admin.php:1863
-msgid "Hide RSD Header Link"
-msgstr "إخفاء رابط رأس RSD"
-
-#: wext-static-publisher/includes/class-admin.php:1863
-msgid "Really Simple Removes the Discovery link from static HTML."
-msgstr "حقا بسيط يزيل رابط الاكتشاف من HTML الثابت."
-
-#: wext-static-publisher/includes/class-admin.php:1888
-msgid "Cleans up unused WordPress links and scripts on the static site."
-msgstr "ينظف روابط ونصوص WordPress غير المستخدمة على الموقع الثابت."
-
-#: wext-static-publisher/includes/class-admin.php:1893
-msgid "Disable XML-RPC Links"
-msgstr "تعطيل روابط XML-RPC"
-
-#: wext-static-publisher/includes/class-admin.php:1893
-msgid "Removes XML-RPC and pingback discovery connections."
-msgstr "يزيل اتصالات اكتشاف XML-RPC وpingback."
-
-#: wext-static-publisher/includes/class-admin.php:1894
-msgid "Disable Embed Scripts"
-msgstr "تعطيل تضمين البرامج النصية"
-
-#: wext-static-publisher/includes/class-admin.php:1894
-msgid "Removes WordPress embed scripts from static HTML."
-msgstr "يزيل البرامج النصية المضمنة في WordPress من HTML الثابت."
-
-#: wext-static-publisher/includes/class-admin.php:1895
-msgid "Disable Frontend DB Debug Information"
-msgstr "تعطيل معلومات تصحيح قاعدة بيانات الواجهة الأمامية"
-
-#: wext-static-publisher/includes/class-admin.php:1895
-msgid ""
-"It only prevents database error details from being shown in export requests."
-msgstr "إنه يمنع فقط ظهور تفاصيل خطأ قاعدة البيانات في طلبات التصدير."
-
-#: wext-static-publisher/includes/class-admin.php:1896
-msgid "Disable WLW Manifest Link"
-msgstr "تعطيل رابط بيان WLW"
-
-#: wext-static-publisher/includes/class-admin.php:1896
-msgid "Windows Live Writer removes the manifest link."
-msgstr "يقوم Windows Live Writer بإزالة رابط البيان."
-
-#: wext-static-publisher/includes/class-admin.php:1897
-msgid "Disable Emoji Scripts"
-msgstr "تعطيل البرامج النصية للرموز التعبيرية"
-
-#: wext-static-publisher/includes/class-admin.php:1897
-msgid "Removes WordPress emoji scripts and styles from static HTML."
-msgstr "يزيل نصوص وأنماط WordPress emoji من HTML الثابت."
-
-#: wext-static-publisher/includes/class-admin.php:1916
-msgid "Save Hide Settings"
-msgstr "حفظ إخفاء الإعدادات"
-
-#: wext-static-publisher/includes/class-admin.php:1942
-#, php-format
-msgid "%1$d of %2$d checks passed."
-msgstr "تم اجتياز اختبارات %1$d من %2$d."
-
-#: wext-static-publisher/includes/class-admin.php:1942
-msgid "Last checked:"
-msgstr "آخر فحص:"
-
-#: wext-static-publisher/includes/class-admin.php:1947
-msgid "Check Again"
-msgstr "تحقق مرة أخرى"
-
-#: wext-static-publisher/includes/class-admin.php:1953
-msgid "Diagnostics checks have been updated."
-msgstr "تم تحديث عمليات التحقق من التشخيص."
-
-#: wext-static-publisher/includes/class-admin.php:1964
-msgid "Passed"
-msgstr "اجتاز"
-
-#: wext-static-publisher/includes/class-admin.php:1988
-msgid ""
-"It was developed to convert your WordPress site into static files and "
-"prepare them for publication processes."
+#: wext-static-publisher/includes/class-rank-math-integration.php:163
+msgid "Rank Math robots.txt could not be exported."
 msgstr ""
-"تم تطويره لتحويل موقع WordPress الخاص بك إلى ملفات ثابتة وإعدادها لعمليات "
-"النشر."
-
-#: wext-static-publisher/includes/class-admin.php:1993
-msgid "Version Number"
-msgstr "رقم الإصدار"
-
-#: wext-static-publisher/includes/class-admin.php:1997
-msgid "Support Email"
-msgstr "دعم البريد الإلكتروني"
-
-#: wext-static-publisher/includes/class-admin.php:2001
-msgid "Plugin Website"
-msgstr "موقع البرنامج المساعد"
 
 #: wext-static-publisher/includes/class-rest-controller.php:89
 #: wext-static-publisher/includes/class-rest-controller.php:103
@@ -1918,35 +2479,28 @@ msgstr ""
 msgid "The deployment build checksum does not match the export."
 msgstr ""
 
-#: wext-static-publisher/includes/class-static-search.php:115
-msgid "No results matched your search."
-msgstr "لا توجد نتائج مطابقة لبحثك."
+#: wext-static-publisher/includes/class-secret-store.php:33
+msgid "The secret could not be encrypted. Enable Sodium or OpenSSL in PHP."
+msgstr ""
 
-#: wext-static-publisher/includes/class-static-search.php:116
-#, php-format
-msgid "%d results shown."
-msgstr "%d تم عرض النتائج."
+#: wext-static-publisher/includes/class-secret-store.php:63
+#: wext-static-publisher/includes/class-secret-store.php:74
+#: wext-static-publisher/includes/class-secret-store.php:93
+msgid "The saved secret is invalid. Save the connection again."
+msgstr ""
 
-#: wext-static-publisher/includes/class-static-search.php:117
-#, php-format
-msgid "Enter at least %d characters to search."
-msgstr "أدخل %d حرفًا على الأقل للبحث."
+#: wext-static-publisher/includes/class-secret-store.php:69
+msgid "PHP Sodium is required to read the saved secret."
+msgstr ""
 
-#: wext-static-publisher/includes/class-static-search.php:118
-msgid "The search index could not be loaded. Please try again later."
-msgstr "تعذر تحميل فهرس البحث. يرجى المحاولة مرة أخرى في وقت لاحق."
+#: wext-static-publisher/includes/class-secret-store.php:80
+#: wext-static-publisher/includes/class-secret-store.php:105
+msgid "The saved secret could not be decrypted. Save the connection again."
+msgstr ""
 
-#: wext-static-publisher/includes/class-static-search.php:251
-msgid "Home"
-msgstr "بيت"
-
-#: wext-static-publisher/includes/class-static-search.php:252
-msgid "Search This Site"
-msgstr "ابحث في هذا الموقع"
-
-#: wext-static-publisher/includes/class-static-search.php:253
-msgid "Enter a search term..."
-msgstr "أدخل مصطلح البحث..."
+#: wext-static-publisher/includes/class-secret-store.php:88
+msgid "PHP OpenSSL is required to read the saved secret."
+msgstr ""
 
 #: wext-static-publisher/includes/class-seo-toolkit.php:191
 msgid "HTML could not be parsed."
@@ -2026,6 +2580,14 @@ msgstr ""
 
 #: wext-static-publisher/includes/class-seo-toolkit.php:708
 msgid "Product structured data has no offers, review, or aggregate rating."
+msgstr ""
+
+#: wext-static-publisher/includes/class-seopress-integration.php:161
+msgid "SEOPress sitemap could not be exported."
+msgstr ""
+
+#: wext-static-publisher/includes/class-seopress-integration.php:183
+msgid "SEOPress robots.txt could not be exported."
 msgstr ""
 
 #: wext-static-publisher/includes/class-sftp-deployer.php:71
@@ -2156,820 +2718,32 @@ msgstr ""
 msgid "The SFTP connection options could not be configured."
 msgstr ""
 
-#: wext-static-publisher/includes/class-plugin.php:374
-msgid "Export job queued."
-msgstr "مهمة التصدير في قائمة الانتظار."
+#: wext-static-publisher/includes/class-static-search.php:115
+msgid "No results matched your search."
+msgstr "لا توجد نتائج مطابقة لبحثك."
 
-#: wext-static-publisher/includes/class-plugin.php:448
-msgid ""
-"The export job has been in the queue for more than 90 seconds. Check WP-Cron "
-"or server loopback requests."
-msgstr ""
-"ظلت مهمة التصدير في قائمة الانتظار لأكثر من 90 ثانية. تحقق من طلبات استرجاع "
-"WP-Cron أو الخادم."
-
-#: wext-static-publisher/includes/class-plugin.php:454
-msgid ""
-"The export job has been running longer than expected. Check server error "
-"logs and PHP uptime limit."
-msgstr ""
-"تم تشغيل مهمة التصدير لفترة أطول من المتوقع. تحقق من سجلات أخطاء الخادم "
-"والحد الأقصى لوقت تشغيل PHP."
-
-#: wext-static-publisher/includes/class-plugin.php:609
-msgid "The automatic export job is queued."
-msgstr "تم وضع مهمة التصدير التلقائية في قائمة الانتظار."
-
-#: wext-static-publisher/includes/class-plugin.php:638
-#, fuzzy, php-format
-msgid "[Wext Static Publisher] Automatic SFTP upload failed: %s"
-msgstr "[ناشر Wext Static] تعذر إرسال خطاف الويب الخاص بالنشر."
-
-#: wext-static-publisher/includes/class-plugin.php:722
-msgid "[Wext Static Publisher] Some old export archives could not be deleted."
-msgstr "[ناشر Wext Static] لا يمكن حذف بعض أرشيفات التصدير القديمة."
-
-#: wext-static-publisher/includes/class-plugin.php:766
-msgid "Deployment workflow could not be started."
-msgstr ""
-
-#: wext-static-publisher/includes/class-plugin.php:768
-msgid "[Wext Static Publisher] Deployment webhook could not be sent."
-msgstr "[ناشر Wext Static] تعذر إرسال خطاف الويب الخاص بالنشر."
-
-#: wext-static-publisher/includes/class-plugin.php:792
+#: wext-static-publisher/includes/class-static-search.php:116
 #, php-format
-msgid "Export completed: %d URL"
-msgstr "اكتمل التصدير: عنوان URL لـ %d"
+msgid "%d results shown."
+msgstr "%d تم عرض النتائج."
 
-#: wext-static-publisher/includes/class-block-seo-integration.php:158
+#: wext-static-publisher/includes/class-static-search.php:117
 #, php-format
-msgid "%s sitemap could not be exported."
-msgstr ""
-
-#: wext-static-publisher/includes/class-block-seo-integration.php:180
-#, php-format
-msgid "%s robots.txt could not be exported."
-msgstr ""
-
-#: wext-static-publisher/includes/class-diagnostics.php:75
-#, php-format
-msgid "Site URL accessible (HTTP %d): %s"
-msgstr "يمكن الوصول إلى عنوان URL للموقع (HTTP %d): %s"
-
-#: wext-static-publisher/includes/class-diagnostics.php:77
-msgid "Site URL unreachable:"
-msgstr "لا يمكن الوصول إلى عنوان URL للموقع:"
-
-#: wext-static-publisher/includes/class-diagnostics.php:78
-#, php-format
-msgid "Site URL returned an unexpected HTTP %d response: %s"
-msgstr "عرض عنوان URL للموقع استجابة HTTP %d غير متوقعة: %s"
-
-#: wext-static-publisher/includes/class-diagnostics.php:81
-msgid "Server"
-msgstr "الخادم"
-
-#: wext-static-publisher/includes/class-diagnostics.php:84
-msgid "PHP Version"
-msgstr "نسخة PHP"
-
-#: wext-static-publisher/includes/class-diagnostics.php:87
-#, php-format
-msgid "PHP 8.1 or above can be used. Current version: %s."
-msgstr "يمكن استخدام PHP 8.1 أو أعلى. الإصدار الحالي: %s."
-
-#: wext-static-publisher/includes/class-diagnostics.php:88
-#, php-format
-msgid "PHP 8.1 or above required. Current version: %s."
-msgstr "مطلوب PHP 8.1 أو أعلى. الإصدار الحالي: %s."
-
-#: wext-static-publisher/includes/class-diagnostics.php:92
-msgid "Basic Auth"
-msgstr "المصادقة الأساسية"
-
-#: wext-static-publisher/includes/class-diagnostics.php:95
-msgid ""
-"Basic Auth appears to be enabled; static scan may stop at authentication."
-msgstr "يبدو أن المصادقة الأساسية ممكّنة؛ قد يتوقف الفحص الثابت عند المصادقة."
-
-#: wext-static-publisher/includes/class-diagnostics.php:96
-msgid "Basic Auth is not enabled."
-msgstr "لم يتم تمكين المصادقة الأساسية."
-
-#: wext-static-publisher/includes/class-diagnostics.php:100
-msgid "PHP-XML"
-msgstr "PHP-XML"
-
-#: wext-static-publisher/includes/class-diagnostics.php:102
-msgid "php-xml can be used."
-msgstr "يمكن استخدام php-xml."
-
-#: wext-static-publisher/includes/class-diagnostics.php:102
-msgid "php-xml unavailable; Enable the DOMDocument plugin."
-msgstr "PHP-XML غير متوفر؛ تمكين البرنامج المساعد DOMDocument."
-
-#: wext-static-publisher/includes/class-diagnostics.php:106
-msgid "cURL"
-msgstr "حليقة"
-
-#: wext-static-publisher/includes/class-diagnostics.php:108
-msgid "cURL can be used."
-msgstr "يمكن استخدام الضفيرة."
-
-#: wext-static-publisher/includes/class-diagnostics.php:108
-msgid "cURL unavailable; Enable the PHP cURL extension."
-msgstr "الضفيرة غير متوفرة؛ قم بتمكين ملحق PHP cURL."
-
-#: wext-static-publisher/includes/class-diagnostics.php:112
-msgid "SFTP Client"
-msgstr ""
-
-#: wext-static-publisher/includes/class-diagnostics.php:115
-msgid "The bundled SFTP client is available."
-msgstr ""
-
-#: wext-static-publisher/includes/class-diagnostics.php:116
-msgid ""
-"No SFTP client is available. Reinstall the complete plugin package to use "
-"SFTP deploy."
-msgstr ""
-
-#: wext-static-publisher/includes/class-diagnostics.php:120
-msgid "Docker / Site URL"
-msgstr "عامل الميناء / عنوان URL للموقع"
-
-#: wext-static-publisher/includes/class-diagnostics.php:125
-msgid "WordPress"
-msgstr "ووردبريس"
-
-#: wext-static-publisher/includes/class-diagnostics.php:128
-msgid "Permalinks"
-msgstr "الروابط الدائمة"
-
-#: wext-static-publisher/includes/class-diagnostics.php:131
-msgid "WordPress permalink structure is set."
-msgstr "تم تعيين بنية الرابط الثابت في WordPress."
-
-#: wext-static-publisher/includes/class-diagnostics.php:132
-msgid ""
-"Permanent links have a flat structure; Select a structure in Settings > "
-"Permalinks."
-msgstr ""
-"الروابط الدائمة لها بنية مسطحة؛ حدد بنية في الإعدادات > الروابط الدائمة."
-
-#: wext-static-publisher/includes/class-diagnostics.php:136
-msgid "Indexability"
-msgstr "الفهرسة"
-
-#: wext-static-publisher/includes/class-diagnostics.php:139
-msgid ""
-"The setting that prevents search engines from indexing the site is turned "
-"off."
-msgstr "تم إيقاف الإعداد الذي يمنع محركات البحث من فهرسة الموقع."
-
-#: wext-static-publisher/includes/class-diagnostics.php:140
-msgid "The setting that prevents search engines from indexing the site is on."
-msgstr "تم تفعيل الإعداد الذي يمنع محركات البحث من فهرسة الموقع."
-
-#: wext-static-publisher/includes/class-diagnostics.php:144
-msgid "Cache"
-msgstr "مخبأ"
-
-#: wext-static-publisher/includes/class-diagnostics.php:147
-msgid "WordPress page caching is disabled."
-msgstr "تم تعطيل التخزين المؤقت لصفحة WordPress."
-
-#: wext-static-publisher/includes/class-diagnostics.php:148
-msgid "WP_CACHE enabled; Verify that no stale content is served during export."
-msgstr "تم تمكين WP_CACHE؛ تأكد من عدم تقديم أي محتوى قديم أثناء التصدير."
-
-#: wext-static-publisher/includes/class-diagnostics.php:152
-msgid "WP-CRON"
-msgstr "الفسفور الأبيض-كرون"
-
-#: wext-static-publisher/includes/class-diagnostics.php:155
-msgid "WordPress cron is available."
-msgstr "وورد كرون متاح."
-
-#: wext-static-publisher/includes/class-diagnostics.php:156
-msgid "WordPress cron disabled; Scheduled export jobs may not run."
-msgstr "تم تعطيل WordPress cron؛ قد لا يتم تشغيل مهام التصدير المجدولة."
-
-#: wext-static-publisher/includes/class-diagnostics.php:159
-msgid "Plugins"
-msgstr "الإضافات"
-
-#: wext-static-publisher/includes/class-diagnostics.php:162
-msgid "Incompatible Plugins"
-msgstr "الإضافات غير المتوافقة"
-
-#: wext-static-publisher/includes/class-diagnostics.php:165
-msgid "No active incompatible plugins found."
-msgstr "لم يتم العثور على مكونات إضافية نشطة غير متوافقة."
-
-#: wext-static-publisher/includes/class-diagnostics.php:166
-msgid "Active plugins that may block static scanning:"
-msgstr "المكونات الإضافية النشطة التي قد تمنع المسح الثابت:"
-
-#: wext-static-publisher/includes/class-diagnostics.php:169
-msgid "File System"
-msgstr "نظام الملفات"
-
-#: wext-static-publisher/includes/class-diagnostics.php:172
-msgid "Temporary Directory Readable"
-msgstr "دليل مؤقت قابل للقراءة"
-
-#: wext-static-publisher/includes/class-diagnostics.php:175
-#, php-format
-msgid "The web server is able to read the temporary directory: %s"
-msgstr "خادم الويب قادر على قراءة الدليل المؤقت: %s"
-
-#: wext-static-publisher/includes/class-diagnostics.php:176
-#, php-format
-msgid "Web server cannot read temporary directory: %s"
-msgstr "لا يمكن لخادم الويب قراءة الدليل المؤقت: %s"
-
-#: wext-static-publisher/includes/class-diagnostics.php:180
-msgid "Temporary Directory Writable"
-msgstr "دليل مؤقت قابل للكتابة"
-
-#: wext-static-publisher/includes/class-diagnostics.php:183
-#, php-format
-msgid "The web server is able to write to the temporary directory: %s"
-msgstr "خادم الويب قادر على الكتابة إلى الدليل المؤقت: %s"
-
-#: wext-static-publisher/includes/class-diagnostics.php:184
-#, php-format
-msgid "Web server cannot write to temporary directory: %s"
-msgstr "لا يمكن لخادم الويب الكتابة إلى الدليل المؤقت: %s"
-
-#: wext-static-publisher/includes/class-diagnostics.php:197
-#, php-format
-msgid "MySQL user has %s privilege."
-msgstr "يتمتع مستخدم MySQL بامتياز %s."
-
-#: wext-static-publisher/includes/class-diagnostics.php:198
-#, php-format
-msgid "The MySQL user does not have the %s privilege."
-msgstr "مستخدم MySQL ليس لديه امتياز %s."
-
-#: wext-static-publisher/includes/class-aioseo-integration.php:160
-msgid "All in One SEO sitemap could not be exported."
-msgstr ""
-
-#: wext-static-publisher/includes/class-aioseo-integration.php:183
-msgid "All in One SEO robots.txt could not be exported."
-msgstr ""
-
-#: wext-static-publisher/includes/class-seopress-integration.php:161
-msgid "SEOPress sitemap could not be exported."
-msgstr ""
-
-#: wext-static-publisher/includes/class-seopress-integration.php:183
-msgid "SEOPress robots.txt could not be exported."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:792
-msgid "Publish your site with Easy Setup"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:793
-msgid ""
-"Connect Cloudflare once, then publish changes with one button. GitHub and "
-"technical keys stay hidden."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:795
-msgid "Start Easy Setup"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:973
-msgid "Easy Setup"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:985
-msgid ""
-"Use Easy Setup for one-click publishing. Technical deployment methods remain "
-"available under advanced options."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:991
-msgid "Advanced options"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1118
-msgid "Cloudflare is connected. Your site is ready for one-click publishing."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1120
-msgid "Cloudflare connection was removed from this site."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1122
-msgid "Cloudflare could not be connected. Try again."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1129
-msgid "Recommended"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1130
-msgid "Publish on Cloudflare in three steps"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1130
-msgid "Your site is ready to publish"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1131
-msgid ""
-"Prepare the site files and publish them without managing GitHub, webhooks, "
-"or API keys."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1131
-msgid ""
-"You only connect your Cloudflare account and choose the live address. Wext "
-"handles the technical deployment steps."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1138
-msgid "Site address"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1139
-msgid "Change"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1144
-msgid "Cloudflare account"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1145
-msgid "Connected"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1145
-msgid "Not connected yet"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1151
-msgid "Connect Cloudflare"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1158
-msgid "Publish the site"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1159
-msgid "Site files are prepared, checked, and uploaded automatically."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1168
-msgid "Easy Setup service is not active in this package yet."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1169
-msgid ""
-"The plugin owner must configure the Wext deployment service before customers "
-"can connect Cloudflare."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1170
-msgid "Technical setup"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1180
-msgid "Prepare and Publish Site"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1182
-msgid "View Live Site"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1186
-msgid "Disconnect"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1186
-msgid "Remove the Cloudflare connection from this site?"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1189
-msgid "Use Advanced Setup"
-msgstr ""
-
-#: wext-static-publisher/includes/class-managed-deployer.php:69
-msgid "Easy Setup service is not configured for this plugin package."
-msgstr ""
-
-#: wext-static-publisher/includes/class-managed-deployer.php:86
-msgid "The Cloudflare connection request has expired. Start Easy Setup again."
-msgstr ""
-
-#: wext-static-publisher/includes/class-managed-deployer.php:107
-msgid "Cloudflare connection could not be completed. Try connecting again."
-msgstr ""
-
-#: wext-static-publisher/includes/class-managed-deployer.php:114
-msgid "The deployment service returned an invalid connection response."
-msgstr ""
-
-#: wext-static-publisher/includes/class-managed-deployer.php:161
-msgid "The site package could not be verified before publishing."
-msgstr ""
-
-#: wext-static-publisher/includes/class-managed-deployer.php:198
-msgid ""
-"Cloudflare publishing could not be started. Check the connection and try "
-"again."
-msgstr ""
-
-#: wext-static-publisher/includes/class-secret-store.php:33
-msgid "The secret could not be encrypted. Enable Sodium or OpenSSL in PHP."
-msgstr ""
-
-#: wext-static-publisher/includes/class-secret-store.php:49
-#: wext-static-publisher/includes/class-secret-store.php:60
-#: wext-static-publisher/includes/class-secret-store.php:79
-msgid "The saved secret is invalid. Save the connection again."
-msgstr ""
-
-#: wext-static-publisher/includes/class-secret-store.php:55
-msgid "PHP Sodium is required to read the saved secret."
-msgstr ""
-
-#: wext-static-publisher/includes/class-secret-store.php:66
-#: wext-static-publisher/includes/class-secret-store.php:91
-msgid "The saved secret could not be decrypted. Save the connection again."
-msgstr ""
-
-#: wext-static-publisher/includes/class-secret-store.php:74
-msgid "PHP OpenSSL is required to read the saved secret."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:126
-msgid ""
-"A Live Site Address on a different origin than WordPress is required for "
-"redirect behavior. The 404 behavior was selected instead."
-msgstr "يتطلب سلوك إعادة التوجيه عنوان موقع مباشر من أصل مختلف عن WordPress. تم اختيار سلوك 404 بدلًا منه."
-
-#: wext-static-publisher/includes/class-admin.php:1189
-msgid "Headless CMS"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1547
-#, fuzzy
-msgid "Headless + Static Publisher"
-msgstr "أقسام الناشر الثابتة"
-
-#: wext-static-publisher/includes/class-admin.php:1548
-msgid ""
-"Visitors cannot open the WordPress theme frontend. Signed internal export "
-"requests can still render the homepage, pages, design assets, and menus for "
-"the static site."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1552
-msgid "Headless CMS Mode"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1553
-msgid "Protect the WordPress theme frontend"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1553
-msgid ""
-"WordPress Admin, REST API, media files, cron, and signed static export "
-"requests remain available."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1556
-msgid "Visitor Response"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1558
-msgid "404 Not Found (recommended)"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1559
-msgid "307 Redirect to frontend"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1560
-msgid "410 Gone"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1980
-msgid "307 redirects visitors to the Live Site Address configured in General."
-msgstr "يعيد 307 توجيه الزوار إلى عنوان الموقع المباشر المضبوط في الإعدادات العامة."
-
-#: wext-static-publisher/includes/class-admin.php:1568
-msgid "Redirect Paths"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1569
-msgid "Preserve the requested path when redirecting"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1569
-msgid ""
-"Example: /about/ redirects to the frontend /about/. Query parameters are not "
-"forwarded."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1572
-msgid "Editor Preview"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1573
-msgid "Allow signed-in editors to view the WordPress theme"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1576
-msgid "GraphQL"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1577
-msgid "Allow the /graphql endpoint when WPGraphQL is installed"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1580
-#, fuzzy
-msgid "CMS Indexing"
-msgstr "محددات الفهرسة"
-
-#: wext-static-publisher/includes/class-admin.php:1581
-msgid "Block indexing on the WordPress CMS origin"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1581
-msgid ""
-"Returns noindex headers, disables the CMS sitemap, and disallows crawling "
-"through robots.txt without changing the generated static site."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1584
-msgid "Legacy Publishing"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1585
-#, fuzzy
-msgid "Disable XML-RPC requests"
-msgstr "تعطيل روابط XML-RPC"
-
-#: wext-static-publisher/includes/class-admin.php:1588
-msgid "Comments and Pingbacks"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1589
-msgid "Close comments and pingbacks on the CMS origin"
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php:1592
-#, fuzzy
-msgid "Save Headless CMS Settings"
-msgstr "حفظ إخفاء الإعدادات"
-
-#: wext-static-publisher/includes/class-headless-mode.php:94
-#, fuzzy
-msgid "This WordPress frontend is no longer available."
-msgstr "وورد كرون متاح."
-
-#: wext-static-publisher/includes/class-headless-mode.php:95
-#, fuzzy
-msgid "This WordPress frontend is not available."
-msgstr "وورد كرون متاح."
-
-#: wext-static-publisher/includes/class-headless-mode.php:169
-msgid "XML-RPC is disabled in Headless CMS mode."
-msgstr ""
-
-#: wext-static-publisher/includes/class-managed-deployer.php:69
-msgid "Managed deployment service is not configured for this plugin package."
-msgstr ""
-
-#: wext-static-publisher/includes/class-managed-deployer.php:86
-msgid ""
-"The Cloudflare connection request has expired. Start the connection again."
-msgstr ""
-
-#: wext-static-publisher/includes/class-admin.php
-#, php-format
-msgid "Pro v%s"
-msgstr "Pro v%s"
-
-#: wext-static-publisher/includes/class-admin.php
-msgid "Upgrade to Pro"
-msgstr "Upgrade to Pro"
-
-#: wext-static-publisher/includes/class-admin.php
-msgid "Support"
-msgstr "Support"
-
-#: wext-static-publisher/includes/class-admin.php
-msgid "About sections"
-msgstr "About sections"
-
-#: wext-static-publisher/includes/class-admin.php
-msgid "Wext Support"
-msgstr "Wext Support"
-
-#: wext-static-publisher/includes/class-admin.php
-msgid "Get help with licensing, static publishing, and deployment."
-msgstr "Get help with licensing, static publishing, and deployment."
-
-#: wext-static-publisher/includes/class-admin.php
-msgid "Revoke License"
-msgstr "Revoke License"
-
-#: wext-static-publisher/includes/class-admin.php
-msgid ""
-"Detach this license from this site? Cloudflare publishing will stop, but the "
-"remaining license term will stay available."
-msgstr ""
-"Detach this license from this site? Cloudflare publishing will stop, but the "
-"remaining license term will stay available."
-
-#: wext-static-publisher/includes/class-admin.php
-msgid ""
-"The Wext license was detached from this site. You can use it on this domain "
-"or another domain while it remains valid."
-msgstr ""
-"The Wext license was detached from this site. You can use it on this domain "
-"or another domain while it remains valid."
-
-#: wext-static-publisher/includes/class-managed-deployer.php
-msgid "Activate the license again before detaching it from this site."
-msgstr "Activate the license again before detaching it from this site."
-
-msgid "Connect Cloudflare before changing the deployment URL."
-msgstr ""
-
-msgid ""
-"Enter a public HTTPS deployment URL without a path, query, port, or "
-"credentials."
-msgstr ""
-
-msgid "The saved Wext service credential is invalid. Reconnect Cloudflare."
-msgstr ""
-
-msgid "The deployment service returned an invalid target response."
-msgstr ""
-
-msgid ""
-"Wait for the current Cloudflare deployment to finish before changing the "
-"deployment URL."
-msgstr ""
-
-msgid ""
-"The deployment URL must belong to an active domain in the connected "
-"Cloudflare account."
-msgstr ""
-
-msgid ""
-"The deployment URL already has a conflicting Cloudflare Worker or DNS record."
-msgstr ""
-
-msgid "Cloudflare could not attach the new deployment URL. Try again."
-msgstr ""
-
-msgid ""
-"Cloudflare could not detach the previous deployment URL. No target change "
-"was saved."
-msgstr ""
-
-msgid "Reconnect Cloudflare before changing the deployment URL."
-msgstr ""
-
-msgid ""
-"The deployment URL was changed. Publish again to rebuild the static site for "
-"this address."
-msgstr ""
-
-msgid "Confirm the deployment URL change before saving it."
-msgstr ""
-
-msgid "Change Deployment URL"
-msgstr ""
-
-msgid ""
-"I confirm that the new address belongs to this connected Cloudflare account. "
-"The previous Worker domain will be detached."
-msgstr ""
-
-msgid "Change the deployment URL and detach the previous Worker domain?"
-msgstr ""
-
-msgid "Easy Start"
-msgstr ""
-
-msgid ""
-"Connect Cloudflare, confirm the source and public static domains, then "
-"publish your site without API tokens or Account IDs."
-msgstr ""
-
-msgid "Easy Start progress"
-msgstr ""
-
-msgid "Activate Wext License"
-msgstr ""
-
-msgid "License is active."
-msgstr ""
-
-#, php-format
-msgid "Plan: %s"
-msgstr ""
-
-msgid ""
-"Managed Cloudflare deployment requires an active Wext license. The key is "
-"verified securely and is not stored as plain text."
-msgstr ""
-
-msgid "License key"
-msgstr ""
-
-msgid "Activate and Continue"
-msgstr ""
-
-msgid "Connect Cloudflare Account"
-msgstr ""
-
-#, fuzzy
-msgid "Cloudflare connected"
-msgstr "Cloudflare"
-
-msgid ""
-"Cloudflare credentials remain encrypted in the Wext deployment service and "
-"are never stored in WordPress."
-msgstr ""
-
-msgid ""
-"The secure Wext screen will ask you to authorize Cloudflare, choose the "
-"account, and select the zone and publication domain."
-msgstr ""
-
-msgid "Connect Cloudflare and Continue"
-msgstr ""
-
-msgid ""
-"Refresh the license connection from About > License, then return to Easy "
-"Start."
-msgstr ""
-
-msgid "Confirm Site Domains"
-msgstr ""
-
-msgid "Deployment source (WordPress)"
-msgstr ""
-
-msgid "Wext reads the site from this address during export."
-msgstr ""
-
-#, fuzzy
-msgid "Public static site domain"
-msgstr "تمكين إنشاء موقع ثابت تلقائيًا"
-
-msgid "Cloudflare serves the completed static site from this HTTPS address."
-msgstr ""
-
-msgid "Static site HTTPS address"
-msgstr ""
-
-msgid "I confirm that this domain belongs to the connected Cloudflare account."
-msgstr ""
-
-#, fuzzy
-msgid "Save Static Site Domain"
-msgstr "إنشاء موقع ثابت"
-
-msgid ""
-"The source address comes from WordPress. You will select the static domain "
-"while connecting Cloudflare."
-msgstr ""
-
-#, fuzzy
-msgid "Create and Deploy Static Site"
-msgstr "إنشاء موقع ثابت"
-
-msgid ""
-"Wext will create a fresh static ZIP, verify it, send it to the managed "
-"service, and publish it to the selected Cloudflare domain."
-msgstr ""
-
-#, fuzzy
-msgid "Deployment status"
-msgstr "خطاف الويب للنشر"
-
-msgid "Published address"
-msgstr ""
-
-#, fuzzy
-msgid "Create and Deploy"
-msgstr "تاريخ الإنشاء"
-
-#, fuzzy
-#~ msgid "Frontend Address"
-#~ msgstr "عنوان الموقع المباشر"
+msgid "Enter at least %d characters to search."
+msgstr "أدخل %d حرفًا على الأقل للبحث."
+
+#: wext-static-publisher/includes/class-static-search.php:118
+msgid "The search index could not be loaded. Please try again later."
+msgstr "تعذر تحميل فهرس البحث. يرجى المحاولة مرة أخرى في وقت لاحق."
+
+#: wext-static-publisher/includes/class-static-search.php:251
+msgid "Home"
+msgstr "بيت"
+
+#: wext-static-publisher/includes/class-static-search.php:252
+msgid "Search This Site"
+msgstr "ابحث في هذا الموقع"
+
+#: wext-static-publisher/includes/class-static-search.php:253
+msgid "Enter a search term..."
+msgstr "أدخل مصطلح البحث..."

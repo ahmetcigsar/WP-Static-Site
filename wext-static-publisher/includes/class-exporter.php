@@ -31,7 +31,6 @@ final class Exporter
     private Block_SEO_Integration $seo_framework_integration;
     private Block_SEO_Integration $yoast_integration;
     private SEO_Toolkit $seo_toolkit;
-    private bool $licensed_features;
     private array $seo_toolkit_manifest = [];
     private array $search_documents = [];
 
@@ -41,13 +40,8 @@ final class Exporter
         $this->origin = untrailingslashit(home_url());
         $this->target = untrailingslashit((string) ($settings['target_url'] ?: home_url()));
         $this->maximum_urls = max(10, min(20000, (int) $settings['maximum_urls']));
-        $this->licensed_features = Plugin::license_active();
-        $seo_plugin_settings = $this->licensed_features
-            ? Plugin::seo_plugin_settings()
-            : Plugin::disabled_seo_plugin_settings();
-        $seo_settings = $this->licensed_features
-            ? Plugin::seo_settings()
-            : Plugin::disabled_seo_settings();
+        $seo_plugin_settings = Plugin::seo_plugin_settings();
+        $seo_settings = Plugin::seo_settings();
         $this->hide_replacements = new Hide_Replacements(Plugin::hide_settings());
         $this->static_search = new Static_Search(Plugin::search_settings());
         $this->language_routing = new Language_Routing();
@@ -105,25 +99,23 @@ final class Exporter
             ]);
             $this->reported_progress = 2;
             $this->crawl();
-            if ($this->licensed_features) {
-                $this->rank_math_integration->export_root_files(
+            $this->rank_math_integration->export_root_files(
+                fn (string $path, string $contents) => $this->write_file($path, $contents),
+                fn (string $level, string $message, string $url = '') => $this->add_log($level, $message, $url)
+            );
+            $this->aioseo_integration->export_root_files(
+                fn (string $path, string $contents) => $this->write_file($path, $contents),
+                fn (string $level, string $message, string $url = '') => $this->add_log($level, $message, $url)
+            );
+            $this->seopress_integration->export_root_files(
+                fn (string $path, string $contents) => $this->write_file($path, $contents),
+                fn (string $level, string $message, string $url = '') => $this->add_log($level, $message, $url)
+            );
+            foreach ([$this->surerank_integration, $this->seo_framework_integration, $this->yoast_integration] as $integration) {
+                $integration->export_root_files(
                     fn (string $path, string $contents) => $this->write_file($path, $contents),
                     fn (string $level, string $message, string $url = '') => $this->add_log($level, $message, $url)
                 );
-                $this->aioseo_integration->export_root_files(
-                    fn (string $path, string $contents) => $this->write_file($path, $contents),
-                    fn (string $level, string $message, string $url = '') => $this->add_log($level, $message, $url)
-                );
-                $this->seopress_integration->export_root_files(
-                    fn (string $path, string $contents) => $this->write_file($path, $contents),
-                    fn (string $level, string $message, string $url = '') => $this->add_log($level, $message, $url)
-                );
-                foreach ([$this->surerank_integration, $this->seo_framework_integration, $this->yoast_integration] as $integration) {
-                    $integration->export_root_files(
-                        fn (string $path, string $contents) => $this->write_file($path, $contents),
-                        fn (string $level, string $message, string $url = '') => $this->add_log($level, $message, $url)
-                    );
-                }
             }
             $this->validate_language_outputs();
             if ($this->static_search->enabled()) {
@@ -134,17 +126,15 @@ final class Exporter
                 ]);
                 $this->write_search_files();
             }
-            if ($this->licensed_features) {
-                Plugin::set_status($job_id, 'running', 87, [
-                    'phase' => 'seo-audit',
-                    'status_message' => __('SEO reports and advanced sitemap are being prepared.', 'wext-static-publisher'),
-                    'current_url' => '',
-                ]);
-                $this->seo_toolkit_manifest = $this->seo_toolkit->write_outputs(
-                    fn (string $path, string $contents) => $this->write_file($path, $contents),
-                    $this->build_directory
-                );
-            }
+            Plugin::set_status($job_id, 'running', 87, [
+                'phase' => 'seo-audit',
+                'status_message' => __('SEO reports and advanced sitemap are being prepared.', 'wext-static-publisher'),
+                'current_url' => '',
+            ]);
+            $this->seo_toolkit_manifest = $this->seo_toolkit->write_outputs(
+                fn (string $path, string $contents) => $this->write_file($path, $contents),
+                $this->build_directory
+            );
             Plugin::set_status($job_id, 'running', 88, [
                 'phase' => 'cloudflare-files',
                 'status_message' => __('Cloudflare configuration files are being prepared.', 'wext-static-publisher'),
@@ -296,9 +286,7 @@ final class Exporter
             if ($is_html) {
                 $body = $this->language_routing->inject_x_default($body, $this->target);
                 $body = $this->language_routing->inject_preference_script($body);
-                if ($this->licensed_features) {
-                    $body = $this->seo_toolkit->process_html($body, $url, $relative_path);
-                }
+                $body = $this->seo_toolkit->process_html($body, $url, $relative_path);
             }
 
             $this->write_file($relative_path, $body);
@@ -369,9 +357,6 @@ final class Exporter
     {
         $search_settings = $this->static_search->settings();
         $metadata_group = $this->metadata_group_for_url($base_url);
-        if (! $this->licensed_features) {
-            return $this->discover_and_rewrite_html($html, $base_url);
-        }
         $html = $this->rank_math_integration->process_html(
             $html,
             $this->static_search->enabled(),

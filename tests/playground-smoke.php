@@ -131,7 +131,6 @@ foreach (['headless_enabled', 'headless_frontend_behavior', 'headless_frontend_u
         exit(1);
     }
 }
-update_option(Wext\StaticPublisher\Managed_Deployer::LICENSE_KEY, ['active' => '1'], false);
 $sanitized_settings = Wext\StaticPublisher\Admin::sanitize([
     'target_url' => home_url(),
     'maximum_urls' => 2000,
@@ -426,69 +425,27 @@ foreach (['admin_post_wext_static_sftp_test' => 'test_sftp_connection', 'admin_p
     }
 }
 
-delete_option(Wext\StaticPublisher\Managed_Deployer::LICENSE_KEY);
 wp_set_current_user(1);
 $_GET['tab'] = 'about';
 ob_start();
 Wext\StaticPublisher\Admin::render();
 $about_html = (string) ob_get_clean();
 unset($_GET['tab']);
-
-foreach (['About', 'Version Number', WEXTSTAT_VERSION, 'https://wext.io/', 'about_tab=about', 'about_tab=license', 'about_tab=support', 'Upgrade to Pro'] as $expected) {
+foreach (['About', 'Version Number', WEXTSTAT_VERSION, 'about_tab=about', 'about_tab=support'] as $expected) {
     if (! str_contains($about_html, $expected)) {
-        fwrite(STDERR, "About sekmesinde beklenen içerik bulunamadı: {$expected} (locale=" . determine_locale() . ', direct=' . __('About', 'wext-static-publisher') . ")\n");
-        exit(1);
+        throw new RuntimeException('About sekmesinde beklenen içerik bulunamadı: ' . $expected);
     }
 }
-if (str_contains($about_html, 'Support Email') || str_contains($about_html, 'mailto:')) {
-    fwrite(STDERR, "About kartında Support Email satırı hâlâ gösteriliyor.\n");
-    exit(1);
+if (str_contains($about_html, 'Activate License') || str_contains($about_html, 'Upgrade to Pro')) {
+    throw new RuntimeException('Lisans arayüzü kaldırılmadı.');
 }
-if (! preg_match('/<div class="wrap wextstat-admin">\s*<hr class="wp-header-end">\s*<header class="wextstat-admin-header">/', $about_html)) {
-    fwrite(STDERR, "Global WordPress bildirim sınırı Statik Publisher başlığının önünde değil.\n");
-    exit(1);
-}
-
-$_GET['tab'] = 'about';
-$_GET['about_tab'] = 'license';
-ob_start();
-Wext\StaticPublisher\Admin::render();
-$license_html = (string) ob_get_clean();
-if (! str_contains($license_html, 'Wext License') || ! str_contains($license_html, 'Activate License')) {
-    fwrite(STDERR, "About > License sayfası lisans kartını göstermiyor.\n");
-    exit(1);
-}
-
-$_GET['about_tab'] = 'support';
+$_GET = ['tab' => 'about', 'about_tab' => 'support'];
 ob_start();
 Wext\StaticPublisher\Admin::render();
 $support_html = (string) ob_get_clean();
-if (! str_contains($support_html, 'Wext Support') || ! str_contains($support_html, 'mailto:info@wext.co') || ! str_contains($support_html, 'https://wext.io/')) {
-    fwrite(STDERR, "About > Support sayfası beklenen destek bilgilerini göstermiyor.\n");
-    exit(1);
-}
-
-update_option(Wext\StaticPublisher\Managed_Deployer::LICENSE_KEY, ['active' => '1', 'plan_code' => 'annual'], false);
-$_GET['about_tab'] = 'license';
-ob_start();
-Wext\StaticPublisher\Admin::render();
-$annual_html = (string) ob_get_clean();
-update_option(Wext\StaticPublisher\Managed_Deployer::LICENSE_KEY, ['active' => '1', 'plan_code' => 'lifetime'], false);
-ob_start();
-Wext\StaticPublisher\Admin::render();
-$lifetime_html = (string) ob_get_clean();
-delete_option(Wext\StaticPublisher\Managed_Deployer::LICENSE_KEY);
-unset($_GET['tab'], $_GET['about_tab']);
-if (! str_contains($annual_html, 'Pro v' . WEXTSTAT_VERSION)
-    || ! str_contains($annual_html, 'wextstat-license-badge is-pro')
-    || ! str_contains($annual_html, 'Revoke License')
-    || ! str_contains($annual_html, 'data-wextstat-confirm-label="Revoke License"')
-    || ! str_contains($annual_html, 'wext_static_license_deactivate')
-    || ! str_contains($annual_html, 'wextstat-license-active"><span class="dashicons dashicons-yes-alt" aria-hidden="true"></span><span>Active</span>')
-    || ! str_contains($annual_html, 'wextstat-plan-badge is-annual">Annual</span>')
-    || ! str_contains($lifetime_html, 'wextstat-plan-badge is-lifetime">Lifetime</span>')) {
-    fwrite(STDERR, "Aktif lisans Pro ve versiyon rozetini göstermiyor.\n");
-    exit(1);
+$_GET = [];
+if (! str_contains($support_html, 'Wext Support')) {
+    throw new RuntimeException('About > Support sayfası gösterilmedi.');
 }
 
 $_GET['tab'] = 'files';
@@ -511,96 +468,22 @@ if (! str_contains($files_notice_html, 'deploy_tab=zip')
 }
 
 foreach ([
-    ['tab' => 'deploy', 'deploy_tab' => 'github'],
-    ['tab' => 'deploy', 'deploy_tab' => 'cloudflare'],
-    ['tab' => 'deploy', 'deploy_tab' => 'auto-deploy'],
-    ['tab' => 'seo', 'seo_tab' => 'plugins'],
-] as $locked_query) {
-    $_GET = $locked_query;
+    ['tab' => 'deploy', 'deploy_tab' => 'github', 'form' => 'wextstat-deploy-settings-form'],
+    ['tab' => 'deploy', 'deploy_tab' => 'cloudflare', 'form' => 'wext_static_cloudflare_save'],
+    ['tab' => 'deploy', 'deploy_tab' => 'auto-deploy', 'form' => 'wextstat-automation-form'],
+    ['tab' => 'seo', 'seo_tab' => 'plugins', 'form' => 'wextstat-seo-plugins-form'],
+] as $query) {
+    $_GET = $query;
     ob_start();
     Wext\StaticPublisher\Admin::render();
-    $locked_html = (string) ob_get_clean();
+    $html = (string) ob_get_clean();
     $_GET = [];
-    if (! str_contains($locked_html, 'Active license required')
-        || ! str_contains($locked_html, 'Open License Settings')
-        || ! str_contains($locked_html, 'dashicons-lock')) {
-        fwrite(STDERR, "Lisanssız premium ekranı kilitli gösterilmiyor.\n");
-        exit(1);
-    }
-    foreach (['wextstat-deploy-settings-form', 'wextstat-automation-form', 'wextstat-seo-plugins-form', 'wext_static_managed_connect'] as $forbidden) {
-        if (str_contains($locked_html, $forbidden)) {
-            fwrite(STDERR, "Lisanssız premium ekran kullanılabilir bir form gösteriyor: {$forbidden}\n");
-            exit(1);
-        }
+    if (! str_contains($html, $query['form']) || str_contains($html, 'Active license required')) {
+        throw new RuntimeException('Açık kaynak özellikleri lisanssız kullanılamıyor: ' . $query['form']);
     }
 }
-
-$free_original_settings = Wext\StaticPublisher\Plugin::settings();
-$free_export_settings = $free_original_settings;
-$free_export_settings['target_url'] = 'https://static-free.example.com';
-update_option(Wext\StaticPublisher\Plugin::SETTINGS_KEY, $free_export_settings, false);
-$free_exporter = new Wext\StaticPublisher\Exporter();
-$licensed_features_property = new ReflectionProperty(Wext\StaticPublisher\Exporter::class, 'licensed_features');
-$licensed_features_property->setAccessible(true);
-$process_html_method = new ReflectionMethod(Wext\StaticPublisher\Exporter::class, 'process_html');
-$process_html_method->setAccessible(true);
-[$free_processed_html] = $process_html_method->invoke(
-    $free_exporter,
-    '<html><head><!-- Search Engine Optimization by Rank Math --><meta name="description" content="free"><!-- /Rank Math WordPress SEO plugin --></head><body><a href="' . home_url('/sample/') . '">Sample</a></body></html>',
-    home_url('/')
-);
-if ($licensed_features_property->getValue($free_exporter) !== false
-    || ! str_contains($free_processed_html, 'Search Engine Optimization by Rank Math')
-    || ! str_contains($free_processed_html, 'href="/sample/"')) {
-    fwrite(STDERR, "Lisanssız export Wext SEO işlemesini kapatırken temel statik URL dönüşümünü korumadı.\n");
-    exit(1);
-}
-update_option(Wext\StaticPublisher\Plugin::SETTINGS_KEY, $free_original_settings, false);
-if (Wext\StaticPublisher\REST_Controller::can_use_github()) {
-    fwrite(STDERR, "Lisanssız GitHub REST akışı engellenmedi.\n");
-    exit(1);
-}
-$pre_expired_job_status = Wext\StaticPublisher\Plugin::status();
-Wext\StaticPublisher\Plugin::set_status('expired-license-job', 'queued', 0, ['source' => 'post-updated']);
-Wext\StaticPublisher\Plugin::run_scheduled('expired-license-job');
-$expired_job_status = Wext\StaticPublisher\Plugin::status();
-if (($expired_job_status['state'] ?? '') !== 'failed'
-    || ! str_contains((string) ($expired_job_status['error'] ?? ''), 'active Wext license')) {
-    fwrite(STDERR, "Lisans süresi dolduktan sonra kuyrukta kalan Auto Deploy işi durdurulmadı.\n");
-    exit(1);
-}
-update_option(Wext\StaticPublisher\Plugin::STATUS_KEY, $pre_expired_job_status, false);
-
-$original_license_gate_settings = Wext\StaticPublisher\Plugin::settings();
-$license_gate_settings = $original_license_gate_settings;
-$license_gate_settings['auto_export'] = '1';
-$license_gate_settings['auto_export_post_created'] = '1';
-$license_gate_settings['deployment_webhook_url'] = 'https://api.github.com/repos/example/site/dispatches';
-update_option(Wext\StaticPublisher\Plugin::SETTINGS_KEY, $license_gate_settings, false);
-$status_before_license_gate = Wext\StaticPublisher\Plugin::status();
-Wext\StaticPublisher\Plugin::maybe_schedule_automatic_export('auto_export_post_created', 'license-gate-test');
-if (Wext\StaticPublisher\Plugin::status() !== $status_before_license_gate
-    || Wext\StaticPublisher\Plugin::notify_deployment_webhook('license-gate-job', ['build_sha256' => str_repeat('a', 64)])) {
-    fwrite(STDERR, "Lisanssız Auto Deploy veya GitHub webhook sunucu tarafında engellenmedi.\n");
-    exit(1);
-}
-update_option(Wext\StaticPublisher\Plugin::SETTINGS_KEY, $original_license_gate_settings, false);
-
-update_option(Wext\StaticPublisher\Managed_Deployer::LICENSE_KEY, [
-    'active' => '1',
-    'activation_id' => 'activation-test',
-    'site_id' => 'site-test',
-    'plan_code' => 'pro',
-    'site_limit' => 1,
-    'activated_at' => gmdate('c'),
-], false);
-if (! Wext\StaticPublisher\Plugin::license_active()) {
-    fwrite(STDERR, "Aktif lisans premium özellik kilidini açmadı.\n");
-    exit(1);
-}
-if (! Wext\StaticPublisher\REST_Controller::can_use_github()) {
-    fwrite(STDERR, "Aktif lisans GitHub REST akışını açmadı.\n");
-    exit(1);
+if (! Wext\StaticPublisher\REST_Controller::can_export()) {
+    throw new RuntimeException('GitHub REST akışı lisanssız kullanılamıyor.');
 }
 
 $archive_fixture = [];
@@ -764,10 +647,10 @@ if (! str_contains($settings_html, 'Static Site') || ! str_contains($settings_ht
 }
 
 foreach ([
-    'easy-start' => ['Easy Start', 'Cloudflare Account', 'Site Domains', 'Create and Deploy Static Site'],
+    'easy-start' => ['Easy Start', 'Connect your Cloudflare account', 'Create and Deploy Static Site'],
     'zip' => ['ZIP Files', 'Number of ZIPs to Store', 'Save ZIP Settings', 'value="zip"'],
     'github' => ['GitHub Deployment Webhook', 'Save Deploy Settings'],
-    'cloudflare' => ['License and connection required', 'Cloudflare Connection', 'Cloudflare Deploy', 'Deploy to Cloudflare'],
+    'cloudflare' => ['Cloudflare Connection', 'Cloudflare Deploy', 'Deploy to Cloudflare'],
     'sftp' => ['SFTP Connection', 'Save SFTP Settings', 'Test Connection', 'Upload Latest Static Site'],
     'auto-deploy' => ['Automatic Static Site Creation and Deploy', 'Save Auto Deploy Settings'],
 ] as $deploy_tab => $panel_expectations) {

@@ -45,12 +45,8 @@ final class Plugin
         add_action('admin_post_wext_static_archive_bulk', [Admin::class, 'archive_bulk_action']);
         add_action('admin_post_wext_static_sftp_test', [Admin::class, 'test_sftp_connection']);
         add_action('admin_post_wext_static_sftp_deploy', [Admin::class, 'deploy_latest_with_sftp']);
-        add_action('admin_post_wext_static_license_activate', [Admin::class, 'activate_managed_license']);
-        add_action('admin_post_wext_static_license_deactivate', [Admin::class, 'deactivate_managed_license']);
-        add_action('admin_post_wext_static_managed_connect', [Admin::class, 'connect_managed_cloudflare']);
-        add_action('admin_post_wext_static_managed_callback', [Admin::class, 'complete_managed_cloudflare']);
-        add_action('admin_post_wext_static_managed_target_update', [Admin::class, 'update_managed_cloudflare_target']);
-        add_action('admin_post_wext_static_managed_disconnect', [Admin::class, 'disconnect_managed_cloudflare']);
+        add_action('admin_post_wext_static_cloudflare_save', [Admin::class, 'save_cloudflare_connection']);
+        add_action('admin_post_wext_static_cloudflare_disconnect', [Admin::class, 'disconnect_cloudflare']);
         add_action('update_option_' . self::SETTINGS_KEY, [self::class, 'apply_archive_retention'], 10, 2);
         add_action(self::CRON_HOOK, [self::class, 'run_scheduled'], 10, 1);
         add_action(self::INDEXNOW_CRON_HOOK, [self::class, 'notify_indexnow'], 10, 1);
@@ -113,7 +109,18 @@ final class Plugin
         ]);
 
         self::migrate_legacy_installation();
-        self::repair_managed_deployment_mode();
+        $had_managed_connection = get_option('wext_static_managed_connection', false) !== false;
+        foreach (['wext_static_license', 'wext_static_managed_connection', 'wext_static_installation_id', 'wext_static_callback_deliveries'] as $legacy_option) {
+            delete_option($legacy_option);
+        }
+        if ($had_managed_connection) {
+            delete_option(self::DEPLOYMENT_STATUS_KEY);
+        }
+        $settings = get_option(self::SETTINGS_KEY, []);
+        if (is_array($settings) && array_key_exists('deployment_mode', $settings)) {
+            unset($settings['deployment_mode']);
+            update_option(self::SETTINGS_KEY, $settings, false);
+        }
 
         $administrator = get_role('administrator');
         if ($administrator !== null) {
@@ -126,21 +133,6 @@ final class Plugin
 
         update_option('wext_static_plugin_version', WEXTSTAT_VERSION, false);
         Diagnostics::refresh();
-    }
-
-    public static function repair_managed_deployment_mode(): void
-    {
-        if (! Managed_Deployer::configured()) {
-            return;
-        }
-
-        $settings = self::settings();
-        if ((string) ($settings['deployment_mode'] ?? '') === 'managed') {
-            return;
-        }
-
-        $settings['deployment_mode'] = 'managed';
-        update_option(self::SETTINGS_KEY, $settings, false);
     }
 
     public static function maybe_upgrade(): void
@@ -180,7 +172,6 @@ final class Plugin
             'status',
             'deployment_status',
             'export_dirty',
-            'managed_connection',
             'diagnostics',
             'sftp_status',
         ];
@@ -198,13 +189,6 @@ final class Plugin
 
             if ($suffix === 'settings' && is_array($legacy_value) && ! empty($legacy_value['sftp_password'])) {
                 $legacy_value['sftp_password'] = self::migrate_legacy_secret((string) $legacy_value['sftp_password']);
-            }
-            if ($suffix === 'managed_connection' && is_array($legacy_value)) {
-                foreach (['access_token', 'callback_secret'] as $secret_key) {
-                    if (! empty($legacy_value[$secret_key])) {
-                        $legacy_value[$secret_key] = self::migrate_legacy_secret((string) $legacy_value[$secret_key]);
-                    }
-                }
             }
 
             update_option($new_key, $legacy_value, false);
@@ -284,7 +268,6 @@ final class Plugin
             'excluded_paths' => "/wp-admin/\n/wp-login.php\n/wp-json/\n/feed/",
             'auto_export' => '0',
             'archive_retention' => 5,
-            'deployment_mode' => 'advanced',
             'deployment_webhook_url' => '',
             'deployment_webhook_token' => '',
             'sftp_auto_deploy' => '0',
@@ -331,37 +314,9 @@ final class Plugin
 
     public static function cloudflare_deployment_configured(): bool
     {
-        if (! self::license_active()) {
-            return false;
-        }
         $settings = self::settings();
-        return Managed_Deployer::configured()
+        return Cloudflare_Deployer::configured()
             || (string) ($settings['deployment_webhook_url'] ?? '') !== '';
-    }
-
-    public static function license_active(): bool
-    {
-        return ! empty(Managed_Deployer::public_license()['active']);
-    }
-
-    public static function disabled_seo_plugin_settings(): array
-    {
-        return array_fill_keys(array_keys(self::seo_plugin_defaults()), '0');
-    }
-
-    public static function disabled_seo_settings(): array
-    {
-        $settings = self::seo_defaults();
-        foreach ($settings as $key => $value) {
-            if (is_string($value)) {
-                $settings[$key] = str_contains($key, 'large_') ? $value : '0';
-            }
-        }
-        $settings['redirect_rules'] = '';
-        $settings['noindex_paths'] = '';
-        $settings['x_robots_rules'] = '';
-        $settings['indexnow_key'] = '';
-        return $settings;
     }
 
     public static function hide_defaults(): array
@@ -575,17 +530,6 @@ final class Plugin
 
     public static function run_scheduled(string $job_id): void
     {
-        $status = self::status();
-        $source = ($status['job_id'] ?? '') === $job_id ? (string) ($status['source'] ?? '') : '';
-        if (! in_array($source, ['admin', 'ci-manual', 'manual'], true) && ! self::license_active()) {
-            self::set_status($job_id, 'failed', 100, [
-                'finished_at' => gmdate('c'),
-                'phase' => 'failed',
-                'status_message' => __('An active Wext license is required to run Auto Deploy.', 'wext-static-publisher'),
-                'error' => __('An active Wext license is required to use Auto Deploy.', 'wext-static-publisher'),
-            ]);
-            return;
-        }
         try {
             (new Exporter())->run($job_id);
         } catch (Throwable $error) {
@@ -787,9 +731,6 @@ final class Plugin
 
     public static function maybe_schedule_automatic_export(string $trigger, string $source): void
     {
-        if (! self::license_active()) {
-            return;
-        }
         $settings = self::settings();
         if ((string) $settings['auto_export'] !== '1' || (string) ($settings[$trigger] ?? '0') !== '1') {
             return;
@@ -829,11 +770,12 @@ final class Plugin
 
         $source = (string) (self::status()['source'] ?? '');
         $deployment_succeeded = false;
+        $cloudflare_completed = false;
         $settings = self::settings();
-        if (self::license_active() && $source !== 'ci-manual' && Managed_Deployer::configured()
-            && (string) ($settings['deployment_mode'] ?? '') === 'managed') {
-            $deployment_succeeded = Managed_Deployer::notify_export($job_id, $manifest);
-        } elseif (self::license_active() && $source !== 'ci-manual') {
+        if ($source !== 'ci-manual' && Cloudflare_Deployer::configured()) {
+            $deployment_succeeded = Cloudflare_Deployer::deploy_job($job_id, $manifest);
+            $cloudflare_completed = $deployment_succeeded;
+        } elseif ($source !== 'ci-manual') {
             self::notify_deployment_webhook($job_id, $manifest);
         }
 
@@ -851,7 +793,7 @@ final class Plugin
         }
 
         $seo_settings = self::seo_settings();
-        if ($deployment_succeeded && (string) ($seo_settings['indexnow_enabled'] ?? '0') === '1') {
+        if ($deployment_succeeded && ! $cloudflare_completed && (string) ($seo_settings['indexnow_enabled'] ?? '0') === '1') {
             set_transient('wext_static_indexnow_pending_' . md5($job_id), $manifest, DAY_IN_SECONDS);
             wp_schedule_single_event(time() + 120, self::INDEXNOW_CRON_HOOK, [$job_id]);
         }
@@ -859,9 +801,6 @@ final class Plugin
 
     public static function notify_indexnow(string $job_id): void
     {
-        if (! self::license_active()) {
-            return;
-        }
         $status = self::status();
         $pending_key = 'wext_static_indexnow_pending_' . md5($job_id);
         $pending_manifest = get_transient($pending_key);
@@ -937,9 +876,6 @@ final class Plugin
 
     public static function notify_deployment_webhook(string $job_id, array $manifest): bool
     {
-        if (! self::license_active()) {
-            return false;
-        }
         $settings = self::settings();
         $url = (string) $settings['deployment_webhook_url'];
         if ($url === '') {

@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "wp-statik-deneme",
+  "name": "wext-static-site",
   "compatibility_date": "2026-08-11",
   "main": "./src/worker.mjs",
   "assets": {

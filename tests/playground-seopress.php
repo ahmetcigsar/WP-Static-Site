@@ -11,7 +11,6 @@ $activation = activate_plugin('wext-static-publisher/wext-static-publisher.php')
 if (is_wp_error($activation)) {
     throw new RuntimeException($activation->get_error_message());
 }
-update_option(Wext\StaticPublisher\Managed_Deployer::LICENSE_KEY, ['active' => '1'], false);
 
 $settings = [
     'seopress_enabled' => '1',

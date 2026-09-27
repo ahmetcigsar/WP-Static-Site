@@ -17,7 +17,7 @@ Static search runs locally in the visitor's browser with configurable fields, ra
 
 English is the default interface language. Turkish, Spanish, French, Simplified Chinese, Japanese, Arabic, and Portuguese translations follow the selected WordPress administrator locale.
 
-The plugin's original code is MIT licensed. Bundled third-party components keep their own licenses; see THIRD-PARTY-NOTICES.md and their included license files.
+The plugin's original code is MIT licensed. Bundled third-party components keep their own licenses; see THIRD-PARTY-NOTICES.txt and their included license files.
 
 The human-readable source code and packaging instructions are available at https://github.com/ahmetcigsar/Wext-Static-Publisher .
 

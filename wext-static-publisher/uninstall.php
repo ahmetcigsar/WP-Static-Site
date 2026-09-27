@@ -28,7 +28,7 @@ delete_transient('wext_static_export_lock');
 delete_transient('wext_static_sftp_lock');
 remove_role('wext_static_deployer');
 
-$administrator = get_role('administrator');
-if ($administrator !== null) {
-    $administrator->remove_cap('wext_static_export');
+$wextstat_administrator = get_role('administrator');
+if ($wextstat_administrator !== null) {
+    $wextstat_administrator->remove_cap('wext_static_export');
 }

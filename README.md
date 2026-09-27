@@ -142,7 +142,7 @@ See `docs/ARCHITECTURE.md` for the architecture and limitations.
 
 ## License
 
-Wext Static Publisher's original code and documentation are licensed under the [MIT License](LICENSE). Bundled third-party components retain their own licenses; see [third-party notices](wext-static-publisher/THIRD-PARTY-NOTICES.md) and the license files included with those components.
+Wext Static Publisher's original code and documentation are licensed under the [MIT License](LICENSE). Bundled third-party components retain their own licenses; see [third-party notices](wext-static-publisher/THIRD-PARTY-NOTICES.txt) and the license files included with those components.
 
 ## WordPress.org directory
 

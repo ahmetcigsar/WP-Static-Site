@@ -1,11 +1,12 @@
 <?php
 /**
- * Plugin Name: Wext Static Publisher
+ * Plugin Name: WP Static Publisher
+ * Plugin URI: https://github.com/ahmetcigsar/Wordpress-Static-Site
  * Description: Exports WordPress sites to static files and publishes them to your own Cloudflare Workers account.
- * Version: 3.0.0
+ * Version: 3.0.1
  * Requires at least: 6.5
  * Requires PHP: 8.1
- * Author: Wext
+ * Author: WP Static Publisher Contributors
  * License: GPL-2.0-or-later
  * Text Domain: wext-static-publisher
  * Domain Path: /languages
@@ -17,7 +18,7 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-define('WEXTSTAT_VERSION', '3.0.0');
+define('WEXTSTAT_VERSION', '3.0.1');
 define('WEXTSTAT_FILE', __FILE__);
 define('WEXTSTAT_DIR', plugin_dir_path(__FILE__));
 

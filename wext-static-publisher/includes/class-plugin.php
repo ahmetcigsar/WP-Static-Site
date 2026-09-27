@@ -208,7 +208,7 @@ final class Plugin
         try {
             return Secret_Store::migrate_legacy_ciphertext($encrypted);
         } catch (Throwable $error) {
-            error_log('[Wext Static Publisher] A saved connection secret must be entered again after the brand migration.');
+            error_log('[WP Static Publisher] A saved connection secret must be entered again after the brand migration.');
             return '';
         }
     }
@@ -246,7 +246,7 @@ final class Plugin
         }
 
         if (! @rename($legacy_directory, $new_directory)) {
-            error_log('[Wext Static Publisher] Existing static archives could not be moved to the Wext storage directory.');
+            error_log('[WP Static Publisher] Existing static archives could not be moved to the plugin storage directory.');
         }
     }
 
@@ -533,7 +533,7 @@ final class Plugin
         try {
             (new Exporter())->run($job_id);
         } catch (Throwable $error) {
-            error_log('[Wext Static Publisher] ' . $error->getMessage());
+            error_log('[WP Static Publisher] ' . $error->getMessage());
         }
     }
 
@@ -786,7 +786,7 @@ final class Plugin
             } catch (Throwable $error) {
                 SFTP_Deployer::record_failure($error->getMessage(), $job_id);
                 error_log(sprintf(
-                    __('[Wext Static Publisher] Automatic SFTP upload failed: %s', 'wext-static-publisher'),
+                    __('[WP Static Publisher] Automatic SFTP upload failed: %s', 'wext-static-publisher'),
                     $error->getMessage()
                 ));
             }
@@ -870,7 +870,7 @@ final class Plugin
         $keep = max(1, min(100, absint($new_value['archive_retention'] ?? 5)));
         $result = Archive_Manager::prune($keep);
         if ($result['failed'] > 0) {
-            error_log(__('[Wext Static Publisher] Some old export archives could not be deleted.', 'wext-static-publisher'));
+            error_log(__('[WP Static Publisher] Some old export archives could not be deleted.', 'wext-static-publisher'));
         }
     }
 
@@ -891,7 +891,7 @@ final class Plugin
         $headers = [
             'Accept' => 'application/vnd.github+json',
             'Content-Type' => 'application/json',
-            'User-Agent' => 'WextStaticPublisher/' . WEXTSTAT_VERSION,
+            'User-Agent' => 'WPStaticPublisher/' . WEXTSTAT_VERSION,
             'X-GitHub-Api-Version' => '2026-03-10',
         ];
         $token = (string) $settings['deployment_webhook_token'];
@@ -916,7 +916,7 @@ final class Plugin
                 'build_sha256' => (string) ($manifest['build_sha256'] ?? ''),
                 'error' => __('Deployment workflow could not be started.', 'wext-static-publisher'),
             ]);
-            error_log(__('[Wext Static Publisher] Deployment webhook could not be sent.', 'wext-static-publisher'));
+            error_log(__('[WP Static Publisher] Deployment webhook could not be sent.', 'wext-static-publisher'));
             return false;
         }
         self::record_deployment_status($job_id, 'dispatched', [
@@ -932,7 +932,7 @@ final class Plugin
             return;
         }
 
-        \WP_CLI::add_command('wext-static export', static function ($args, $assoc_args): void {
+        $export_command = static function ($args, $assoc_args): void {
             $job_id = gmdate('Ymd-His') . '-' . wp_generate_password(8, false, false);
             Activity_Log::reset($job_id);
             self::set_status($job_id, 'running', 0, ['source' => 'wp-cli']);
@@ -942,6 +942,9 @@ final class Plugin
             } else {
                 \WP_CLI::success(sprintf(__('Export completed: %d URL', 'wext-static-publisher'), (int) ($status['url_count'] ?? 0)));
             }
-        });
+        };
+
+        \WP_CLI::add_command('wp-static-publisher export', $export_command);
+        \WP_CLI::add_command('wext-static export', $export_command);
     }
 }

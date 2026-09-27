@@ -233,7 +233,7 @@ final class Exporter
             $request_args = apply_filters('wext_static_request_args', [
                 'timeout' => 25,
                 'redirection' => 5,
-                'user-agent' => 'WextStaticPublisher/' . WEXTSTAT_VERSION,
+                'user-agent' => 'WPStaticPublisher/' . WEXTSTAT_VERSION,
                 'headers' => ['X-Wext-Static-Export' => '1'],
             ], $url);
             $response = wp_remote_get($url, $request_args);

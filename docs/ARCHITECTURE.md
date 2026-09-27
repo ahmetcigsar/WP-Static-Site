@@ -1,10 +1,10 @@
-# Wext Static Publisher mimarisi
+# WP Static Publisher mimarisi
 
 ## Sınırlar
 
 - WordPress içerik kaynağı ve export motorudur.
 - Gelişmiş GitHub akışında Cloudflare kimlik bilgileri yalnızca CI secrets içinde tutulur.
-- Doğrudan Cloudflare akışında kullanıcı kendi Account ID ve API tokenını girer. WordPress tokenı şifreli saklar; Wext servisi kullanılmaz.
+- Doğrudan Cloudflare akışında kullanıcı kendi Account ID ve API tokenını girer. WordPress tokenı şifreli saklar; harici dağıtım servisi kullanılmaz.
 - REST uçları WordPress Application Password ve eklentiye ait `wext_static_export` yetkisi ister.
 - Headless + Static Publisher modu tema ön yüzünü ziyaretçilere kapatır; aynı-origin export istekleri WordPress salt değerinden türetilen, beş dakika geçerli timestamp + HMAC başlıklarıyla tema HTML'ine erişir.
 - Cloudflare CI deployment'ı tam ve atomik bir statik snapshot'tır; SFTP akışı dosyaları doğrudan hedef dizine yükler.

@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the Wext Static Publisher package.
+# This file is distributed under the same license as the WP Static Publisher package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Wext Static Publisher 3.0.0\n"
+"Project-Id-Version: WP Static Publisher 3.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-27 12:33+0300\n"
+"POT-Creation-Date: 2026-09-27 12:58+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -764,7 +764,7 @@ msgid "Creates wext-sitemap.xml and adds it to robots.txt."
 msgstr ""
 
 #: wext-static-publisher/includes/class-admin.php:1402
-msgid "Generate Wext sitemap"
+msgid "Generate static sitemap"
 msgstr ""
 
 #: wext-static-publisher/includes/class-admin.php:1403
@@ -1954,7 +1954,7 @@ msgid "Plugin Website"
 msgstr ""
 
 #: wext-static-publisher/includes/class-admin.php:2260
-msgid "Wext Support"
+msgid "Project Support"
 msgstr ""
 
 #: wext-static-publisher/includes/class-admin.php:2261
@@ -1962,7 +1962,7 @@ msgid "Get help with static publishing and deployment."
 msgstr ""
 
 #: wext-static-publisher/includes/class-admin.php:2266
-msgid "Support Email"
+msgid "Report an Issue"
 msgstr ""
 
 #: wext-static-publisher/includes/class-aioseo-integration.php:160
@@ -2356,44 +2356,44 @@ msgstr ""
 msgid "XML-RPC is disabled in Headless CMS mode."
 msgstr ""
 
-#: wext-static-publisher/includes/class-plugin.php:512
+#: wext-static-publisher/includes/class-plugin.php:521
 msgid "Export job queued."
 msgstr ""
 
-#: wext-static-publisher/includes/class-plugin.php:586
+#: wext-static-publisher/includes/class-plugin.php:595
 msgid ""
 "The export job has been in the queue for more than 90 seconds. Check WP-Cron "
 "or server loopback requests."
 msgstr ""
 
-#: wext-static-publisher/includes/class-plugin.php:592
+#: wext-static-publisher/includes/class-plugin.php:601
 msgid ""
 "The export job has been running longer than expected. Check server error "
 "logs and PHP uptime limit."
 msgstr ""
 
-#: wext-static-publisher/includes/class-plugin.php:747
+#: wext-static-publisher/includes/class-plugin.php:756
 msgid "The automatic export job is queued."
 msgstr ""
 
-#: wext-static-publisher/includes/class-plugin.php:780
+#: wext-static-publisher/includes/class-plugin.php:789
 #, php-format
-msgid "[Wext Static Publisher] Automatic SFTP upload failed: %s"
+msgid "[WP Static Publisher] Automatic SFTP upload failed: %s"
 msgstr ""
 
-#: wext-static-publisher/includes/class-plugin.php:864
-msgid "[Wext Static Publisher] Some old export archives could not be deleted."
+#: wext-static-publisher/includes/class-plugin.php:873
+msgid "[WP Static Publisher] Some old export archives could not be deleted."
 msgstr ""
 
-#: wext-static-publisher/includes/class-plugin.php:908
+#: wext-static-publisher/includes/class-plugin.php:917
 msgid "Deployment workflow could not be started."
 msgstr ""
 
-#: wext-static-publisher/includes/class-plugin.php:910
-msgid "[Wext Static Publisher] Deployment webhook could not be sent."
+#: wext-static-publisher/includes/class-plugin.php:919
+msgid "[WP Static Publisher] Deployment webhook could not be sent."
 msgstr ""
 
-#: wext-static-publisher/includes/class-plugin.php:934
+#: wext-static-publisher/includes/class-plugin.php:943
 #, php-format
 msgid "Export completed: %d URL"
 msgstr ""

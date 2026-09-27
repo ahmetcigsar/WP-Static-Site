@@ -10,7 +10,7 @@ cp -R "$project_directory/wext-static-publisher" "$package_directory/"
 cp "$project_directory/src/worker.mjs" "$package_directory/wext-static-publisher/assets/worker.mjs"
 (
   cd "$package_directory"
-  zip -q -r "$project_directory/dist/wext-static-publisher.zip" wext-static-publisher
+  zip -q -r "$project_directory/dist/wp-static-publisher.zip" wext-static-publisher
 )
 
-echo "$project_directory/dist/wext-static-publisher.zip"
+echo "$project_directory/dist/wp-static-publisher.zip"

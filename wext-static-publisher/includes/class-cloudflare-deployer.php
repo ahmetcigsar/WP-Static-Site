@@ -115,7 +115,7 @@ final class Cloudflare_Deployer
                 'deployment_url' => '',
                 'error' => $error->getMessage(),
             ]);
-            error_log('[Wext Static Publisher] Cloudflare deployment failed: ' . $error->getMessage());
+            error_log('[WP Static Publisher] Cloudflare deployment failed: ' . $error->getMessage());
             return false;
         }
     }

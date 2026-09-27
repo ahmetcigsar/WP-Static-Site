@@ -1,18 +1,18 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Wext Static Publisher 2.0.0\n"
+"Project-Id-Version: WP Static Publisher 3.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-27 12:33+0300\n"
+"POT-Creation-Date: 2026-09-27 12:58+0300\n"
 "PO-Revision-Date: 2026-08-12 22:57+0300\n"
-"Last-Translator: Wext <info@wext.co>\n"
+"Last-Translator: WP Static Publisher Contributors\n"
 "Language-Team: French (France)\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Wext translation build\n"
+"X-Generator: gettext\n"
 
 #: wext-static-publisher/includes/class-admin.php:89
 #: wext-static-publisher/includes/class-admin.php:820
@@ -785,8 +785,8 @@ msgid "Creates wext-sitemap.xml and adds it to robots.txt."
 msgstr ""
 
 #: wext-static-publisher/includes/class-admin.php:1402
-msgid "Generate Wext sitemap"
-msgstr ""
+msgid "Generate static sitemap"
+msgstr "Générer un plan de site statique"
 
 #: wext-static-publisher/includes/class-admin.php:1403
 msgid "Include accurate last modified dates"
@@ -2047,16 +2047,16 @@ msgid "Plugin Website"
 msgstr "Site Web du plugin"
 
 #: wext-static-publisher/includes/class-admin.php:2260
-msgid "Wext Support"
-msgstr "Wext Support"
+msgid "Project Support"
+msgstr "Assistance du projet"
 
 #: wext-static-publisher/includes/class-admin.php:2261
 msgid "Get help with static publishing and deployment."
 msgstr ""
 
 #: wext-static-publisher/includes/class-admin.php:2266
-msgid "Support Email"
-msgstr "E-mail d'assistance"
+msgid "Report an Issue"
+msgstr "Signaler un problème"
 
 #: wext-static-publisher/includes/class-aioseo-integration.php:160
 msgid "All in One SEO sitemap could not be exported."
@@ -2466,11 +2466,11 @@ msgstr "WordPress cron est disponible."
 msgid "XML-RPC is disabled in Headless CMS mode."
 msgstr ""
 
-#: wext-static-publisher/includes/class-plugin.php:512
+#: wext-static-publisher/includes/class-plugin.php:521
 msgid "Export job queued."
 msgstr "Tâche d'exportation en file d'attente."
 
-#: wext-static-publisher/includes/class-plugin.php:586
+#: wext-static-publisher/includes/class-plugin.php:595
 msgid ""
 "The export job has been in the queue for more than 90 seconds. Check WP-Cron "
 "or server loopback requests."
@@ -2478,7 +2478,7 @@ msgstr ""
 "La tâche d'exportation est dans la file d'attente depuis plus de 90 "
 "secondes. Vérifiez les demandes de bouclage WP-Cron ou du serveur."
 
-#: wext-static-publisher/includes/class-plugin.php:592
+#: wext-static-publisher/includes/class-plugin.php:601
 msgid ""
 "The export job has been running longer than expected. Check server error "
 "logs and PHP uptime limit."
@@ -2486,32 +2486,32 @@ msgstr ""
 "La tâche d'exportation a duré plus longtemps que prévu. Vérifiez les "
 "journaux d’erreurs du serveur et la limite de disponibilité PHP."
 
-#: wext-static-publisher/includes/class-plugin.php:747
+#: wext-static-publisher/includes/class-plugin.php:756
 msgid "The automatic export job is queued."
 msgstr "La tâche d'exportation automatique est mise en file d'attente."
 
-#: wext-static-publisher/includes/class-plugin.php:780
+#: wext-static-publisher/includes/class-plugin.php:789
 #, fuzzy, php-format
-msgid "[Wext Static Publisher] Automatic SFTP upload failed: %s"
+msgid "[WP Static Publisher] Automatic SFTP upload failed: %s"
 msgstr ""
-"[Wext Static Publisher] Le webhook de déploiement n'a pas pu être envoyé."
+"[WP Static Publisher] Le webhook de déploiement n'a pas pu être envoyé."
 
-#: wext-static-publisher/includes/class-plugin.php:864
-msgid "[Wext Static Publisher] Some old export archives could not be deleted."
+#: wext-static-publisher/includes/class-plugin.php:873
+msgid "[WP Static Publisher] Some old export archives could not be deleted."
 msgstr ""
-"[Wext Static Publisher] Certaines anciennes archives d'exportation n'ont pas "
+"[WP Static Publisher] Certaines anciennes archives d'exportation n'ont pas "
 "pu être supprimées."
 
-#: wext-static-publisher/includes/class-plugin.php:908
+#: wext-static-publisher/includes/class-plugin.php:917
 msgid "Deployment workflow could not be started."
 msgstr ""
 
-#: wext-static-publisher/includes/class-plugin.php:910
-msgid "[Wext Static Publisher] Deployment webhook could not be sent."
+#: wext-static-publisher/includes/class-plugin.php:919
+msgid "[WP Static Publisher] Deployment webhook could not be sent."
 msgstr ""
-"[Wext Static Publisher] Le webhook de déploiement n'a pas pu être envoyé."
+"[WP Static Publisher] Le webhook de déploiement n'a pas pu être envoyé."
 
-#: wext-static-publisher/includes/class-plugin.php:934
+#: wext-static-publisher/includes/class-plugin.php:943
 #, php-format
 msgid "Export completed: %d URL"
 msgstr "Exportation terminée : URL %d"

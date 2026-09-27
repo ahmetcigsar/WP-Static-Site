@@ -76,7 +76,7 @@ final class Headless_Mode
                 if ((string) ($settings['headless_noindex'] ?? '1') === '1') {
                     header('X-Robots-Tag: noindex, nofollow', true);
                 }
-                wp_redirect($destination, 307, 'Wext Static Publisher');
+                wp_redirect($destination, 307, 'WP Static Publisher');
                 exit;
             }
             $behavior = '404';

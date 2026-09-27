@@ -111,4 +111,4 @@ if (empty($manifest['active']) || ($manifest['version'] ?? '') !== 'test-version
     throw new RuntimeException('SEOPress manifest bilgisi eksik.');
 }
 
-echo "Wext Static Publisher SEOPress integration test passed.\n";
+echo "WP Static Publisher SEOPress integration test passed.\n";

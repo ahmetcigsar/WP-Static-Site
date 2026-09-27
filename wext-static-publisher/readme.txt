@@ -1,10 +1,9 @@
-=== Wext Static Publisher ===
-Contributors: wext
+=== WP Static Publisher ===
 Tags: static site, cloudflare workers, export, sftp
 Requires at least: 6.5
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 3.0.0
+Stable tag: 3.0.1
 License: GPLv2 or later
 
 WordPress sitelerini statik dosyalara aktarır ve harici yayın akışları için güvenli REST uçları sağlar.
@@ -19,6 +18,6 @@ Eklenti tam site export, URL dönüştürme, ZIP üretme, kullanıcının kendi 
 
 1. Klasörü wp-content/plugins altına kopyalayın.
 2. Eklentiyi etkinleştirin.
-3. Sol ana menüdeki Static Publisher sayfasından canlı site adresini kaydedin.
+3. Sol ana menüdeki WP Static Publisher sayfasından canlı site adresini kaydedin.
 4. Deploy > Cloudflare altında kendi Account ID ve Workers Scripts Write izinli API tokenınızı bağlayın.
 5. Worker için workers.dev alt alanını veya özel domaini Cloudflare panelinde ayarlayın; sonra statik siteyi oluşturup yayınlayın.

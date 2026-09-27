@@ -1,4 +1,4 @@
-# Wext Static Publisher
+# WP Static Publisher
 
 Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Workers Static Assets odaklı statik export eklentisi.
 
@@ -9,7 +9,7 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 - Asset adreslerini hem `pages.dev` hem özel domainde çalışan kök-relative yollara dönüştürme
 - Cloudflare `_headers` ve `_redirects` üretimi
 - ZIP ve SHA-256 manifest üretimi
-- Sol ana menüde doküman ikonlu Static Publisher yönetim ekranı
+- Sol ana menüde doküman ikonlu WP Static Publisher yönetim ekranı
 - Main, Deploy, Static Site, SEO, Arama, Hide, Diagnostics, Activity Logs ve About sekmelerine ayrılmış yönetim görünümü
 - Static Site altında General, Headless CMS ve Multilingual ayarları
 - SEO ana sekmesinde SEO Plugins dikey sekmesi
@@ -51,7 +51,7 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 - ZIP arşiv tablosunda gösterim sırasını belirten bilgi amaçlı Sıra sütunu
 - En son ZIP'i koruyarak eski arşivleri elle temizleme
 - ZIP arşivlerini tek tek veya toplu olarak indirme ve silme
-- `wp wext-static export` WP-CLI komutu
+- `wp wp-static-publisher export` WP-CLI komutu (`wp wext-static export` eski kurulumlarla uyumlu)
 - Application Password korumalı export/status/artifact REST uçları
 - CI için yönetici yetkisi gerektirmeyen `Static Publisher Deploy` kullanıcı rolü
 - Yazı, sayfa, özel içerik, kategori/etiket, medya, menü, bileşen, tema ve site ayarı değişiklikleri için ayrı ayrı seçilebilen otomatik export tetikleyicileri
@@ -61,15 +61,17 @@ Farklı WordPress sitelerinde kullanılmak üzere geliştirilen, Cloudflare Work
 
 ## Kurulum
 
-`wext-static-publisher` klasörünü WordPress'in `wp-content/plugins/` dizinine kopyalayın ve eklentiyi etkinleştirin. Ardından sol ana menüdeki **Static Publisher** sayfasından canlı domaini ve URL sınırını yapılandırın.
+`wext-static-publisher` klasörünü WordPress'in `wp-content/plugins/` dizinine kopyalayın ve eklentiyi etkinleştirin. Ardından sol ana menüdeki **WP Static Publisher** sayfasından canlı domaini ve URL sınırını yapılandırın.
+
+Kurulum ZIP'i `wp-static-publisher.zip` adıyla üretilir. ZIP içindeki klasör, metin alanı, `wext_*` ayar ve REST anahtarları mevcut kurulumlarla uyumluluk için `wext-static-publisher` olarak kalır; güncelleme sırasında eklentiyi kaldırıp yeniden kurmanız gerekmez.
 
 Sunucuda PHP DOM ve Zip eklentileri bulunmalıdır. SFTP istemcisi eklenti paketine dahildir; PHP cURL/libcurl derlemesinde ayrıca `sftp` protokolü bulunması gerekmez. Uzun export ve SFTP işleri için gerçek sistem cron'u ile `wp-cron.php` çalıştırılması önerilir.
 
 ## WP-CLI
 
 ```bash
-wp wext-static export
-wp wext-static export --format=json
+wp wp-static-publisher export
+wp wp-static-publisher export --format=json
 ```
 
 ## CI secrets
@@ -90,11 +92,11 @@ Callback ve job-specific artifact uçları da `Static Publisher Deploy` rolü il
 
 ## Kendi Cloudflare hesabınızla doğrudan yayın
 
-Eklenti ücretsiz ve GPL-2.0-or-later lisanslıdır; SEO, otomatik export, GitHub ve Cloudflare yayını için Wext lisansı gerekmez. **Static Site > General** bölümünde herkese açık HTTPS adresini ayarlayın. **Deploy > Cloudflare** bölümünde [Cloudflare Account ID](https://developers.cloudflare.com/fundamentals/account/find-account-and-zone-ids/), benzersiz Worker adı ve ilgili hesaba `Workers Scripts Write` yetkisi veren [bir API tokenı](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/) girin. Kullanıcı veya hesap API tokenı kullanılabilir. Token WordPress güvenlik anahtarlarından türetilen anahtarla şifrelenir ve arayüzde tekrar gösterilmez. Bağlantıyı kaldırmak tokenı WordPress'ten siler; Cloudflare hesabındaki tokenı iptal etmek için Cloudflare panelini kullanın.
+Eklenti ücretsiz ve GPL-2.0-or-later lisanslıdır; SEO, otomatik export, GitHub ve Cloudflare yayını için lisans anahtarı gerekmez. **Static Site > General** bölümünde herkese açık HTTPS adresini ayarlayın. **Deploy > Cloudflare** bölümünde [Cloudflare Account ID](https://developers.cloudflare.com/fundamentals/account/find-account-and-zone-ids/), benzersiz Worker adı ve ilgili hesaba `Workers Scripts Write` yetkisi veren [bir API tokenı](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/) girin. Kullanıcı veya hesap API tokenı kullanılabilir. Token WordPress güvenlik anahtarlarından türetilen anahtarla şifrelenir ve arayüzde tekrar gösterilmez. Bağlantıyı kaldırmak tokenı WordPress'ten siler; Cloudflare hesabındaki tokenı iptal etmek için Cloudflare panelini kullanın.
 
-**Deploy to Cloudflare** önce yeni statik ZIP ve build klasörü oluşturur, ardından Cloudflare'ın [Direct Upload API](https://developers.cloudflare.com/workers/static-assets/direct-upload/) akışıyla asset manifestini, eksik dosyaları ve Worker modülünü doğrudan kullanıcının hesabına gönderir. `_headers` ve `_redirects` kuralları Worker asset yapılandırmasına aktarılır. Wext dağıtım servisi, OAuth uygulaması veya lisans sunucusu kullanılmaz.
+**Deploy to Cloudflare** önce yeni statik ZIP ve build klasörü oluşturur, ardından Cloudflare'ın [Direct Upload API](https://developers.cloudflare.com/workers/static-assets/direct-upload/) akışıyla asset manifestini, eksik dosyaları ve Worker modülünü doğrudan kullanıcının hesabına gönderir. `_headers` ve `_redirects` kuralları Worker asset yapılandırmasına aktarılır. Harici dağıtım servisi, OAuth uygulaması veya lisans sunucusu kullanılmaz.
 
-Worker'ın herkese açık olması için kendi Cloudflare panelinizde `workers.dev` alt alanını ya da özel domaini yapılandırın. **Static Site > General** içindeki hedef adres bu domainle eşleşmelidir; eklenti custom domain oluşturmuyor veya DNS kaydını değiştirmiyor. Yeni bağlantı, eski Wext servis bağlantısından otomatik aktarılmaz; bir kez kendi tokenınızla bağlanmanız gerekir.
+Worker'ın herkese açık olması için kendi Cloudflare panelinizde `workers.dev` alt alanını ya da özel domaini yapılandırın. **Static Site > General** içindeki hedef adres bu domainle eşleşmelidir; eklenti custom domain oluşturmuyor veya DNS kaydını değiştirmiyor. Yeni bağlantı, eski servis bağlantısından otomatik aktarılmaz; bir kez kendi tokenınızla bağlanmanız gerekir.
 
 GitHub Actions ile yayın, ZIP indirme ve SFTP alternatifleri korunur. GitHub akışında Cloudflare tokenını GitHub secrets içinde tutun; doğrudan yayın için GitHub gerekmez.
 
@@ -106,7 +108,7 @@ Sunucu kimliğini doğrulamak için hosting sağlayıcısından alınan 32 karak
 
 ## Çoklu dil yönlendirmesi
 
-WordPress çoklu dil eklentisi çevirileri dizin tabanlı adreslerde yayınlamalıdır: `/tr/`, `/en/`, `/de/`. Static Publisher içindeki **Static Site > Multilingual** ekranında aynı dil kodlarını satır başına bir tane olacak şekilde girin, varsayılan dili seçin ve yönlendirmeyi etkinleştirin.
+WordPress çoklu dil eklentisi çevirileri dizin tabanlı adreslerde yayınlamalıdır: `/tr/`, `/en/`, `/de/`. WP Static Publisher içindeki **Static Site > Multilingual** ekranında aynı dil kodlarını satır başına bir tane olacak şekilde girin, varsayılan dili seçin ve yönlendirmeyi etkinleştirin.
 
 İlk kurulumda WordPress site dili varsayılan dil olarak seçilir ve **Supported Language Codes** listesinin ilk satırına yerleştirilir. Daha önce kaydedilmiş dil ayarları eklenti güncellemelerinde korunur.
 

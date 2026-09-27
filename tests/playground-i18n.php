@@ -147,4 +147,4 @@ if (__('Settings', 'wext-static-publisher') !== 'Settings') {
 }
 remove_filter('locale', $unsupported_locale);
 
-echo "Wext Static Publisher i18n test passed.\n";
+echo "WP Static Publisher i18n test passed.\n";

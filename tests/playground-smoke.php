@@ -444,7 +444,7 @@ ob_start();
 Wext\StaticPublisher\Admin::render();
 $support_html = (string) ob_get_clean();
 $_GET = [];
-if (! str_contains($support_html, 'Wext Support')) {
+if (! str_contains($support_html, 'Project Support')) {
     throw new RuntimeException('About > Support sayfası gösterilmedi.');
 }
 
@@ -767,7 +767,7 @@ if (str_contains($seo_html, 'seo_tab=language') || str_contains($seo_html, 'Redi
 
 foreach ([
     'audit' => ['Create SEO audit report', 'value="audit"'],
-    'sitemaps' => ['Generate Wext sitemap', 'value="sitemaps"'],
+    'sitemaps' => ['Generate static sitemap', 'value="sitemaps"'],
     'redirects' => ['Custom Redirect Rules', 'value="redirects"'],
     'indexing' => ['IndexNow Key', 'value="indexing"'],
     'performance' => ['Large HTML Threshold (KB)', 'value="performance"'],
@@ -831,4 +831,4 @@ if (empty($stalled_status['stalled']) || ! str_contains((string) ($stalled_statu
     exit(1);
 }
 
-echo "Wext Static Publisher smoke test passed.\n";
+echo "WP Static Publisher smoke test passed.\n";

@@ -38,7 +38,7 @@ final class Diagnostics
             $site_response = wp_remote_get(home_url('/'), [
                 'timeout' => 10,
                 'redirection' => 3,
-                'user-agent' => 'WextStaticPublisher/' . WEXTSTAT_VERSION,
+                'user-agent' => 'WPStaticPublisher/' . WEXTSTAT_VERSION,
                 'headers' => ['X-Wext-Static-Export' => '1'],
             ]);
         }

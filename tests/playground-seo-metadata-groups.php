@@ -55,4 +55,4 @@ foreach ($cases as $url => $expected) {
     }
 }
 
-echo "Wext Static Publisher SEO metadata group test passed.\n";
+echo "WP Static Publisher SEO metadata group test passed.\n";

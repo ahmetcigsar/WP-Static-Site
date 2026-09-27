@@ -54,7 +54,7 @@ $expected = [
     'settings-multilingual' => ['Static Site', 'Multilingual', 'Redirection by Browser Language', 'Save Language Settings'],
     'seo-plugins' => ['SEO Plugins', 'Rank Math SEO', 'Metadata', 'Technical SEO', 'Save SEO Plugin Settings'],
     'seo-audit' => ['SEO Audit', 'Create SEO audit report', 'Validate JSON-LD structured data', 'Save SEO Settings'],
-    'seo-sitemaps' => ['Sitemaps', 'Generate Wext sitemap', 'Include images', 'Save SEO Settings'],
+    'seo-sitemaps' => ['Sitemaps', 'Generate static sitemap', 'Include images', 'Save SEO Settings'],
     'seo-redirects' => ['Redirects', 'Custom Redirect Rules', 'Redirect WordPress old slugs', 'Save SEO Settings'],
     'seo-indexing' => ['Indexing', 'X-Robots-Tag Rules', 'IndexNow Key', 'Save SEO Settings'],
     'seo-performance' => ['Performance', 'Large HTML Threshold (KB)', 'Large Asset Threshold (KB)', 'Save SEO Settings'],
@@ -73,7 +73,7 @@ $expected = [
     'diagnostics' => ['checks passed', 'Last checked:', 'Check Again'],
     'activity' => ['Activity Logs', 'Search source or static URL...'],
     'about' => ['About', 'Version Number', 'Plugin Website'],
-    'about-support' => ['About', 'Support', 'Wext Support', 'Plugin Website'],
+    'about-support' => ['About', 'Support', 'Project Support', 'Plugin Website'],
 ];
 
 $forbidden_fragments = [
@@ -107,4 +107,4 @@ foreach ($screens as $screen => $query) {
 
 $_GET = [];
 restore_current_locale();
-echo "Wext Static Publisher English UI audit passed.\n";
+echo "WP Static Publisher English UI audit passed.\n";

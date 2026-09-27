@@ -9,8 +9,8 @@ final class Admin
     public static function menu(): void
     {
         add_menu_page(
-            'Wext Static Publisher',
-            'Static Publisher',
+            'WP Static Publisher',
+            'WP Static Publisher',
             'manage_options',
             'wext-static-publisher',
             [self::class, 'render'],
@@ -720,7 +720,7 @@ final class Admin
             <header class="wextstat-admin-header">
                 <span class="wextstat-admin-header__icon dashicons dashicons-media-document" aria-hidden="true"></span>
                 <div>
-                    <h1>Wext Static Publisher</h1>
+                    <h1>WP Static Publisher</h1>
                     <p><?php esc_html_e('Generate a static copy of your WordPress site and publish it to your own Cloudflare account.', 'wext-static-publisher'); ?></p>
                 </div>
             </header>
@@ -1399,7 +1399,7 @@ final class Admin
                         <?php self::render_seo_setting_toggle($option_name, $settings, 'multilingual_validation', __('Validate multilingual signals', 'wext-static-publisher'), __('Checks missing and non-reciprocal hreflang targets.', 'wext-static-publisher')); ?>
                         <?php self::render_seo_setting_toggle($option_name, $settings, 'image_audit', __('Audit image SEO', 'wext-static-publisher'), __('Reports missing alt attributes and explicit image dimensions.', 'wext-static-publisher')); ?>
                     <?php elseif ($section === 'sitemaps') : ?>
-                        <?php self::render_seo_setting_toggle($option_name, $settings, 'advanced_sitemap', __('Generate Wext sitemap', 'wext-static-publisher'), __('Creates wext-sitemap.xml and adds it to robots.txt.', 'wext-static-publisher')); ?>
+                        <?php self::render_seo_setting_toggle($option_name, $settings, 'advanced_sitemap', __('Generate static sitemap', 'wext-static-publisher'), __('Creates wext-sitemap.xml and adds it to robots.txt.', 'wext-static-publisher')); ?>
                         <?php self::render_seo_setting_toggle($option_name, $settings, 'sitemap_lastmod', __('Include accurate last modified dates', 'wext-static-publisher'), __('Uses the WordPress content modification time when available.', 'wext-static-publisher')); ?>
                         <?php self::render_seo_setting_toggle($option_name, $settings, 'sitemap_images', __('Include images', 'wext-static-publisher'), __('Adds discoverable page images with absolute static URLs.', 'wext-static-publisher')); ?>
                         <?php self::render_seo_setting_toggle($option_name, $settings, 'sitemap_hreflang', __('Include language alternatives', 'wext-static-publisher'), __('Adds existing hreflang relationships to sitemap entries.', 'wext-static-publisher')); ?>
@@ -2231,7 +2231,7 @@ final class Admin
                         <div class="wextstat-about-card__intro">
                             <span class="wextstat-about-card__icon dashicons dashicons-media-document" aria-hidden="true"></span>
                             <div>
-                                <h3 id="wextstat-about-title">Wext Static Publisher</h3>
+                                <h3 id="wextstat-about-title">WP Static Publisher</h3>
                                 <p><?php esc_html_e('It was developed to convert your WordPress site into static files and prepare them for publication processes.', 'wext-static-publisher'); ?></p>
                             </div>
                         </div>
@@ -2243,8 +2243,8 @@ final class Admin
                             <div>
                                 <dt><?php esc_html_e('Plugin Website', 'wext-static-publisher'); ?></dt>
                                 <dd>
-                                    <a href="<?php echo esc_url('https://wext.io/'); ?>" target="_blank" rel="noopener noreferrer">
-                                        wext.io
+                                    <a href="<?php echo esc_url('https://github.com/ahmetcigsar/Wordpress-Static-Site'); ?>" target="_blank" rel="noopener noreferrer">
+                                        GitHub
                                         <span class="dashicons dashicons-external" aria-hidden="true"></span>
                                     </a>
                                 </dd>
@@ -2257,20 +2257,20 @@ final class Admin
                         <div class="wextstat-about-card__intro">
                             <span class="wextstat-about-card__icon dashicons dashicons-sos" aria-hidden="true"></span>
                             <div>
-                                <h3 id="wextstat-support-title"><?php esc_html_e('Wext Support', 'wext-static-publisher'); ?></h3>
+                                <h3 id="wextstat-support-title"><?php esc_html_e('Project Support', 'wext-static-publisher'); ?></h3>
                                 <p><?php esc_html_e('Get help with static publishing and deployment.', 'wext-static-publisher'); ?></p>
                             </div>
                         </div>
                         <dl class="wextstat-about-details">
                             <div>
-                                <dt><?php esc_html_e('Support Email', 'wext-static-publisher'); ?></dt>
-                                <dd><a href="<?php echo esc_url('mailto:info@wext.co'); ?>">info@wext.co</a></dd>
+                                <dt><?php esc_html_e('Report an Issue', 'wext-static-publisher'); ?></dt>
+                                <dd><a href="<?php echo esc_url('https://github.com/ahmetcigsar/Wordpress-Static-Site/issues'); ?>" target="_blank" rel="noopener noreferrer">GitHub Issues</a></dd>
                             </div>
                             <div>
                                 <dt><?php esc_html_e('Plugin Website', 'wext-static-publisher'); ?></dt>
                                 <dd>
-                                    <a href="<?php echo esc_url('https://wext.io/'); ?>" target="_blank" rel="noopener noreferrer">
-                                        wext.io
+                                    <a href="<?php echo esc_url('https://github.com/ahmetcigsar/Wordpress-Static-Site'); ?>" target="_blank" rel="noopener noreferrer">
+                                        GitHub
                                         <span class="dashicons dashicons-external" aria-hidden="true"></span>
                                     </a>
                                 </dd>

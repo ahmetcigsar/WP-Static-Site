@@ -1896,7 +1896,7 @@ final class Admin
                     </div>
                     <div>
                         <label for="wextstat-default-language"><?php esc_html_e('Default Language', 'wext-static-publisher'); ?></label>
-                        <input id="wextstat-default-language" type="text" maxlength="20" spellcheck="false" name="<?php echo esc_attr(Plugin::LANGUAGE_SETTINGS_KEY); ?>[default_language]" value="<?php echo esc_attr((string) ($settings['default_language'] ?? Language_Routing::site_language())); ?>">
+                        <input id="wextstat-default-language" type="text" maxlength="20" spellcheck="false" name="<?php echo esc_attr(Plugin::LANGUAGE_SETTINGS_KEY); ?>[default_language]" value="<?php echo esc_attr((string) ($settings['default_language'] ?? 'en')); ?>">
                         <p><?php esc_html_e('If the browser language is not supported, this language is opened.', 'wext-static-publisher'); ?></p>
 
                         <label for="wextstat-language-cookie-days"><?php esc_html_e('Language Preference Period', 'wext-static-publisher'); ?></label>

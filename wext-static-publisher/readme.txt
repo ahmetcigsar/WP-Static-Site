@@ -3,21 +3,21 @@ Tags: static site, cloudflare workers, export, sftp
 Requires at least: 6.5
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 3.0.1
+Stable tag: 3.0.2
 License: GPLv2 or later
 
-WordPress sitelerini statik dosyalara aktarır ve harici yayın akışları için güvenli REST uçları sağlar.
+Export WordPress sites to static files and deploy them to your own Cloudflare Workers account.
 
-Türkçe, İngilizce, İspanyolca, Fransızca, Basitleştirilmiş Çince, Japonca, Arapça ve Portekizce yönetim arayüzü içerir. Eklenti WordPress yönetici dilini otomatik kullanır.
+English is the default interface language. Turkish, Spanish, French, Simplified Chinese, Japanese, Arabic, and Portuguese translations follow the selected WordPress administrator locale.
 
 == Description ==
 
-Eklenti tam site export, URL dönüştürme, ZIP üretme, kullanıcının kendi Cloudflare hesabına doğrudan Workers yayını, Easy Start rehberi, dizin tabanlı çoklu dil yönlendirmesi, içerik türüne göre ayrılabilen Rank Math, All in One SEO, SEOPress, SureRank SEO, The SEO Framework ve Yoast SEO entegrasyonları, SFTP deployment, ayarlanabilir arşiv saklama ve temizleme, WP-CLI ve Application Password ile korunan CI uçlarını içerir. Tüm özellikler ücretsiz ve açık kaynaklıdır.
+WP Static Publisher exports complete sites, rewrites URLs, creates ZIP archives, and deploys directly to a user's own Cloudflare account. It includes directory-based multilingual routing with English as the default for new installations, integrations for Rank Math, All in One SEO, SEOPress, SureRank SEO, The SEO Framework, and Yoast SEO, SFTP deployment, archive management, WP-CLI, and CI endpoints protected by WordPress Application Passwords. All features are free and open source.
 
 == Installation ==
 
-1. Klasörü wp-content/plugins altına kopyalayın.
-2. Eklentiyi etkinleştirin.
-3. Sol ana menüdeki WP Static Publisher sayfasından canlı site adresini kaydedin.
-4. Deploy > Cloudflare altında kendi Account ID ve Workers Scripts Write izinli API tokenınızı bağlayın.
-5. Worker için workers.dev alt alanını veya özel domaini Cloudflare panelinde ayarlayın; sonra statik siteyi oluşturup yayınlayın.
+1. Copy the `wext-static-publisher` directory to `wp-content/plugins/`.
+2. Activate the plugin in WordPress.
+3. Set the public site URL on the WP Static Publisher admin page.
+4. Under Deploy > Cloudflare, connect your own Account ID and an API token with Workers Scripts Write permission.
+5. Configure a `workers.dev` subdomain or custom domain in Cloudflare, then export and deploy the static site.

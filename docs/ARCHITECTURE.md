@@ -1,79 +1,77 @@
-# WP Static Publisher mimarisi
+# WP Static Publisher architecture
 
-## Sınırlar
+## Boundaries
 
-- WordPress içerik kaynağı ve export motorudur.
-- Gelişmiş GitHub akışında Cloudflare kimlik bilgileri yalnızca CI secrets içinde tutulur.
-- Doğrudan Cloudflare akışında kullanıcı kendi Account ID ve API tokenını girer. WordPress tokenı şifreli saklar; harici dağıtım servisi kullanılmaz.
-- REST uçları WordPress Application Password ve eklentiye ait `wext_static_export` yetkisi ister.
-- Headless + Static Publisher modu tema ön yüzünü ziyaretçilere kapatır; aynı-origin export istekleri WordPress salt değerinden türetilen, beş dakika geçerli timestamp + HMAC başlıklarıyla tema HTML'ine erişir.
-- Cloudflare CI deployment'ı tam ve atomik bir statik snapshot'tır; SFTP akışı dosyaları doğrudan hedef dizine yükler.
-- Form, arama, yorum, üyelik ve e-ticaret bu MVP'nin kapsamında değildir.
+- WordPress is the content source and export engine.
+- In the GitHub workflow, Cloudflare credentials are stored only in CI secrets.
+- In the direct Cloudflare workflow, users supply their own Account ID and API token. WordPress stores the token encrypted; no external deployment service is involved.
+- REST endpoints require WordPress Application Password authentication and the plugin's `wext_static_export` capability.
+- Headless + Static Publisher mode blocks the WordPress theme front end for visitors. Same-origin export requests access theme HTML using timestamp and HMAC headers derived from WordPress salts and valid for five minutes.
+- Cloudflare CI deployment publishes a complete, atomic static snapshot. SFTP uploads files directly to the target directory.
+- Forms, search, comments, memberships, and commerce need separate static-compatible implementations; static search is provided by the plugin.
 
-## Akış
+## Export and deployment flow
 
-1. Manuel akışta CI `POST /wp-json/wext-static/v1/exports` çağrısı yapar. Otomatik akışta WordPress, Settings ekranında seçilen içerik, medya, menü, tema veya site ayarı değişikliklerini 60 saniye biriktirir.
-2. WordPress işi WP-Cron kuyruğuna ekler.
-3. Exporter yayınlanmış içerik URL'lerini seed olarak alır ve aynı origin kaynaklarını tarar.
-   Headless modu açıksa bu istekler imzalanır; CMS originindeki normal ziyaretçiler aynı sayfalarda yapılandırılan 404, 410 veya 307 davranışını alır.
-4. HTML/CSS içindeki origin adresleri canlı statik domain ile değiştirilir.
-5. Snapshot, `_headers`, `_redirects`, dil yönlendirme yapılandırması, manifest ve ZIP oluşturulur.
-6. Export tamamlanınca isteğe bağlı GitHub `repository_dispatch` webhook'u job ID ve build SHA-256 ile CI akışını tetikler.
-7. CI yalnızca `/exports/{job_id}/artifact` uç noktasındaki ZIP'i indirir; manifest job ID ve SHA-256 değerlerini webhook verisiyle karşılaştırır.
-8. Doğrulanan snapshot Wrangler ile kullanıcının `wrangler.jsonc` içinde belirlediği Workers Static Assets hedefine yüklenir ve deployment URL için HTTP kontrolü yapılır.
-9. GitHub Actions `deploying`, `completed` veya `failed` sonucunu kimlik doğrulamalı `/deployments/callback` ucuna gönderir. Export ve Cloudflare deploy durumları WordPress'te ayrı saklanır.
-10. SFTP otomatik yükleme açıksa aynı başarılı build dizinindeki statik dosyalar uzak hedefe aktarılır; bu durum ve hatalar ZIP exportundan ayrı kaydedilir.
+1. For a manual CI export, CI calls `POST /wp-json/wext-static/v1/exports`. For automatic exports, WordPress groups selected content, media, menu, theme, and site-setting changes for 60 seconds.
+2. WordPress queues the job in WP-Cron.
+3. The exporter seeds published content URLs and crawls same-origin resources. In Headless mode, it signs these requests; ordinary visitors to the CMS origin receive the configured 404, 410, or 307 response.
+4. Origin URLs in HTML and CSS are replaced with the public static domain.
+5. The snapshot produces `_headers`, `_redirects`, language-routing configuration, a manifest, and a ZIP archive.
+6. After an export, an optional GitHub `repository_dispatch` webhook sends the job ID and build SHA-256 to CI.
+7. CI downloads only the ZIP from `/exports/{job_id}/artifact` and compares its manifest job ID and SHA-256 with the webhook payload.
+8. Wrangler deploys the verified snapshot to the user's Workers Static Assets target from `wrangler.jsonc` and checks the deployment URL over HTTP.
+9. GitHub Actions sends an authenticated `deploying`, `completed`, or `failed` result to `/deployments/callback`. WordPress stores export and Cloudflare deployment status separately.
+10. If automatic SFTP upload is enabled, files from the same successful build directory are uploaded to the remote target. SFTP status and errors are recorded separately from the ZIP export.
 
-Doğrudan Cloudflare akışında başarılı exporttan sonra WordPress, kullanıcı hesabındaki Worker için asset manifesti oluşturur, eksik assetleri yükler ve Worker modülünü yeni asset tokenıyla günceller. `_headers` ve `_redirects` içerikleri asset yapılandırmasına eklenir. Kullanıcı Worker için `workers.dev` veya özel domaini Cloudflare panelinde ayarlar.
+In the direct Cloudflare flow, WordPress creates an asset manifest after a successful export, uploads missing assets to the user's Worker, and updates the Worker module with the new asset token. `_headers` and `_redirects` are included in the asset configuration. Users configure `workers.dev` or a custom domain in their Cloudflare dashboard.
 
-## SFTP akışı
+## SFTP flow
 
-- SFTP, paketlenmiş phpseclib 3 istemcisi ve parola kimlik doğrulamasıyla çalışır; phpseclib yüklenemezse SFTP destekli PHP cURL yedek taşıyıcı olarak kullanılabilir.
-- Sunucu, port, kullanıcı, uzak dizin, zaman aşımı ve isteğe bağlı MD5 host fingerprint Deploy > SFTP altında tutulur.
-- Parola Sodium `secretbox` veya OpenSSL AES-256-GCM ile, WordPress `AUTH_KEY` türevi bir anahtar kullanılarak şifrelenir; parola hiçbir admin yanıtına veya filtre verisine eklenmez.
-- Bağlantı testi hedef dizine giriş ve listeleme yetkisini doğrular. Parmak izi girilmişse cURL bağlantı sırasında sunucu anahtarını doğrular.
-- Manuel işlem son başarılı build'i yükler. Otomatik seçenek her başarılı export sonrasında aynı işlemi çalıştırır.
-- Uzak dizinde aynı yolların üzerine yazılır ve eksik alt dizinler oluşturulur. İlgisiz ya da artık exportta bulunmayan uzak dosyalar güvenlik nedeniyle otomatik silinmez.
+- SFTP uses the bundled phpseclib 3 client with password authentication. If phpseclib cannot load, PHP cURL with SFTP support can serve as a fallback transport.
+- Host, port, username, remote directory, timeout, and optional MD5 host fingerprint are saved under **Deploy > SFTP**.
+- The password is encrypted with Sodium `secretbox` or OpenSSL AES-256-GCM using a key derived from WordPress `AUTH_KEY`. It is excluded from admin responses and filter data.
+- The connection check verifies access to and listing permission on the target directory. When a fingerprint is supplied, the cURL transport verifies the host key during connection.
+- Manual upload sends the latest successful build. The automatic option runs the same upload after each successful export.
+- Matching remote paths are overwritten and missing subdirectories are created. Unrelated or obsolete remote files are not deleted automatically.
 
-## Çoklu dil akışı
+## Multilingual flow
 
-- Çoklu dil özelliği yalnızca `/tr/`, `/en/` gibi dizin tabanlı WordPress çeviri URL'leriyle çalışır.
-- Etkin dillerin kök adresleri normal içerik seed'lerine ek olarak crawl kuyruğuna alınır; her dil için `/<dil>/index.html` üretilmesi zorunludur.
-- Export `wext-language-config.json` ve tercih kaydı için `wext-language-preference.js` üretir.
-- Çoklu dil yönlendirme ayarları yönetim arayüzündeki üst seviye `SEO` sekmesinde tutulur; option anahtarı geriye dönük uyumluluk için değişmez.
-- `SEO > SEO Plugins`, Rank Math sayfa metadata, JSON-LD, sitemap ve robots çıktılarının statik pakete dahil edilmesini ayrı seçeneklerle yönetir.
-- Rank Math sitemap ağacı yalnızca aynı origin içindeki güvenli `*.xml`/`*.xsl` sitemap yollarından takip edilir; en fazla 100 dosya alınır ve bütün origin adresleri canlı hedef domaine dönüştürülür.
-- Rank Math JSON-LD URL değerleri hedef domaine taşınır. Statik arama etkinse `SearchAction` hedefi statik arama yoluna çevrilir; dinamik WordPress araması statik çıktıda bırakılmaz.
-- Cloudflare Worker yalnızca `/` yolunda çalışır. Açık dil tercihi çerezi `Accept-Language` değerinden, `Accept-Language` ise varsayılan dilden önceliklidir.
-- Yönlendirme kullanıcıya bağlı olduğu için `302`, `Cache-Control: private, no-store` ve `Vary: Accept-Language, Cookie` kullanılır.
-- Dil içeren yollar doğrudan Static Assets tarafından sunulur; Worker bunları başka dile yönlendirmez.
-- Exporter `hreflang` adreslerini hedef domaine dönüştürür ve yönlendirici kökü `x-default` olarak ekler.
+- Multilingual export supports directory-based WordPress translation URLs such as `/en/` and `/tr/`.
+- Enabled language roots are added to the crawl queue alongside normal content seeds. Each language must produce `/<language>/index.html`.
+- The export generates `wext-language-config.json` and `wext-language-preference.js` for preference storage.
+- New installations use English as the default language. Existing saved language settings remain intact. Settings live under **Static Site > Multilingual**; the option key is retained for compatibility.
+- **SEO > SEO Plugins** separately controls whether Rank Math page metadata, JSON-LD, sitemap, and robots output are included in the static package.
+- The Rank Math sitemap tree follows safe same-origin `*.xml` and `*.xsl` sitemap paths only, up to 100 files. Origin URLs are mapped to the public domain.
+- Rank Math JSON-LD URLs are mapped to the public domain. When static search is enabled, the `SearchAction` target becomes the static search path; a dynamic WordPress search action is not left in the static output.
+- The Cloudflare Worker routes only `/`. An explicit preference cookie takes precedence over `Accept-Language`, which takes precedence over the configured default language.
+- Because the redirect depends on the visitor, it uses `302`, `Cache-Control: private, no-store`, and `Vary: Accept-Language, Cookie`.
+- Language-specific paths are served directly by Static Assets without another language redirect.
+- The exporter maps `hreflang` URLs to the public domain and adds the router root as `x-default`.
 
-## Güvenlik modeli
+## Security model
 
-- CI hesabı ayrı bir WordPress kullanıcısı ve `Static Publisher Deploy` rolünde olmalıdır; yönetici rolü verilmemelidir.
-- Bu kullanıcı için yalnızca Application Password üretilmelidir.
-- WordPress yönetim parolası CI içine konmamalıdır.
-- `WP_APP_PASSWORD` ve Cloudflare token aynı sistem dışında paylaşılmamalıdır.
-- Deploy callback'i arşivdeki job ID ve SHA-256 ile eşleşmeyen durum güncellemelerini reddeder.
-- Cloudflare API tokenı yalnızca hedef hesapta Workers Scripts Write yetkisine sahip olmalıdır ve WordPress güvenlik anahtarlarıyla şifrelenir.
-- Otomatik GitHub `repository_dispatch` tetiklemesinde WordPress'te tutulan fine-grained token yalnızca ilgili repository için `Contents: write` yetkisine sahip olmalıdır.
-- SFTP hesabı yalnızca hedef statik dizinde yazma yetkisine sahip olmalı; kabuk, WordPress dizini veya daha geniş sunucu erişimi verilmemelidir.
-- SFTP host fingerprint hosting sağlayıcısından ayrı bir kanalla doğrulanmalıdır. Parmak izi olmadan bağlantı şifrelidir ancak sunucu kimliği sabitlenmez.
+- CI should use a separate WordPress user with the `Static Publisher Deploy` role.
+- Create an Application Password for that user. Keep the WordPress administrator password out of CI.
+- Keep `WP_APP_PASSWORD` and the Cloudflare token in their respective secret stores.
+- The deployment callback rejects status updates whose job ID and SHA-256 do not match the archive.
+- The Cloudflare API token should have `Workers Scripts Write` only for the intended account. WordPress encrypts it using its security keys.
+- A fine-grained token stored in WordPress for GitHub `repository_dispatch` should have `Contents: write` only for the relevant repository.
+- Restrict the SFTP account to the target static directory without shell, WordPress directory, or broader server access.
+- Verify the SFTP host fingerprint with the hosting provider through a separate channel. Without a fingerprint, the connection is encrypted but the server identity is not pinned.
 
-## Bilinen MVP sınırlamaları
+## Known MVP limitations
 
-- WP-Cron düşük trafikli veya Access arkasındaki originlerde sistem cron ile tetiklenmelidir.
-- Çok büyük sitelerde tam crawl yerine artımlı export gerekir.
-- JavaScript'in çalışma anında istediği WordPress AJAX/REST uçları statik değildir.
-- Karmaşık CSS URL sözdizimleri ve JavaScript içine gömülü asset adresleri ayrıca test edilmelidir.
-- Çoklu dilde çeviri içeriklerini ve karşılıklı `hreflang` etiketlerini üretmek WordPress çoklu dil eklentisinin sorumluluğundadır.
-- Eklenti Apache/IIS için storage klasörüne erişim engeli yazar. Nginx'te ayrıca `wp-content/uploads/wext-static` yolu engellenmelidir; artifact yalnızca kimlik doğrulamalı REST üzerinden indirilir.
-- Origin Cloudflare Access veya HTTP Basic arkasındaysa siteye özel bir MU-plugin ile `wext_static_request_args` filtresinden gerekli servis başlıkları eklenmelidir.
-- SFTP deployment parola tabanlıdır; özel anahtar kimlik doğrulaması bu sürümün kapsamında değildir.
-- SFTP doğrudan yükleme atomik değildir ve uzak hedeften eski dosyaları temizlemez.
+- Low-traffic sites and origins behind Cloudflare Access should trigger WP-Cron with a system cron job.
+- Very large sites may need incremental export instead of a full crawl.
+- WordPress AJAX/REST endpoints requested by JavaScript at runtime are not made static.
+- Complex CSS URL syntax and asset URLs embedded in JavaScript need site-specific checks.
+- The WordPress multilingual plugin is responsible for translated content and reciprocal `hreflang` tags.
+- The plugin writes Apache/IIS rules to block the storage directory. On Nginx, also block `wp-content/uploads/wext-static`; artifacts are downloadable only through authenticated REST.
+- If the origin is behind Cloudflare Access or HTTP Basic, add the required service headers through the `wext_static_request_args` filter in a site-specific MU plugin.
+- SFTP deployment uses password authentication; private-key authentication is outside this version's scope.
+- Direct SFTP upload is not atomic and does not remove obsolete remote files.
 
-Örnek Access filtresi:
+Example Cloudflare Access filter:
 
 ```php
 add_filter('wext_static_request_args', function (array $args): array {

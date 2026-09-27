@@ -16,12 +16,12 @@ final class Language_Routing
     public static function defaults(): array
     {
         $site_language = self::site_language();
-        $supported_languages = array_values(array_unique([$site_language, 'tr', 'en']));
+        $supported_languages = array_values(array_unique(['en', $site_language, 'tr']));
 
         return [
             'enabled' => '0',
             'supported_languages' => implode("\n", $supported_languages),
-            'default_language' => $site_language,
+            'default_language' => 'en',
             'cookie_days' => 365,
         ];
     }
@@ -46,7 +46,7 @@ final class Language_Routing
         $languages = self::parse_languages((string) ($value['supported_languages'] ?? ''));
         $default_language = self::normalise_language((string) ($value['default_language'] ?? ''));
         if ($default_language === '' || ! in_array($default_language, $languages, true)) {
-            $default_language = $languages[0] ?? self::site_language();
+            $default_language = in_array('en', $languages, true) ? 'en' : ($languages[0] ?? 'en');
         }
 
         return [

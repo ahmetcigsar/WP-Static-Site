@@ -437,9 +437,8 @@ final class Exporter
             }
         }
 
-        // DOMDocument yalnızca keşif için kullanılır. Orijinal HTML'yi yeniden serialize
-        // etmek tema işaretlemesini değiştirebildiğinden çıktı üzerinde sadece origin
-        // dönüşümü uygulanır.
+        // Use DOMDocument only for discovery. Serializing the original HTML again can
+        // alter theme markup, so apply only origin rewriting to the output.
         return [$this->rewrite_html_for_output($html), array_values(array_unique($discovered))];
     }
 
@@ -599,12 +598,11 @@ final class Exporter
 
     private function rewrite_html_for_output(string $html): string
     {
-        // Önce tüm iç adresleri domain bağımsız kök yollara çeviririz. Böylece
-        // HTML, inline CSS/JS, srcset ve page-builder verileri pages.dev üzerinde
-        // de özel domain bağlandıktan sonra da aynı şekilde çalışır.
+        // First convert internal URLs to domain-independent root paths so HTML,
+        // inline CSS/JS, srcset, and page-builder data work on both preview and custom domains.
         $html = $this->rewrite_asset_origin($html);
 
-        // Canonical bağlantılar mutlak canlı domaini göstermelidir.
+        // Canonical links must point to absolute URLs on the public domain.
         $html = preg_replace_callback(
             '#<link\b[^>]*\brel\s*=\s*(["\'])canonical\1[^>]*>#i',
             function (array $match): string {
@@ -617,7 +615,7 @@ final class Exporter
             $html
         ) ?? $html;
 
-        // hreflang alternatifleri de arama motorları için tam canlı adres olmalıdır.
+        // hreflang alternates must also use absolute public URLs for search engines.
         $html = preg_replace_callback(
             '#<link\b(?=[^>]*\bhreflang\s*=)[^>]*>#i',
             function (array $match): string {
@@ -630,7 +628,7 @@ final class Exporter
             $html
         ) ?? $html;
 
-        // Sosyal paylaşım metadata adresleri de mutlak canlı domaini göstermelidir.
+        // Social metadata URLs must also use the absolute public domain.
         $html = preg_replace_callback(
             '#<meta\b[^>]*\b(?:property|name)\s*=\s*(["\'])(?:og:url|og:image|twitter:image|twitter:url)\1[^>]*>#i',
             function (array $match): string {

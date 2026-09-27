@@ -55,11 +55,10 @@ if ((Wext\StaticPublisher\Plugin::settings()['deployment_mode'] ?? '') !== 'adva
 }
 delete_option(Wext\StaticPublisher\Plugin::SETTINGS_KEY);
 $language_defaults = Wext\StaticPublisher\Plugin::language_settings();
-$site_language = Wext\StaticPublisher\Language_Routing::site_language();
 $default_supported_languages = Wext\StaticPublisher\Language_Routing::parse_languages((string) ($language_defaults['supported_languages'] ?? ''));
 if (($language_defaults['enabled'] ?? '') !== '0'
-    || ($language_defaults['default_language'] ?? '') !== $site_language
-    || ($default_supported_languages[0] ?? '') !== $site_language
+    || ($language_defaults['default_language'] ?? '') !== 'en'
+    || ($default_supported_languages[0] ?? '') !== 'en'
     || ! in_array('tr', $default_supported_languages, true)
     || ! in_array('en', $default_supported_languages, true)) {
     fwrite(STDERR, "Varsayılan dil yönlendirme ayarları doğru değil.\n");
@@ -69,9 +68,9 @@ $french_site_locale = static fn (): string => 'fr_FR';
 add_filter('pre_option_WPLANG', $french_site_locale);
 $french_language_defaults = Wext\StaticPublisher\Language_Routing::defaults();
 remove_filter('pre_option_WPLANG', $french_site_locale);
-if (($french_language_defaults['default_language'] ?? '') !== 'fr'
-    || Wext\StaticPublisher\Language_Routing::parse_languages((string) ($french_language_defaults['supported_languages'] ?? '')) !== ['fr', 'tr', 'en']) {
-    fwrite(STDERR, "WordPress site dili varsayılan listenin başına taşınmadı.\n");
+if (($french_language_defaults['default_language'] ?? '') !== 'en'
+    || Wext\StaticPublisher\Language_Routing::parse_languages((string) ($french_language_defaults['supported_languages'] ?? '')) !== ['en', 'fr', 'tr']) {
+    fwrite(STDERR, "English was not kept as the default ahead of the WordPress site language.\n");
     exit(1);
 }
 $saved_language_settings = [

@@ -2,7 +2,7 @@
     "name": "wext/static-publisher",
     "description": "Static export and deployment tooling for WordPress.",
     "type": "wordpress-plugin",
-    "license": "GPL-2.0-or-later",
+    "license": "MIT",
     "require": {
         "php": ">=8.1",
         "phpseclib/phpseclib": "^3.0"

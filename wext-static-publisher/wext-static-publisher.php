@@ -3,11 +3,12 @@
  * Plugin Name: WP Static Publisher
  * Plugin URI: https://github.com/ahmetcigsar/WP-Static-Site
  * Description: Exports WordPress sites to static files, offers Headless CMS mode, and publishes to your own Cloudflare Workers account.
- * Version: 3.0.3
+ * Version: 3.0.4
  * Requires at least: 6.5
  * Requires PHP: 8.1
  * Author: WP Static Publisher Contributors
- * License: GPL-2.0-or-later
+ * License: MIT
+ * License URI: https://opensource.org/license/mit
  * Text Domain: wext-static-publisher
  * Domain Path: /languages
  */
@@ -18,7 +19,7 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-define('WEXTSTAT_VERSION', '3.0.3');
+define('WEXTSTAT_VERSION', '3.0.4');
 define('WEXTSTAT_FILE', __FILE__);
 define('WEXTSTAT_DIR', plugin_dir_path(__FILE__));
 

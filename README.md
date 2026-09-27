@@ -87,7 +87,7 @@ The callback and job-specific artifact endpoints also require the `Static Publis
 
 ## Deploy directly to your own Cloudflare account
 
-The plugin is free and licensed under GPL-2.0-or-later. SEO, automatic exports, GitHub deployment, and Cloudflare deployment require no license key. Set the public HTTPS URL under **Static Site > General**. Under **Deploy > Cloudflare**, enter your [Cloudflare Account ID](https://developers.cloudflare.com/fundamentals/account/find-account-and-zone-ids/), a unique Worker name, and an [API token](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/) with `Workers Scripts Write` permission for your account. You can use a user or account API token. The plugin encrypts it with a key derived from WordPress security keys and never displays it again. Disconnecting removes the stored token from WordPress; revoke the token in Cloudflare if needed.
+The plugin is free and its original code is licensed under MIT. SEO, automatic exports, GitHub deployment, and Cloudflare deployment require no license key. Set the public HTTPS URL under **Static Site > General**. Under **Deploy > Cloudflare**, enter your [Cloudflare Account ID](https://developers.cloudflare.com/fundamentals/account/find-account-and-zone-ids/), a unique Worker name, and an [API token](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/) with `Workers Scripts Write` permission for your account. You can use a user or account API token. The plugin encrypts it with a key derived from WordPress security keys and never displays it again. Disconnecting removes the stored token from WordPress; revoke the token in Cloudflare if needed.
 
 **Deploy to Cloudflare** creates a fresh static ZIP and build directory, then sends the asset manifest, missing files, and Worker module directly to your account through Cloudflare's [Direct Upload API](https://developers.cloudflare.com/workers/static-assets/direct-upload/). The `_headers` and `_redirects` rules are included in the Worker asset configuration. No external deployment service, OAuth app, or license server is involved.
 
@@ -137,3 +137,7 @@ npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=wext-
 ```
 
 See `docs/ARCHITECTURE.md` for the architecture and limitations.
+
+## License
+
+WP Static Publisher's original code and documentation are licensed under the [MIT License](LICENSE). Bundled third-party components retain their own licenses; see [third-party notices](wext-static-publisher/THIRD-PARTY-NOTICES.md) and the license files included with those components.

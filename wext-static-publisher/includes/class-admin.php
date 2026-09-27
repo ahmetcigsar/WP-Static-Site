@@ -724,6 +724,11 @@ final class Admin
                     <p><?php esc_html_e('Generate a static copy of your WordPress site and publish it to your own Cloudflare account.', 'wext-static-publisher'); ?></p>
                 </div>
             </header>
+            <?php if (! empty($_GET['settings-updated'])) : ?>
+                <div class="wextstat-settings-feedback" aria-live="polite">
+                    <?php settings_errors(); ?>
+                </div>
+            <?php endif; ?>
             <nav class="nav-tab-wrapper wp-clearfix" aria-label="<?php echo esc_attr__('Static Publisher sections', 'wext-static-publisher'); ?>">
                 <?php foreach ($tabs as $tab_id => $tab_label) : ?>
                     <a class="nav-tab <?php echo $current_tab === $tab_id ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url(self::admin_page_url($tab_id)); ?>" <?php echo $current_tab === $tab_id ? 'aria-current="page"' : ''; ?>><?php echo esc_html($tab_label); ?></a>

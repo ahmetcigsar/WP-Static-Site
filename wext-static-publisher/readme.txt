@@ -3,7 +3,7 @@ Tags: static site, cloudflare workers, export, sftp
 Requires at least: 6.5
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 3.0.4
+Stable tag: 3.0.5
 License: MIT
 License URI: https://opensource.org/license/mit
 

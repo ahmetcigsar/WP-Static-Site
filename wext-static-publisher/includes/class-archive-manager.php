@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Wext\StaticPublisher;
 
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are plain text data. Escape when rendering in HTML.
+
 use FilesystemIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -95,7 +97,7 @@ final class Archive_Manager
         $failed = 0;
 
         foreach (self::selected($ids) as $archive) {
-            if (! unlink((string) $archive['path'])) {
+            if (! wp_delete_file((string) $archive['path'])) {
                 ++$failed;
                 continue;
             }
@@ -129,7 +131,7 @@ final class Archive_Manager
 
         $zip = new ZipArchive();
         if ($zip->open($bundle_path, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
-            unlink($bundle_path);
+            wp_delete_file($bundle_path);
             throw new RuntimeException(__('The bulk download package could not be created.', 'wext-static-publisher'));
         }
 
@@ -198,12 +200,14 @@ final class Archive_Manager
 
         foreach ($iterator as $item) {
             if ($item->isDir() && ! $item->isLink()) {
+                // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir -- Remove only this plugin's validated build directory; do not follow symlinks.
                 rmdir($item->getPathname());
             } else {
-                unlink($item->getPathname());
+                wp_delete_file($item->getPathname());
             }
         }
 
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir -- Remove only this plugin's validated empty build directory.
         rmdir($directory);
     }
 }

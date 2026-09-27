@@ -176,7 +176,7 @@ final class Rank_Math_Integration
         return [
             'timeout' => 25,
             'redirection' => 5,
-            'user-agent' => 'WPStaticPublisher/' . WEXTSTAT_VERSION,
+            'user-agent' => 'Wext\StaticPublisher/' . WEXTSTAT_VERSION,
             'headers' => ['X-Wext-Static-Export' => '1'],
         ];
     }

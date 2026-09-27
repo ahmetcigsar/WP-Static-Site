@@ -111,4 +111,4 @@ foreach ($cases as $prefix => $case) {
     }
 }
 
-echo "WP Static Publisher SureRank, The SEO Framework and Yoast integration test passed.\n";
+echo "Wext Static Publisher SureRank, The SEO Framework and Yoast integration test passed.\n";

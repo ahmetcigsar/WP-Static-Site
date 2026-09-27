@@ -515,7 +515,7 @@ final class SEO_Toolkit
         foreach ($this->issues as $issue) {
             $rows .= '<tr><td>' . esc_html(ucfirst($issue['severity'])) . '</td><td><code>' . esc_html($issue['code']) . '</code></td><td>' . esc_html($issue['message']) . '</td><td><a href="' . esc_url($issue['url']) . '">' . esc_html($issue['url']) . '</a></td></tr>';
         }
-        return '<!doctype html><html lang="en"><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><title>WP Static Publisher SEO Report</title><style>body{font:15px system-ui;margin:32px;color:#172033}table{border-collapse:collapse;width:100%}th,td{border:1px solid #d8e0ea;padding:10px;text-align:left;vertical-align:top}th{background:#eef2f7}.summary{display:flex;gap:12px;margin:20px 0}.summary span{padding:12px 16px;border-radius:8px;background:#eef2ff}code{white-space:nowrap}</style><h1>WP Static Publisher SEO Report</h1><p>Target: ' . esc_html($this->target) . '</p><div class="summary"><span>Pages: ' . esc_html((string) ($summary['pages'] ?? 0)) . '</span><span>Errors: ' . esc_html((string) ($summary['errors'] ?? 0)) . '</span><span>Warnings: ' . esc_html((string) ($summary['warnings'] ?? 0)) . '</span><span>Info: ' . esc_html((string) ($summary['info'] ?? 0)) . '</span></div><table><thead><tr><th>Severity</th><th>Code</th><th>Message</th><th>URL</th></tr></thead><tbody>' . $rows . '</tbody></table></html>';
+        return '<!doctype html><html lang="en"><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><title>Wext Static Publisher SEO Report</title><style>body{font:15px system-ui;margin:32px;color:#172033}table{border-collapse:collapse;width:100%}th,td{border:1px solid #d8e0ea;padding:10px;text-align:left;vertical-align:top}th{background:#eef2f7}.summary{display:flex;gap:12px;margin:20px 0}.summary span{padding:12px 16px;border-radius:8px;background:#eef2ff}code{white-space:nowrap}</style><h1>Wext Static Publisher SEO Report</h1><p>Target: ' . esc_html($this->target) . '</p><div class="summary"><span>Pages: ' . esc_html((string) ($summary['pages'] ?? 0)) . '</span><span>Errors: ' . esc_html((string) ($summary['errors'] ?? 0)) . '</span><span>Warnings: ' . esc_html((string) ($summary['warnings'] ?? 0)) . '</span><span>Info: ' . esc_html((string) ($summary['info'] ?? 0)) . '</span></div><table><thead><tr><th>Severity</th><th>Code</th><th>Message</th><th>URL</th></tr></thead><tbody>' . $rows . '</tbody></table></html>';
     }
 
     private function custom_redirect_rules(): array
@@ -580,7 +580,7 @@ final class SEO_Toolkit
             $table = $wpdb->prefix . 'redirection_items';
             $exists = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $table));
             if ($exists === $table) {
-                $items = $wpdb->get_results("SELECT url, action_data, action_code, regex FROM {$table} WHERE status = 'enabled' AND action_type = 'url'", ARRAY_A); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                $items = $wpdb->get_results($wpdb->prepare("SELECT url, action_data, action_code, regex FROM %i WHERE status = 'enabled' AND action_type = 'url'", $table), ARRAY_A);
                 foreach ((array) $items as $item) {
                     if ((int) ($item['regex'] ?? 0) !== 0) {
                         continue;
@@ -701,6 +701,7 @@ final class SEO_Toolkit
             }
             foreach ($requirements[$schema_type] as $required) {
                 if (! isset($value[$required]) || $value[$required] === '' || $value[$required] === []) {
+                    /* translators: %1$s is the structured data type; %2$s is a required property. */
                     $this->issue('warning', 'schema_missing_property', sprintf(__('Structured data type %1$s is missing property %2$s.', 'wext-static-publisher'), $schema_type, $required), $url, ['type' => $schema_type, 'property' => $required]);
                 }
             }

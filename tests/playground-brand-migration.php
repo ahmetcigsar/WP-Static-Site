@@ -114,4 +114,4 @@ if ($failed_checks !== []) {
     throw new RuntimeException('Wext marka migration kontrolleri başarısız: ' . implode(', ', $failed_checks));
 }
 
-echo "WP Static Publisher brand migration test passed.\n";
+echo "Wext Static Publisher brand migration test passed.\n";

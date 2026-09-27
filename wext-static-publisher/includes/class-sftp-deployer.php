@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Wext\StaticPublisher;
 
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are plain text data. Escape when rendering in HTML.
+
 use FilesystemIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -18,11 +20,6 @@ final class SFTP_Deployer
     public static function available(): bool
     {
         $available = class_exists(\phpseclib3\Net\SFTP::class);
-        if (! $available && function_exists('curl_init') && function_exists('curl_version')) {
-            $version = curl_version();
-            $protocols = is_array($version['protocols'] ?? null) ? $version['protocols'] : [];
-            $available = in_array('sftp', array_map('strtolower', array_map('strval', $protocols)), true);
-        }
         return (bool) apply_filters('wext_static_sftp_available', $available);
     }
 
@@ -141,6 +138,7 @@ final class SFTP_Deployer
                 $uploaded = self::upload_files($settings, $files);
             }
 
+            /* translators: %d is the number of uploaded static files. */
             $message = sprintf(__('%d static files were uploaded successfully with SFTP.', 'wext-static-publisher'), $uploaded);
             self::record('completed', $message, $job_id, $uploaded);
             return ['success' => true, 'message' => $message, 'file_count' => $uploaded];
@@ -178,68 +176,15 @@ final class SFTP_Deployer
 
     private static function perform_connection_test(array $settings): void
     {
-        if (class_exists(\phpseclib3\Net\SFTP::class)) {
-            $sftp = self::phpseclib_session($settings);
-            if (! $sftp->chdir((string) $settings['sftp_remote_path'])) {
-                throw new RuntimeException(__('The SFTP remote directory could not be opened.', 'wext-static-publisher'));
-            }
-            return;
+        $sftp = self::phpseclib_session($settings);
+        if (! $sftp->chdir((string) $settings['sftp_remote_path'])) {
+            throw new RuntimeException(__('The SFTP remote directory could not be opened.', 'wext-static-publisher'));
         }
-
-        $handle = self::curl_handle($settings, trailingslashit((string) $settings['sftp_remote_path']));
-        curl_setopt_array($handle, [
-            CURLOPT_DIRLISTONLY => true,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT => (int) $settings['sftp_timeout'],
-        ]);
-        $result = curl_exec($handle);
-        if ($result === false) {
-            $message = curl_error($handle);
-            curl_close($handle);
-            throw new RuntimeException(sprintf(__('SFTP connection failed: %s', 'wext-static-publisher'), $message));
-        }
-        curl_close($handle);
     }
 
     private static function upload_files(array $settings, array $files): int
     {
-        if (class_exists(\phpseclib3\Net\SFTP::class)) {
-            return self::upload_files_with_phpseclib($settings, $files);
-        }
-
-        $handle = self::curl_handle($settings, (string) $settings['sftp_remote_path']);
-        $uploaded = 0;
-        foreach ($files as $relative_path => $local_path) {
-            $stream = fopen($local_path, 'rb');
-            if ($stream === false) {
-                curl_close($handle);
-                throw new RuntimeException(sprintf(__('The local static file could not be read: %s', 'wext-static-publisher'), $relative_path));
-            }
-
-            $remote_path = trailingslashit((string) $settings['sftp_remote_path']) . ltrim($relative_path, '/');
-            curl_setopt_array($handle, [
-                CURLOPT_URL => self::url($settings, $remote_path),
-                CURLOPT_UPLOAD => true,
-                CURLOPT_INFILE => $stream,
-                CURLOPT_INFILESIZE => (int) filesize($local_path),
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_TIMEOUT => (int) $settings['sftp_timeout'],
-            ]);
-            if (defined('CURLOPT_FTP_CREATE_MISSING_DIRS')) {
-                curl_setopt($handle, CURLOPT_FTP_CREATE_MISSING_DIRS, defined('CURLFTP_CREATE_DIR_RETRY') ? CURLFTP_CREATE_DIR_RETRY : 1);
-            }
-
-            $result = curl_exec($handle);
-            fclose($stream);
-            if ($result === false) {
-                $message = curl_error($handle);
-                curl_close($handle);
-                throw new RuntimeException(sprintf(__('SFTP upload failed for %1$s: %2$s', 'wext-static-publisher'), $relative_path, $message));
-            }
-            ++$uploaded;
-        }
-        curl_close($handle);
-        return $uploaded;
+        return self::upload_files_with_phpseclib($settings, $files);
     }
 
     private static function upload_files_with_phpseclib(array $settings, array $files): int
@@ -255,10 +200,12 @@ final class SFTP_Deployer
             $remote_path = trailingslashit($root) . ltrim($relative_path, '/');
             $remote_directory = str_replace('\\', '/', dirname($remote_path));
             if (! $sftp->is_dir($remote_directory) && ! $sftp->mkdir($remote_directory, -1, true)) {
+                /* translators: %s is the remote directory path. */
                 throw new RuntimeException(sprintf(__('The SFTP remote directory could not be created: %s', 'wext-static-publisher'), $remote_directory));
             }
             if (! $sftp->put($remote_path, $local_path, \phpseclib3\Net\SFTP::SOURCE_LOCAL_FILE)) {
                 $message = (string) ($sftp->getLastSFTPError() ?: __('Unknown SFTP error.', 'wext-static-publisher'));
+                /* translators: %1$s is the file path; %2$s is the SFTP error. */
                 throw new RuntimeException(sprintf(__('SFTP upload failed for %1$s: %2$s', 'wext-static-publisher'), $relative_path, $message));
             }
             ++$uploaded;
@@ -294,51 +241,9 @@ final class SFTP_Deployer
         } catch (RuntimeException $error) {
             throw $error;
         } catch (Throwable $error) {
+            /* translators: %s is the SFTP connection error. */
             throw new RuntimeException(sprintf(__('SFTP connection failed: %s', 'wext-static-publisher'), $error->getMessage()), 0, $error);
         }
-    }
-
-    private static function curl_handle(array $settings, string $remote_path)
-    {
-        $password = Secret_Store::decrypt((string) $settings['sftp_password']);
-        $handle = curl_init(self::url($settings, $remote_path));
-        if ($handle === false) {
-            throw new RuntimeException(__('The SFTP connection could not be initialized.', 'wext-static-publisher'));
-        }
-
-        $options = [
-            CURLOPT_USERNAME => (string) $settings['sftp_username'],
-            CURLOPT_PASSWORD => $password,
-            CURLOPT_CONNECTTIMEOUT => min(30, (int) $settings['sftp_timeout']),
-            CURLOPT_FOLLOWLOCATION => false,
-            CURLOPT_SSH_AUTH_TYPES => CURLSSH_AUTH_PASSWORD,
-        ];
-        if (defined('CURLOPT_PROTOCOLS') && defined('CURLPROTO_SFTP')) {
-            $options[CURLOPT_PROTOCOLS] = CURLPROTO_SFTP;
-        }
-        if ($settings['sftp_host_fingerprint'] !== '') {
-            if (! defined('CURLOPT_SSH_HOST_PUBLIC_KEY_MD5')) {
-                curl_close($handle);
-                throw new RuntimeException(__('This cURL version cannot verify an SFTP MD5 host fingerprint.', 'wext-static-publisher'));
-            }
-            $options[CURLOPT_SSH_HOST_PUBLIC_KEY_MD5] = (string) $settings['sftp_host_fingerprint'];
-        }
-        if (! curl_setopt_array($handle, $options)) {
-            curl_close($handle);
-            throw new RuntimeException(__('The SFTP connection options could not be configured.', 'wext-static-publisher'));
-        }
-        return $handle;
-    }
-
-    private static function url(array $settings, string $remote_path): string
-    {
-        $host = (string) $settings['sftp_host'];
-        if (str_contains($host, ':') && ! str_starts_with($host, '[')) {
-            $host = '[' . $host . ']';
-        }
-        $segments = array_values(array_filter(explode('/', $remote_path), static fn (string $segment): bool => $segment !== ''));
-        $encoded_path = implode('/', array_map('rawurlencode', $segments));
-        return sprintf('sftp://%s:%d/%s', $host, (int) $settings['sftp_port'], $encoded_path);
     }
 
     private static function files(string $directory): array

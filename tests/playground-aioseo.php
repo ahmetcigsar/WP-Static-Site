@@ -129,4 +129,4 @@ if (empty($manifest['active']) || ($manifest['version'] ?? '') !== 'test-version
     throw new RuntimeException('AIOSEO manifest bilgisi eksik.');
 }
 
-echo "WP Static Publisher All in One SEO integration test passed.\n";
+echo "Wext Static Publisher All in One SEO integration test passed.\n";

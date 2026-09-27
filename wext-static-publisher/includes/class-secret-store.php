@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Wext\StaticPublisher;
 
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are plain text data. Escape when rendering in HTML.
+
 use RuntimeException;
 
 final class Secret_Store

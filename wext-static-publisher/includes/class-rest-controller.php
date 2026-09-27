@@ -130,6 +130,7 @@ final class REST_Controller
         header('Content-Type: application/zip');
         header('Content-Disposition: attachment; filename="' . sanitize_file_name($result->filename) . '"');
         header('Content-Length: ' . (string) filesize($result->file));
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile -- Stream an authorized ZIP download without loading it into PHP memory.
         readfile($result->file);
         return true;
     }

@@ -23,7 +23,7 @@ if (is_wp_error($result)) {
 
 do_action('init');
 
-if (! class_exists('Wext\\StaticPublisher\\Exporter')) {
+if (! class_exists('Wext\StaticPublisher\\Exporter')) {
     fwrite(STDERR, "Exporter sınıfı yüklenmedi.\n");
     exit(1);
 }
@@ -43,14 +43,8 @@ foreach (['sftp_host', 'sftp_username', 'sftp_password', 'sftp_remote_path', 'sf
         exit(1);
     }
 }
-if (($settings['deployment_mode'] ?? '') !== 'advanced') {
-    fwrite(STDERR, "Yeni kurulum için gelişmiş deployment modu varsayılan değil.\n");
-    exit(1);
-}
-$legacy_settings = ['deployment_webhook_url' => 'https://api.github.com/repos/example/legacy/dispatches'];
-update_option(Wext\StaticPublisher\Plugin::SETTINGS_KEY, $legacy_settings);
-if ((Wext\StaticPublisher\Plugin::settings()['deployment_mode'] ?? '') !== 'advanced') {
-    fwrite(STDERR, "Mevcut webhook kurulumu otomatik olarak Gelişmiş moda taşınmadı.\n");
+if (isset($settings['deployment_mode'])) {
+    fwrite(STDERR, "Obsolete deployment mode is still present.\n");
     exit(1);
 }
 delete_option(Wext\StaticPublisher\Plugin::SETTINGS_KEY);
@@ -162,8 +156,8 @@ $sanitized_deploy = Wext\StaticPublisher\Admin::sanitize([
     'deployment_webhook_url' => 'https://api.github.com/repos/example/deploy/dispatches',
     'deployment_webhook_token' => 'test-token',
 ]);
-if (($sanitized_deploy['deployment_mode'] ?? '') !== 'advanced') {
-    fwrite(STDERR, "GitHub ayarı kaydedildiğinde Gelişmiş Kurulum modu seçilmedi.\n");
+if (($sanitized_deploy['deployment_webhook_url'] ?? '') !== 'https://api.github.com/repos/example/deploy/dispatches') {
+    fwrite(STDERR, "Deployment webhook setting was not saved.\n");
     exit(1);
 }
 
@@ -525,7 +519,7 @@ $admin_source = (string) file_get_contents(WEXTSTAT_DIR . 'includes/class-admin.
 foreach ([
     'static' => ['Search Page Path', 'value="static"'],
     'selectors' => ['CSS Selector For Title', 'value="selectors"'],
-    'fuse' => ['Category and Tags', 'value="fuse"'],
+    'relevance' => ['Category and Tags', 'value="relevance"'],
 ] as $search_tab => $search_expectations) {
     $_GET = ['tab' => 'search', 'search_tab' => $search_tab];
     ob_start();
@@ -533,7 +527,7 @@ foreach ([
     $search_html = (string) ob_get_clean();
     $_GET = [];
 
-    foreach (['Static Search', 'Indexing Selectors', 'Fuse.js', 'search_tab=' . $search_tab, ...$search_expectations] as $expected) {
+    foreach (['Static Search', 'Indexing Selectors', 'Search Relevance', 'search_tab=' . $search_tab, ...$search_expectations] as $expected) {
         if (! str_contains($search_html, $expected)) {
             fwrite(STDERR, "Search > {$search_tab} ekranında beklenen içerik bulunamadı: {$expected}\n");
             exit(1);
@@ -545,13 +539,13 @@ foreach ([
     }
     if (($search_tab !== 'static' && str_contains($search_html, 'id="wextstat-search-path"'))
         || ($search_tab !== 'selectors' && str_contains($search_html, 'id="wextstat-title-selector"'))
-        || ($search_tab !== 'fuse' && str_contains($search_html, 'class="wextstat-search-field-row"'))) {
+        || ($search_tab !== 'relevance' && str_contains($search_html, 'class="wextstat-search-field-row"'))) {
         fwrite(STDERR, "Search > {$search_tab} ekranında başka bir alt sekmenin alanları gösteriliyor.\n");
         exit(1);
     }
 }
-if (str_contains($admin_source, 'Fuse.js Fields and Weights')) {
-    fwrite(STDERR, "Fuse.js alt sekmesinin eski adı kaynakta kaldı.\n");
+if (str_contains($admin_source, 'Fuse.js')) {
+    fwrite(STDERR, "Eski arama kutuphanesinin adi kaynakta kaldi.\n");
     exit(1);
 }
 
@@ -830,4 +824,4 @@ if (empty($stalled_status['stalled']) || ! str_contains((string) ($stalled_statu
     exit(1);
 }
 
-echo "WP Static Publisher smoke test passed.\n";
+echo "Wext Static Publisher smoke test passed.\n";

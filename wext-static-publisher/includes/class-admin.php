@@ -9,8 +9,8 @@ final class Admin
     public static function menu(): void
     {
         add_menu_page(
-            'WP Static Publisher',
-            'WP Static Publisher',
+            'Wext Static Publisher',
+            'Wext Static Publisher',
             'manage_options',
             'wext-static-publisher',
             [self::class, 'render'],
@@ -349,7 +349,7 @@ final class Admin
             $sanitized['exclude_urls'] = sanitize_textarea_field((string) ($value['exclude_urls'] ?? ''));
         }
 
-        if (in_array($section, ['fuse', 'all'], true)) {
+        if (in_array($section, ['relevance', 'all'], true)) {
             foreach ($fields as $field) {
                 $sanitized[$field] = isset($value[$field]) ? '1' : '0';
             }
@@ -367,7 +367,7 @@ final class Admin
     public static function start_export(): void
     {
         if (! current_user_can('manage_options')) {
-            wp_die(__('You are not authorized for this operation.', 'wext-static-publisher'), 403);
+            wp_die(esc_html__('You are not authorized for this operation.', 'wext-static-publisher'), 403);
         }
         check_admin_referer('wext_static_export');
         $return_to = isset($_POST['return_to'])
@@ -405,13 +405,13 @@ final class Admin
     public static function download_export(): void
     {
         if (! current_user_can('manage_options')) {
-            wp_die(__('You are not authorized for this operation.', 'wext-static-publisher'), 403);
+            wp_die(esc_html__('You are not authorized for this operation.', 'wext-static-publisher'), 403);
         }
         check_admin_referer('wext_static_download');
 
         $archive = Archive_Manager::latest();
         if ($archive === null || ! is_readable((string) $archive['path'])) {
-            wp_die(__('No downloadable exports found.', 'wext-static-publisher'), 404);
+            wp_die(esc_html__('No downloadable exports found.', 'wext-static-publisher'), 404);
         }
 
         self::send_file((string) $archive['path'], (string) $archive['id'] . '.zip');
@@ -449,7 +449,7 @@ final class Admin
     public static function refresh_diagnostics(): void
     {
         if (! current_user_can('manage_options')) {
-            wp_die(__('You are not authorized for this operation.', 'wext-static-publisher'), 403);
+            wp_die(esc_html__('You are not authorized for this operation.', 'wext-static-publisher'), 403);
         }
         check_admin_referer('wext_static_refresh_diagnostics');
         Diagnostics::refresh();
@@ -489,7 +489,7 @@ final class Admin
         self::authorize_cloudflare_action('wext_static_cloudflare_save');
         $account_id = isset($_POST['account_id']) ? sanitize_text_field(wp_unslash((string) $_POST['account_id'])) : '';
         $worker_name = isset($_POST['worker_name']) ? sanitize_text_field(wp_unslash((string) $_POST['worker_name'])) : '';
-        $api_token = isset($_POST['api_token']) ? trim(wp_unslash((string) $_POST['api_token'])) : '';
+        $api_token = isset($_POST['api_token']) ? sanitize_text_field(wp_unslash((string) $_POST['api_token'])) : '';
         try {
             Cloudflare_Deployer::save($account_id, $worker_name, $api_token);
             self::redirect_cloudflare(__('Cloudflare account connected.', 'wext-static-publisher'), 'success');
@@ -508,7 +508,7 @@ final class Admin
     private static function authorize_cloudflare_action(string $nonce_action): void
     {
         if (! current_user_can('manage_options')) {
-            wp_die(__('You are not authorized for this operation.', 'wext-static-publisher'), 403);
+            wp_die(esc_html__('You are not authorized for this operation.', 'wext-static-publisher'), 403);
         }
         check_admin_referer($nonce_action);
     }
@@ -534,7 +534,7 @@ final class Admin
     private static function authorize_sftp_action(string $nonce_action): void
     {
         if (! current_user_can('manage_options')) {
-            wp_die(__('You are not authorized for this operation.', 'wext-static-publisher'), 403);
+            wp_die(esc_html__('You are not authorized for this operation.', 'wext-static-publisher'), 403);
         }
         check_admin_referer($nonce_action);
     }
@@ -548,14 +548,14 @@ final class Admin
     public static function download_archive(): void
     {
         if (! current_user_can('manage_options')) {
-            wp_die(__('You are not authorized for this operation.', 'wext-static-publisher'), 403);
+            wp_die(esc_html__('You are not authorized for this operation.', 'wext-static-publisher'), 403);
         }
 
         $archive_id = isset($_GET['archive_id']) ? sanitize_file_name(wp_unslash((string) $_GET['archive_id'])) : '';
         check_admin_referer('wext_static_download_archive_' . $archive_id);
         $archive = Archive_Manager::find($archive_id);
         if ($archive === null || ! is_readable((string) $archive['path'])) {
-            wp_die(__('No downloadable ZIP file found.', 'wext-static-publisher'), 404);
+            wp_die(esc_html__('No downloadable ZIP file found.', 'wext-static-publisher'), 404);
         }
 
         self::send_file((string) $archive['path'], $archive_id . '.zip');
@@ -564,7 +564,7 @@ final class Admin
     public static function archive_bulk_action(): void
     {
         if (! current_user_can('manage_options')) {
-            wp_die(__('You are not authorized for this operation.', 'wext-static-publisher'), 403);
+            wp_die(esc_html__('You are not authorized for this operation.', 'wext-static-publisher'), 403);
         }
         check_admin_referer('wext_static_archive_bulk');
 
@@ -625,9 +625,10 @@ final class Admin
         header('Content-Type: application/zip');
         header('Content-Disposition: attachment; filename="' . sanitize_file_name($filename) . '"');
         header('Content-Length: ' . (string) filesize($path));
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile -- Stream an authorized ZIP download without loading it into PHP memory.
         readfile($path);
         if ($delete_after) {
-            unlink($path);
+            wp_delete_file($path);
         }
         exit;
     }
@@ -651,7 +652,7 @@ final class Admin
     public static function cleanup_exports(): void
     {
         if (! current_user_can('manage_options')) {
-            wp_die(__('You are not authorized for this operation.', 'wext-static-publisher'), 403);
+            wp_die(esc_html__('You are not authorized for this operation.', 'wext-static-publisher'), 403);
         }
         check_admin_referer('wext_static_cleanup_exports');
 
@@ -720,7 +721,7 @@ final class Admin
             <header class="wextstat-admin-header">
                 <span class="wextstat-admin-header__icon dashicons dashicons-media-document" aria-hidden="true"></span>
                 <div>
-                    <h1>WP Static Publisher</h1>
+                    <h1>Wext Static Publisher</h1>
                     <p><?php esc_html_e('Generate a static copy of your WordPress site and publish it to your own Cloudflare account.', 'wext-static-publisher'); ?></p>
                 </div>
             </header>
@@ -912,16 +913,20 @@ final class Admin
         ?>
         <h2><?php esc_html_e('ZIP Files', 'wext-static-publisher'); ?></h2>
         <?php if ($cleanup_status === 'success') : ?>
+            <?php /* translators: %d is the number of old ZIP files deleted. */ ?>
             <div class="notice notice-success inline is-dismissible wextstat-files-notice"><p><?php echo esc_html(sprintf(__('The old ZIP file %d has been deleted.', 'wext-static-publisher'), absint($_GET['deleted'] ?? 0))); ?></p></div>
         <?php elseif ($cleanup_status === 'partial') : ?>
+            <?php /* translators: %1$d is the number deleted; %2$d is the number that could not be deleted. */ ?>
             <div class="notice notice-warning inline is-dismissible wextstat-files-notice"><p><?php echo esc_html(sprintf(__('%1$d old ZIP file was deleted, %2$d file could not be deleted.', 'wext-static-publisher'), absint($_GET['deleted'] ?? 0), absint($_GET['failed'] ?? 0))); ?></p></div>
         <?php elseif ($cleanup_status === 'running') : ?>
             <div class="notice notice-warning inline is-dismissible wextstat-files-notice"><p><?php esc_html_e('Old files cannot be deleted while export is in progress.', 'wext-static-publisher'); ?></p></div>
         <?php endif; ?>
 
         <?php if ($archive_notice === 'deleted') : ?>
+            <?php /* translators: %d is the number of ZIP files deleted. */ ?>
             <div class="notice notice-success inline is-dismissible wextstat-files-notice"><p><?php echo esc_html(sprintf(__('%d ZIP file has been deleted.', 'wext-static-publisher'), absint($_GET['deleted'] ?? 0))); ?></p></div>
         <?php elseif ($archive_notice === 'partial') : ?>
+            <?php /* translators: %1$d is the number deleted; %2$d is the number that could not be deleted. */ ?>
             <div class="notice notice-warning inline is-dismissible wextstat-files-notice"><p><?php echo esc_html(sprintf(__('ZIP file %1$d was deleted, file %2$d could not be deleted.', 'wext-static-publisher'), absint($_GET['deleted'] ?? 0), absint($_GET['failed'] ?? 0))); ?></p></div>
         <?php elseif ($archive_notice === 'no-selection') : ?>
             <div class="notice notice-warning inline is-dismissible wextstat-files-notice"><p><?php esc_html_e('Select at least one ZIP file to process.', 'wext-static-publisher'); ?></p></div>
@@ -966,6 +971,7 @@ final class Admin
                         );
                         ?>
                         <tr>
+                            <?php /* translators: %s is the static export job ID. */ ?>
                             <th scope="row" class="check-column"><input type="checkbox" name="archive_ids[]" value="<?php echo esc_attr($archive_id); ?>"><span class="screen-reader-text"><?php echo esc_html(sprintf(__('Select %s', 'wext-static-publisher'), (string) $archive['job_id'])); ?></span></th>
                             <td class="wextstat-number-column"><?php echo esc_html((string) ($archive_offset + $archive_index + 1)); ?></td>
                             <td><code><?php echo esc_html((string) $archive['job_id']); ?></code></td>
@@ -1061,7 +1067,7 @@ final class Admin
                             <p><?php esc_html_e('Download the created static site package and manually install it on the desired server.', 'wext-static-publisher'); ?></p>
                         </div>
                         <div class="wextstat-deploy-card__footer">
-                            <span class="wextstat-deploy-status <?php echo $has_archive ? 'is-ready' : 'is-pending'; ?>"><?php echo $has_archive ? __('ZIP ready', 'wext-static-publisher') : __('Create static site first', 'wext-static-publisher'); ?></span>
+                            <span class="wextstat-deploy-status <?php echo $has_archive ? 'is-ready' : 'is-pending'; ?>"><?php echo $has_archive ? esc_html__('ZIP ready', 'wext-static-publisher') : esc_html__('Create static site first', 'wext-static-publisher'); ?></span>
                         </div>
                         <div class="wextstat-deploy-card__files">
                             <?php self::render_zip_files($archives); ?>
@@ -1078,7 +1084,7 @@ final class Admin
                             <p><?php esc_html_e('Automatically trigger the GitHub Actions flow via webhook when the export is complete.', 'wext-static-publisher'); ?></p>
                         </div>
                         <div class="wextstat-deploy-card__footer">
-                            <span class="wextstat-deploy-status <?php echo $github_configured ? 'is-ready' : 'is-pending'; ?>"><?php echo $github_configured ? __('Webhook configured', 'wext-static-publisher') : __('Configuration required', 'wext-static-publisher'); ?></span>
+                            <span class="wextstat-deploy-status <?php echo $github_configured ? 'is-ready' : 'is-pending'; ?>"><?php echo $github_configured ? esc_html__('Webhook configured', 'wext-static-publisher') : esc_html__('Configuration required', 'wext-static-publisher'); ?></span>
                         </div>
                     </section>
                     <?php self::render_deploy_settings($settings); ?>
@@ -1170,9 +1176,7 @@ final class Admin
                 <h3 id="wextstat-cloudflare-connection-title"><?php esc_html_e('Cloudflare Connection', 'wext-static-publisher'); ?></h3>
                 <p><?php esc_html_e('Use an API token from your own Cloudflare account with Workers Scripts Write permission. The token is encrypted in WordPress and is never shown again.', 'wext-static-publisher'); ?></p>
                 <p class="description">
-                    <a href="<?php echo esc_url('https://developers.cloudflare.com/fundamentals/account/find-account-and-zone-ids/'); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Find your Account ID', 'wext-static-publisher'); ?></a>
-                    &middot;
-                    <a href="<?php echo esc_url('https://developers.cloudflare.com/fundamentals/api/get-started/create-token/'); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Create an API token', 'wext-static-publisher'); ?></a>
+                    <?php esc_html_e('Find your Account ID and create an API token in your Cloudflare dashboard.', 'wext-static-publisher'); ?>
                 </p>
                 <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                     <input type="hidden" name="action" value="wext_static_cloudflare_save">
@@ -1290,6 +1294,7 @@ final class Admin
                     : add_query_arg('log_search', $search, self::admin_page_url('activity'));
                 ?>
                 <nav class="wextstat-pagination" aria-label="<?php echo esc_attr__('Activity log pages', 'wext-static-publisher'); ?>">
+                    <?php /* translators: %d is the number of activity records. */ ?>
                     <span class="wextstat-pagination__summary"><?php echo esc_html(sprintf(__('%d records', 'wext-static-publisher'), (int) $activity['total'])); ?></span>
                     <?php
                     echo wp_kses_post((string) paginate_links([
@@ -1458,8 +1463,11 @@ final class Admin
         };
         $additional_outputs = static function (string $prefix, string $label) use ($metadata_outputs): array {
             return array_merge($metadata_outputs($prefix), [
+                /* translators: %s is the SEO plugin name. */
                 $prefix . '_schema' => [__('Schema Structured Data', 'wext-static-publisher'), sprintf(__('Keep %s JSON-LD data, convert its URLs to the live domain, and adapt SearchAction to static search.', 'wext-static-publisher'), $label)],
+                /* translators: %s is the SEO plugin name. */
                 $prefix . '_sitemaps' => [__('XML Sitemaps', 'wext-static-publisher'), sprintf(__('Copy %s sitemap and its linked sitemap files into the static package.', 'wext-static-publisher'), $label)],
+                /* translators: %s is the SEO plugin name. */
                 $prefix . '_robots' => [__('Robots.txt', 'wext-static-publisher'), sprintf(__('Copy %s robots.txt rules and point sitemap declarations to the live static domain.', 'wext-static-publisher'), $label)],
             ]);
         };
@@ -1509,6 +1517,7 @@ final class Admin
                 'label' => 'SureRank SEO',
                 'active' => defined('SURERANK_VERSION'),
                 'version' => defined('SURERANK_VERSION') ? (string) SURERANK_VERSION : '',
+                /* translators: %s is the SEO plugin name. */
                 'description' => sprintf(__('Choose which %s outputs will be included in the generated static site.', 'wext-static-publisher'), 'SureRank SEO'),
                 'outputs' => $additional_outputs('surerank', 'SureRank SEO'),
             ],
@@ -1518,6 +1527,7 @@ final class Admin
                 'label' => 'The SEO Framework',
                 'active' => defined('THE_SEO_FRAMEWORK_VERSION'),
                 'version' => defined('THE_SEO_FRAMEWORK_VERSION') ? (string) THE_SEO_FRAMEWORK_VERSION : '',
+                /* translators: %s is the SEO plugin name. */
                 'description' => sprintf(__('Choose which %s outputs will be included in the generated static site.', 'wext-static-publisher'), 'The SEO Framework'),
                 'outputs' => $additional_outputs('seo_framework', 'The SEO Framework'),
             ],
@@ -1527,6 +1537,7 @@ final class Admin
                 'label' => 'Yoast SEO',
                 'active' => defined('WPSEO_VERSION'),
                 'version' => defined('WPSEO_VERSION') ? (string) WPSEO_VERSION : '',
+                /* translators: %s is the SEO plugin name. */
                 'description' => sprintf(__('Choose which %s outputs will be included in the generated static site.', 'wext-static-publisher'), 'Yoast SEO'),
                 'outputs' => $additional_outputs('yoast', 'Yoast SEO'),
             ],
@@ -1592,20 +1603,24 @@ final class Admin
                 </button>
                 <div class="wextstat-seo-plugin-card__summary">
                     <span class="wextstat-deploy-status <?php echo $active ? 'is-ready' : 'is-pending'; ?>">
+                        <?php /* translators: %s is the installed SEO plugin version. */ ?>
                         <?php echo $active && $version !== '' ? esc_html(sprintf(__('Active — version %s', 'wext-static-publisher'), $version)) : ($active ? esc_html__('Active', 'wext-static-publisher') : esc_html__('Not active', 'wext-static-publisher')); ?>
                     </span>
                     <span class="wextstat-seo-output-count" data-wextstat-output-count><strong><?php echo esc_html((string) $selected); ?></strong> / <?php echo esc_html((string) count($outputs)); ?></span>
                     <label class="wextstat-seo-plugin-enable">
                         <input type="checkbox" name="<?php echo esc_attr($option_name); ?>[<?php echo esc_attr($prefix); ?>_enabled]" value="1" data-wextstat-seo-master <?php checked((string) ($settings[$prefix . '_enabled'] ?? '0'), '1'); ?>>
+                        <?php /* translators: %s is the SEO plugin name. */ ?>
                         <span><?php echo esc_html(sprintf(__('Include %s outputs in the static site', 'wext-static-publisher'), $label)); ?></span>
                     </label>
                 </div>
             </div>
             <div class="wextstat-seo-plugin-card__body" id="<?php echo esc_attr($panel_id); ?>" data-wextstat-seo-panel <?php echo $expanded ? '' : 'hidden'; ?>>
+                <?php /* translators: %s is the SEO plugin name. */ ?>
                 <p class="wextstat-seo-plugin-card__master-note"><?php echo esc_html(sprintf(__('When disabled, %s metadata and schema outputs are removed and its sitemap and robots files are not exported.', 'wext-static-publisher'), $label)); ?></p>
                 <?php self::render_seo_output_group(__('Metadata', 'wext-static-publisher'), $metadata_outputs, $option_name, $settings); ?>
                 <?php self::render_seo_output_group(__('Technical SEO', 'wext-static-publisher'), $technical_outputs, $option_name, $settings); ?>
                 <?php if (! $active) : ?>
+                    <?php /* translators: %s is the SEO plugin name. */ ?>
                     <p class="wextstat-language-card__note"><span class="dashicons dashicons-info-outline" aria-hidden="true"></span><?php echo esc_html(sprintf(__('These settings are preserved, but no %s output will be exported until the plugin is active.', 'wext-static-publisher'), $label)); ?></p>
                 <?php endif; ?>
             </div>
@@ -1925,16 +1940,16 @@ final class Admin
         $search_tabs = [
             'static' => [__('Static Search', 'wext-static-publisher'), 'dashicons-search'],
             'selectors' => [__('Indexing Selectors', 'wext-static-publisher'), 'dashicons-filter'],
-            'fuse' => [__('Fuse.js', 'wext-static-publisher'), 'dashicons-chart-bar'],
+            'relevance' => [__('Search Relevance', 'wext-static-publisher'), 'dashicons-chart-bar'],
         ];
         $current_search_tab = isset($search_tabs[$requested_search_tab]) ? $requested_search_tab : 'static';
         ?>
         <div class="wextstat-search-header">
             <div>
                 <h2><?php esc_html_e('Search', 'wext-static-publisher'); ?></h2>
-                <p><?php esc_html_e('Configure static site search that doesn\'t require a server, powered by Fuse.js.', 'wext-static-publisher'); ?></p>
+                <p><?php esc_html_e('Configure static site search that runs in the visitor\'s browser.', 'wext-static-publisher'); ?></p>
             </div>
-            <span class="wextstat-search-badge">Fuse.js 7.3.0</span>
+            <span class="wextstat-search-badge"><?php esc_html_e('No external search service', 'wext-static-publisher'); ?></span>
         </div>
         <div class="wextstat-search-layout">
             <nav class="wextstat-search-tabs" aria-label="<?php echo esc_attr__('Search', 'wext-static-publisher'); ?>">
@@ -1954,7 +1969,7 @@ final class Admin
                         <section class="wextstat-search-card">
                             <div class="wextstat-search-card__heading">
                                 <span class="dashicons dashicons-search" aria-hidden="true"></span>
-                                <div><h3><?php esc_html_e('Static Search', 'wext-static-publisher'); ?></h3><p><?php esc_html_e('The search page, index and necessary Fuse.js files are added to the export ZIP.', 'wext-static-publisher'); ?></p></div>
+                                <div><h3><?php esc_html_e('Static Search', 'wext-static-publisher'); ?></h3><p><?php esc_html_e('The search page, index and search script are added to the export ZIP.', 'wext-static-publisher'); ?></p></div>
                                 <label class="wextstat-switch" aria-label="<?php echo esc_attr__('Enable static search', 'wext-static-publisher'); ?>">
                                     <input type="checkbox" name="<?php echo esc_attr($option_name); ?>[enabled]" value="1" <?php checked((string) $settings['enabled'], '1'); ?>>
                                     <span aria-hidden="true"></span>
@@ -1965,7 +1980,7 @@ final class Admin
                                 <div><label for="wextstat-search-limit"><?php esc_html_e('Number of Results to Show', 'wext-static-publisher'); ?></label><input id="wextstat-search-limit" type="number" min="5" max="100" name="<?php echo esc_attr($option_name); ?>[result_limit]" value="<?php echo esc_attr((string) $settings['result_limit']); ?>"></div>
                                 <div><label for="wextstat-search-min-chars"><?php esc_html_e('Minimum Search Characters', 'wext-static-publisher'); ?></label><input id="wextstat-search-min-chars" type="number" min="1" max="10" name="<?php echo esc_attr($option_name); ?>[min_chars]" value="<?php echo esc_attr((string) $settings['min_chars']); ?>"></div>
                                 <div><label for="wextstat-search-content-limit"><?php esc_html_e('Content Character Limit', 'wext-static-publisher'); ?></label><input id="wextstat-search-content-limit" type="number" min="500" max="20000" step="500" name="<?php echo esc_attr($option_name); ?>[content_limit]" value="<?php echo esc_attr((string) $settings['content_limit']); ?>"><p><?php esc_html_e('Maximum text length to be indexed from each page.', 'wext-static-publisher'); ?></p></div>
-                                <div><label for="wextstat-search-threshold"><?php esc_html_e('Blur Threshold', 'wext-static-publisher'); ?></label><input id="wextstat-search-threshold" type="number" min="0.1" max="0.8" step="0.05" name="<?php echo esc_attr($option_name); ?>[threshold]" value="<?php echo esc_attr((string) $settings['threshold']); ?>"><p><?php esc_html_e('A lower value gives a more precise result, a higher value gives a more tolerant result.', 'wext-static-publisher'); ?></p></div>
+                                <div><label for="wextstat-search-threshold"><?php esc_html_e('Typo Tolerance', 'wext-static-publisher'); ?></label><input id="wextstat-search-threshold" type="number" min="0.1" max="0.8" step="0.05" name="<?php echo esc_attr($option_name); ?>[threshold]" value="<?php echo esc_attr((string) $settings['threshold']); ?>"><p><?php esc_html_e('A lower value gives a more precise result, a higher value gives a more tolerant result.', 'wext-static-publisher'); ?></p></div>
                                 <div><label for="wextstat-search-token-match"><?php esc_html_e('Word Matching', 'wext-static-publisher'); ?></label><select id="wextstat-search-token-match" name="<?php echo esc_attr($option_name); ?>[token_match]"><option value="all" <?php selected($settings['token_match'], 'all'); ?>><?php esc_html_e('Match all words', 'wext-static-publisher'); ?></option><option value="any" <?php selected($settings['token_match'], 'any'); ?>><?php esc_html_e('Match any word', 'wext-static-publisher'); ?></option></select></div>
                             </div>
                         </section>
@@ -1986,7 +2001,7 @@ final class Admin
                         <section class="wextstat-search-card">
                             <div class="wextstat-search-card__heading">
                                 <span class="dashicons dashicons-chart-bar" aria-hidden="true"></span>
-                                <div><h3><?php esc_html_e('Fuse.js', 'wext-static-publisher'); ?></h3><p><?php esc_html_e('Select the fields to search and determine their impact on the result ranking.', 'wext-static-publisher'); ?></p></div>
+                                <div><h3><?php esc_html_e('Search Relevance', 'wext-static-publisher'); ?></h3><p><?php esc_html_e('Select the fields to search and determine their impact on the result ranking.', 'wext-static-publisher'); ?></p></div>
                             </div>
                             <div class="wextstat-search-fields">
                                 <?php
@@ -2178,6 +2193,7 @@ final class Admin
         <div class="wextstat-diagnostics-header">
             <div>
                 <h2><?php esc_html_e('Diagnostics', 'wext-static-publisher'); ?></h2>
+                <?php /* translators: %1$d is the number of passing checks; %2$d is the total number of checks. */ ?>
                 <p class="wextstat-diagnostics-summary"><strong><?php echo esc_html(sprintf(__('%1$d of %2$d checks passed.', 'wext-static-publisher'), $passed, $total)); ?></strong> <?php esc_html_e('Last checked:', 'wext-static-publisher'); ?> <?php echo $checked_timestamp === false ? '—' : esc_html(wp_date((string) get_option('date_format') . ' ' . (string) get_option('time_format'), $checked_timestamp)); ?></p>
             </div>
             <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
@@ -2236,7 +2252,7 @@ final class Admin
                         <div class="wextstat-about-card__intro">
                             <span class="wextstat-about-card__icon dashicons dashicons-media-document" aria-hidden="true"></span>
                             <div>
-                                <h3 id="wextstat-about-title">WP Static Publisher</h3>
+                                <h3 id="wextstat-about-title">Wext Static Publisher</h3>
                                 <p><?php esc_html_e('It was developed to convert your WordPress site into static files and prepare them for publication processes.', 'wext-static-publisher'); ?></p>
                             </div>
                         </div>
@@ -2248,7 +2264,7 @@ final class Admin
                             <div>
                                 <dt><?php esc_html_e('Plugin Website', 'wext-static-publisher'); ?></dt>
                                 <dd>
-                                    <a href="<?php echo esc_url('https://github.com/ahmetcigsar/WP-Static-Site'); ?>" target="_blank" rel="noopener noreferrer">
+                                    <a href="<?php echo esc_url('https://github.com/ahmetcigsar/Wext-Static-Publisher'); ?>" target="_blank" rel="noopener noreferrer">
                                         GitHub
                                         <span class="dashicons dashicons-external" aria-hidden="true"></span>
                                     </a>
@@ -2269,12 +2285,12 @@ final class Admin
                         <dl class="wextstat-about-details">
                             <div>
                                 <dt><?php esc_html_e('Report an Issue', 'wext-static-publisher'); ?></dt>
-                                <dd><a href="<?php echo esc_url('https://github.com/ahmetcigsar/WP-Static-Site/issues'); ?>" target="_blank" rel="noopener noreferrer">GitHub Issues</a></dd>
+                                <dd><a href="<?php echo esc_url('https://github.com/ahmetcigsar/Wext-Static-Publisher/issues'); ?>" target="_blank" rel="noopener noreferrer">GitHub Issues</a></dd>
                             </div>
                             <div>
                                 <dt><?php esc_html_e('Plugin Website', 'wext-static-publisher'); ?></dt>
                                 <dd>
-                                    <a href="<?php echo esc_url('https://github.com/ahmetcigsar/WP-Static-Site'); ?>" target="_blank" rel="noopener noreferrer">
+                                    <a href="<?php echo esc_url('https://github.com/ahmetcigsar/Wext-Static-Publisher'); ?>" target="_blank" rel="noopener noreferrer">
                                         GitHub
                                         <span class="dashicons dashicons-external" aria-hidden="true"></span>
                                     </a>

@@ -155,6 +155,7 @@ final class Block_SEO_Integration
             $visited[$url] = true;
             $response = wp_remote_get($url, $this->request_args());
             if (is_wp_error($response) || (int) wp_remote_retrieve_response_code($response) !== 200) {
+                /* translators: %s is the SEO plugin name. */
                 $log('warning', sprintf(__('%s sitemap could not be exported.', 'wext-static-publisher'), $this->label), $url);
                 continue;
             }
@@ -177,6 +178,7 @@ final class Block_SEO_Integration
         $url = $this->origin . '/robots.txt';
         $response = wp_remote_get($url, $this->request_args());
         if (is_wp_error($response) || (int) wp_remote_retrieve_response_code($response) !== 200) {
+            /* translators: %s is the SEO plugin name. */
             $log('warning', sprintf(__('%s robots.txt could not be exported.', 'wext-static-publisher'), $this->label), $url);
             return false;
         }
@@ -193,7 +195,7 @@ final class Block_SEO_Integration
         return [
             'timeout' => 25,
             'redirection' => 5,
-            'user-agent' => 'WPStaticPublisher/' . WEXTSTAT_VERSION,
+            'user-agent' => 'Wext\StaticPublisher/' . WEXTSTAT_VERSION,
             'headers' => ['X-Wext-Static-Export' => '1'],
         ];
     }

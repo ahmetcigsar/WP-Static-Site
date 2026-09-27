@@ -101,4 +101,4 @@ if (str_contains($disabled->process_html($html, true, 'arama'), 'Rank Math')) {
     throw new RuntimeException('Kapalı Rank Math entegrasyonu metadata bloğunu kaldırmadı.');
 }
 
-echo "WP Static Publisher Rank Math integration test passed.\n";
+echo "Wext Static Publisher Rank Math integration test passed.\n";

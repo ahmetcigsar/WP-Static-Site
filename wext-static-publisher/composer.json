@@ -1,5 +1,5 @@
 {
-    "name": "wext/static-publisher",
+    "name": "wext-static-publisher/plugin",
     "description": "Static export and deployment tooling for WordPress.",
     "type": "wordpress-plugin",
     "license": "MIT",

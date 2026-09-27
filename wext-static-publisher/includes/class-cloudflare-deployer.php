@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Wext\StaticPublisher;
 
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are plain text data. Escape when rendering in HTML.
+
 use FilesystemIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -115,7 +117,7 @@ final class Cloudflare_Deployer
                 'deployment_url' => '',
                 'error' => $error->getMessage(),
             ]);
-            error_log('[WP Static Publisher] Cloudflare deployment failed: ' . $error->getMessage());
+            error_log('[Wext Static Publisher] Cloudflare deployment failed: ' . $error->getMessage());
             return false;
         }
     }
@@ -243,7 +245,8 @@ final class Cloudflare_Deployer
         $code = wp_remote_retrieve_response_code($response);
         if ($code < 200 || $code >= 300 || ! is_array($payload) || empty($payload['success'])) {
             $error = is_array($payload['errors'] ?? null) ? (string) ($payload['errors'][0]['message'] ?? '') : '';
-            throw new RuntimeException(sprintf(__('Cloudflare API request failed (HTTP %d): %s', 'wext-static-publisher'), $code, $error ?: __('Unknown error', 'wext-static-publisher')));
+            /* translators: %1$d is the HTTP status code; %2$s is the Cloudflare error message. */
+            throw new RuntimeException(sprintf(__('Cloudflare API request failed (HTTP %1$d): %2$s', 'wext-static-publisher'), $code, $error ?: __('Unknown error', 'wext-static-publisher')));
         }
         return is_array($payload['result'] ?? null) ? $payload['result'] : [];
     }

@@ -38,7 +38,7 @@ final class Diagnostics
             $site_response = wp_remote_get(home_url('/'), [
                 'timeout' => 10,
                 'redirection' => 3,
-                'user-agent' => 'WPStaticPublisher/' . WEXTSTAT_VERSION,
+                'user-agent' => 'Wext\StaticPublisher/' . WEXTSTAT_VERSION,
                 'headers' => ['X-Wext-Static-Export' => '1'],
             ]);
         }
@@ -66,6 +66,7 @@ final class Diagnostics
         }
         $temporary_directory = trailingslashit($temporary_directory);
         $temporary_readable = is_dir($temporary_directory) && is_readable($temporary_directory);
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_is_writable -- Diagnose actual PHP process permissions on the plugin temporary directory.
         $temporary_writable = is_dir($temporary_directory) && is_writable($temporary_directory);
         $active_plugins = $active_plugins ?? self::active_plugins();
         $incompatible_plugins = self::active_incompatible_plugins($active_plugins);
@@ -73,10 +74,12 @@ final class Diagnostics
         $database_privileges = self::database_privileges($database_grants);
 
         $site_message = $site_reachable
-            ? sprintf(__('Site URL accessible (HTTP %d): %s', 'wext-static-publisher'), $response_code, home_url('/'))
+            /* translators: %1$d is the HTTP status code; %2$s is the site URL. */
+            ? sprintf(__('Site URL accessible (HTTP %1$d): %2$s', 'wext-static-publisher'), $response_code, home_url('/'))
             : (is_wp_error($site_response)
                 ? __('Site URL unreachable:', 'wext-static-publisher') . $site_response->get_error_message()
-                : sprintf(__('Site URL returned an unexpected HTTP %d response: %s', 'wext-static-publisher'), $response_code, home_url('/')));
+                /* translators: %1$d is the HTTP status code; %2$s is the site URL. */
+                : sprintf(__('Site URL returned an unexpected HTTP %1$d response: %2$s', 'wext-static-publisher'), $response_code, home_url('/')));
 
         $groups = [
             __('Server', 'wext-static-publisher') => [
@@ -85,7 +88,9 @@ final class Diagnostics
                     'label' => __('PHP Version', 'wext-static-publisher'),
                     'passed' => $php_supported,
                     'message' => $php_supported
+                        /* translators: %s is the current PHP version. */
                         ? sprintf(__('PHP 8.1 or above can be used. Current version: %s.', 'wext-static-publisher'), PHP_VERSION)
+                        /* translators: %s is the current PHP version. */
                         : sprintf(__('PHP 8.1 or above required. Current version: %s.', 'wext-static-publisher'), PHP_VERSION),
                 ],
                 [
@@ -173,7 +178,9 @@ final class Diagnostics
                     'label' => __('Temporary Directory Readable', 'wext-static-publisher'),
                     'passed' => $temporary_readable,
                     'message' => $temporary_readable
+                        /* translators: %s is the temporary directory path. */
                         ? sprintf(__('The web server is able to read the temporary directory: %s', 'wext-static-publisher'), $temporary_directory)
+                        /* translators: %s is the temporary directory path. */
                         : sprintf(__('Web server cannot read temporary directory: %s', 'wext-static-publisher'), $temporary_directory),
                 ],
                 [
@@ -181,7 +188,9 @@ final class Diagnostics
                     'label' => __('Temporary Directory Writable', 'wext-static-publisher'),
                     'passed' => $temporary_writable,
                     'message' => $temporary_writable
+                        /* translators: %s is the temporary directory path. */
                         ? sprintf(__('The web server is able to write to the temporary directory: %s', 'wext-static-publisher'), $temporary_directory)
+                        /* translators: %s is the temporary directory path. */
                         : sprintf(__('Web server cannot write to temporary directory: %s', 'wext-static-publisher'), $temporary_directory),
                 ],
             ],
@@ -195,7 +204,9 @@ final class Diagnostics
                 'label' => $privilege,
                 'passed' => $has_privilege,
                 'message' => $has_privilege
+                    /* translators: %s is the MySQL privilege name. */
                     ? sprintf(__('MySQL user has %s privilege.', 'wext-static-publisher'), $privilege)
+                    /* translators: %s is the MySQL privilege name. */
                     : sprintf(__('The MySQL user does not have the %s privilege.', 'wext-static-publisher'), $privilege),
             ];
         }

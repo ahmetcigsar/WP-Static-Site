@@ -37,7 +37,7 @@ $screens = [
     'deploy-auto' => ['tab' => 'deploy', 'deploy_tab' => 'auto-deploy'],
     'search-static' => ['tab' => 'search', 'search_tab' => 'static'],
     'search-selectors' => ['tab' => 'search', 'search_tab' => 'selectors'],
-    'search-fuse' => ['tab' => 'search', 'search_tab' => 'fuse'],
+    'search-relevance' => ['tab' => 'search', 'search_tab' => 'relevance'],
     'hide-directory' => ['tab' => 'hide', 'hide_tab' => 'directory'],
     'hide-traces' => ['tab' => 'hide', 'hide_tab' => 'traces'],
     'hide-static-outputs' => ['tab' => 'hide', 'hide_tab' => 'static-outputs'],
@@ -66,7 +66,7 @@ $expected = [
     'deploy-auto' => ['Auto Deploy', 'Automatic Static Site Creation and Deploy', 'Save Auto Deploy Settings'],
     'search-static' => ['Static Search', 'Search Page Path', 'Save Search Settings'],
     'search-selectors' => ['Indexing Selectors', 'CSS Selector For Title', 'Save Search Settings'],
-    'search-fuse' => ['Fuse.js', 'Category and Tags', 'Save Search Settings'],
+    'search-relevance' => ['Search Relevance', 'Category and Tags', 'Save Search Settings'],
     'hide-directory' => ['Directory', 'Traces', 'Static Outputs', 'WP-Content Directory', 'Save Hide Settings'],
     'hide-traces' => ['Directory', 'Traces', 'Static Outputs', 'Hide WordPress Version', 'Save Hide Settings'],
     'hide-static-outputs' => ['Directory', 'Traces', 'Static Outputs', 'Disable XML-RPC Links', 'Save Hide Settings'],
@@ -107,4 +107,4 @@ foreach ($screens as $screen => $query) {
 
 $_GET = [];
 restore_current_locale();
-echo "WP Static Publisher English UI audit passed.\n";
+echo "Wext Static Publisher English UI audit passed.\n";

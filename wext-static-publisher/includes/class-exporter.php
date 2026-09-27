@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Wext\StaticPublisher;
 
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are plain text data. Escape when rendering in HTML.
+
 use DOMDocument;
 use DOMElement;
 use RuntimeException;
@@ -121,7 +123,7 @@ final class Exporter
             if ($this->static_search->enabled()) {
                 Plugin::set_status($job_id, 'running', 86, [
                     'phase' => 'search-index',
-                    'status_message' => __('Fuse.js search index is being prepared.', 'wext-static-publisher'),
+                    'status_message' => __('Static search index is being prepared.', 'wext-static-publisher'),
                     'current_url' => '',
                 ]);
                 $this->write_search_files();
@@ -233,7 +235,7 @@ final class Exporter
             $request_args = apply_filters('wext_static_request_args', [
                 'timeout' => 25,
                 'redirection' => 5,
-                'user-agent' => 'WPStaticPublisher/' . WEXTSTAT_VERSION,
+                'user-agent' => 'Wext\StaticPublisher/' . WEXTSTAT_VERSION,
                 'headers' => ['X-Wext-Static-Export' => '1'],
             ], $url);
             $response = wp_remote_get($url, $request_args);
@@ -669,6 +671,7 @@ final class Exporter
         foreach ($this->language_routing->languages() as $language) {
             $path = $this->build_directory . '/' . $language . '/index.html';
             if (! is_readable($path)) {
+                /* translators: %s is a language code in the URL path. */
                 throw new RuntimeException(sprintf(__('Could not export language root: /%s/', 'wext-static-publisher'), $language));
             }
         }

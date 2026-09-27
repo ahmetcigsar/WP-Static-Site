@@ -1,6 +1,6 @@
 <?php return array(
     'root' => array(
-        'name' => 'wext/static-publisher',
+        'name' => 'wext-static-publisher/plugin',
         'pretty_version' => '1.0.0+no-version-set',
         'version' => '1.0.0.0',
         'reference' => null,
@@ -37,7 +37,7 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-        'wext/static-publisher' => array(
+        'wext-static-publisher/plugin' => array(
             'pretty_version' => '1.0.0+no-version-set',
             'version' => '1.0.0.0',
             'reference' => null,

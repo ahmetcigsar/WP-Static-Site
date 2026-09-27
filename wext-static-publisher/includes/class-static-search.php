@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Wext\StaticPublisher;
 
+// phpcs:disable WordPress.WP.EnqueuedResources -- These tags are written into exported static HTML files; no live WordPress page loads them.
+
 use DOMDocument;
 use DOMElement;
 use DOMXPath;
@@ -89,10 +91,10 @@ final class Static_Search
 
     public function inject_search_bridge(string $html): string
     {
-        if (! $this->enabled() || str_contains($html, 'wext-search-bridge.js')) {
+        if (! $this->enabled() || str_contains($html, 'wext-static-search-bridge.js')) {
             return $html;
         }
-        $script = '<script type="module" src="/wext-search-assets/wext-search-bridge.js"></script>';
+        $script = '<script type="module" src="/wext-static-search-assets/wext-static-search-bridge.js"></script>';
         return stripos($html, '</body>') !== false
             ? (preg_replace('/<\/body>/i', $script . '</body>', $html, 1) ?? $html)
             : $html . $script;
@@ -110,10 +112,12 @@ final class Static_Search
             'minChars' => (int) $this->settings['min_chars'],
             'threshold' => (float) $this->settings['threshold'],
             'tokenMatch' => (string) $this->settings['token_match'],
-            'keys' => $this->fuse_keys(),
+            'keys' => $this->search_keys(),
             'i18n' => [
                 'noResults' => __('No results matched your search.', 'wext-static-publisher'),
+                /* translators: %d is the number of search results. */
                 'resultsShown' => __('%d results shown.', 'wext-static-publisher'),
+                /* translators: %d is the minimum number of characters required to search. */
                 'minimumCharacters' => __('Enter at least %d characters to search.', 'wext-static-publisher'),
                 'loadError' => __('The search index could not be loaded. Please try again later.', 'wext-static-publisher'),
             ],
@@ -121,13 +125,11 @@ final class Static_Search
         $page_path = trim((string) $this->settings['page_path'], '/');
 
         return [
-            'wext-search-assets/fuse.min.mjs' => (string) file_get_contents(WEXTSTAT_DIR . 'assets/search/fuse.min.mjs'),
-            'wext-search-assets/FUSE-LICENSE.txt' => (string) file_get_contents(WEXTSTAT_DIR . 'assets/search/FUSE-LICENSE.txt'),
-            'wext-search-assets/wext-search.js' => (string) file_get_contents(WEXTSTAT_DIR . 'assets/search/wext-search.js'),
-            'wext-search-assets/wext-search-bridge.js' => $this->bridge_script($config['pagePath']),
-            'wext-search-assets/wext-search.css' => (string) file_get_contents(WEXTSTAT_DIR . 'assets/search/wext-search.css'),
-            'wext-search-index.json' => (string) wp_json_encode(array_values($documents), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
-            'wext-search-config.json' => (string) wp_json_encode($config, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+            'wext-static-search-assets/wext-static-search.js' => (string) file_get_contents(WEXTSTAT_DIR . 'assets/search/wext-static-search.js'),
+            'wext-static-search-assets/wext-static-search-bridge.js' => $this->bridge_script($config['pagePath']),
+            'wext-static-search-assets/wext-static-search.css' => (string) file_get_contents(WEXTSTAT_DIR . 'assets/search/wext-static-search.css'),
+            'wext-static-search-index.json' => (string) wp_json_encode(array_values($documents), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+            'wext-static-search-config.json' => (string) wp_json_encode($config, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
             $page_path . '/index.html' => $this->search_page(),
         ];
     }
@@ -219,7 +221,7 @@ final class Static_Search
         ]));
     }
 
-    private function fuse_keys(): array
+    private function search_keys(): array
     {
         $keys = [];
         foreach ([
@@ -245,7 +247,7 @@ final class Static_Search
     {
         $language = str_replace('_', '-', (string) get_bloginfo('language')) ?: 'en-US';
         return sprintf(
-            '<!doctype html><html lang="%1$s"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>%2$s</title><link rel="stylesheet" href="/wext-search-assets/wext-search.css"></head><body><main class="wext-search"><a class="wext-search__back" href="/">← %3$s</a><h1>%4$s</h1><form id="wext-search-form" role="search"><label for="wext-search-input">%2$s</label><div class="wext-search__input"><input id="wext-search-input" type="search" name="q" autocomplete="off" placeholder="%5$s"><button type="submit">%2$s</button></div></form><p id="wext-search-status" role="status" aria-live="polite"></p><div id="wext-search-results"></div></main><script type="module" src="/wext-search-assets/wext-search.js"></script></body></html>',
+            '<!doctype html><html lang="%1$s"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>%2$s</title><link rel="stylesheet" href="/wext-static-search-assets/wext-static-search.css"></head><body><main class="wext-static-search"><a class="wext-static-search__back" href="/">← %3$s</a><h1>%4$s</h1><form id="wext-static-search-form" role="search"><label for="wext-static-search-input">%2$s</label><div class="wext-static-search__input"><input id="wext-static-search-input" type="search" name="q" autocomplete="off" placeholder="%5$s"><button type="submit">%2$s</button></div></form><p id="wext-static-search-status" role="status" aria-live="polite"></p><div id="wext-static-search-results"></div></main><script type="module" src="/wext-static-search-assets/wext-static-search.js"></script></body></html>',
             esc_attr($language),
             esc_html__('Search', 'wext-static-publisher'),
             esc_html__('Home', 'wext-static-publisher'),

@@ -1,4 +1,4 @@
-# WP Static Publisher architecture
+# Wext Static Publisher architecture
 
 ## Boundaries
 

@@ -221,10 +221,9 @@ $language_config = json_decode((string) $zip->getFromName('wext-language-config.
 $language_script = (string) $zip->getFromName('wext-language-preference.js');
 $turkish_home = (string) $zip->getFromName('tr/index.html');
 $english_home = (string) $zip->getFromName('en/index.html');
-$search_index = json_decode((string) $zip->getFromName('wext-search-index.json'), true);
-$search_config = json_decode((string) $zip->getFromName('wext-search-config.json'), true);
-$search_script = (string) $zip->getFromName('wext-search-assets/wext-search.js');
-$fuse_script = (string) $zip->getFromName('wext-search-assets/fuse.min.mjs');
+$search_index = json_decode((string) $zip->getFromName('wext-static-search-index.json'), true);
+$search_config = json_decode((string) $zip->getFromName('wext-static-search-config.json'), true);
+$search_script = (string) $zip->getFromName('wext-static-search-assets/wext-static-search.js');
 $seo_report = json_decode((string) $zip->getFromName('wext-seo-report.json'), true);
 $seo_report_html = (string) $zip->getFromName('wext-seo-report.html');
 $performance_report = json_decode((string) $zip->getFromName('wext-performance-report.json'), true);
@@ -275,11 +274,10 @@ if ($search_page === '' || ! str_contains($search_page, 'Search This Site')
     || ($search_config['tokenMatch'] ?? '') !== 'all'
     || ($search_config['i18n']['noResults'] ?? '') !== 'No results matched your search.'
     || ! is_array($search_config['keys'] ?? null)
-    || $search_script === '' || ! str_contains($search_script, 'new Fuse')
-    || $fuse_script === '') {
-    throw new RuntimeException('Fuse.js statik arama dosyaları export ZIP içine doğru üretilmedi.');
+    || $search_script === '' || ! str_contains($search_script, 'searchDocuments')) {
+    throw new RuntimeException('Statik arama dosyaları export ZIP içine doğru üretilmedi.');
 }
-if (! str_contains($home_html, 'wext-search-bridge.js')) {
+if (! str_contains($home_html, 'wext-static-search-bridge.js')) {
     throw new RuntimeException('WordPress arama formlarını yönlendiren statik arama köprüsü HTML içine eklenmedi.');
 }
 if (($manifest_file['static_search']['document_count'] ?? 0) !== count($search_index)) {

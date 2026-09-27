@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Wext\StaticPublisher;
 
+// phpcs:disable WordPress.WP.EnqueuedResources -- These tags are written into exported static HTML files; no live WordPress page loads them.
+
 final class Language_Routing
 {
     private array $settings;

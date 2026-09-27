@@ -1,35 +1,37 @@
-# WP Static Publisher
+# Wext Static Publisher
 
 An open-source WordPress plugin that exports sites as static files and deploys them to your own Cloudflare Workers account. Headless CMS mode keeps the WordPress theme front end private while preserving its design in the static export.
 
 ## Screenshots
 
+These screenshots were captured before the Wext naming update. The current plugin interface uses **Wext Static Publisher**.
+
 1. **Main dashboard** — publishing status and the latest static build.
 
-   ![WP Static Publisher Main dashboard](docs/screenshots/1.png)
+   ![Wext Static Publisher Main dashboard](docs/screenshots/1.png)
 
 2. **Deploy** — guided setup for your own Cloudflare account.
 
-   ![WP Static Publisher Deploy screen](docs/screenshots/2.png)
+   ![Wext Static Publisher Deploy screen](docs/screenshots/2.png)
 
 3. **Static Site** — general settings and access to Headless CMS and multilingual options.
 
-   ![WP Static Publisher Static Site settings](docs/screenshots/3.png)
+   ![Wext Static Publisher Static Site settings](docs/screenshots/3.png)
 
 4. **SEO** — integrations and static search engine settings.
 
-   ![WP Static Publisher SEO integrations](docs/screenshots/4.png)
+   ![Wext Static Publisher SEO integrations](docs/screenshots/4.png)
 
 5. **Hide** — static output paths and WordPress trace settings.
 
-   ![WP Static Publisher Hide settings](docs/screenshots/5.png)
+   ![Wext Static Publisher Hide settings](docs/screenshots/5.png)
 
 ## Features
 
 - Crawl same-origin HTML, CSS, JavaScript, images, and fonts; replace WordPress origin URLs with the public static domain.
 - Convert asset URLs to root-relative paths that work on both `workers.dev` and custom domains.
 - Generate Cloudflare `_headers` and `_redirects`, a ZIP archive, and a SHA-256 manifest.
-- Manage exports from the WP Static Publisher admin screen, with Main, Deploy, Static Site, SEO, Search, Hide, Diagnostics, Activity Logs, and About tabs.
+- Manage exports from the Wext Static Publisher admin screen, with Main, Deploy, Static Site, SEO, Search, Hide, Diagnostics, Activity Logs, and About tabs.
 - Configure General, Headless CMS, and Multilingual settings under Static Site.
 - Control metadata by content type, Schema, XML sitemaps, and `robots.txt` for Rank Math, All in One SEO, SEOPress, SureRank SEO, The SEO Framework, and Yoast SEO. The SEO Plugins screen summarizes the active integration and its output.
 - Use English interface strings by default. Turkish, Spanish, French, Simplified Chinese, Japanese, Arabic, and Portuguese translations follow the WordPress administrator's selected locale.
@@ -38,7 +40,7 @@ An open-source WordPress plugin that exports sites as static files and deploys t
 - Start an export and Cloudflare deployment with one action; track export and deployment results separately. GitHub Actions callbacks are checked against the job ID and SHA-256 manifest.
 - Browse, download, and delete ZIP archives from **Deploy > ZIP File**, with ten archives per page and a configurable retention limit (five by default). The archive table shows job ID, URL count, creation time, and display order. You can delete archives individually or in bulk while retaining the latest ZIP.
 - Store SFTP passwords encrypted; test the connection, upload manually, or upload automatically after a successful export.
-- Build configurable static search with a bundled Fuse.js 7.3.0 and separate Static Search, Indexing Selectors, and Fuse.js settings.
+- Build configurable static search with a bundled MIT-licensed search script and separate Static Search, Indexing Selectors, and Search Relevance settings.
 - Produce JSON/HTML SEO audit reports covering canonical and hreflang tags, images, and Schema.
 - Generate sitemaps with canonical URLs, last-modified dates, images, and language alternatives; optional video and Google News sitemaps are available.
 - Export old WordPress slugs, Redirection and Rank Math rules, and custom redirects to `_redirects`.
@@ -48,7 +50,7 @@ An open-source WordPress plugin that exports sites as static files and deploys t
 - Show the latest successful build and a green progress/completion indicator on Main. Live export status refreshes every two seconds, shows each stage, and warns about stalled WP-Cron jobs.
 - Search Activity Logs with centered pagination and WordPress date/time formatting. Logs are kept outside the database for the latest export, show 50 entries per page, and list source WordPress URLs and generated static paths in separate columns.
 - Check PHP, Basic Auth, php-xml, cURL, site URL access, permalinks, indexability, caching, WP-Cron, conflicting plugins, temporary directories, and MySQL permissions.
-- Run `wp wp-static-publisher export` with WP-CLI; the previous `wp wext-static export` command remains available for existing installations.
+- Run `wp wext-static-publisher export` with WP-CLI; the previous `wp wext-static export` command remains available for existing installations.
 - Expose Application Password-protected export, status, artifact, and deployment callback REST endpoints. CI can use the limited `Static Publisher Deploy` role.
 - Select automatic export triggers for posts, pages, custom content, taxonomies, media, menus, widgets, themes, and site settings. Changes are grouped into a 60-second window; an optional deployment webhook follows a successful export.
 - Export directory-based languages such as `/en/` and `/tr/` together, with language selection at the root URL.
@@ -56,17 +58,17 @@ An open-source WordPress plugin that exports sites as static files and deploys t
 
 ## Installation
 
-Copy the `wext-static-publisher` directory to WordPress `wp-content/plugins/` and activate the plugin. Open **WP Static Publisher** in the main admin menu to set the public domain and URL limit.
+Copy the `wext-static-publisher` directory to WordPress `wp-content/plugins/` and activate the plugin. Open **Wext Static Publisher** in the main admin menu to set the public domain and URL limit.
 
-The installable ZIP is named `wp-static-publisher.zip`. Its internal directory, text domain, `wext_*` options, and REST identifiers remain `wext-static-publisher` for compatibility with existing installations. You can update the plugin without uninstalling it.
+The installable ZIP is named `wext-static-publisher.zip`. Its internal directory and translation domain are `wext-static-publisher`. Existing `wext_static_*` option keys and REST identifiers remain stable, so existing installations can update in place without losing settings, export archives, or CI integrations.
 
 PHP DOM and Zip extensions are required. The SFTP client is bundled, so PHP cURL/libcurl does not need SFTP support. For long exports and SFTP jobs, run `wp-cron.php` with a system cron job.
 
 ## WP-CLI
 
 ```bash
-wp wp-static-publisher export
-wp wp-static-publisher export --format=json
+wp wext-static-publisher export
+wp wext-static-publisher export --format=json
 ```
 
 ## GitHub Actions and CI secrets
@@ -140,4 +142,8 @@ See `docs/ARCHITECTURE.md` for the architecture and limitations.
 
 ## License
 
-WP Static Publisher's original code and documentation are licensed under the [MIT License](LICENSE). Bundled third-party components retain their own licenses; see [third-party notices](wext-static-publisher/THIRD-PARTY-NOTICES.md) and the license files included with those components.
+Wext Static Publisher's original code and documentation are licensed under the [MIT License](LICENSE). Bundled third-party components retain their own licenses; see [third-party notices](wext-static-publisher/THIRD-PARTY-NOTICES.md) and the license files included with those components.
+
+## WordPress.org directory
+
+The submission ZIP is built with `./scripts/package-plugin.sh`. After directory approval, publish the contents of `wext-static-publisher/` to the assigned SVN `trunk/` and copy `wordpress-org/assets/` to the SVN root `assets/`. The five numbered screenshots and their captions in `readme.txt` then appear on the plugin page. Keep the plugin header version and `Stable tag` aligned for every release.

@@ -192,26 +192,10 @@ final class Exporter
         $base = Plugin::storage_directory();
         wp_mkdir_p($base . '/builds');
         wp_mkdir_p($base . '/archives');
-        $this->protect_storage_directory($base);
         $this->build_directory = $base . '/builds/' . sanitize_file_name($job_id);
 
-        if (! wp_mkdir_p($this->build_directory)) {
+        if (is_link($base . '/builds') || is_link($base . '/archives') || is_link($this->build_directory) || ! wp_mkdir_p($this->build_directory)) {
             throw new RuntimeException(__('Failed to create export folder.', 'wext-static-publisher'));
-        }
-    }
-
-    private function protect_storage_directory(string $base): void
-    {
-        $files = [
-            $base . '/index.php' => "<?php\n// Silence is golden.\n",
-            $base . '/.htaccess' => "Require all denied\nDeny from all\n",
-            $base . '/web.config' => "<?xml version=\"1.0\" encoding=\"UTF-8\"?><configuration><system.webServer><security><authorization><remove users=\"*\" roles=\"\" verbs=\"\"/><add accessType=\"Deny\" users=\"*\"/></authorization></security></system.webServer></configuration>",
-        ];
-
-        foreach ($files as $path => $contents) {
-            if (! file_exists($path)) {
-                file_put_contents($path, $contents);
-            }
         }
     }
 
@@ -279,6 +263,10 @@ final class Exporter
                 continue;
             }
             $relative_path = $this->hide_replacements->map_relative_path($relative_path);
+            if (! Path_Mapper::is_safe_static_path($relative_path)) {
+                $this->add_log('warning', __('Unsafe file path skipped.', 'wext-static-publisher'), $url, '', $source_status_code);
+                continue;
+            }
 
             if ($is_html && $this->static_search->enabled()) {
                 $document = $this->static_search->extract_document($body, $url, $relative_path);
@@ -658,10 +646,7 @@ final class Exporter
 
     private function write_file(string $relative_path, string $contents): void
     {
-        $destination = $this->build_directory . '/' . ltrim($relative_path, '/');
-        if (! wp_mkdir_p(dirname($destination)) || file_put_contents($destination, $contents) === false) {
-            throw new RuntimeException(__('Failed to write file:', 'wext-static-publisher') . $relative_path);
-        }
+        Export_Storage::write($this->build_directory, $relative_path, $contents);
     }
 
     private function validate_language_outputs(): void
@@ -732,6 +717,9 @@ final class Exporter
         }
 
         $archive_path = Plugin::storage_directory() . '/archives/' . sanitize_file_name($job_id) . '.zip';
+        if (is_link($archive_path)) {
+            throw new RuntimeException(__('Unsafe archive destination.', 'wext-static-publisher'));
+        }
         $zip = new ZipArchive();
         if ($zip->open($archive_path, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
             throw new RuntimeException(__('Could not create ZIP archive.', 'wext-static-publisher'));
@@ -741,8 +729,9 @@ final class Exporter
             new \RecursiveDirectoryIterator($this->build_directory, \FilesystemIterator::SKIP_DOTS)
         );
         foreach ($iterator as $file) {
-            if ($file->isFile()) {
-                $zip->addFile($file->getPathname(), substr($file->getPathname(), strlen($this->build_directory) + 1));
+            $relative = substr($file->getPathname(), strlen($this->build_directory) + 1);
+            if ($file->isFile() && ! $file->isLink() && Path_Mapper::is_safe_static_path($relative)) {
+                $zip->addFile($file->getPathname(), $relative);
             }
         }
         $zip->close();
@@ -757,8 +746,8 @@ final class Exporter
             new \RecursiveDirectoryIterator($this->build_directory, \FilesystemIterator::SKIP_DOTS)
         );
         foreach ($iterator as $file) {
-            if ($file->isFile()) {
-                $relative = substr($file->getPathname(), strlen($this->build_directory) + 1);
+            $relative = substr($file->getPathname(), strlen($this->build_directory) + 1);
+            if ($file->isFile() && ! $file->isLink() && Path_Mapper::is_safe_static_path($relative)) {
                 $file_hashes[$relative] = hash_file('sha256', $file->getPathname());
             }
         }

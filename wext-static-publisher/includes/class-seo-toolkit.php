@@ -57,6 +57,7 @@ final class SEO_Toolkit
             $this->finalize_audit($build_directory);
             $write_file('wext-seo-report.json', (string) wp_json_encode($this->report, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
             if ((string) ($this->settings['audit_html_report'] ?? '0') === '1') {
+                $write_file('wext-seo-report.css', (string) file_get_contents(WEXTSTAT_DIR . 'assets/seo-report.css'));
                 $write_file('wext-seo-report.html', $this->report_html());
             }
         }
@@ -515,7 +516,7 @@ final class SEO_Toolkit
         foreach ($this->issues as $issue) {
             $rows .= '<tr><td>' . esc_html(ucfirst($issue['severity'])) . '</td><td><code>' . esc_html($issue['code']) . '</code></td><td>' . esc_html($issue['message']) . '</td><td><a href="' . esc_url($issue['url']) . '">' . esc_html($issue['url']) . '</a></td></tr>';
         }
-        return '<!doctype html><html lang="en"><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><title>Wext Static Publisher SEO Report</title><style>body{font:15px system-ui;margin:32px;color:#172033}table{border-collapse:collapse;width:100%}th,td{border:1px solid #d8e0ea;padding:10px;text-align:left;vertical-align:top}th{background:#eef2f7}.summary{display:flex;gap:12px;margin:20px 0}.summary span{padding:12px 16px;border-radius:8px;background:#eef2ff}code{white-space:nowrap}</style><h1>Wext Static Publisher SEO Report</h1><p>Target: ' . esc_html($this->target) . '</p><div class="summary"><span>Pages: ' . esc_html((string) ($summary['pages'] ?? 0)) . '</span><span>Errors: ' . esc_html((string) ($summary['errors'] ?? 0)) . '</span><span>Warnings: ' . esc_html((string) ($summary['warnings'] ?? 0)) . '</span><span>Info: ' . esc_html((string) ($summary['info'] ?? 0)) . '</span></div><table><thead><tr><th>Severity</th><th>Code</th><th>Message</th><th>URL</th></tr></thead><tbody>' . $rows . '</tbody></table></html>';
+        return '<!doctype html><html lang="en"><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><title>Wext Static Publisher SEO Report</title>' . Export_Assets::styles('wextstat-seo-report', '/wext-seo-report.css') . '<h1>Wext Static Publisher SEO Report</h1><p>Target: ' . esc_html($this->target) . '</p><div class="summary"><span>Pages: ' . esc_html((string) ($summary['pages'] ?? 0)) . '</span><span>Errors: ' . esc_html((string) ($summary['errors'] ?? 0)) . '</span><span>Warnings: ' . esc_html((string) ($summary['warnings'] ?? 0)) . '</span><span>Info: ' . esc_html((string) ($summary['info'] ?? 0)) . '</span></div><table><thead><tr><th>Severity</th><th>Code</th><th>Message</th><th>URL</th></tr></thead><tbody>' . $rows . '</tbody></table></html>';
     }
 
     private function custom_redirect_rules(): array

@@ -16,7 +16,6 @@ do_action('init');
 wp_set_current_user(1);
 switch_to_locale('en_US');
 unload_textdomain('wext-static-publisher');
-Wext\StaticPublisher\Plugin::load_textdomain();
 
 $screens = [
     'main' => ['tab' => 'main'],

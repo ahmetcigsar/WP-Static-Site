@@ -1,0 +1,818 @@
+{
+    "errors": 0,
+    "warnings": 81,
+    "details": {
+        "errors": [],
+        "warnings": {
+            "includes/class-plugin.php": {
+                "491": {
+                    "10": [
+                        {
+                            "message": "Detected production-time change to PHP error reporting: ini_set().",
+                            "code": "PluginCheck.CodeAnalysis.PHPErrorReporting.IniDirectiveDisplay_errors",
+                            "link": null,
+                            "docs": "https://www.php.net/manual/en/function.error-reporting.php",
+                            "severity": 8
+                        },
+                        {
+                            "message": "The use of function ini_set() is discouraged",
+                            "code": "Squiz.PHP.DiscouragedFunctions.Discouraged",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "193": {
+                    "13": [
+                        {
+                            "message": "error_log() found. Debug code should not normally be used in production.",
+                            "code": "WordPress.PHP.DevelopmentFunctions.error_log_error_log",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "232": {
+                    "13": [
+                        {
+                            "message": "error_log() found. Debug code should not normally be used in production.",
+                            "code": "WordPress.PHP.DevelopmentFunctions.error_log_error_log",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "537": {
+                    "13": [
+                        {
+                            "message": "error_log() found. Debug code should not normally be used in production.",
+                            "code": "WordPress.PHP.DevelopmentFunctions.error_log_error_log",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "789": {
+                    "17": [
+                        {
+                            "message": "error_log() found. Debug code should not normally be used in production.",
+                            "code": "WordPress.PHP.DevelopmentFunctions.error_log_error_log",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "875": {
+                    "13": [
+                        {
+                            "message": "error_log() found. Debug code should not normally be used in production.",
+                            "code": "WordPress.PHP.DevelopmentFunctions.error_log_error_log",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "921": {
+                    "13": [
+                        {
+                            "message": "error_log() found. Debug code should not normally be used in production.",
+                            "code": "WordPress.PHP.DevelopmentFunctions.error_log_error_log",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                }
+            },
+            "includes/class-headless-mode.php": {
+                "79": {
+                    "17": [
+                        {
+                            "message": "wp_redirect() found. Using wp_safe_redirect(), along with the &quot;allowed_redirect_hosts&quot; filter if needed, can help avoid any chances of malicious redirects within code. It is also important to remember to call exit() after a redirect so that no other unwanted code is executed.",
+                            "code": "WordPress.Security.SafeRedirect.wp_redirect_wp_redirect",
+                            "link": null,
+                            "docs": "https://developer.wordpress.org/reference/functions/wp_safe_redirect/",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "48": {
+                    "23": [
+                        {
+                            "message": "$_SERVER[&#039;HTTP_X_WEXT_STATIC_EXPORT&#039;] not unslashed before sanitization. Use wp_unslash() or similar",
+                            "code": "WordPress.Security.ValidatedSanitizedInput.MissingUnslash",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        },
+                        {
+                            "message": "Detected usage of a non-sanitized input variable: $_SERVER[&#039;HTTP_X_WEXT_STATIC_EXPORT&#039;]",
+                            "code": "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "52": {
+                    "32": [
+                        {
+                            "message": "$_SERVER[&#039;HTTP_X_WEXT_STATIC_TIMESTAMP&#039;] not unslashed before sanitization. Use wp_unslash() or similar",
+                            "code": "WordPress.Security.ValidatedSanitizedInput.MissingUnslash",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        },
+                        {
+                            "message": "Detected usage of a non-sanitized input variable: $_SERVER[&#039;HTTP_X_WEXT_STATIC_TIMESTAMP&#039;]",
+                            "code": "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "53": {
+                    "43": [
+                        {
+                            "message": "$_SERVER[&#039;HTTP_X_WEXT_STATIC_SIGNATURE&#039;] not unslashed before sanitization. Use wp_unslash() or similar",
+                            "code": "WordPress.Security.ValidatedSanitizedInput.MissingUnslash",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        },
+                        {
+                            "message": "Detected usage of a non-sanitized input variable: $_SERVER[&#039;HTTP_X_WEXT_STATIC_SIGNATURE&#039;]",
+                            "code": "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "60": {
+                    "40": [
+                        {
+                            "message": "$_SERVER[&#039;REQUEST_METHOD&#039;] not unslashed before sanitization. Use wp_unslash() or similar",
+                            "code": "WordPress.Security.ValidatedSanitizedInput.MissingUnslash",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        },
+                        {
+                            "message": "Detected usage of a non-sanitized input variable: $_SERVER[&#039;REQUEST_METHOD&#039;]",
+                            "code": "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "61": {
+                    "29": [
+                        {
+                            "message": "$_SERVER[&#039;REQUEST_URI&#039;] not unslashed before sanitization. Use wp_unslash() or similar",
+                            "code": "WordPress.Security.ValidatedSanitizedInput.MissingUnslash",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        },
+                        {
+                            "message": "Detected usage of a non-sanitized input variable: $_SERVER[&#039;REQUEST_URI&#039;]",
+                            "code": "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "92": {
+                    "34": [
+                        {
+                            "message": "$_SERVER[&#039;REQUEST_METHOD&#039;] not unslashed before sanitization. Use wp_unslash() or similar",
+                            "code": "WordPress.Security.ValidatedSanitizedInput.MissingUnslash",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        },
+                        {
+                            "message": "Detected usage of a non-sanitized input variable: $_SERVER[&#039;REQUEST_METHOD&#039;]",
+                            "code": "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "199": {
+                    "35": [
+                        {
+                            "message": "$_SERVER[&#039;REQUEST_URI&#039;] not unslashed before sanitization. Use wp_unslash() or similar",
+                            "code": "WordPress.Security.ValidatedSanitizedInput.MissingUnslash",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        },
+                        {
+                            "message": "Detected usage of a non-sanitized input variable: $_SERVER[&#039;REQUEST_URI&#039;]",
+                            "code": "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                }
+            },
+            "includes/class-admin.php": {
+                "443": {
+                    "14": [
+                        {
+                            "message": "The use of function set_time_limit() is discouraged",
+                            "code": "Squiz.PHP.DiscouragedFunctions.Discouraged",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "476": {
+                    "14": [
+                        {
+                            "message": "The use of function set_time_limit() is discouraged",
+                            "code": "Squiz.PHP.DiscouragedFunctions.Discouraged",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "490": {
+                    "29": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Missing",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ],
+                    "93": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Missing",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "491": {
+                    "30": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Missing",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ],
+                    "95": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Missing",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "492": {
+                    "28": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Missing",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ],
+                    "91": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Missing",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "573": {
+                    "33": [
+                        {
+                            "message": "Detected usage of a non-sanitized input variable: $_POST[&#039;archive_ids&#039;]",
+                            "code": "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "643": {
+                    "27": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Missing",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ],
+                    "83": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Missing",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "679": {
+                    "32": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ],
+                    "81": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "680": {
+                    "41": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ],
+                    "99": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "681": {
+                    "39": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ],
+                    "95": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "682": {
+                    "36": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ],
+                    "89": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "683": {
+                    "39": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ],
+                    "95": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "684": {
+                    "37": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ],
+                    "91": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "685": {
+                    "38": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ],
+                    "93": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "728": {
+                    "31": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "904": {
+                    "33": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ],
+                    "86": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "905": {
+                    "33": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ],
+                    "93": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "909": {
+                    "31": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ],
+                    "86": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "917": {
+                    "200": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "920": {
+                    "225": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ],
+                    "256": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "927": {
+                    "192": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "930": {
+                    "221": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ],
+                    "252": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "1245": {
+                    "33": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ],
+                    "61": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "1246": {
+                    "25": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ],
+                    "88": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "1841": {
+                    "25": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ],
+                    "82": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "2219": {
+                    "25": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ],
+                    "79": [
+                        {
+                            "message": "Processing form data without nonce verification.",
+                            "code": "WordPress.Security.NonceVerification.Recommended",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                }
+            },
+            "includes/class-cloudflare-deployer.php": {
+                "120": {
+                    "13": [
+                        {
+                            "message": "error_log() found. Debug code should not normally be used in production.",
+                            "code": "WordPress.PHP.DevelopmentFunctions.error_log_error_log",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                }
+            },
+            "includes/class-diagnostics.php": {
+                "50": {
+                    "44": [
+                        {
+                            "message": "$_SERVER[&#039;HTTP_AUTHORIZATION&#039;] not unslashed before sanitization. Use wp_unslash() or similar",
+                            "code": "WordPress.Security.ValidatedSanitizedInput.MissingUnslash",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        },
+                        {
+                            "message": "Detected usage of a non-sanitized input variable: $_SERVER[&#039;HTTP_AUTHORIZATION&#039;]",
+                            "code": "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ],
+                    "78": [
+                        {
+                            "message": "$_SERVER[&#039;REDIRECT_HTTP_AUTHORIZATION&#039;] not unslashed before sanitization. Use wp_unslash() or similar",
+                            "code": "WordPress.Security.ValidatedSanitizedInput.MissingUnslash",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        },
+                        {
+                            "message": "Detected usage of a non-sanitized input variable: $_SERVER[&#039;REDIRECT_HTTP_AUTHORIZATION&#039;]",
+                            "code": "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "254": {
+                    "19": [
+                        {
+                            "message": "Use of a direct database call is discouraged.",
+                            "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        },
+                        {
+                            "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                            "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                }
+            },
+            "includes/class-seo-toolkit.php": {
+                "582": {
+                    "23": [
+                        {
+                            "message": "Use of a direct database call is discouraged.",
+                            "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        },
+                        {
+                            "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                            "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "584": {
+                    "26": [
+                        {
+                            "message": "Use of a direct database call is discouraged.",
+                            "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        },
+                        {
+                            "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                            "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                },
+                "552": {
+                    "13": [
+                        {
+                            "message": "Detected usage of meta_key, possible slow query.",
+                            "code": "WordPress.DB.SlowDBQuery.slow_db_query_meta_key",
+                            "link": null,
+                            "docs": "",
+                            "severity": 5
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}

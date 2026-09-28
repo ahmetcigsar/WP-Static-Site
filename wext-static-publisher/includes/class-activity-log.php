@@ -147,20 +147,11 @@ final class Activity_Log
 
     private static function prepare_directory(): void
     {
-        $base = Plugin::storage_directory();
         $directory = self::directory();
-        wp_mkdir_p($directory);
-
-        $files = [
-            $base . '/index.php' => "<?php\n// Silence is golden.\n",
-            $base . '/.htaccess' => "Require all denied\nDeny from all\n",
-            $base . '/web.config' => "<?xml version=\"1.0\" encoding=\"UTF-8\"?><configuration><system.webServer><security><authorization><remove users=\"*\" roles=\"\" verbs=\"\"/><add accessType=\"Deny\" users=\"*\"/></authorization></security></system.webServer></configuration>",
-            $directory . '/index.php' => "<?php\n// Silence is golden.\n",
-        ];
-
-        foreach ($files as $path => $contents) {
-            if (! file_exists($path)) {
-                file_put_contents($path, $contents);
+        Export_Storage::protect($directory);
+        foreach ([self::log_path(), self::meta_path()] as $path) {
+            if (is_link($path)) {
+                throw new \RuntimeException(esc_html__('Activity log storage must not contain symbolic links.', 'wext-static-publisher'));
             }
         }
     }

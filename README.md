@@ -34,7 +34,7 @@ These screenshots were captured before the Wext naming update. The current plugi
 - Manage exports from the Wext Static Publisher admin screen, with Main, Deploy, Static Site, SEO, Search, Hide, Diagnostics, Activity Logs, and About tabs.
 - Configure General, Headless CMS, and Multilingual settings under Static Site.
 - Control metadata by content type, Schema, XML sitemaps, and `robots.txt` for Rank Math, All in One SEO, SEOPress, SureRank SEO, The SEO Framework, Yoast SEO, and SmartCrawl SEO. The SEO Plugins screen summarizes the active integration and its output.
-- Use English interface strings by default. Turkish, Spanish, French, Simplified Chinese, Japanese, Arabic, and Portuguese translations follow the WordPress administrator's selected locale.
+- Use English interface strings by default and load available WordPress.org language packs for the administrator's selected locale. Translation source files are maintained separately in `wordpress-org/translations/`.
 - Deploy through ZIP download, GitHub Actions, your own Cloudflare account, or SFTP. Optional automatic deployment is available.
 - Connect your own Cloudflare Account ID and API token for direct Workers Static Assets deployment. The token is encrypted using WordPress security keys and can be removed from the plugin.
 - Start an export and Cloudflare deployment with one action; track export and deployment results separately. GitHub Actions callbacks are checked against the job ID and SHA-256 manifest.

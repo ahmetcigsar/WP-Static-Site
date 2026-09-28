@@ -66,7 +66,7 @@ In the direct Cloudflare flow, WordPress creates an asset manifest after a succe
 - WordPress AJAX/REST endpoints requested by JavaScript at runtime are not made static.
 - Complex CSS URL syntax and asset URLs embedded in JavaScript need site-specific checks.
 - The WordPress multilingual plugin is responsible for translated content and reciprocal `hreflang` tags.
-- The plugin writes Apache/IIS rules to block the storage directory. On Nginx, also block `wp-content/uploads/wext-static`; artifacts are downloadable only through authenticated REST.
+- The plugin writes Apache/IIS rules to block the storage directory. On Nginx, the host must deny direct access to the runtime uploads subdirectories `wext-static-publisher` and legacy `wext-static`; Nginx does not read `.htaccess`. Downloads use authenticated REST. New installations use `wp_upload_dir()` plus `wext-static-publisher`; existing `wext-static` directories remain supported to preserve archive references.
 - If the origin is behind Cloudflare Access or HTTP Basic, add the required service headers through the `wext_static_request_args` filter in a site-specific MU plugin.
 - SFTP deployment uses password authentication; private-key authentication is outside this version's scope.
 - Direct SFTP upload is not atomic and does not remove obsolete remote files.

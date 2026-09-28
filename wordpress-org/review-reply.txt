@@ -1,0 +1,10 @@
+Hi,
+
+I have uploaded version 3.2.1 with the review fixes and tested the updated plugin.
+
+One clarification: the generated HTML, CSS, and JavaScript are static website export artifacts stored under wp_upload_dir(), not code installed into WordPress. Server-executable filenames and unsafe paths are rejected. Apache/IIS access protection is included, and the required Nginx deny rule is documented.
+
+Please review the updated submission.
+
+Thank you,
+Ahmet

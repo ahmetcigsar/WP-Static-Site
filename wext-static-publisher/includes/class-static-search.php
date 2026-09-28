@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Wext\StaticPublisher;
 
-// phpcs:disable WordPress.WP.EnqueuedResources -- These tags are written into exported static HTML files; no live WordPress page loads them.
-
 use DOMDocument;
 use DOMElement;
 use DOMXPath;
@@ -94,7 +92,7 @@ final class Static_Search
         if (! $this->enabled() || str_contains($html, 'wext-static-search-bridge.js')) {
             return $html;
         }
-        $script = '<script type="module" src="/wext-static-search-assets/wext-static-search-bridge.js"></script>';
+        $script = Export_Assets::scripts('wextstat-search-bridge', '/wext-static-search-assets/wext-static-search-bridge.js', true);
         return stripos($html, '</body>') !== false
             ? (preg_replace('/<\/body>/i', $script . '</body>', $html, 1) ?? $html)
             : $html . $script;
@@ -247,12 +245,14 @@ final class Static_Search
     {
         $language = str_replace('_', '-', (string) get_bloginfo('language')) ?: 'en-US';
         return sprintf(
-            '<!doctype html><html lang="%1$s"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>%2$s</title><link rel="stylesheet" href="/wext-static-search-assets/wext-static-search.css"></head><body><main class="wext-static-search"><a class="wext-static-search__back" href="/">← %3$s</a><h1>%4$s</h1><form id="wext-static-search-form" role="search"><label for="wext-static-search-input">%2$s</label><div class="wext-static-search__input"><input id="wext-static-search-input" type="search" name="q" autocomplete="off" placeholder="%5$s"><button type="submit">%2$s</button></div></form><p id="wext-static-search-status" role="status" aria-live="polite"></p><div id="wext-static-search-results"></div></main><script type="module" src="/wext-static-search-assets/wext-static-search.js"></script></body></html>',
+            '<!doctype html><html lang="%1$s"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>%2$s</title>%6$s</head><body><main class="wext-static-search"><a class="wext-static-search__back" href="/">← %3$s</a><h1>%4$s</h1><form id="wext-static-search-form" role="search"><label for="wext-static-search-input">%2$s</label><div class="wext-static-search__input"><input id="wext-static-search-input" type="search" name="q" autocomplete="off" placeholder="%5$s"><button type="submit">%2$s</button></div></form><p id="wext-static-search-status" role="status" aria-live="polite"></p><div id="wext-static-search-results"></div></main>%7$s</body></html>',
             esc_attr($language),
             esc_html__('Search', 'wext-static-publisher'),
             esc_html__('Home', 'wext-static-publisher'),
             esc_html__('Search This Site', 'wext-static-publisher'),
-            esc_attr__('Enter a search term...', 'wext-static-publisher')
+            esc_attr__('Enter a search term...', 'wext-static-publisher'),
+            Export_Assets::styles('wextstat-search', '/wext-static-search-assets/wext-static-search.css'),
+            Export_Assets::scripts('wextstat-search', '/wext-static-search-assets/wext-static-search.js', true)
         );
     }
 }

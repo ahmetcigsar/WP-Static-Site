@@ -2,6 +2,13 @@
 
 declare(strict_types=1);
 
+// Simulate language packs supplied by translate.wordpress.org, outside the plugin package.
+$language_dir = '/wordpress/wp-content/languages/plugins';
+if (! is_dir($language_dir)) { mkdir($language_dir, 0777, true); }
+foreach (glob('/workspace/wordpress-org/translations/*.mo') ?: [] as $translation) {
+    copy($translation, $language_dir . '/' . basename($translation));
+}
+
 if (! defined('ABSPATH') && file_exists('/wordpress/wp-load.php')) {
     require '/wordpress/wp-load.php';
 }
@@ -70,12 +77,11 @@ $expected_save_zip_translations = [
 foreach ($expected_translations as $locale => $expected) {
     restore_current_locale();
     switch_to_locale($locale);
-    unload_textdomain('wext-static-publisher');
-    Wext\StaticPublisher\Plugin::load_textdomain();
+    unload_textdomain('wext-static-publisher', true);
 
     $actual = __('Static Site', 'wext-static-publisher');
     if ($actual !== $expected) {
-        $mofile = WEXTSTAT_DIR . 'languages/wext-static-publisher-' . $locale . '.mo';
+        $mofile = WP_LANG_DIR . '/plugins/wext-static-publisher-' . $locale . '.mo';
         $direct_loaded = load_textdomain('wext-static-publisher', $mofile);
         fwrite(STDERR, sprintf(
             "%s çevirisi beklenen değerde değil: %s (determine_locale=%s, file=%s, direct=%s, after=%s)\n",
@@ -120,10 +126,6 @@ foreach ($expected_translations as $locale => $expected) {
     }
 
     if ($locale === 'tr_TR') {
-        if (__('Revoke License', 'wext-static-publisher') !== 'Lisans Yetkisini Kaldır') {
-            fwrite(STDERR, "Türkçe Revoke License çevirisi beklenen değerde değil.\n");
-            exit(1);
-        }
         foreach (['SFTP Connection' => 'SFTP Bağlantısı', 'Save SFTP Settings' => 'SFTP Ayarlarını Kaydet', 'Test Connection' => 'Bağlantıyı Test Et'] as $source => $sftp_expected) {
             $sftp_actual = __($source, 'wext-static-publisher');
             if ($sftp_actual !== $sftp_expected) {
@@ -139,8 +141,7 @@ restore_current_locale();
 
 $unsupported_locale = static fn (): string => 'de_DE';
 add_filter('locale', $unsupported_locale);
-unload_textdomain('wext-static-publisher');
-Wext\StaticPublisher\Plugin::load_textdomain();
+unload_textdomain('wext-static-publisher', true);
 if (__('Settings', 'wext-static-publisher') !== 'Settings') {
     fwrite(STDERR, "Desteklenmeyen WordPress dili İngilizce arayüze dönmedi.\n");
     exit(1);

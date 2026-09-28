@@ -3,7 +3,7 @@ Tags: static site, headless cms, cloudflare, export, sftp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 3.2.0
+Stable tag: 3.2.1
 License: MIT
 License URI: https://opensource.org/license/mit
 
@@ -15,7 +15,7 @@ Wext Static Publisher exports complete sites, rewrites URLs, creates ZIP archive
 
 Static search runs locally in the visitor's browser with configurable fields, ranking weights, and typo tolerance. No search service account is required.
 
-English is the default interface language. Turkish, Spanish, French, Simplified Chinese, Japanese, Arabic, and Portuguese translations follow the selected WordPress administrator locale.
+English is the default interface language. Available WordPress.org language packs follow the selected WordPress administrator locale. Translations are distributed separately through translate.wordpress.org.
 
 The plugin's original code is MIT licensed. Bundled third-party components keep their own licenses; see THIRD-PARTY-NOTICES.txt and their included license files.
 
@@ -37,6 +37,8 @@ The GitHub deployment webhook is optional. If configured, the plugin sends the c
 4. Under Deploy > Cloudflare, connect your own Account ID and an API token with Workers Scripts Write permission.
 5. Configure a `workers.dev` subdomain or custom domain in Cloudflare, then export and deploy the static site.
 
+Export artifacts are stored beneath the runtime WordPress uploads directory. Apache and IIS access rules are created automatically. On Nginx, configure your host to deny direct web access to the `wext-static-publisher` uploads subdirectory and the legacy `wext-static` subdirectory if present; Nginx does not read `.htaccess` files.
+
 Existing Wext Static Publisher installations can update in place. Saved settings and export archives remain in WordPress.
 
 == Screenshots ==
@@ -49,6 +51,9 @@ Existing Wext Static Publisher installations can update in place. Saved settings
 
 == Upgrade Notice ==
 
+= 3.2.1 =
+Updates export storage validation, asset enqueueing, language-pack loading, and legacy migration for directory review.
+
 = 3.2.0 =
 Adds SmartCrawl SEO integration and fixes disabled SEO output settings being re-enabled on save.
 
@@ -56,6 +61,13 @@ Adds SmartCrawl SEO integration and fixes disabled SEO output settings being re-
 Update the existing Wext Static Publisher installation in place. Saved settings and export archives remain available.
 
 == Changelog ==
+
+= 3.2.1 =
+* Render exported script and stylesheet references through WordPress asset queues.
+* Use standard WordPress language packs instead of bundled translations.
+* Wait for the administrator to deactivate the legacy plugin before migrating.
+* Reject unsafe export paths, symbolic links, and server-executable file types.
+* Store new export artifacts in the plugin-specific uploads directory with Apache/IIS access protection.
 
 = 3.2.0 =
 * Detect SmartCrawl SEO automatically and add independent metadata, Schema, sitemap, and robots.txt output controls.

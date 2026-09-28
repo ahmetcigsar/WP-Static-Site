@@ -70,7 +70,7 @@ if (is_wp_error($user_id)) {
 
 $uploads = wp_upload_dir();
 $legacy_storage = trailingslashit((string) $uploads['basedir']) . $legacy_brand . '-static';
-$new_storage = trailingslashit((string) $uploads['basedir']) . 'wext-static';
+$new_storage = trailingslashit((string) $uploads['basedir']) . 'wext-static-publisher';
 $remove_directory = static function (string $directory) use (&$remove_directory): void {
     if (! is_dir($directory)) {
         return;
@@ -93,6 +93,14 @@ $remove_directory($new_storage);
 wp_mkdir_p($legacy_storage . '/archives');
 file_put_contents($legacy_storage . '/archives/migration-marker.txt', 'ok');
 
+$active_plugins = get_option('active_plugins', []);
+$legacy_plugin = $legacy_brand . '-static-publisher/' . $legacy_brand . '-static-publisher.php';
+update_option('active_plugins', array_merge($active_plugins, [$legacy_plugin]));
+Wext\StaticPublisher\Plugin::activate();
+if (! in_array($legacy_plugin, get_option('active_plugins'), true) || get_option('wext_static_brand_migration') === '2.0.0' || ! is_dir($legacy_storage)) {
+    throw new RuntimeException('Activation must not deactivate or migrate an active legacy plugin.');
+}
+update_option('active_plugins', $active_plugins);
 Wext\StaticPublisher\Plugin::activate();
 do_action('init');
 

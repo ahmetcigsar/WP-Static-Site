@@ -26,8 +26,11 @@ final class Plugin
 
     public static function boot(): void
     {
+        if (self::legacy_plugin_active()) {
+            add_action('admin_notices', [self::class, 'legacy_plugin_notice']);
+            return;
+        }
         Headless_Mode::boot();
-        add_action('init', [self::class, 'load_textdomain'], 0);
         add_action('init', [self::class, 'apply_export_privacy'], 0);
         add_action('init', [self::class, 'maybe_upgrade'], 1);
         add_action('init', [self::class, 'register_cli']);
@@ -65,39 +68,11 @@ final class Plugin
         add_action('wext_static_export_completed', [self::class, 'handle_completed_export'], 10, 3);
     }
 
-    public static function load_textdomain(): void
-    {
-        $locale = determine_locale();
-        $exact_mofile = WEXTSTAT_DIR . 'languages/wext-static-publisher-' . $locale . '.mo';
-        if (is_readable($exact_mofile)) {
-            load_textdomain('wext-static-publisher', $exact_mofile);
-            return;
-        }
-
-        $language = strtolower((string) strtok($locale, '_-'));
-        $fallbacks = [
-            'tr' => 'tr_TR',
-            'en' => 'en_US',
-            'es' => 'es_ES',
-            'fr' => 'fr_FR',
-            'zh' => 'zh_CN',
-            'ja' => 'ja',
-            'ar' => 'ar',
-            'pt' => strcasecmp($locale, 'pt_PT') === 0 ? 'pt_PT' : 'pt_BR',
-        ];
-        $fallback_locale = $fallbacks[$language] ?? 'en_US';
-        if ($fallback_locale === $locale) {
-            return;
-        }
-
-        load_textdomain(
-            'wext-static-publisher',
-            WEXTSTAT_DIR . 'languages/wext-static-publisher-' . $fallback_locale . '.mo'
-        );
-    }
-
     public static function activate(): void
     {
+        if (self::legacy_plugin_active()) {
+            return;
+        }
         add_role('wext_static_deployer', 'Static Publisher Deploy', [
             'read' => true,
             self::EXPORT_CAPABILITY => true,
@@ -139,14 +114,26 @@ final class Plugin
         self::remove_legacy_activity_log();
     }
 
+    private static function legacy_plugin_active(): bool
+    {
+        $plugin = 'ragnus-static-publisher/ragnus-static-publisher.php';
+        $active = (array) get_option('active_plugins', []);
+        $network_active = is_multisite() ? (array) get_site_option('active_sitewide_plugins', []) : [];
+        return in_array($plugin, $active, true) || isset($network_active[$plugin]);
+    }
+
+    public static function legacy_plugin_notice(): void
+    {
+        if (current_user_can('activate_plugins')) {
+            echo '<div class="notice notice-warning"><p>' . esc_html__('Wext Static Publisher is waiting for the legacy Ragnus Static Publisher plugin to be deactivated. Deactivate it from Plugins when you are ready to migrate its settings and archives.', 'wext-static-publisher') . '</p></div>';
+        }
+    }
+
     private static function migrate_legacy_installation(): void
     {
         $legacy_brand = 'rag' . 'nus';
-        $legacy_plugin = $legacy_brand . '-static-publisher/' . $legacy_brand . '-static-publisher.php';
-        if (function_exists('is_plugin_active')
-            && function_exists('deactivate_plugins')
-            && is_plugin_active($legacy_plugin)) {
-            deactivate_plugins($legacy_plugin, true);
+        if (self::legacy_plugin_active()) {
+            return;
         }
 
         if (get_option('wext_static_brand_migration') === '2.0.0') {
@@ -229,14 +216,14 @@ final class Plugin
     private static function migrate_legacy_storage(string $legacy_brand): void
     {
         $uploads = wp_upload_dir();
-        $base_directory = trailingslashit((string) ($uploads['basedir'] ?? ''));
-        if ($base_directory === '') {
+        $base_directory = (string) ($uploads['basedir'] ?? '');
+        if (! empty($uploads['error']) || $base_directory === '') {
             return;
         }
 
-        $legacy_directory = $base_directory . $legacy_brand . '-static';
-        $new_directory = $base_directory . 'wext-static';
-        if (! is_dir($legacy_directory) || is_dir($new_directory)) {
+        $legacy_directory = trailingslashit($base_directory) . $legacy_brand . '-static';
+        $new_directory = trailingslashit($base_directory) . 'wext-static-publisher';
+        if (is_link($legacy_directory) || is_link($new_directory) || ! is_dir($legacy_directory) || is_dir($new_directory)) {
             return;
         }
 
@@ -511,7 +498,17 @@ final class Plugin
     public static function storage_directory(): string
     {
         $uploads = wp_upload_dir();
-        return trailingslashit($uploads['basedir']) . 'wext-static';
+        if (! empty($uploads['error']) || empty($uploads['basedir']) || ! path_is_absolute((string) $uploads['basedir'])) {
+            throw new \RuntimeException(esc_html__('The WordPress uploads directory is unavailable.', 'wext-static-publisher'));
+        }
+        $base = trailingslashit((string) $uploads['basedir']);
+        // Preserve existing archives and saved absolute paths on older installations.
+        $directory = is_dir($base . 'wext-static') ? $base . 'wext-static' : $base . 'wext-static-publisher';
+        if (is_link($directory)) {
+            throw new \RuntimeException(esc_html__('The export storage directory must not be a symbolic link.', 'wext-static-publisher'));
+        }
+        Export_Storage::protect($directory);
+        return $directory;
     }
 
     public static function schedule_export(string $source = 'manual'): string

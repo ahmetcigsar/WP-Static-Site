@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Wext\StaticPublisher;
 
-// phpcs:disable WordPress.WP.EnqueuedResources -- These tags are written into exported static HTML files; no live WordPress page loads them.
 
 final class Language_Routing
 {
@@ -124,7 +123,7 @@ final class Language_Routing
             return $html;
         }
 
-        $script = '<script defer src="/wext-language-preference.js"></script>';
+        $script = Export_Assets::scripts('wextstat-language-preference', '/wext-language-preference.js');
         if (stripos($html, '</body>') !== false) {
             return preg_replace('/<\/body>/i', $script . '</body>', $html, 1) ?? $html;
         }

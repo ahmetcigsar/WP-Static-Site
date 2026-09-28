@@ -33,7 +33,7 @@ These screenshots were captured before the Wext naming update. The current plugi
 - Generate Cloudflare `_headers` and `_redirects`, a ZIP archive, and a SHA-256 manifest.
 - Manage exports from the Wext Static Publisher admin screen, with Main, Deploy, Static Site, SEO, Search, Hide, Diagnostics, Activity Logs, and About tabs.
 - Configure General, Headless CMS, and Multilingual settings under Static Site.
-- Control metadata by content type, Schema, XML sitemaps, and `robots.txt` for Rank Math, All in One SEO, SEOPress, SureRank SEO, The SEO Framework, and Yoast SEO. The SEO Plugins screen summarizes the active integration and its output.
+- Control metadata by content type, Schema, XML sitemaps, and `robots.txt` for Rank Math, All in One SEO, SEOPress, SureRank SEO, The SEO Framework, Yoast SEO, and SmartCrawl SEO. The SEO Plugins screen summarizes the active integration and its output.
 - Use English interface strings by default. Turkish, Spanish, French, Simplified Chinese, Japanese, Arabic, and Portuguese translations follow the WordPress administrator's selected locale.
 - Deploy through ZIP download, GitHub Actions, your own Cloudflare account, or SFTP. Optional automatic deployment is available.
 - Connect your own Cloudflare Account ID and API token for direct Workers Static Assets deployment. The token is encrypted using WordPress security keys and can be removed from the plugin.
@@ -115,9 +115,21 @@ Each translated page should have the correct `lang`, canonical, and reciprocal `
 
 ## SEO plugin integrations
 
-Enable each integration under **SEO > SEO Plugins**. Rank Math, All in One SEO, SEOPress, SureRank SEO, The SEO Framework, and Yoast SEO have separate controls for page, post, custom post type, and archive/taxonomy metadata. JSON-LD Schema, XML sitemaps, and `robots.txt` can be selected independently. The exporter maps internal URLs to the public static domain and updates `SearchAction` for static search when enabled.
+Enable each integration under **SEO > SEO Plugins**. Rank Math, All in One SEO, SEOPress, SureRank SEO, The SEO Framework, Yoast SEO, and SmartCrawl SEO have separate controls for page, post, custom post type, and archive/taxonomy metadata. JSON-LD Schema, XML sitemaps, and `robots.txt` can be selected independently. The exporter maps internal URLs to the public static domain and updates `SearchAction` for static search when enabled.
 
-For SureRank and Yoast SEO, sitemap crawling starts at `/sitemap_index.xml`; for The SEO Framework, it starts at `/sitemap.xml`; SEOPress uses `/sitemaps.xml`. Only same-origin XML/XSL files are packaged.
+For SureRank and Yoast SEO, sitemap crawling starts at `/sitemap_index.xml`; for The SEO Framework, it starts at `/sitemap.xml`; SEOPress uses `/sitemaps.xml`. SmartCrawl uses `/sitemap.xml`; its dynamic sitemap stylesheets are saved as static `.xsl` files. Only same-origin XML/XSL files are packaged.
+
+### Local SmartCrawl test site
+
+```bash
+./scripts/start-smartcrawl-playground.sh
+```
+
+The persistent WordPress site runs at `http://127.0.0.1:9401` (admin / password on a fresh Playground install). SmartCrawl is downloaded from WordPress.org and activated with the working copy of Wext. Data is stored in `~/.local/share/wext-smartcrawl`; override the location or port with `WEXT_PLAYGROUND_DIRECTORY` and `WEXT_PLAYGROUND_PORT`.
+
+The blueprint removes Playground's unconditional `/sitemap.xml` redirect so SmartCrawl can serve its own sitemap. This is a local test environment adjustment.
+
+`tests/playground-smartcrawl.php` tests output switches, Schema, sitemap crawling, and dynamic XSL conversion with HTTP fixtures. `tests/playground-smartcrawl-live.php` is a separate, destructive **test-site-only** check: run it in the local server's PHP runtime with both plugins active. It creates sample content, configures SEO options, performs real HTTP requests, and checks the exported ZIP. The public target is `https://static.example.com`; no deployment is performed.
 
 ## Development checks
 
@@ -134,6 +146,7 @@ npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=wext-
 npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-export.php
 npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-aioseo.php
 npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-seopress.php
+npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-smartcrawl.php
 npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-seo-metadata-groups.php
 npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-additional-seo.php
 ```

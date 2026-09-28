@@ -29,6 +29,7 @@ final class Exporter
     private Rank_Math_Integration $rank_math_integration;
     private AIOSEO_Integration $aioseo_integration;
     private SEOPress_Integration $seopress_integration;
+    private SmartCrawl_Integration $smartcrawl_integration;
     private Block_SEO_Integration $surerank_integration;
     private Block_SEO_Integration $seo_framework_integration;
     private Block_SEO_Integration $yoast_integration;
@@ -50,6 +51,7 @@ final class Exporter
         $this->rank_math_integration = new Rank_Math_Integration($this->origin, $this->target, $seo_plugin_settings);
         $this->aioseo_integration = new AIOSEO_Integration($this->origin, $this->target, $seo_plugin_settings);
         $this->seopress_integration = new SEOPress_Integration($this->origin, $this->target, $seo_plugin_settings);
+        $this->smartcrawl_integration = new SmartCrawl_Integration($this->origin, $this->target, $seo_plugin_settings);
         $this->surerank_integration = new Block_SEO_Integration($this->origin, $this->target, [
             'prefix' => 'surerank',
             'constant' => 'SURERANK_VERSION',
@@ -113,7 +115,7 @@ final class Exporter
                 fn (string $path, string $contents) => $this->write_file($path, $contents),
                 fn (string $level, string $message, string $url = '') => $this->add_log($level, $message, $url)
             );
-            foreach ([$this->surerank_integration, $this->seo_framework_integration, $this->yoast_integration] as $integration) {
+            foreach ([$this->surerank_integration, $this->seo_framework_integration, $this->yoast_integration, $this->smartcrawl_integration] as $integration) {
                 $integration->export_root_files(
                     fn (string $path, string $contents) => $this->write_file($path, $contents),
                     fn (string $level, string $message, string $url = '') => $this->add_log($level, $message, $url)
@@ -377,7 +379,7 @@ final class Exporter
             (string) ($search_settings['page_path'] ?? 'arama'),
             $metadata_group
         );
-        foreach ([$this->surerank_integration, $this->seo_framework_integration, $this->yoast_integration] as $integration) {
+        foreach ([$this->surerank_integration, $this->seo_framework_integration, $this->yoast_integration, $this->smartcrawl_integration] as $integration) {
             $html = $integration->process_html(
                 $html,
                 $this->static_search->enabled(),
@@ -781,6 +783,7 @@ final class Exporter
             'rank_math' => $this->rank_math_integration->manifest_data(),
             'aioseo' => $this->aioseo_integration->manifest_data(),
             'seopress' => $this->seopress_integration->manifest_data(),
+            'smartcrawl' => $this->smartcrawl_integration->manifest_data(),
             'surerank' => $this->surerank_integration->manifest_data(),
             'seo_framework' => $this->seo_framework_integration->manifest_data(),
             'yoast' => $this->yoast_integration->manifest_data(),

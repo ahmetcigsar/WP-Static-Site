@@ -1,0 +1,11 @@
+{
+  "$schema": "https://playground.wordpress.net/blueprint-schema.json",
+  "steps": [
+    { "step": "activatePlugin", "pluginPath": "smartcrawl-seo/wpmu-dev-seo.php" },
+    { "step": "activatePlugin", "pluginPath": "wext-static-publisher/wext-static-publisher.php" },
+    {
+      "step": "runPHP",
+      "code": "<?php require '/wordpress/wp-load.php'; if (!get_option('permalink_structure')) { update_option('permalink_structure', '/%postname%/'); flush_rewrite_rules(); } if (is_file('/internal/shared/mu-plugins/sitemap-redirect.php')) { unlink('/internal/shared/mu-plugins/sitemap-redirect.php'); }"
+    }
+  ]
+}

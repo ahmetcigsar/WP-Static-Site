@@ -3,7 +3,7 @@ Tags: static site, headless cms, cloudflare, export, sftp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 3.1.0
+Stable tag: 3.2.0
 License: MIT
 License URI: https://opensource.org/license/mit
 
@@ -11,7 +11,7 @@ Export WordPress sites to static files, use Headless CMS mode, and deploy to you
 
 == Description ==
 
-Wext Static Publisher exports complete sites, rewrites URLs, creates ZIP archives, and deploys directly to a user's own Cloudflare account. Headless CMS mode blocks the WordPress theme front end for visitors while signed export requests preserve the theme design in the static site. It includes directory-based multilingual routing with English as the default for new installations, integrations for Rank Math, All in One SEO, SEOPress, SureRank SEO, The SEO Framework, and Yoast SEO, SFTP deployment, archive management, WP-CLI, and CI endpoints protected by WordPress Application Passwords. All features are free and open source.
+Wext Static Publisher exports complete sites, rewrites URLs, creates ZIP archives, and deploys directly to a user's own Cloudflare account. Headless CMS mode blocks the WordPress theme front end for visitors while signed export requests preserve the theme design in the static site. It includes directory-based multilingual routing with English as the default for new installations, integrations for Rank Math, All in One SEO, SEOPress, SureRank SEO, The SEO Framework, Yoast SEO, and SmartCrawl SEO, SFTP deployment, archive management, WP-CLI, and CI endpoints protected by WordPress Application Passwords. All features are free and open source.
 
 Static search runs locally in the visitor's browser with configurable fields, ranking weights, and typo tolerance. No search service account is required.
 
@@ -49,10 +49,20 @@ Existing Wext Static Publisher installations can update in place. Saved settings
 
 == Upgrade Notice ==
 
+= 3.2.0 =
+Adds SmartCrawl SEO integration and fixes disabled SEO output settings being re-enabled on save.
+
 = 3.1.0 =
 Update the existing Wext Static Publisher installation in place. Saved settings and export archives remain available.
 
 == Changelog ==
+
+= 3.2.0 =
+* Detect SmartCrawl SEO automatically and add independent metadata, Schema, sitemap, and robots.txt output controls.
+* Preserve SmartCrawl SEO output and rewrite internal URLs to the public static domain.
+* Export SmartCrawl sitemap stylesheets as static XSL files and adapt Schema SearchAction to static search.
+* Fix unchecked SEO output settings being re-enabled by repeated WordPress sanitization.
+* Add SmartCrawl integration tests and a persistent local WordPress Playground setup.
 
 = 3.1.0 =
 * Keep the Wext Static Publisher installation directory and translation domain consistent with the public name.

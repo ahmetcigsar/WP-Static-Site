@@ -415,6 +415,14 @@ final class Plugin
             'seo_framework_schema' => '1',
             'seo_framework_sitemaps' => '1',
             'seo_framework_robots' => '1',
+            'smartcrawl_enabled' => '1',
+            'smartcrawl_metadata_pages' => '1',
+            'smartcrawl_metadata_posts' => '1',
+            'smartcrawl_metadata_custom_post_types' => '1',
+            'smartcrawl_metadata_archives' => '1',
+            'smartcrawl_schema' => '1',
+            'smartcrawl_sitemaps' => '1',
+            'smartcrawl_robots' => '1',
             'yoast_enabled' => '1',
             'yoast_metadata_pages' => '1',
             'yoast_metadata_posts' => '1',
@@ -430,7 +438,7 @@ final class Plugin
     {
         $stored = get_option(self::SEO_PLUGIN_SETTINGS_KEY, []);
         $stored = is_array($stored) ? $stored : [];
-        foreach (['rank_math', 'aioseo', 'seopress', 'surerank', 'seo_framework', 'yoast'] as $plugin) {
+        foreach (['rank_math', 'aioseo', 'seopress', 'surerank', 'seo_framework', 'yoast', 'smartcrawl'] as $plugin) {
             $legacy = (string) ($stored[$plugin . '_metadata'] ?? '1');
             foreach (['pages', 'posts', 'custom_post_types', 'archives'] as $group) {
                 $key = $plugin . '_metadata_' . $group;

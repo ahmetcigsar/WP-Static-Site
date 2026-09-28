@@ -80,3 +80,7 @@ add_filter('wext_static_request_args', function (array $args): array {
     return $args;
 });
 ```
+
+### SmartCrawl SEO
+
+SmartCrawl is detected through `SMARTCRAWL_VERSION`. Its metadata controls cover pages, posts, custom post types, and archives. The exporter retains rendered titles, canonical URLs, robots directives, social tags, and JSON-LD; internal URLs are mapped to the static target and SearchAction follows the static search setting. The sitemap crawler preserves same-origin XML and maps SmartCrawl query-based XSL stylesheets to static filenames. The integration settings and detected version are recorded in the manifest. These controls cover rendered SEO and root files; SmartCrawl services that require PHP or remote APIs do not run in a static package.

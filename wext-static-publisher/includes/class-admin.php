@@ -225,7 +225,7 @@ final class Admin
     {
         $sanitized = [];
         foreach (array_keys(Plugin::seo_plugin_defaults()) as $key) {
-            $sanitized[$key] = isset($value[$key]) ? '1' : '0';
+            $sanitized[$key] = in_array($value[$key] ?? null, ['1', 1, true], true) ? '1' : '0';
         }
         return $sanitized;
     }
@@ -1532,6 +1532,16 @@ final class Admin
                 'outputs' => $additional_outputs('seo_framework', 'The SEO Framework'),
             ],
             [
+                'id' => 'smartcrawl',
+                'prefix' => 'smartcrawl',
+                'label' => 'SmartCrawl SEO',
+                'active' => defined('SMARTCRAWL_VERSION'),
+                'version' => defined('SMARTCRAWL_VERSION') ? (string) SMARTCRAWL_VERSION : '',
+                /* translators: %s is the SEO plugin name. */
+                'description' => sprintf(__('Choose which %s outputs will be included in the generated static site.', 'wext-static-publisher'), 'SmartCrawl SEO'),
+                'outputs' => $additional_outputs('smartcrawl', 'SmartCrawl SEO'),
+            ],
+            [
                 'id' => 'yoast',
                 'prefix' => 'yoast',
                 'label' => 'Yoast SEO',
@@ -1643,6 +1653,10 @@ final class Admin
         ];
 
         // All paths intentionally inherit one UI color instead of brand colors.
+        if ($plugin_id === 'smartcrawl') {
+            echo '<span class="dashicons dashicons-search" aria-hidden="true"></span>';
+            return;
+        }
         echo $icons[$plugin_id] ?? $icons['rank-math']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 

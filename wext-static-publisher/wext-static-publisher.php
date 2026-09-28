@@ -3,7 +3,7 @@
  * Plugin Name: Wext Static Publisher
  * Plugin URI: https://github.com/ahmetcigsar/Wext-Static-Publisher
  * Description: Exports WordPress sites to static files, offers Headless CMS mode, and publishes to your own Cloudflare Workers account.
- * Version: 3.1.0
+ * Version: 3.2.0
  * Requires at least: 6.5
  * Requires PHP: 8.1
  * Author: Wext Static Publisher Contributors
@@ -19,7 +19,7 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-define('WEXTSTAT_VERSION', '3.1.0');
+define('WEXTSTAT_VERSION', '3.2.0');
 define('WEXTSTAT_FILE', __FILE__);
 define('WEXTSTAT_DIR', plugin_dir_path(__FILE__));
 
@@ -35,6 +35,7 @@ require_once WEXTSTAT_DIR . 'includes/class-language-routing.php';
 require_once WEXTSTAT_DIR . 'includes/class-rank-math-integration.php';
 require_once WEXTSTAT_DIR . 'includes/class-aioseo-integration.php';
 require_once WEXTSTAT_DIR . 'includes/class-seopress-integration.php';
+require_once WEXTSTAT_DIR . 'includes/class-smartcrawl-integration.php';
 require_once WEXTSTAT_DIR . 'includes/class-block-seo-integration.php';
 require_once WEXTSTAT_DIR . 'includes/class-seo-toolkit.php';
 require_once WEXTSTAT_DIR . 'includes/class-secret-store.php';

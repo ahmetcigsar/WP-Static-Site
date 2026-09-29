@@ -60,14 +60,15 @@ final class Diagnostics
         $indexable = (string) get_option('blog_public', '1') === '1';
         $cache_disabled = ! (defined('WP_CACHE') && WP_CACHE);
         $cron_available = ! (defined('DISABLE_WP_CRON') && DISABLE_WP_CRON);
-        $temporary_directory = trailingslashit(Plugin::storage_directory()) . 'temp-files';
-        if (! is_dir($temporary_directory)) {
-            wp_mkdir_p($temporary_directory);
+        $storage_available = false;
+        try {
+            $probe = Plugin::storage_directory() . '/diagnostics/' . wp_generate_uuid4() . '.txt';
+            Export_Storage::store($probe, ['storage probe']);
+            $storage_available = Export_Storage::read($probe) === 'storage probe';
+            Export_Storage::delete($probe);
+        } catch (\Throwable $error) {
+            $storage_available = false;
         }
-        $temporary_directory = trailingslashit($temporary_directory);
-        $temporary_readable = is_dir($temporary_directory) && is_readable($temporary_directory);
-        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_is_writable -- Diagnose actual PHP process permissions on the plugin temporary directory.
-        $temporary_writable = is_dir($temporary_directory) && is_writable($temporary_directory);
         $active_plugins = $active_plugins ?? self::active_plugins();
         $incompatible_plugins = self::active_incompatible_plugins($active_plugins);
         $database_grants = $database_grants ?? self::database_grants();
@@ -172,26 +173,14 @@ final class Diagnostics
                         : __('Active plugins that may block static scanning:', 'wext-static-publisher') . implode(', ', $incompatible_plugins) . '.',
                 ],
             ],
-            __('File System', 'wext-static-publisher') => [
+            __('Storage', 'wext-static-publisher') => [
                 [
-                    'id' => 'temp-directory-readable',
-                    'label' => __('Temporary Directory Readable', 'wext-static-publisher'),
-                    'passed' => $temporary_readable,
-                    'message' => $temporary_readable
-                        /* translators: %s is the temporary directory path. */
-                        ? sprintf(__('The web server is able to read the temporary directory: %s', 'wext-static-publisher'), $temporary_directory)
-                        /* translators: %s is the temporary directory path. */
-                        : sprintf(__('Web server cannot read temporary directory: %s', 'wext-static-publisher'), $temporary_directory),
-                ],
-                [
-                    'id' => 'temp-directory-writable',
-                    'label' => __('Temporary Directory Writable', 'wext-static-publisher'),
-                    'passed' => $temporary_writable,
-                    'message' => $temporary_writable
-                        /* translators: %s is the temporary directory path. */
-                        ? sprintf(__('The web server is able to write to the temporary directory: %s', 'wext-static-publisher'), $temporary_directory)
-                        /* translators: %s is the temporary directory path. */
-                        : sprintf(__('Web server cannot write to temporary directory: %s', 'wext-static-publisher'), $temporary_directory),
+                    'id' => 'database-storage',
+                    'label' => __('Export Database Storage', 'wext-static-publisher'),
+                    'passed' => $storage_available,
+                    'message' => $storage_available
+                        ? __('Export data can be stored and read in the database.', 'wext-static-publisher')
+                        : __('Export database storage is unavailable.', 'wext-static-publisher'),
                 ],
             ],
         ];

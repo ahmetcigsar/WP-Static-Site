@@ -6,32 +6,16 @@ namespace Wext\StaticPublisher;
 
 // phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are plain text data. Escape when rendering in HTML.
 
-use FilesystemIterator;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
 use RuntimeException;
-use ZipArchive;
 
 final class Archive_Manager
 {
     public static function archives(): array
     {
         $archive_directory = Plugin::storage_directory() . '/archives';
-        if (! is_dir($archive_directory)) {
-            return [];
-        }
-
-        $paths = glob($archive_directory . '/*.zip');
-        if (! is_array($paths)) {
-            return [];
-        }
-
         $archives = [];
-        foreach ($paths as $path) {
-            if (! is_file($path)) {
-                continue;
-            }
-
+        foreach (Export_Storage::files($archive_directory) as $name => $metadata) {
+            $path = $archive_directory . '/' . $name;
             $job_id = pathinfo($path, PATHINFO_FILENAME);
             $manifest = self::manifest_from_archive($path);
             $created_at = self::created_timestamp($path, $manifest);
@@ -97,7 +81,7 @@ final class Archive_Manager
         $failed = 0;
 
         foreach (self::selected($ids) as $archive) {
-            if (! wp_delete_file((string) $archive['path'])) {
+            if (! Export_Storage::delete((string) $archive['path'])) {
                 ++$failed;
                 continue;
             }
@@ -120,47 +104,23 @@ final class Archive_Manager
         if ($archives === []) {
             throw new RuntimeException(__('No ZIP file found to download.', 'wext-static-publisher'));
         }
-        if (! class_exists(ZipArchive::class)) {
-            throw new RuntimeException(__('PHP ZipArchive extension is not installed.', 'wext-static-publisher'));
-        }
-
-        $bundle_path = tempnam(get_temp_dir(), 'wextstat-');
-        if (! is_string($bundle_path) || $bundle_path === '') {
-            throw new RuntimeException(__('The temporary download package could not be created.', 'wext-static-publisher'));
-        }
-
-        $zip = new ZipArchive();
-        if ($zip->open($bundle_path, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
-            wp_delete_file($bundle_path);
-            throw new RuntimeException(__('The bulk download package could not be created.', 'wext-static-publisher'));
-        }
-
+        $objects = [];
         foreach ($archives as $archive) {
-            $zip->addFile((string) $archive['path'], basename((string) $archive['path']));
+            $objects[basename($archive['path'])] = $archive['path'];
         }
-        $zip->close();
-
-        return $bundle_path;
+        $bundle = Plugin::storage_directory() . '/bundles/' . wp_generate_uuid4() . '.zip';
+        Export_Storage::store($bundle, Export_Zip::pieces($objects));
+        return $bundle;
     }
 
     private static function manifest_from_archive(string $path): array
     {
-        if (! class_exists(ZipArchive::class)) {
+        $job_id = pathinfo($path, PATHINFO_FILENAME);
+        $manifest_path = Plugin::storage_directory() . '/builds/' . $job_id . '/wext-static-manifest.json';
+        if (! Export_Storage::exists($manifest_path)) {
             return [];
         }
-
-        $zip = new ZipArchive();
-        if ($zip->open($path) !== true) {
-            return [];
-        }
-
-        $contents = $zip->getFromName('wext-static-manifest.json');
-        $zip->close();
-        if (! is_string($contents)) {
-            return [];
-        }
-
-        $manifest = json_decode($contents, true);
+        $manifest = json_decode(Export_Storage::read($manifest_path), true);
         return is_array($manifest) ? $manifest : [];
     }
 
@@ -177,7 +137,7 @@ final class Archive_Manager
             }
         }
 
-        $modified_at = filemtime($path);
+        $modified_at = Export_Storage::metadata($path)['modified'] ?? 0;
         return $modified_at === false ? 0 : $modified_at;
     }
 
@@ -189,25 +149,6 @@ final class Archive_Manager
         }
 
         $directory = Plugin::storage_directory() . '/builds/' . $safe_job_id;
-        if (! is_dir($directory)) {
-            return;
-        }
-
-        $iterator = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($directory, FilesystemIterator::SKIP_DOTS),
-            RecursiveIteratorIterator::CHILD_FIRST
-        );
-
-        foreach ($iterator as $item) {
-            if ($item->isDir() && ! $item->isLink()) {
-                // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir -- Remove only this plugin's validated build directory; do not follow symlinks.
-                rmdir($item->getPathname());
-            } else {
-                wp_delete_file($item->getPathname());
-            }
-        }
-
-        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir -- Remove only this plugin's validated empty build directory.
-        rmdir($directory);
+        Export_Storage::delete_directory($directory);
     }
 }

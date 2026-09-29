@@ -6,11 +6,7 @@ namespace Wext\StaticPublisher;
 
 // phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are plain text data. Escape when rendering in HTML.
 
-use FilesystemIterator;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
 use RuntimeException;
-use SplFileInfo;
 use Throwable;
 
 /** Publishes a completed export to the site owner's Cloudflare account. */
@@ -125,7 +121,7 @@ final class Cloudflare_Deployer
     private static function upload(string $job_id, array $connection): void
     {
         $directory = Plugin::storage_directory() . '/builds/' . sanitize_file_name($job_id);
-        if (! is_dir($directory) || ! is_readable($directory)) {
+        if (Export_Storage::files($directory) === []) {
             throw new RuntimeException(__('The completed export folder is unavailable.', 'wext-static-publisher'));
         }
         $token = Secret_Store::decrypt((string) $connection['api_token']);
@@ -133,17 +129,12 @@ final class Cloudflare_Deployer
         $script = $base . '/workers/scripts/' . rawurlencode((string) $connection['worker_name']);
         $files = [];
         $assets = [];
-        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory, FilesystemIterator::SKIP_DOTS));
-        foreach ($iterator as $file) {
-            if (! $file instanceof SplFileInfo || ! $file->isFile() || $file->isLink()) {
-                continue;
-            }
-            $path = $file->getPathname();
-            $relative = str_replace(DIRECTORY_SEPARATOR, '/', substr($path, strlen($directory) + 1));
+        foreach (Export_Storage::files($directory) as $relative => $metadata) {
+            $path = $directory . '/' . $relative;
             if ($relative === '_headers' || $relative === '_redirects') {
                 continue;
             }
-            $contents = file_get_contents($path);
+            $contents = Export_Storage::read($path);
             if (! is_string($contents)) {
                 throw new RuntimeException(__('An export file could not be read.', 'wext-static-publisher'));
             }
@@ -170,7 +161,7 @@ final class Cloudflare_Deployer
                 if (! is_string($hash) || ! isset($files[$hash])) {
                     throw new RuntimeException(__('Cloudflare requested an unknown asset.', 'wext-static-publisher'));
                 }
-                $contents = file_get_contents($files[$hash]['path']);
+                $contents = Export_Storage::read($files[$hash]['path']);
                 if (! is_string($contents)) {
                     throw new RuntimeException(__('An export file could not be read.', 'wext-static-publisher'));
                 }
@@ -184,6 +175,7 @@ final class Cloudflare_Deployer
         if ($completion_token === '') {
             throw new RuntimeException(__('Cloudflare did not confirm the asset upload.', 'wext-static-publisher'));
         }
+        // Read only a fixed, bundled local file. Remote requests use the WordPress HTTP API below.
         $worker = file_get_contents(WEXTSTAT_DIR . 'assets/worker.mjs');
         if (! is_string($worker)) {
             throw new RuntimeException(__('The bundled Cloudflare Worker is missing.', 'wext-static-publisher'));
@@ -199,8 +191,8 @@ final class Cloudflare_Deployer
         ];
         foreach (['_headers', '_redirects'] as $filename) {
             $path = $directory . '/' . $filename;
-            if (is_file($path)) {
-                $contents = file_get_contents($path);
+            if (Export_Storage::exists($path)) {
+                $contents = Export_Storage::read($path);
                 if (! is_string($contents)) {
                     throw new RuntimeException(__('A Cloudflare configuration file could not be read.', 'wext-static-publisher'));
                 }

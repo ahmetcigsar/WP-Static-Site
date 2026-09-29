@@ -204,9 +204,8 @@ if (($incomplete_sftp['sftp_auto_deploy'] ?? '') !== '0') {
 
 $sftp_job_id = 'sftp-smoke-test';
 $sftp_build_directory = Wext\StaticPublisher\Plugin::storage_directory() . '/builds/' . $sftp_job_id;
-wp_mkdir_p($sftp_build_directory . '/assets');
-file_put_contents($sftp_build_directory . '/index.html', '<h1>SFTP</h1>');
-file_put_contents($sftp_build_directory . '/assets/app.css', 'body{}');
+Wext\StaticPublisher\Export_Storage::write($sftp_build_directory, 'index.html', '<h1>SFTP</h1>');
+Wext\StaticPublisher\Export_Storage::write($sftp_build_directory, 'assets/app.css', 'body{}');
 $sftp_deploy_calls = 0;
 add_filter('wext_static_sftp_available', '__return_true');
 add_filter('wext_static_sftp_test_result', static fn (): array => ['success' => true]);

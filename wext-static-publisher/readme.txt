@@ -3,7 +3,7 @@ Tags: static site, headless cms, cloudflare, export, sftp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 3.2.1
+Stable tag: 3.3.0
 License: MIT
 License URI: https://opensource.org/license/mit
 
@@ -37,9 +37,9 @@ The GitHub deployment webhook is optional. If configured, the plugin sends the c
 4. Under Deploy > Cloudflare, connect your own Account ID and an API token with Workers Scripts Write permission.
 5. Configure a `workers.dev` subdomain or custom domain in Cloudflare, then export and deploy the static site.
 
-Export artifacts are stored beneath the runtime WordPress uploads directory. Apache and IIS access rules are created automatically. On Nginx, configure your host to deny direct web access to the `wext-static-publisher` uploads subdirectory and the legacy `wext-static` subdirectory if present; Nginx does not read `.htaccess` files.
+Export assets, ZIP archives, and activity logs are stored in a private, per-site database table. Downloads require WordPress authorization. The plugin does not write exported HTML, JavaScript, ZIP archives, or web-server rules to the filesystem. ZIP downloads use streaming, uncompressed ZIP entries. Allow database capacity for assets and archives; the archive retention setting controls completed exports.
 
-Existing Wext Static Publisher installations can update in place. Saved settings and export archives remain in WordPress.
+Existing Wext Static Publisher installations can update in place. Saved settings are preserved. Earlier ZIP archives are imported into database storage without extracting files to disk; ZipArchive is required only for that import. Original uploads files remain untouched as backups. Once the imported exports have been verified, the administrator can remove the old plugin export directories through their hosting file manager.
 
 == Screenshots ==
 
@@ -51,6 +51,9 @@ Existing Wext Static Publisher installations can update in place. Saved settings
 
 == Upgrade Notice ==
 
+= 3.3.0 =
+Moves exports and logs into private database storage and removes error-display overrides. Existing ZIPs are imported; original files remain as backups. Plan database capacity before updating large sites.
+
 = 3.2.1 =
 Updates export storage validation, asset enqueueing, language-pack loading, and legacy migration for directory review.
 
@@ -61,6 +64,13 @@ Adds SmartCrawl SEO integration and fixes disabled SEO output settings being re-
 Update the existing Wext Static Publisher installation in place. Saved settings and export archives remain available.
 
 == Changelog ==
+
+= 3.3.0 =
+* Store static assets, archives, and activity logs in a private per-site database table.
+* Stream ZIP downloads and SFTP uploads without creating local export files.
+* Read Cloudflare deployment assets and configuration directly from database storage.
+* Preserve PHP and WordPress error reporting settings.
+* Import previous ZIP archives without extracting them to disk.
 
 = 3.2.1 =
 * Render exported script and stylesheet references through WordPress asset queues.

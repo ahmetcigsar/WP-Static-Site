@@ -11,7 +11,6 @@ use DOMElement;
 use RuntimeException;
 use SplQueue;
 use Throwable;
-use ZipArchive;
 
 final class Exporter
 {
@@ -88,15 +87,16 @@ final class Exporter
 
         set_transient(Plugin::LOCK_KEY, $job_id, 30 * MINUTE_IN_SECONDS);
         $this->job_id = $job_id;
-        Activity_Log::reset($job_id);
         $started_at = gmdate('c');
+        $archive = '';
 
         try {
+            Activity_Log::reset($job_id);
             $this->prepare_build_directory($job_id);
             Plugin::set_status($job_id, 'running', 2, [
                 'started_at' => $started_at,
                 'phase' => 'preparing',
-                'status_message' => __('Export folder is being prepared.', 'wext-static-publisher'),
+                'status_message' => __('Export storage is being prepared.', 'wext-static-publisher'),
                 'current_url' => '',
                 'url_count' => 0,
                 'error' => '',
@@ -173,6 +173,9 @@ final class Exporter
 
             return Plugin::status();
         } catch (Throwable $error) {
+            if ($this->build_directory !== '' && $archive === '') {
+                Export_Storage::delete_directory($this->build_directory);
+            }
             $this->add_log('error', $error->getMessage());
             Plugin::set_status($job_id, 'failed', 100, [
                 'finished_at' => gmdate('c'),
@@ -189,13 +192,9 @@ final class Exporter
 
     private function prepare_build_directory(string $job_id): void
     {
-        $base = Plugin::storage_directory();
-        wp_mkdir_p($base . '/builds');
-        wp_mkdir_p($base . '/archives');
-        $this->build_directory = $base . '/builds/' . sanitize_file_name($job_id);
-
-        if (is_link($base . '/builds') || is_link($base . '/archives') || is_link($this->build_directory) || ! wp_mkdir_p($this->build_directory)) {
-            throw new RuntimeException(__('Failed to create export folder.', 'wext-static-publisher'));
+        $this->build_directory = Plugin::storage_directory() . '/builds/' . sanitize_file_name($job_id);
+        if (! Export_Storage::delete_directory($this->build_directory)) {
+            throw new RuntimeException(__('Could not prepare export storage.', 'wext-static-publisher'));
         }
     }
 
@@ -657,7 +656,7 @@ final class Exporter
 
         foreach ($this->language_routing->languages() as $language) {
             $path = $this->build_directory . '/' . $language . '/index.html';
-            if (! is_readable($path)) {
+            if (! Export_Storage::exists($path)) {
                 /* translators: %s is a language code in the URL path. */
                 throw new RuntimeException(sprintf(__('Could not export language root: /%s/', 'wext-static-publisher'), $language));
             }
@@ -674,7 +673,7 @@ final class Exporter
         $this->write_file('_headers', $headers);
         $this->write_file('_redirects', implode("\n", $this->seo_toolkit->redirect_rules()) . "\n");
         $robots_path = $this->build_directory . '/robots.txt';
-        $robots = is_readable($robots_path) ? (string) file_get_contents($robots_path) : "User-agent: *\nAllow: /\n";
+        $robots = Export_Storage::exists($robots_path) ? Export_Storage::read($robots_path) : "User-agent: *\nAllow: /\n";
         if ((string) ($this->seo_toolkit->manifest_data()['sitemap'] ?? '') !== ''
             && ! str_contains($robots, $this->seo_toolkit->sitemap_url())) {
             $robots = rtrim($robots) . "\nSitemap: " . $this->seo_toolkit->sitemap_url() . "\n";
@@ -682,7 +681,7 @@ final class Exporter
         foreach (['wext-video-sitemap.xml', 'wext-news-sitemap.xml'] as $optional_sitemap) {
             $optional_path = $this->build_directory . '/' . $optional_sitemap;
             $optional_url = $this->target . '/' . $optional_sitemap;
-            if (is_readable($optional_path) && ! str_contains($robots, $optional_url)) {
+            if (Export_Storage::exists($optional_path) && ! str_contains($robots, $optional_url)) {
                 $robots = rtrim($robots) . "\nSitemap: " . $optional_url . "\n";
             }
         }
@@ -692,7 +691,7 @@ final class Exporter
             $this->write_file('wext-language-preference.js', $this->language_routing->preference_script());
         }
 
-        if (! file_exists($this->build_directory . '/404.html')) {
+        if (! Export_Storage::exists($this->build_directory . '/404.html')) {
             $language = str_replace('_', '-', (string) get_bloginfo('language')) ?: 'en-US';
             $this->write_file('404.html', sprintf(
                 '<!doctype html><html lang="%1$s"><meta charset="utf-8"><title>%2$s</title><h1>404</h1><p>%3$s</p></html>',
@@ -712,44 +711,20 @@ final class Exporter
 
     private function create_archive(string $job_id): string
     {
-        if (! class_exists(ZipArchive::class)) {
-            throw new RuntimeException(__('PHP ZipArchive extension is not installed.', 'wext-static-publisher'));
+        $archive = Plugin::storage_directory() . '/archives/' . sanitize_file_name($job_id) . '.zip';
+        $objects = [];
+        foreach (Export_Storage::files($this->build_directory) as $relative => $metadata) {
+            $objects[$relative] = $this->build_directory . '/' . $relative;
         }
-
-        $archive_path = Plugin::storage_directory() . '/archives/' . sanitize_file_name($job_id) . '.zip';
-        if (is_link($archive_path)) {
-            throw new RuntimeException(__('Unsafe archive destination.', 'wext-static-publisher'));
-        }
-        $zip = new ZipArchive();
-        if ($zip->open($archive_path, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
-            throw new RuntimeException(__('Could not create ZIP archive.', 'wext-static-publisher'));
-        }
-
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($this->build_directory, \FilesystemIterator::SKIP_DOTS)
-        );
-        foreach ($iterator as $file) {
-            $relative = substr($file->getPathname(), strlen($this->build_directory) + 1);
-            if ($file->isFile() && ! $file->isLink() && Path_Mapper::is_safe_static_path($relative)) {
-                $zip->addFile($file->getPathname(), $relative);
-            }
-        }
-        $zip->close();
-
-        return $archive_path;
+        Export_Storage::store($archive, Export_Zip::pieces($objects));
+        return $archive;
     }
 
     private function write_manifest(string $job_id, string $started_at): array
     {
         $file_hashes = [];
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($this->build_directory, \FilesystemIterator::SKIP_DOTS)
-        );
-        foreach ($iterator as $file) {
-            $relative = substr($file->getPathname(), strlen($this->build_directory) + 1);
-            if ($file->isFile() && ! $file->isLink() && Path_Mapper::is_safe_static_path($relative)) {
-                $file_hashes[$relative] = hash_file('sha256', $file->getPathname());
-            }
+        foreach (Export_Storage::files($this->build_directory) as $relative => $metadata) {
+            $file_hashes[$relative] = $metadata['sha256'];
         }
         ksort($file_hashes);
 

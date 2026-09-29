@@ -6,9 +6,6 @@ namespace Wext\StaticPublisher;
 
 // phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are plain text data. Escape when rendering in HTML.
 
-use FilesystemIterator;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
 use RuntimeException;
 use Throwable;
 
@@ -105,7 +102,7 @@ final class SFTP_Deployer
         }
 
         $build_directory = Plugin::storage_directory() . '/builds/' . $safe_job_id;
-        if (! is_dir($build_directory) || ! is_readable($build_directory)) {
+        if (Export_Storage::files($build_directory) === []) {
             throw new RuntimeException(__('The static build directory could not be read.', 'wext-static-publisher'));
         }
 
@@ -203,7 +200,7 @@ final class SFTP_Deployer
                 /* translators: %s is the remote directory path. */
                 throw new RuntimeException(sprintf(__('The SFTP remote directory could not be created: %s', 'wext-static-publisher'), $remote_directory));
             }
-            if (! $sftp->put($remote_path, $local_path, \phpseclib3\Net\SFTP::SOURCE_LOCAL_FILE)) {
+            if (! $sftp->put($remote_path, Export_Storage::reader($local_path), \phpseclib3\Net\SFTP::SOURCE_CALLBACK)) {
                 $message = (string) ($sftp->getLastSFTPError() ?: __('Unknown SFTP error.', 'wext-static-publisher'));
                 /* translators: %1$s is the file path; %2$s is the SFTP error. */
                 throw new RuntimeException(sprintf(__('SFTP upload failed for %1$s: %2$s', 'wext-static-publisher'), $relative_path, $message));
@@ -249,15 +246,8 @@ final class SFTP_Deployer
     private static function files(string $directory): array
     {
         $files = [];
-        $iterator = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($directory, FilesystemIterator::SKIP_DOTS)
-        );
-        foreach ($iterator as $file) {
-            if (! $file->isFile() || $file->isLink()) {
-                continue;
-            }
-            $relative_path = str_replace(DIRECTORY_SEPARATOR, '/', substr($file->getPathname(), strlen($directory) + 1));
-            $files[$relative_path] = $file->getPathname();
+        foreach (Export_Storage::files($directory) as $relative_path => $metadata) {
+            $files[$relative_path] = $directory . '/' . $relative_path;
         }
         ksort($files);
         return $files;

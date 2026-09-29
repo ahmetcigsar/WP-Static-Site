@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require '/wordpress/wp-load.php';
+require_once __DIR__ . '/database-test-helpers.php';
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
 $plugin = 'wext-static-publisher/wext-static-publisher.php';
@@ -168,7 +169,7 @@ for ($index = 1, $count = count($reported_progress); $index < $count; $index++) 
         throw new RuntimeException('Export ilerleme yüzdesi geriye gitti: ' . wp_json_encode($reported_progress));
     }
 }
-if (! is_readable((string) ($status['archive'] ?? ''))) {
+if (! Wext\StaticPublisher\Export_Storage::exists((string) ($status['archive'] ?? ''))) {
     throw new RuntimeException('Export arşivi üretilemedi.');
 }
 if (($status['manifest']['target'] ?? '') !== 'https://static.example.com') {
@@ -209,7 +210,7 @@ if (($status_codes_by_source[home_url('/redirect-test/')] ?? null) !== 301
 }
 
 $zip = new ZipArchive();
-if ($zip->open((string) $status['archive']) !== true) {
+if ($zip->open(wext_test_zip_path((string) $status['archive'])) !== true) {
     throw new RuntimeException('Export ZIP dosyası açılamadı.');
 }
 $home_html = (string) $zip->getFromName('index.html');

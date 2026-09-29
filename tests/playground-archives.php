@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 require '/wordpress/wp-load.php';
+require_once __DIR__ . '/database-test-helpers.php';
+use Wext\StaticPublisher\Export_Storage;
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
 $plugin = 'wext-static-publisher/wext-static-publisher.php';
@@ -14,8 +16,7 @@ if (is_wp_error($activation)) {
 do_action('init');
 
 $base = Wext\StaticPublisher\Plugin::storage_directory();
-wp_mkdir_p($base . '/archives');
-wp_mkdir_p($base . '/builds');
+
 
 $fixtures = [
     ['job_id' => 'retention-test-1', 'finished_at' => '2026-01-01T10:00:00Z', 'url_count' => 10, 'build_sha256' => str_repeat('1', 64), 'target' => 'https://static.example.com'],
@@ -24,17 +25,14 @@ $fixtures = [
 ];
 
 foreach ($fixtures as $fixture) {
-    $zip = new ZipArchive();
-    $path = $base . '/archives/' . $fixture['job_id'] . '.zip';
-    if ($zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
-        throw new RuntimeException('Test ZIP dosyası oluşturulamadı.');
-    }
-    $zip->addFromString('wext-static-manifest.json', (string) wp_json_encode($fixture));
-    $zip->close();
-
     $build = $base . '/builds/' . $fixture['job_id'];
-    wp_mkdir_p($build);
-    file_put_contents($build . '/index.html', $fixture['job_id']);
+    Export_Storage::write($build, 'index.html', $fixture['job_id']);
+    Export_Storage::write($build, 'wext-static-manifest.json', (string) wp_json_encode($fixture));
+    $objects = [];
+    foreach (Export_Storage::files($build) as $name => $metadata) {
+        $objects[$name] = $build . '/' . $name;
+    }
+    Export_Storage::store($base . '/archives/' . $fixture['job_id'] . '.zip', Wext\StaticPublisher\Export_Zip::pieces($objects));
 }
 
 $archives = Wext\StaticPublisher\Archive_Manager::archives();
@@ -93,20 +91,20 @@ if (($deployment_status['state'] ?? '') !== 'completed'
 
 $bundle = Wext\StaticPublisher\Archive_Manager::create_bundle(['retention-test-1', 'retention-test-3']);
 $bundle_zip = new ZipArchive();
-if ($bundle_zip->open($bundle) !== true
+if ($bundle_zip->open(wext_test_zip_path($bundle)) !== true
     || $bundle_zip->locateName('retention-test-1.zip') === false
     || $bundle_zip->locateName('retention-test-3.zip') === false
     || $bundle_zip->locateName('retention-test-2.zip') !== false) {
     throw new RuntimeException('Toplu indirme paketi yalnızca seçilen ZIP dosyalarını içermiyor.');
 }
 $bundle_zip->close();
-unlink($bundle);
+Export_Storage::delete($bundle);
 
 $result = Wext\StaticPublisher\Archive_Manager::delete(['retention-test-1']);
 if ($result !== ['deleted' => 1, 'failed' => 0]) {
     throw new RuntimeException('Tekil ZIP silme işlemi beklenen sonucu vermedi.');
 }
-if (file_exists($base . '/archives/retention-test-1.zip') || is_dir($base . '/builds/retention-test-1')) {
+if (Export_Storage::exists($base . '/archives/retention-test-1.zip') || Export_Storage::files($base . '/builds/retention-test-1') !== []) {
     throw new RuntimeException('Tekil silme ZIP veya ilişkili build klasörünü kaldırmadı.');
 }
 
@@ -114,10 +112,10 @@ $settings = Wext\StaticPublisher\Plugin::settings();
 update_option(Wext\StaticPublisher\Plugin::SETTINGS_KEY, $settings, false);
 $settings['archive_retention'] = 1;
 update_option(Wext\StaticPublisher\Plugin::SETTINGS_KEY, $settings, false);
-if (file_exists($base . '/archives/retention-test-2.zip') || is_dir($base . '/builds/retention-test-2')) {
+if (Export_Storage::exists($base . '/archives/retention-test-2.zip') || Export_Storage::files($base . '/builds/retention-test-2') !== []) {
     throw new RuntimeException('Ayar değişikliği eski ZIP veya ilişkili build klasörünü silmedi.');
 }
-if (! file_exists($base . '/archives/retention-test-3.zip')) {
+if (! Export_Storage::exists($base . '/archives/retention-test-3.zip')) {
     throw new RuntimeException('En son ZIP dosyası yanlışlıkla silindi.');
 }
 

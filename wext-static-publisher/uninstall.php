@@ -32,3 +32,28 @@ $wextstat_administrator = get_role('administrator');
 if ($wextstat_administrator !== null) {
     $wextstat_administrator->remove_cap('wext_static_export');
 }
+
+// Export objects are private per-site database data, including on multisite.
+function wextstat_delete_database_storage(): void
+{
+    global $wpdb;
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Remove only the plugin-owned export table on uninstall.
+    $wpdb->query($wpdb->prepare('DROP TABLE IF EXISTS %i', $wpdb->prefix . 'wext_static_objects'));
+    delete_option('wext_static_storage_schema');
+    delete_option('wext_static_database_migration');
+    delete_option('wext_static_storage_migration_error');
+}
+if (is_multisite()) {
+    $wextstat_offset = 0;
+    do {
+        $wextstat_sites = get_sites(['fields' => 'ids', 'number' => 100, 'offset' => $wextstat_offset]);
+        foreach ($wextstat_sites as $wextstat_site_id) {
+            switch_to_blog((int) $wextstat_site_id);
+            wextstat_delete_database_storage();
+            restore_current_blog();
+        }
+        $wextstat_offset += 100;
+    } while (count($wextstat_sites) === 100);
+} else {
+    wextstat_delete_database_storage();
+}

@@ -2,6 +2,8 @@
 
 An open-source WordPress plugin that exports sites as static files and deploys them to your own Cloudflare Workers account. Headless CMS mode keeps the WordPress theme front end private while preserving its design in the static export.
 
+Read the [v3.3.0 release notes](docs/releases/v3.3.0.md) for changes, upgrade requirements, and validation results.
+
 ## Screenshots
 
 These screenshots were captured before the Wext naming update. The current plugin interface uses **Wext Static Publisher**.
@@ -48,8 +50,8 @@ These screenshots were captured before the Wext naming update. The current plugi
 - Rename WordPress paths and remove version, generator, XML-RPC, embed, and emoji traces from static output through Hide settings.
 - Close the WordPress theme front end to visitors in Headless + Static Publisher mode while signed internal export requests retain the homepage and theme design.
 - Show the latest successful build and a green progress/completion indicator on Main. Live export status refreshes every two seconds, shows each stage, and warns about stalled WP-Cron jobs.
-- Search Activity Logs with centered pagination and WordPress date/time formatting. Logs are kept outside the database for the latest export, show 50 entries per page, and list source WordPress URLs and generated static paths in separate columns.
-- Check PHP, Basic Auth, php-xml, cURL, site URL access, permalinks, indexability, caching, WP-Cron, conflicting plugins, temporary directories, and MySQL permissions.
+- Search Activity Logs with centered pagination and WordPress date/time formatting. Logs are kept in private database storage for the latest export, show 50 entries per page, and list source WordPress URLs and generated static paths in separate columns.
+- Check PHP, Basic Auth, php-xml, cURL, site URL access, permalinks, indexability, caching, WP-Cron, conflicting plugins, export database storage, and MySQL permissions.
 - Run `wp wext-static-publisher export` with WP-CLI; the previous `wp wext-static export` command remains available for existing installations.
 - Expose Application Password-protected export, status, artifact, and deployment callback REST endpoints. CI can use the limited `Static Publisher Deploy` role.
 - Select automatic export triggers for posts, pages, custom content, taxonomies, media, menus, widgets, themes, and site settings. Changes are grouped into a 60-second window; an optional deployment webhook follows a successful export.
@@ -62,7 +64,17 @@ Copy the `wext-static-publisher` directory to WordPress `wp-content/plugins/` an
 
 The installable ZIP is named `wext-static-publisher.zip`. Its internal directory and translation domain are `wext-static-publisher`. Existing `wext_static_*` option keys and REST identifiers remain stable, so existing installations can update in place without losing settings, export archives, or CI integrations.
 
-PHP DOM and Zip extensions are required. The SFTP client is bundled, so PHP cURL/libcurl does not need SFTP support. For long exports and SFTP jobs, run `wp-cron.php` with a system cron job.
+PHP DOM is required. ZipArchive is needed only to import archives from older plugin versions. The SFTP client is bundled, so PHP cURL/libcurl does not need SFTP support. For long exports and SFTP jobs, run `wp-cron.php` with a system cron job.
+
+## Export storage
+
+Version 3.3.0 stores assets, archives, and activity logs in the per-site `{prefix}wext_static_objects` database table. Binary data uses base64-encoded 256 KiB chunks; metadata records become visible only after a complete write. No exported HTML, JavaScript, ZIP, access-control file, or temporary bundle is written to the WordPress filesystem. Authorized REST/admin downloads stream database chunks, and SFTP uses a bounded callback reader.
+
+ZIP entries use the uncompressed STORE format. Allow database space for both asset bodies and their ZIP copy, plus base64 overhead (roughly 2.7 times the exported bytes per retained build). The default retention is five completed builds. ZIPs are limited to fewer than 4 GiB and at most 65,535 entries; oversized exports fail rather than produce invalid archives.
+
+On upgrade, prior ZIPs in the plugin's known uploads directories are imported without extraction to disk. Original files stay untouched as backups. Verify imported downloads before removing those old directories with the hosting file manager. Import requires ZipArchive and enough database capacity. New exports do not require ZipArchive. Uninstall removes the database export table for each site.
+
+Integration hooks that previously received local artifact/build paths now receive logical `wext-db/...` object identifiers. Use `Export_Storage` to read them; they are not filesystem paths.
 
 ## WP-CLI
 
@@ -91,7 +103,7 @@ The callback and job-specific artifact endpoints also require the `Static Publis
 
 The plugin is free and its original code is licensed under MIT. SEO, automatic exports, GitHub deployment, and Cloudflare deployment require no license key. Set the public HTTPS URL under **Static Site > General**. Under **Deploy > Cloudflare**, enter your [Cloudflare Account ID](https://developers.cloudflare.com/fundamentals/account/find-account-and-zone-ids/), a unique Worker name, and an [API token](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/) with `Workers Scripts Write` permission for your account. You can use a user or account API token. The plugin encrypts it with a key derived from WordPress security keys and never displays it again. Disconnecting removes the stored token from WordPress; revoke the token in Cloudflare if needed.
 
-**Deploy to Cloudflare** creates a fresh static ZIP and build directory, then sends the asset manifest, missing files, and Worker module directly to your account through Cloudflare's [Direct Upload API](https://developers.cloudflare.com/workers/static-assets/direct-upload/). The `_headers` and `_redirects` rules are included in the Worker asset configuration. No external deployment service, OAuth app, or license server is involved.
+**Deploy to Cloudflare** creates a fresh static ZIP and database build, then sends the asset manifest, missing files, and Worker module directly to your account through Cloudflare's [Direct Upload API](https://developers.cloudflare.com/workers/static-assets/direct-upload/). The `_headers` and `_redirects` rules are included in the Worker asset configuration. No external deployment service, OAuth app, or license server is involved.
 
 Configure a `workers.dev` subdomain or custom domain for the Worker in your Cloudflare dashboard. The target URL under **Static Site > General** must match that domain. The plugin does not create custom domains or change DNS records. An old service connection is not migrated automatically; connect once with your own token.
 
@@ -139,16 +151,16 @@ bash -n scripts/*.sh
 node --test tests/worker-language-routing.mjs
 npx --yes wrangler@latest deploy --dry-run
 ./scripts/package-plugin.sh
-npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-smoke.php
-npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-brand-migration.php
-npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-activity-log.php
-npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-archives.php
-npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-export.php
-npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-aioseo.php
-npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-seopress.php
-npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-smartcrawl.php
-npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-seo-metadata-groups.php
-npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-additional-seo.php
+npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --define-bool WP_DEBUG true --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-smoke.php
+npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --define-bool WP_DEBUG true --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-brand-migration.php
+npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --define-bool WP_DEBUG true --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-activity-log.php
+npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --define-bool WP_DEBUG true --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-archives.php
+npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --define-bool WP_DEBUG true --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-export.php
+npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --define-bool WP_DEBUG true --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-aioseo.php
+npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --define-bool WP_DEBUG true --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-seopress.php
+npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --define-bool WP_DEBUG true --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-smartcrawl.php
+npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --define-bool WP_DEBUG true --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-seo-metadata-groups.php
+npx --yes @wp-playground/cli@latest php --php=8.1 --wp=latest --define-bool WP_DEBUG true --auto-mount=wext-static-publisher --mount=.:/workspace -- /workspace/tests/playground-additional-seo.php
 ```
 
 See `docs/ARCHITECTURE.md` for the architecture and limitations.

@@ -74,7 +74,7 @@ final class REST_Controller
     public static function artifact(): WP_REST_Response
     {
         $archive = Archive_Manager::latest();
-        if ($archive === null || ! is_readable((string) $archive['path'])) {
+        if ($archive === null || ! Export_Storage::exists((string) $archive['path'])) {
             return new WP_REST_Response(['message' => __('No downloadable exports found.', 'wext-static-publisher')], 404);
         }
 
@@ -85,7 +85,7 @@ final class REST_Controller
     {
         $job_id = sanitize_file_name((string) $request['job_id']);
         $archive = $job_id === '' ? null : Archive_Manager::find($job_id);
-        if ($archive === null || ! is_readable((string) $archive['path'])) {
+        if ($archive === null || ! Export_Storage::exists((string) $archive['path'])) {
             return new WP_REST_Response(['message' => __('The requested export archive was not found.', 'wext-static-publisher')], 404);
         }
 
@@ -129,9 +129,8 @@ final class REST_Controller
         nocache_headers();
         header('Content-Type: application/zip');
         header('Content-Disposition: attachment; filename="' . sanitize_file_name($result->filename) . '"');
-        header('Content-Length: ' . (string) filesize($result->file));
-        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile -- Stream an authorized ZIP download without loading it into PHP memory.
-        readfile($result->file);
+        header('Content-Length: ' . (string) (Export_Storage::metadata($result->file)['size'] ?? 0));
+        Export_Storage::stream($result->file);
         return true;
     }
 }

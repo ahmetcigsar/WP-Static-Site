@@ -91,7 +91,12 @@ $remove_directory = static function (string $directory) use (&$remove_directory)
 $remove_directory($legacy_storage);
 $remove_directory($new_storage);
 wp_mkdir_p($legacy_storage . '/archives');
-file_put_contents($legacy_storage . '/archives/migration-marker.txt', 'ok');
+delete_option('wext_static_database_migration');
+$fixture_zip = new ZipArchive();
+$fixture_zip->open($legacy_storage . '/archives/migration-test.zip', ZipArchive::CREATE);
+$fixture_zip->addFromString('index.html', 'migrated content');
+$fixture_zip->addFromString('wext-static-manifest.json', wp_json_encode(['job_id' => 'migration-test']));
+$fixture_zip->close();
 
 $active_plugins = get_option('active_plugins', []);
 $legacy_plugin = $legacy_brand . '-static-publisher/' . $legacy_brand . '-static-publisher.php';
@@ -114,7 +119,7 @@ $checks = [
     'old_connection_removed' => $connection === null,
     'role' => in_array('wext_static_deployer', $migrated_user->roles, true),
     'legacy_role_removed' => get_role($legacy_prefix . 'deployer') === null,
-    'storage' => is_file($new_storage . '/archives/migration-marker.txt'),
+    'storage' => Wext\StaticPublisher\Export_Storage::exists($new_storage . '/archives/migration-test.zip') && Wext\StaticPublisher\Export_Storage::read($new_storage . '/builds/migration-test/index.html') === 'migrated content',
     'marker' => get_option('wext_static_brand_migration') === '2.0.0',
 ];
 $failed_checks = array_keys(array_filter($checks, static fn (bool $passed): bool => ! $passed));
@@ -122,4 +127,18 @@ if ($failed_checks !== []) {
     throw new RuntimeException('Wext marka migration kontrolleri başarısız: ' . implode(', ', $failed_checks));
 }
 
+// A corrupt historical ZIP must leave the site usable and preserve the original.
+file_put_contents($legacy_storage . '/archives/corrupt-test.zip', 'not a ZIP');
+delete_option('wext_static_database_migration');
+Wext\StaticPublisher\Plugin::activate();
+if (get_option('wext_static_storage_migration_error', '') === ''
+    || get_option('wext_static_plugin_version') !== WEXTSTAT_VERSION
+    || file_get_contents($legacy_storage . '/archives/corrupt-test.zip') !== 'not a ZIP') {
+    throw new RuntimeException('Failed migration did not preserve originals and report an admin notice.');
+}
+unlink($legacy_storage . '/archives/corrupt-test.zip');
+Wext\StaticPublisher\Plugin::activate();
+if (get_option('wext_static_storage_migration_error', '') !== '') {
+    throw new RuntimeException('Migration retry did not clear the notice.');
+}
 echo "Wext Static Publisher brand migration test passed.\n";

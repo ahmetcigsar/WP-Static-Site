@@ -10,12 +10,11 @@ final class Activity_Log
 
     public static function reset(string $job_id): void
     {
-        self::prepare_directory();
-        file_put_contents(self::log_path(), '', LOCK_EX);
-        file_put_contents(self::meta_path(), (string) wp_json_encode([
+        Export_Storage::delete_directory(self::directory());
+        Export_Storage::write(self::directory(), 'latest-meta.json', (string) wp_json_encode([
             'job_id' => sanitize_file_name($job_id),
             'started_at' => gmdate('c'),
-        ]), LOCK_EX);
+        ]));
     }
 
     public static function append(
@@ -27,7 +26,6 @@ final class Activity_Log
         int $status_code = 0
     ): void
     {
-        self::prepare_directory();
         $entry = wp_json_encode([
             'job_id' => sanitize_file_name($job_id),
             'time' => gmdate('c'),
@@ -39,7 +37,7 @@ final class Activity_Log
         ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
         if (is_string($entry)) {
-            file_put_contents(self::log_path(), $entry . "\n", FILE_APPEND | LOCK_EX);
+            Export_Storage::write(self::directory() . '/entries', sprintf('%020.0f', microtime(true) * 1000000) . '-' . wp_generate_uuid4() . '.json', $entry);
         }
     }
 
@@ -48,19 +46,14 @@ final class Activity_Log
         $entries = [];
         $job_total = 0;
         $search = trim($search);
-        $path = self::log_path();
-        if (is_readable($path)) {
-            $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-            if (is_array($lines)) {
-                foreach (array_reverse($lines) as $line) {
-                    $entry = json_decode($line, true);
-                    if (is_array($entry)) {
-                        $job_total++;
-                        $entry = self::normalise_entry($entry);
-                        if ($search === '' || self::matches_search($entry, $search)) {
-                            $entries[] = $entry;
-                        }
-                    }
+        $paths = array_keys(Export_Storage::files(self::directory() . '/entries'));
+        foreach (array_reverse($paths) as $path) {
+            $entry = json_decode(Export_Storage::read(self::directory() . '/entries/' . $path), true);
+            if (is_array($entry)) {
+                $job_total++;
+                $entry = self::normalise_entry($entry);
+                if ($search === '' || self::matches_search($entry, $search)) {
+                    $entries[] = $entry;
                 }
             }
         }
@@ -122,17 +115,12 @@ final class Activity_Log
     private static function latest_job_id(): string
     {
         $path = self::meta_path();
-        if (! is_readable($path)) {
+        if (! Export_Storage::exists($path)) {
             return '';
         }
 
-        $meta = json_decode((string) file_get_contents($path), true);
+        $meta = json_decode(Export_Storage::read($path), true);
         return is_array($meta) && is_string($meta['job_id'] ?? null) ? $meta['job_id'] : '';
-    }
-
-    private static function log_path(): string
-    {
-        return self::directory() . '/latest.jsonl';
     }
 
     private static function meta_path(): string
@@ -145,14 +133,4 @@ final class Activity_Log
         return Plugin::storage_directory() . '/activity';
     }
 
-    private static function prepare_directory(): void
-    {
-        $directory = self::directory();
-        Export_Storage::protect($directory);
-        foreach ([self::log_path(), self::meta_path()] as $path) {
-            if (is_link($path)) {
-                throw new \RuntimeException(esc_html__('Activity log storage must not contain symbolic links.', 'wext-static-publisher'));
-            }
-        }
-    }
 }

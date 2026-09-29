@@ -1,0 +1,10 @@
+Hello,
+
+Thank you for reviewing Wext Static Publisher.
+
+Version 3.3.0 removes the error-display overrides. Export assets and ZIP archives now use private database storage; downloads and deployments no longer require writing generated code or archives to the WordPress filesystem. The reported file_get_contents() call read a local export file, and has now been replaced with a database read. Remote requests use the WordPress HTTP API.
+
+I tested the changes on clean WordPress Playground installations with WP_DEBUG enabled, using PHP 8.1 and 8.3. Plugin Check reports 0 errors and 79 warnings.
+
+Thank you,
+Ahmet

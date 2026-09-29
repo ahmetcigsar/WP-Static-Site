@@ -410,7 +410,7 @@ final class Admin
         check_admin_referer('wext_static_download');
 
         $archive = Archive_Manager::latest();
-        if ($archive === null || ! is_readable((string) $archive['path'])) {
+        if ($archive === null || ! Export_Storage::exists((string) $archive['path'])) {
             wp_die(esc_html__('No downloadable exports found.', 'wext-static-publisher'), 404);
         }
 
@@ -554,7 +554,7 @@ final class Admin
         $archive_id = isset($_GET['archive_id']) ? sanitize_file_name(wp_unslash((string) $_GET['archive_id'])) : '';
         check_admin_referer('wext_static_download_archive_' . $archive_id);
         $archive = Archive_Manager::find($archive_id);
-        if ($archive === null || ! is_readable((string) $archive['path'])) {
+        if ($archive === null || ! Export_Storage::exists((string) $archive['path'])) {
             wp_die(esc_html__('No downloadable ZIP file found.', 'wext-static-publisher'), 404);
         }
 
@@ -618,17 +618,19 @@ final class Admin
 
     private static function send_file(string $path, string $filename, bool $delete_after = false): void
     {
+        if ($delete_after) {
+            register_shutdown_function(static fn () => Export_Storage::delete($path));
+        }
         while (ob_get_level() > 0) {
             ob_end_clean();
         }
         nocache_headers();
         header('Content-Type: application/zip');
         header('Content-Disposition: attachment; filename="' . sanitize_file_name($filename) . '"');
-        header('Content-Length: ' . (string) filesize($path));
-        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile -- Stream an authorized ZIP download without loading it into PHP memory.
-        readfile($path);
+        header('Content-Length: ' . (string) (Export_Storage::metadata($path)['size'] ?? 0));
+        Export_Storage::stream($path);
         if ($delete_after) {
-            wp_delete_file($path);
+            Export_Storage::delete($path);
         }
         exit;
     }
@@ -2160,7 +2162,6 @@ final class Admin
                 $disable_toggles = [
                     'disable_xml_rpc' => [__('Disable XML-RPC Links', 'wext-static-publisher'), __('Removes XML-RPC and pingback discovery connections.', 'wext-static-publisher')],
                     'disable_embed_scripts' => [__('Disable Embed Scripts', 'wext-static-publisher'), __('Removes WordPress embed scripts from static HTML.', 'wext-static-publisher')],
-                    'disable_db_debug' => [__('Disable Frontend DB Debug Information', 'wext-static-publisher'), __('It only prevents database error details from being shown in export requests.', 'wext-static-publisher')],
                     'disable_wlw_manifest' => [__('Disable WLW Manifest Link', 'wext-static-publisher'), __('Windows Live Writer removes the manifest link.', 'wext-static-publisher')],
                     'disable_emojis' => [__('Disable Emoji Scripts', 'wext-static-publisher'), __('Removes WordPress emoji scripts and styles from static HTML.', 'wext-static-publisher')],
                 ];

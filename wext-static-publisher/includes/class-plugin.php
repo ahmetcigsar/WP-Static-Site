@@ -31,7 +31,7 @@ final class Plugin
             return;
         }
         Headless_Mode::boot();
-        add_action('init', [self::class, 'apply_export_privacy'], 0);
+        add_action('admin_notices', [self::class, 'storage_migration_notice']);
         add_action('init', [self::class, 'maybe_upgrade'], 1);
         add_action('init', [self::class, 'register_cli']);
         add_action('rest_api_init', [REST_Controller::class, 'register']);
@@ -101,8 +101,23 @@ final class Plugin
             add_option(self::LANGUAGE_SETTINGS_KEY, Language_Routing::defaults(), '', false);
         }
 
+        Export_Storage::install();
+        try {
+            Export_Storage::import_legacy();
+            delete_option('wext_static_storage_migration_error');
+        } catch (Throwable $error) {
+            update_option('wext_static_storage_migration_error', $error->getMessage(), false);
+        }
         update_option('wext_static_plugin_version', WEXTSTAT_VERSION, false);
         Diagnostics::refresh();
+    }
+
+    public static function storage_migration_notice(): void
+    {
+        $error = get_option('wext_static_storage_migration_error', '');
+        if (is_string($error) && $error !== '' && current_user_can('manage_options')) {
+            echo '<div class="notice notice-warning"><p>' . esc_html__('Some existing exports could not be imported. Original files have been preserved. Resolve the reported issue, then deactivate and reactivate Wext Static Publisher to retry.', 'wext-static-publisher') . ' ' . esc_html($error) . '</p></div>';
+        }
     }
 
     public static function maybe_upgrade(): void
@@ -177,7 +192,6 @@ final class Plugin
         }
 
         self::migrate_legacy_role($legacy_prefix);
-        self::migrate_legacy_storage($legacy_brand);
         wp_clear_scheduled_hook($legacy_prefix . 'run_export');
         wp_clear_scheduled_hook($legacy_prefix . 'indexnow_notify');
         delete_transient($legacy_prefix . 'export_lock');
@@ -210,26 +224,6 @@ final class Plugin
         $administrator = get_role('administrator');
         if ($administrator !== null) {
             $administrator->remove_cap($legacy_capability);
-        }
-    }
-
-    private static function migrate_legacy_storage(string $legacy_brand): void
-    {
-        $uploads = wp_upload_dir();
-        $base_directory = (string) ($uploads['basedir'] ?? '');
-        if (! empty($uploads['error']) || $base_directory === '') {
-            return;
-        }
-
-        $legacy_directory = trailingslashit($base_directory) . $legacy_brand . '-static';
-        $new_directory = trailingslashit($base_directory) . 'wext-static-publisher';
-        if (is_link($legacy_directory) || is_link($new_directory) || ! is_dir($legacy_directory) || is_dir($new_directory)) {
-            return;
-        }
-
-        // phpcs:ignore WordPress.WP.AlternativeFunctions.rename_rename -- One-time migration of this plugin's own uploads directory on the same filesystem.
-        if (! @rename($legacy_directory, $new_directory)) {
-            error_log('[Wext Static Publisher] Existing static archives could not be moved to the plugin storage directory.');
         }
     }
 
@@ -318,7 +312,6 @@ final class Plugin
             'hide_rsd_header' => '0',
             'disable_xml_rpc' => '0',
             'disable_embed_scripts' => '0',
-            'disable_db_debug' => '0',
             'disable_wlw_manifest' => '0',
             'disable_emojis' => '0',
         ];
@@ -477,38 +470,11 @@ final class Plugin
         return wp_parse_args(get_option(self::SEARCH_SETTINGS_KEY, []), self::search_defaults());
     }
 
-    public static function apply_export_privacy(): void
-    {
-        if (! Headless_Mode::valid_export_request()) {
-            return;
-        }
-
-        $settings = self::hide_settings();
-        if (($settings['disable_db_debug'] ?? '0') !== '1') {
-            return;
-        }
-
-        @ini_set('display_errors', '0');
-        global $wpdb;
-        if (is_object($wpdb) && method_exists($wpdb, 'hide_errors')) {
-            $wpdb->hide_errors();
-        }
-    }
-
+    /** Logical database namespace retained for integration compatibility. */
     public static function storage_directory(): string
     {
-        $uploads = wp_upload_dir();
-        if (! empty($uploads['error']) || empty($uploads['basedir']) || ! path_is_absolute((string) $uploads['basedir'])) {
-            throw new \RuntimeException(esc_html__('The WordPress uploads directory is unavailable.', 'wext-static-publisher'));
-        }
-        $base = trailingslashit((string) $uploads['basedir']);
-        // Preserve existing archives and saved absolute paths on older installations.
-        $directory = is_dir($base . 'wext-static') ? $base . 'wext-static' : $base . 'wext-static-publisher';
-        if (is_link($directory)) {
-            throw new \RuntimeException(esc_html__('The export storage directory must not be a symbolic link.', 'wext-static-publisher'));
-        }
-        Export_Storage::protect($directory);
-        return $directory;
+        Export_Storage::install();
+        return Export_Storage::ROOT;
     }
 
     public static function schedule_export(string $source = 'manual'): string

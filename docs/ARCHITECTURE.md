@@ -21,16 +21,16 @@
 7. CI downloads only the ZIP from `/exports/{job_id}/artifact` and compares its manifest job ID and SHA-256 with the webhook payload.
 8. Wrangler deploys the verified snapshot to the user's Workers Static Assets target from `wrangler.jsonc` and checks the deployment URL over HTTP.
 9. GitHub Actions sends an authenticated `deploying`, `completed`, or `failed` result to `/deployments/callback`. WordPress stores export and Cloudflare deployment status separately.
-10. If automatic SFTP upload is enabled, files from the same successful build directory are uploaded to the remote target. SFTP status and errors are recorded separately from the ZIP export.
+10. If automatic SFTP upload is enabled, files from the same successful database build are uploaded to the remote target. SFTP status and errors are recorded separately from the ZIP export.
 
 In the direct Cloudflare flow, WordPress creates an asset manifest after a successful export, uploads missing assets to the user's Worker, and updates the Worker module with the new asset token. `_headers` and `_redirects` are included in the asset configuration. Users configure `workers.dev` or a custom domain in their Cloudflare dashboard.
 
 ## SFTP flow
 
-- SFTP uses the bundled phpseclib 3 client with password authentication. If phpseclib cannot load, PHP cURL with SFTP support can serve as a fallback transport.
+- SFTP uses the bundled phpseclib 3 client with password authentication and a callback that reads database chunks.
 - Host, port, username, remote directory, timeout, and optional MD5 host fingerprint are saved under **Deploy > SFTP**.
 - The password is encrypted with Sodium `secretbox` or OpenSSL AES-256-GCM using a key derived from WordPress `AUTH_KEY`. It is excluded from admin responses and filter data.
-- The connection check verifies access to and listing permission on the target directory. When a fingerprint is supplied, the cURL transport verifies the host key during connection.
+- The connection check verifies access to and listing permission on the target directory. When a fingerprint is supplied, phpseclib verifies the host key during connection.
 - Manual upload sends the latest successful build. The automatic option runs the same upload after each successful export.
 - Matching remote paths are overwritten and missing subdirectories are created. Unrelated or obsolete remote files are not deleted automatically.
 
@@ -66,7 +66,7 @@ In the direct Cloudflare flow, WordPress creates an asset manifest after a succe
 - WordPress AJAX/REST endpoints requested by JavaScript at runtime are not made static.
 - Complex CSS URL syntax and asset URLs embedded in JavaScript need site-specific checks.
 - The WordPress multilingual plugin is responsible for translated content and reciprocal `hreflang` tags.
-- The plugin writes Apache/IIS rules to block the storage directory. On Nginx, the host must deny direct access to the runtime uploads subdirectories `wext-static-publisher` and legacy `wext-static`; Nginx does not read `.htaccess`. Downloads use authenticated REST. New installations use `wp_upload_dir()` plus `wext-static-publisher`; existing `wext-static` directories remain supported to preserve archive references.
+- Export assets, archives, and activity logs live in the private per-site database table `wext_static_objects`. Bodies are base64-encoded in 256 KiB chunks. ZIP generation, authenticated downloads, bulk downloads, and SFTP reads do not create local artifacts. Old ZIPs are imported without extraction; originals remain untouched as backups.
 - If the origin is behind Cloudflare Access or HTTP Basic, add the required service headers through the `wext_static_request_args` filter in a site-specific MU plugin.
 - SFTP deployment uses password authentication; private-key authentication is outside this version's scope.
 - Direct SFTP upload is not atomic and does not remove obsolete remote files.

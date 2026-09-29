@@ -477,18 +477,12 @@ final class SEO_Toolkit
         $large_asset_bytes = max(1, (int) ($this->settings['large_asset_kb'] ?? 500)) * 1024;
         $files = [];
         $total_bytes = 0;
-        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($build_directory, \FilesystemIterator::SKIP_DOTS));
-        foreach ($iterator as $file) {
-            if (! $file->isFile()) {
-                continue;
-            }
-            $size = (int) $file->getSize();
+        $stored_files = Export_Storage::files($build_directory);
+        foreach ($stored_files as $relative => $metadata) {
+            $size = (int) $metadata['size'];
             $total_bytes += $size;
             if ($size >= $large_asset_bytes) {
-                $files[] = [
-                    'path' => substr($file->getPathname(), strlen($build_directory) + 1),
-                    'bytes' => $size,
-                ];
+                $files[] = ['path' => $relative, 'bytes' => $size];
             }
         }
         $large_html_bytes = max(1, (int) ($this->settings['large_html_kb'] ?? 200)) * 1024;
@@ -496,7 +490,7 @@ final class SEO_Toolkit
             'schema_version' => 1,
             'generated_at' => gmdate('c'),
             'total_bytes' => $total_bytes,
-            'file_count' => iterator_count(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($build_directory, \FilesystemIterator::SKIP_DOTS))),
+            'file_count' => count($stored_files),
             'large_files' => $files,
             'large_html_pages' => array_values(array_map(
                 static fn (array $page): array => ['url' => $page['url'], 'bytes' => $page['html_bytes']],
@@ -654,7 +648,9 @@ final class SEO_Toolkit
         } elseif (str_ends_with($path, '/')) {
             $path .= 'index.html';
         }
-        return is_file($build_directory . '/' . ltrim($path, '/'));
+        $relative = ltrim($path, '/');
+        return Path_Mapper::is_safe_static_path($relative)
+            && Export_Storage::exists($build_directory . '/' . $relative);
     }
 
     private function last_modified(string $source_url): string

@@ -55,8 +55,9 @@ $job = 'smartcrawl-live-' . time();
 $status = (new Exporter())->run($job);
 $check(($status['state'] ?? '') === 'completed', 'Live export did not complete.');
 $check(! empty($status['manifest']['smartcrawl']['active']), 'SmartCrawl missing from export manifest.');
+require_once __DIR__ . '/database-test-helpers.php';
 $zip = new ZipArchive();
-$check($zip->open($status['archive']) === true, 'Static ZIP cannot be opened.');
+$check($zip->open(wext_test_zip_path($status['archive'])) === true, 'Static ZIP cannot be opened.');
 foreach ($source_pages as $type => $source) {
     $output = (string) $zip->getFromName('smartcrawl-' . $type . '/index.html');
     foreach (['SmartCrawl Özel Başlık ' . $type, 'SmartCrawl özel açıklama ' . $type, 'SmartCrawl OG ' . $type, 'SmartCrawl Twitter ' . $type, 'application/ld+json', $target . '/smartcrawl-' . $type . '/'] as $value) {
